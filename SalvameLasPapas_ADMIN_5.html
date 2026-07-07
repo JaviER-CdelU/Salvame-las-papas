@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Admin — Sálvame las Papas 🥔</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc,
+         query, orderBy, where, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAE8kEBAzDbPvCCD1KCyjq67iFL3dvthLM",
+  authDomain: "salvame-las-papas-cdelu.firebaseapp.com",
+  projectId: "salvame-las-papas-cdelu",
+  storageBucket: "salvame-las-papas-cdelu.firebasestorage.app",
+  messagingSenderId: "401048945476",
+  appId: "1:401048945476:web:58695553aa93928b36cd11"
+};
+
+const app  = initializeApp(firebaseConfig);
+const db   = getFirestore(app);
+const auth = getAuth(app);
+const googleProvider = new GoogleAuthProvider();
+
+// ── Auth state ──
+onAuthStateChanged(auth, user => {
+  if(user){
+    document.getElementById('login-screen').style.display = 'none'
+    document.getElementById('admin-screen').style.display = 'block'
+    document.getElementById('admin-user').textContent = user.email
+    cargarComerciosAdmin()
+  } else {
+    document.getElementById('login-screen').style.display = 'flex'
+    document.getElementById('admin-screen').style.display = 'none'
+  }
+})
+
+// ── Login ──
+window.loginConGoogle = async () => {
+  const btn = document.getElementById('l-btn-google')
+  const err = document.getElementById('l-error')
+  btn.textContent = 'Conectando con Google...'
+  btn.disabled = true
+  err.style.display = 'none'
+  try {
+    await signInWithPopup(auth, googleProvider)
+  } catch(e) {
+    err.textContent = e.code === 'auth/popup-closed-by-user'
+      ? 'Cerraste la ventana de Google. Intentá de nuevo.'
+      : 'Error: ' + e.message
+    err.style.display = 'block'
+  }
+  btn.textContent = 'Continuar con Google'
+  btn.disabled = false
+}
+
+window.hacerLogin = async () => {
+  const email = document.getElementById('l-email').value.trim()
+  const pass  = document.getElementById('l-pass').value
+  const err   = document.getElementById('l-error')
+  const btn   = document.getElementById('l-btn')
+  err.style.display = 'none'
+  btn.textContent = 'Entrando...'
+  btn.disabled = true
+  try {
+    await signInWithEmailAndPassword(auth, email, pass)
+  } catch(e) {
+    err.textContent = e.code === 'auth/invalid-credential'
+      ? 'Email o contraseña incorrectos'
+      : 'Error: ' + e.message
+    err.style.display = 'block'
+  }
+  btn.textContent = 'Entrar'
+  btn.disabled = false
+}
+
+window.cerrarSesion = async () => {
+  await signOut(auth)
+}
+
+// ── Cargar comercios ──
+let todosComerciosAdmin = []
+
+window.cargarComerciosAdmin = async () => {
+  const lista = document.getElementById('admin-lista')
+  lista.innerHTML = '<p class="cargando">Cargando comercios... 🥔</p>'
+  
+  try {
+    const snap = await getDocs(query(collection(db,'comercios'), orderBy('creadoEn','desc')))
+    todosComerciosAdmin = []
+    snap.forEach(d => todosComerciosAdmin.push({id: d.id, ...d.data()}))
+    
+    actualizarContadores()
+    filtrarAdmin('todos')
+  } catch(e) {
+    lista.innerHTML = '<p class="cargando" style="color:#CC0000">Error: ' + e.message + '</p>'
+  }
+}
+
+function actualizarContadores(){
+  const total     = todosComerciosAdmin.length
+  const pendiente = todosComerciosAdmin.filter(c => c.estado === 'pendiente').length
+  const activo    = todosComerciosAdmin.filter(c => c.estado === 'activo').length
+  const rechazado = todosComerciosAdmin.filter(c => c.estado === 'rechazado').length
+  
+  document.getElementById('cnt-total').textContent     = total
+  document.getElementById('cnt-pendiente').textContent = pendiente
+  document.getElementById('cnt-activo').textContent    = activo
+  document.getElementById('cnt-rechazado').textContent = rechazado
+}
+
+window.filtrarAdmin = (filtro) => {
+  // Update tabs
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'))
+  document.getElementById('tab-'+filtro)?.classList.add('active')
+  
+  const filtrados = filtro === 'todos'
+    ? todosComerciosAdmin
+    : todosComerciosAdmin.filter(c => c.estado === filtro)
+  
+  renderListaAdmin(filtrados)
+}
+
+function renderListaAdmin(lista){
+  const el = document.getElementById('admin-lista')
+  
+  if(lista.length === 0){
+    el.innerHTML = '<p class="cargando">No hay comercios en esta categoría</p>'
+    return
+  }
+  
+  el.innerHTML = lista.map(c => {
+    const fecha = c.creadoEn?.toDate
+      ? c.creadoEn.toDate().toLocaleDateString('es-AR', {day:'2-digit',month:'2-digit',year:'numeric', hour:'2-digit',minute:'2-digit'})
+      : 'Sin fecha'
+    
+    const estadoBadge = {
+      pendiente: '<span class="badge badge-pendiente">⏳ Pendiente</span>',
+      activo:    '<span class="badge badge-activo">✅ Activo</span>',
+      rechazado: '<span class="badge badge-rechazado">❌ Rechazado</span>',
+    }[c.estado] || '<span class="badge badge-pendiente">⏳ Pendiente</span>'
+    
+    const planBadge = c.plan?.includes('Max')
+      ? '<span class="plan-badge plan-max">MAX</span>'
+      : c.plan?.includes('Pro')
+        ? '<span class="plan-badge plan-pro">PRO</span>'
+        : '<span class="plan-badge plan-bas">BÁSICO</span>'
+    
+    const pagos  = Array.isArray(c.pagos)  ? c.pagos.join(', ')  : (c.pagos||'—')
+    const envio  = Array.isArray(c.envio)  ? c.envio.join(', ')  : (c.envio||'—')
+    
+    const acciones = c.estado === 'pendiente' ? `
+      <button class="btn-accion btn-aprobar" onclick="aprobarComercio('${c.id}','${c.nombre?.replace(/'/g,"\'")||''}','${c.telefono||''}')">
+        ✅ Aprobar
+      </button>
+      <button class="btn-accion btn-rechazar" onclick="rechazarComercio('${c.id}')">
+        ❌ Rechazar
+      </button>` 
+    : c.estado === 'activo' ? `
+      <button class="btn-accion btn-rechazar" onclick="cambiarEstado('${c.id}','pendiente')">
+        ⏸ Suspender
+      </button>`
+    : `
+      <button class="btn-accion btn-aprobar" onclick="cambiarEstado('${c.id}','activo')">
+        ♻️ Reactivar
+      </button>`
+    
+    return `
+    <div class="comercio-card" id="card-${c.id}">
+      <div class="cc-header">
+        <div class="cc-title-row">
+          <h3 class="cc-nombre">${c.nombre || 'Sin nombre'}</h3>
+          ${estadoBadge}
+          ${planBadge}
+        </div>
+        <div class="cc-meta">${c.categoria||'—'} · ${c.barrio||'CDU'} · ${fecha}</div>
+      </div>
+      <div class="cc-body">
+        <div class="cc-grid">
+          <div class="cc-field"><span class="cc-label">📍 Dirección</span><span>${c.direccion||'—'}</span></div>
+          <div class="cc-field"><span class="cc-label">📱 WhatsApp</span>
+            <a href="https://wa.me/${(c.telefono||'').replace(/\D/g,'')}" target="_blank" class="wa-link">${c.telefono||'—'}</a>
+          </div>
+          <div class="cc-field"><span class="cc-label">✉️ Email</span><span>${c.email||'—'}</span></div>
+          <div class="cc-field"><span class="cc-label">📅 Horarios</span><span>${c.horarios||'—'}</span></div>
+          <div class="cc-field"><span class="cc-label">💳 Pagos</span><span>${pagos}</span></div>
+          <div class="cc-field"><span class="cc-label">🚚 Envío</span><span>${envio}</span></div>
+          <div class="cc-field"><span class="cc-label">💰 Plan</span><span>${c.plan||'—'}</span></div>
+          <div class="cc-field"><span class="cc-label">📷 Instagram</span><span>${c.instagram||'—'}</span></div>
+        </div>
+        ${c.descripcion ? `<div class="cc-desc">"${c.descripcion}"</div>` : ''}
+      </div>
+      <div class="cc-footer">
+        ${acciones}
+        <button class="btn-accion btn-wa" onclick="notificarWA('${(c.telefono||'').replace(/\D/g,'')}','${c.nombre?.replace(/'/g,"\'")||''}')">
+          💬 Notificar por WhatsApp
+        </button>
+        </button>
+        <span class="plan-changer">
+          <select class="plan-select" onchange="cambiarPlan('${c.id}','${c.nombre?.replace(/'/g,"\'")||''}',this)">
+            <option value="">→ Cambiar plan</option>
+            <option value="Básico ($15.000/mes)">Básico</option>
+            <option value="Pro ($30.000/mes)">Pro</option>
+            <option value="Max ($45.000/mes)">Max</option>
+          </select>
+        </span>
+        <button class="btn-accion btn-borrar" onclick="borrarComercio('${c.id}','${c.nombre?.replace(/'/g,"\'")||''}')">
+          🗑️ Eliminar
+        </button>
+      </div>
+    </div>`
+  }).join('')
+}
+
+// ── Acciones ──
+window.aprobarComercio = async (id, nombre, tel) => {
+  if(!confirm('Aprobar a ' + nombre + '?')) return
+  try {
+    await updateDoc(doc(db,'comercios',id), { estado: 'activo' })
+    toast('✅ ' + nombre + ' aprobado y activo en la app')
+    // Notificar al comercio por WhatsApp
+    if(tel){
+      const msg = 'Hola%20' + encodeURIComponent(nombre) + '!%20Te%20confirmamos%20que%20tu%20comercio%20ya%20está%20ACTIVO%20en%20Sálvame%20las%20Papas%20🥔%0A%0A¡Bienvenido%20a%20la%20red%20de%20CDU!%20Ya%20podés%20ver%20tu%20local%20en%20la%20app.'
+      window.open('https://wa.me/' + tel.replace(/\D/g,'') + '?text=' + msg, '_blank')
+    }
+    await cargarComerciosAdmin()
+  } catch(e) { toast('Error: ' + e.message) }
+}
+
+window.rechazarComercio = async (id) => {
+  if(!confirm('Rechazar este comercio?')) return
+  try {
+    await updateDoc(doc(db,'comercios',id), { estado: 'rechazado' })
+    toast('Comercio rechazado')
+    await cargarComerciosAdmin()
+  } catch(e) { toast('Error: ' + e.message) }
+}
+
+window.cambiarEstado = async (id, nuevoEstado) => {
+  try {
+    await updateDoc(doc(db,'comercios',id), { estado: nuevoEstado })
+    toast('Estado actualizado a: ' + nuevoEstado)
+    await cargarComerciosAdmin()
+  } catch(e) { toast('Error: ' + e.message) }
+}
+
+window.borrarComercio = async (id, nombre) => {
+  if(!confirm('⚠️ Eliminar definitivamente a ' + nombre + '? Esta acción no se puede deshacer.')) return
+  try {
+    await deleteDoc(doc(db,'comercios',id))
+    toast('🗑️ ' + nombre + ' eliminado')
+    await cargarComerciosAdmin()
+  } catch(e) { toast('Error: ' + e.message) }
+}
+
+window.cambiarPlan = async (id, nombre, sel) => {
+  const plan = sel.value
+  if(!plan) return
+  if(!confirm('Cambiar plan de ' + nombre + ' a ' + plan + '?')){ sel.value=''; return }
+  try {
+    await updateDoc(doc(db,'comercios',id), { plan })
+    toast('✅ Plan actualizado: ' + plan)
+    sel.value=''
+    await cargarComerciosAdmin()
+  } catch(e) { toast('Error: ' + e.message); sel.value='' }
+}
+
+window.notificarWA = (tel, nombre) => {
+  const msg = 'Hola%20' + encodeURIComponent(nombre) + '!%20Te%20contactamos%20desde%20Sálvame%20las%20Papas%20CDU%20🥔%0A'
+  window.open('https://wa.me/' + tel + '?text=' + msg, '_blank')
+}
+
+window.buscarAdmin = () => {
+  const q = document.getElementById('buscar-input').value.toLowerCase()
+  const filtrados = todosComerciosAdmin.filter(c =>
+    (c.nombre||'').toLowerCase().includes(q) ||
+    (c.categoria||'').toLowerCase().includes(q) ||
+    (c.barrio||'').toLowerCase().includes(q) ||
+    (c.telefono||'').includes(q)
+  )
+  renderListaAdmin(filtrados)
+}
+
+function toast(msg){
+  const t = document.getElementById('admin-toast')
+  t.textContent = msg
+  t.classList.add('show')
+  setTimeout(() => t.classList.remove('show'), 4000)
+}
+
+// Registrar todas las funciones como globales
+window._adminFns = {
+  loginConGoogle: window.loginConGoogle,
+  hacerLogin: window.hacerLogin,
+  cerrarSesion: window.cerrarSesion,
+  cargarComerciosAdmin: window.cargarComerciosAdmin,
+  filtrarAdmin: window.filtrarAdmin,
+  buscarAdmin: window.buscarAdmin,
+  aprobarComercio: window.aprobarComercio,
+  rechazarComercio: window.rechazarComercio,
+  cambiarEstado: window.cambiarEstado,
+  borrarComercio: window.borrarComercio,
+  notificarWA: window.notificarWA,
+  cambiarPlan: window.cambiarPlan
+}
+</script>
+
+<!-- Wrappers globales para las funciones del módulo -->
+<script>
+// Estos wrappers permiten llamar las funciones del módulo desde HTML
+function loginConGoogle(){ window._adminFns?.loginConGoogle() }
+function togglePass(){
+  const inp = document.getElementById('l-pass')
+  const btn = document.getElementById('pass-toggle')
+  if(inp.type === 'password'){
+    inp.type = 'text'
+    btn.textContent = '🙈'
+    btn.title = 'Ocultar contraseña'
+  } else {
+    inp.type = 'password'
+    btn.textContent = '👁️'
+    btn.title = 'Ver contraseña'
+  }
+}
+function hacerLogin(){ window._adminFns?.hacerLogin() }
+function cerrarSesion(){ window._adminFns?.cerrarSesion() }
+function cargarComerciosAdmin(){ window._adminFns?.cargarComerciosAdmin() }
+function filtrarAdmin(f){ window._adminFns?.filtrarAdmin(f) }
+function buscarAdmin(){ window._adminFns?.buscarAdmin() }
+function aprobarComercio(id,n,t){ window._adminFns?.aprobarComercio(id,n,t) }
+function rechazarComercio(id){ window._adminFns?.rechazarComercio(id) }
+function cambiarEstado(id,e){ window._adminFns?.cambiarEstado(id,e) }
+function borrarComercio(id,n){ window._adminFns?.borrarComercio(id,n) }
+function notificarWA(t,n){ window._adminFns?.notificarWA(t,n) }
+
+// ═══ CONFIGURACIÓN DE MÓDULOS DEL SITIO ═══
+const MODULOS_CONFIG = [
+  { id:'mod-hero',    label:'Hero — portada principal',         icon:'🏠' },
+  { id:'mod-search',  label:'Barra de búsqueda',                icon:'🔍' },
+  { id:'filtro-bar',  label:'Filtro de categorías',             icon:'🏷️' },
+  { id:'categorias',  label:'Grilla de categorías',             icon:'📂' },
+  { id:'comercios',   label:'Listado de comercios',             icon:'🏪' },
+  { id:'como-funciona', label:'Sección "Cómo funciona"',        icon:'ℹ️' },
+  { id:'diccionario', label:'Diccionario entrerriano',          icon:'🧉' },
+  { id:'planes',      label:'Planes para comercios',            icon:'💎' },
+  { id:'registro-comercio', label:'Formulario de registro',     icon:'📝' },
+  { id:'mod-cta',     label:'CTA de contacto',                 icon:'📞' },
+]
+
+function obtenerConfigModulos(){
+  try {
+    const raw = localStorage.getItem('slp_modulos_config')
+    if(raw) return JSON.parse(raw)
+  } catch(e) {}
+  return {}
+}
+
+function guardarConfig(){
+  const config = obtenerConfigModulos()
+  MODULOS_CONFIG.forEach(m => {
+    const el = document.getElementById('cfg-'+m.id)
+    if(el) config[m.id] = el.classList.contains('mod-on')
+  })
+  localStorage.setItem('slp_modulos_config', JSON.stringify(config))
+
+  // Generar archivo JS de configuración para incluir en SITIO
+  const jsContent = '// Configuración de módulos — generado desde Admin\n// Pegá este script en SITIO.html antes del cierre de </body>\nwindow._SLP_MODULES_CONFIG = ' + JSON.stringify(config, null, 2) + ';\n'
+  const blob = new Blob([jsContent], { type: 'application/javascript' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = 'config-modulos.js'
+  a.click()
+  URL.revokeObjectURL(url)
+
+  // Mostrar instrucciones
+  const snippet = document.getElementById('config-snippet')
+  const code = document.getElementById('config-code')
+  if(snippet && code){
+    code.textContent = jsContent
+    snippet.style.display = 'block'
+  }
+  toast('✅ Config guardada. Descargaste config-modulos.js — ponelo en la carpeta del proyecto.')
+}
+
+function resetConfig(){
+  if(!confirm('Restaurar todas las secciones a visible?')) return
+  localStorage.removeItem('slp_modulos_config')
+  document.getElementById('config-snippet').style.display = 'none'
+  toast('✅ Configuración restaurada.')
+  cargarConfigPanel()
+}
+
+function toggleModulo(id){
+  const el = document.getElementById('cfg-'+id)
+  if(!el) return
+  const isOn = el.classList.contains('mod-on')
+  el.classList.toggle('mod-on', !isOn)
+  el.classList.toggle('mod-off', isOn)
+  const status = el.querySelector('.mod-status')
+  if(status) status.textContent = isOn ? '❌ Oculto' : '✅ Visible'
+}
+
+function cargarConfigPanel(){
+  const grid = document.getElementById('config-grid')
+  if(!grid) return
+  const config = obtenerConfigModulos()
+  grid.innerHTML = MODULOS_CONFIG.map(m => {
+    const habilitado = config[m.id] !== undefined ? config[m.id] : true
+    return `
+    <div style="background:#fff;border:2px solid var(--borde);border-radius:var(--radio);padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;transition:all .12s"
+         id="cfg-${m.id}" class="${habilitado ? 'mod-on' : 'mod-off'}"
+         onclick="toggleModulo('${m.id}')">
+      <div style="display:flex;align-items:center;gap:10px;min-width:0">
+        <span style="font-size:1.6rem">${m.icon}</span>
+        <div>
+          <div style="font-weight:600;font-size:.95rem">${m.label}</div>
+          <div class="mod-status" style="font-size:.8rem;color:#888;margin-top:2px">${habilitado ? '✅ Visible' : '❌ Oculto'}</div>
+        </div>
+      </div>
+      <div style="flex-shrink:0;font-size:1.4rem;transition:transform .2s;opacity:${habilitado ? '1' : '.3'}">${habilitado ? '👁️' : '🚫'}</div>
+    </div>`
+  }).join('')
+}
+
+function mostrarConfig(){
+  document.getElementById('admin-lista').style.display = 'none'
+  document.getElementById('admin-config').style.display = 'block'
+  cargarConfigPanel()
+}
+
+function volverAdmin(){
+  document.getElementById('admin-lista').style.display = 'block'
+  document.getElementById('admin-config').style.display = 'none'
+}
+
+function copiarSnippet(){
+  const code = document.getElementById('config-code')
+  if(!code) return
+  navigator.clipboard.writeText(code.textContent).then(() => {
+    toast('✅ Código copiado al portapapeles')
+  }).catch(() => {
+    // Fallback
+    const range = document.createRange()
+    range.selectNode(code)
+    window.getSelection().removeAllRanges()
+    window.getSelection().addRange(range)
+    document.execCommand('copy')
+    toast('✅ Copiado (seleccioná y copiá manual si no funcionó)')
+  })
+}
+</script>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"DM Sans",sans-serif;background:#F0F4F8;color:#1A1A1A;min-height:100vh}
+:root{
+  --rojo:#CC0000;--azul:#003B8E;--azul-d:#002A6A;--azul-l:#E6EEF9;
+  --verde:#1B4332;--verde-l:#D8F3DC;
+  --naranja:#F47521;
+  --borde:#DDD8CC;--radio:12px;
+}
+
+/* LOGIN */
+#login-screen{
+  display:flex;align-items:center;justify-content:center;
+  min-height:100vh;background:var(--azul-d);
+}
+.login-box{
+  background:#fff;border-radius:var(--radio);padding:2.5rem 2rem;
+  width:100%;max-width:380px;text-align:center;
+  box-shadow:0 20px 60px rgba(0,0,0,.3);
+}
+.login-logo{font-family:"Fraunces",serif;font-size:1.6rem;font-weight:900;color:var(--azul-d);margin-bottom:.25rem}
+.login-logo em{color:var(--rojo);font-style:normal}
+.login-sub{font-size:.85rem;color:#666;margin-bottom:2rem}
+.l-input{
+  width:100%;border:2px solid var(--borde);border-radius:8px;
+  padding:12px 14px;font-family:"DM Sans",sans-serif;font-size:.95rem;
+  outline:none;transition:border-color .15s;margin-bottom:10px;
+}
+.l-input:focus{border-color:var(--azul)}
+.l-error{color:var(--rojo);font-size:.85rem;margin-bottom:10px;display:none;text-align:left}
+.l-btn{
+  width:100%;padding:13px;border-radius:8px;background:var(--rojo);
+  color:#fff;border:none;font-family:"DM Sans",sans-serif;
+  font-weight:700;font-size:1rem;cursor:pointer;transition:background .15s;
+}
+.l-btn:hover{background:#AA0000}
+
+/* ADMIN SCREEN */
+#admin-screen{display:none;min-height:100vh}
+.admin-nav{
+  background:var(--azul-d);color:#fff;
+  padding:0 2rem;height:60px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;
+  border-bottom:3px solid var(--rojo);
+}
+.admin-logo{font-family:"Fraunces",serif;font-size:1.1rem;font-weight:900}
+.admin-logo em{color:var(--naranja);font-style:normal}
+.admin-user-info{display:flex;align-items:center;gap:12px;font-size:.85rem;opacity:.8}
+.btn-salir{background:rgba(255,255,255,.15);border:none;color:#fff;padding:6px 14px;border-radius:99px;font-size:.82rem;cursor:pointer;font-family:"DM Sans",sans-serif;font-weight:600}
+.btn-salir:hover{background:rgba(255,255,255,.25)}
+
+.admin-body{max-width:1200px;margin:0 auto;padding:2rem}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:2rem}
+.stat-card{background:#fff;border-radius:var(--radio);padding:1.25rem 1.5rem;border:2px solid var(--borde);text-align:center}
+.stat-card.pendiente{border-color:#FFD54F;background:#FFF8E1}
+.stat-card.activo{border-color:#66BB6A;background:var(--verde-l)}
+.stat-card.rechazado{border-color:#EF9A9A;background:#FFEBEE}
+.stat-num{font-family:"Fraunces",serif;font-size:2.2rem;font-weight:900;line-height:1}
+.stat-lab{font-size:.8rem;color:#666;margin-top:4px}
+
+/* TOOLBAR */
+.toolbar{display:flex;gap:12px;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap}
+.tab-btn{
+  padding:8px 18px;border-radius:99px;border:2px solid var(--borde);
+  background:#fff;font-family:"DM Sans",sans-serif;font-weight:600;font-size:.88rem;
+  cursor:pointer;transition:all .15s;color:#666;
+}
+.tab-btn:hover{border-color:var(--rojo);color:var(--rojo)}
+.tab-btn.active{background:var(--rojo);color:#fff;border-color:var(--rojo)}
+.buscar-wrap{display:flex;gap:8px;margin-left:auto}
+.buscar-input{
+  border:2px solid var(--borde);border-radius:8px;padding:8px 14px;
+  font-family:"DM Sans",sans-serif;font-size:.9rem;outline:none;
+  transition:border-color .15s;width:220px;
+}
+.buscar-input:focus{border-color:var(--azul)}
+.btn-reload{background:var(--azul);color:#fff;border:none;border-radius:8px;padding:9px 16px;cursor:pointer;font-size:.88rem;font-weight:600;font-family:"DM Sans",sans-serif}
+
+/* CARDS */
+.cargando{text-align:center;color:#666;padding:3rem;font-size:.95rem}
+.comercio-card{
+  background:#fff;border:2px solid var(--borde);border-radius:var(--radio);
+  margin-bottom:14px;overflow:hidden;transition:box-shadow .15s;
+}
+.comercio-card:hover{box-shadow:0 4px 20px rgba(0,0,0,.08)}
+.cc-header{
+  padding:1rem 1.5rem .75rem;
+  border-bottom:1px solid var(--borde);
+  background:#FAFAF8;
+}
+.cc-title-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+.cc-nombre{font-family:"Fraunces",serif;font-size:1.1rem;font-weight:700}
+.cc-meta{font-size:.82rem;color:#666}
+.badge{font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:99px}
+.badge-pendiente{background:#FFF8E1;color:#8B6914;border:1px solid #FFD54F}
+.badge-activo{background:var(--verde-l);color:var(--verde);border:1px solid #66BB6A}
+.badge-rechazado{background:#FFEBEE;color:#9B1C1C;border:1px solid #EF9A9A}
+.plan-badge{font-size:.7rem;font-weight:700;padding:2px 9px;border-radius:99px}
+.plan-max{background:#002A6A;color:#fff}
+.plan-pro{background:#003B8E;color:#fff}
+.plan-bas{background:#555;color:#fff}
+.cc-body{padding:1rem 1.5rem}
+.cc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;margin-bottom:.75rem}
+.cc-field{display:flex;flex-direction:column;gap:2px;font-size:.85rem}
+.cc-label{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#888}
+.wa-link{color:var(--azul);font-weight:600;text-decoration:none}
+.wa-link:hover{text-decoration:underline}
+.cc-desc{font-style:italic;color:#666;font-size:.88rem;padding:.6rem 1rem;background:#F8F8F4;border-radius:6px;border-left:3px solid var(--borde)}
+.cc-footer{
+  padding:.75rem 1.5rem;background:#F8F8F4;
+  border-top:1px solid var(--borde);
+  display:flex;gap:8px;flex-wrap:wrap;align-items:center;
+}
+.btn-accion{
+  padding:7px 16px;border-radius:7px;border:none;
+  font-family:"DM Sans",sans-serif;font-weight:600;font-size:.85rem;
+  cursor:pointer;transition:opacity .15s;
+}
+.btn-accion:hover{opacity:.82}
+.btn-aprobar{background:#2D6A4F;color:#fff}
+.btn-rechazar{background:#9B1C1C;color:#fff}
+.btn-wa{background:#25D366;color:#fff}
+.btn-borrar{background:#EEE;color:#666;margin-left:auto}
+.plan-changer{display:inline-flex;align-items:center}
+.plan-select{padding:6px 10px;border-radius:7px;border:1.5px solid var(--borde);font-size:.82rem;font-family:"DM Sans",sans-serif;font-weight:500;background:#fff;color:#333;cursor:pointer}
+.plan-select:focus{outline:none;border-color:var(--azul)}
+
+/* TOAST */
+.admin-toast{
+  position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(20px);
+  background:#111;color:#fff;padding:12px 24px;border-radius:99px;
+  font-size:.9rem;font-weight:500;opacity:0;transition:all .3s;
+  pointer-events:none;z-index:999;white-space:nowrap;
+}
+.admin-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:700px){
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .admin-body{padding:1rem}
+  .buscar-wrap{margin-left:0;width:100%}
+  .buscar-input{width:100%}
+}
+
+.l-btn-google{
+  width:100%;padding:13px;border-radius:8px;
+  background:#fff;border:2px solid #DDD;
+  font-family:"DM Sans",sans-serif;font-weight:600;font-size:1rem;
+  cursor:pointer;transition:all .15s;margin-bottom:12px;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  color:#333;
+}
+.l-btn-google:hover{border-color:#4285F4;box-shadow:0 2px 10px rgba(66,133,244,.2)}
+.l-btn-google:disabled{opacity:.6;cursor:default}
+.divider-o{
+  display:flex;align-items:center;gap:10px;
+  color:#aaa;font-size:.82rem;margin:14px 0 12px;
+}
+.divider-o::before,.divider-o::after{
+  content:"";flex:1;height:1px;background:#EEE;
+}
+
+/* CONFIG MODULES */
+#admin-config{animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.mod-on{border-color:#66BB6A!important;background:#F0FFF4!important}
+.mod-off{border-color:#DDD!important;background:#FAFAFA!important;opacity:.7}
+.mod-off:hover{opacity:1}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">Sálvame <em>las Papas 🥔</em></div>
+    <p class="login-sub">Panel de administración 🔒</p>
+    <a href="SalvameLasPapas_SITIO.html" style="display:block;text-align:center;font-size:.82rem;color:var(--azul);text-decoration:none;margin-bottom:1rem;font-weight:600">← Volver al sitio principal</a>
+
+    <!-- GOOGLE LOGIN - opción principal -->
+    <button class="l-btn-google" id="l-btn-google" onclick="loginConGoogle()">
+      <svg width="20" height="20" viewBox="0 0 24 24" style="flex-shrink:0">
+        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+      </svg>
+      Continuar con Google
+    </button>
+
+    <div class="divider-o"><span>o entrá con email</span></div>
+
+    <input class="l-input" id="l-email" type="email" placeholder="Tu email de admin"
+      onkeydown="if(event.key==='Enter')hacerLogin()"/>
+    <div style="position:relative;margin-bottom:8px">
+      <input class="l-input" id="l-pass" type="password" placeholder="Contraseña"
+        onkeydown="if(event.key==='Enter')hacerLogin()"
+        style="margin-bottom:0;padding-right:48px"/>
+      <button onclick="togglePass()" type="button"
+        style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:1.1rem;color:#888;padding:4px"
+        id="pass-toggle" title="Ver contraseña">👁️</button>
+    </div>
+    <div class="l-error" id="l-error"></div>
+    <button class="l-btn" id="l-btn" onclick="hacerLogin()">Entrar con email</button>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="admin-screen">
+
+  <nav class="admin-nav">
+    <div class="admin-logo">Sálvame <em>las Papas</em> — Admin</div>
+    <div class="admin-user-info">
+      <span id="admin-user"></span>
+      <a class="btn-salir" href="SalvameLasPapas_SITIO.html" style="text-decoration:none;display:inline-flex;align-items:center;gap:4px">🏪 Sitio</a>
+      <a class="btn-salir" href="SalvameLasPapas_MICOMERCIO.html" style="text-decoration:none;display:inline-flex;align-items:center;gap:4px">📦 Comercio</a>
+      <button class="btn-salir" onclick="cerrarSesion()">Salir</button>
+    </div>
+  </nav>
+
+  <div class="admin-body">
+
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-num" id="cnt-total">—</div>
+        <div class="stat-lab">Total registrados</div>
+      </div>
+      <div class="stat-card pendiente">
+        <div class="stat-num" id="cnt-pendiente">—</div>
+        <div class="stat-lab">⏳ Pendientes de aprobar</div>
+      </div>
+      <div class="stat-card activo">
+        <div class="stat-num" id="cnt-activo">—</div>
+        <div class="stat-lab">✅ Activos en la app</div>
+      </div>
+      <div class="stat-card rechazado">
+        <div class="stat-num" id="cnt-rechazado">—</div>
+        <div class="stat-lab">❌ Rechazados</div>
+      </div>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar">
+      <button class="tab-btn active" id="tab-todos"     onclick="filtrarAdmin('todos')">Todos</button>
+      <button class="tab-btn"        id="tab-pendiente" onclick="filtrarAdmin('pendiente')">⏳ Pendientes</button>
+      <button class="tab-btn"        id="tab-activo"    onclick="filtrarAdmin('activo')">✅ Activos</button>
+      <button class="tab-btn"        id="tab-rechazado" onclick="filtrarAdmin('rechazado')">❌ Rechazados</button>
+      <div class="buscar-wrap">
+        <input class="buscar-input" id="buscar-input"
+          placeholder="Buscar por nombre, rubro, barrio..."
+          oninput="buscarAdmin()"/>
+        <button class="btn-reload" onclick="cargarComerciosAdmin()">↺ Actualizar</button>
+        <button class="btn-reload" id="btn-config" onclick="mostrarConfig()" style="background:var(--naranja)">⚙️ Config</button>
+      </div>
+    </div>
+
+    <!-- LISTA -->
+    <div id="admin-lista">
+      <p class="cargando">Iniciá sesión para ver los comercios</p>
+    </div>
+
+    <!-- CONFIGURACIÓN DEL SITIO -->
+    <div id="admin-config" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem">
+        <div>
+          <h3 style="font-family:'Fraunces',serif;font-size:1.3rem;font-weight:700">⚙️ Configuración del sitio</h3>
+          <p style="font-size:.88rem;color:#666;margin-top:4px">Activá o desactivá las secciones de la página principal. Los cambios se guardan en el navegador.</p>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn-reload" onclick="guardarConfig()" style="background:var(--verde,#1B4332)">💾 Guardar cambios</button>
+          <button class="btn-reload" onclick="resetConfig()" style="background:#888">↺ Restaurar default</button>
+          <button class="btn-reload" onclick="volverAdmin()" style="background:var(--rojo)">✕ Cerrar</button>
+        </div>
+      </div>
+      <div id="config-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px"></div>
+      <p style="font-size:.82rem;color:#999;margin-top:1.5rem;background:#F8F8F4;padding:.75rem 1rem;border-radius:8px;border:1.5px solid var(--borde)">
+        💡 Cada vez que guardás se descarga <strong>config-modulos.js</strong>. Copiá ese archivo en la carpeta del proyecto junto a SITIO.html, o usá el script de abajo.
+      </p>
+      <!-- Snippet -->
+      <div id="config-snippet" style="display:none;margin-top:1rem;background:#1A1A2E;border-radius:var(--radio);padding:1.25rem;overflow-x:auto">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;flex-wrap:wrap;gap:.5rem">
+          <span style="color:#fff;font-size:.9rem;font-weight:600">📋 Script generado — copiá esto en SITIO.html antes del <strong>&lt;/body&gt;</strong></span>
+          <button onclick="copiarSnippet()" style="background:var(--azul);color:#fff;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:.82rem;font-weight:600">📋 Copiar</button>
+        </div>
+        <pre id="config-code" style="color:#7ECFFF;font-size:.82rem;line-height:1.6;white-space:pre-wrap;word-break:break-all;margin:0;font-family:monospace"></pre>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="admin-toast" id="admin-toast"></div>
+
+</body>
+</html>
