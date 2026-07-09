@@ -1838,7 +1838,8 @@ async function cargarComercios(){
               bg: d.bg || '#F0F4FF',
               emoji: d.emoji || '🏪',
               productos: [] // se cargan bajo demanda
-          })
+            })
+          }
         })
         if(fbComercics.length > 0){
           comerciosTodos = ordenarPorPlan(fbComercics)
