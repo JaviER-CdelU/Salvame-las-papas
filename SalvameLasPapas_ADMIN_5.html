@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Admin V6 — Sálvame las Papas 🥔</title>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<title>Admin V5 — Sálvame las Papas 🥔</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght=700;900&family=DM+Sans:wght=400;500;600&display=swap" rel="stylesheet">
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -153,9 +153,12 @@ function renderListaAdmin(lista){
      
     const pagos  = Array.isArray(c.pagos)  ? c.pagos.join(', ')  : (c.pagos||'—');
     const envio  = Array.isArray(c.envio)  ? c.envio.join(', ')  : (c.envio||'—');
+    
+    // FUNCIÓN DE LIMPIEZA CLAVE: Evita que las comillas simples y dobles rompan los botones HTML
+    const nombreLimpio = (c.nombre || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
      
     const acciones = c.estado === 'pendiente' ? `
-      <button class="btn-accion btn-aprobar" onclick="aprobarComercio('${c.id}','${c.nombre?.replace(/'/g,"\\'")||''}','${c.telefono||''}')">
+      <button class="btn-accion btn-aprobar" onclick="aprobarComercio('${c.id}','${nombreLimpio}','${c.telefono||''}')">
         ✅ Aprobar
       </button>
       <button class="btn-accion btn-rechazar" onclick="rechazarComercio('${c.id}')">
@@ -197,18 +200,18 @@ function renderListaAdmin(lista){
       </div>
       <div class="cc-footer">
         ${acciones}
-        <button class="btn-accion btn-wa" onclick="notificarWA('${(c.telefono||'').replace(/\D/g,'')}','${c.nombre?.replace(/'/g,"\\'")||''}')">
+        <button class="btn-accion btn-wa" onclick="notificarWA('${(c.telefono||'').replace(/\D/g,'')}','${nombreLimpio}')">
           💬 Notificar por WhatsApp
         </button>
         <span class="plan-changer">
-          <select class="plan-select" onchange="cambiarPlan('${c.id}','${c.nombre?.replace(/'/g,"\\'")||''}',this)">
+          <select class="plan-select" onchange="cambiarPlan('${c.id}','${nombreLimpio}',this)">
             <option value="">→ Cambiar plan</option>
             <option value="Básico ($15.000/mes)">Básico</option>
             <option value="Pro ($30.000/mes)">Pro</option>
             <option value="Max ($45.000/mes)">Max</option>
           </select>
         </span>
-        <button class="btn-accion btn-borrar" onclick="borrarComercio('${c.id}','${c.nombre?.replace(/'/g,"\\'")||''}')">
+        <button class="btn-accion btn-borrar" onclick="borrarComercio('${c.id}','${nombreLimpio}')">
           🗑️ Eliminar
         </button>
       </div>
@@ -629,7 +632,7 @@ body{font-family:"DM Sans",sans-serif;background:#F0F4F8;color:#1A1A1A;min-heigh
 <div id="login-screen">
   <div class="login-box">
     <div class="login-logo">Sálvame <em>las Papas 🥔</em></div>
-    <p class="login-sub">Panel de administración 🔒 (V6)</p>
+    <p class="login-sub">Panel de administración 🔒 (V5)</p>
     <a href="SalvameLasPapas_SITIO.html" style="display:block;text-align:center;font-size:.82rem;color:var(--azul);text-decoration:none;margin-bottom:1rem;font-weight:600">← Volver al sitio principal</a>
 
     <!-- GOOGLE LOGIN -->
@@ -663,7 +666,7 @@ body{font-family:"DM Sans",sans-serif;background:#F0F4F8;color:#1A1A1A;min-heigh
 <!-- ADMIN PANEL SCREEN -->
 <div id="admin-screen">
   <nav class="admin-nav">
-    <div class="admin-logo">Sálvame <em>las Papas</em> — Admin V6</div>
+    <div class="admin-logo">Sálvame <em>las Papas</em> — Admin V5</div>
     <div class="admin-user-info">
       <span id="admin-user"></span>
       <a class="btn-salir" href="SalvameLasPapas_SITIO.html" style="text-decoration:none;display:inline-flex;align-items:center;gap:4px">🏪 Sitio</a>
