@@ -156,7 +156,7 @@ function renderListaAdmin(lista){
     const envio  = Array.isArray(c.envio)  ? c.envio.join(', ')  : (c.envio||'—')
     
     const acciones = c.estado === 'pendiente' ? `
-      <button class="btn-accion btn-aprobar" onclick="aprobarComercio('${c.id}','${c.nombre?.replace(/'/g,"\'")||''}','${c.telefono||''}')">
+      <button class="btn-accion btn-aprobar" onclick="aprobarComercio('${c.id}','${c.nombre?.replace(/'/g,"\\'")||''}','${c.telefono||''}')">
         ✅ Aprobar
       </button>
       <button class="btn-accion btn-rechazar" onclick="rechazarComercio('${c.id}')">
@@ -198,19 +198,19 @@ function renderListaAdmin(lista){
       </div>
       <div class="cc-footer">
         ${acciones}
-        <button class="btn-accion btn-wa" onclick="notificarWA('${(c.telefono||'').replace(/\D/g,'')}','${c.nombre?.replace(/'/g,"\'")||''}')">
+        <button class="btn-accion btn-wa" onclick="notificarWA('${(c.telefono||'').replace(/\D/g,'')}','${c.nombre?.replace(/'/g,"\\'")||''}')">
           💬 Notificar por WhatsApp
         </button>
         </button>
         <span class="plan-changer">
-          <select class="plan-select" onchange="cambiarPlan('${c.id}','${c.nombre?.replace(/'/g,"\'")||''}',this)">
+          <select class="plan-select" onchange="cambiarPlan('${c.id}','${c.nombre?.replace(/'/g,"\\'")||''}',this)">
             <option value="">→ Cambiar plan</option>
             <option value="Básico ($15.000/mes)">Básico</option>
             <option value="Pro ($30.000/mes)">Pro</option>
             <option value="Max ($45.000/mes)">Max</option>
           </select>
         </span>
-        <button class="btn-accion btn-borrar" onclick="borrarComercio('${c.id}','${c.nombre?.replace(/'/g,"\'")||''}')">
+        <button class="btn-accion btn-borrar" onclick="borrarComercio('${c.id}','${c.nombre?.replace(/'/g,"\\'")||''}')">
           🗑️ Eliminar
         </button>
       </div>
