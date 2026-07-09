@@ -142,7 +142,7 @@ function renderProductos(){
         <button class="pbtn pbtn-toggle" onclick="toggleDisp('${p.id}',${p.disponible!==false})">
           ${p.disponible!==false?'⏸ Pausar':'▶ Activar'}
         </button>
-        <button class="pbtn pbtn-del" onclick="borrarProd('${p.id}','${p.nombre.replace(/'/g,"\'")}')">🗑️</button>
+        <button class="pbtn pbtn-del" onclick="borrarProd('${p.id}','${p.nombre.replace(/'/g,"\\'")}')">🗑️</button>
       </div>
     </div>
   `).join('')
