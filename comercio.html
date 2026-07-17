@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Panel de comercios de Sálvame las Papas para administrar productos y disponibilidad."/>
+<meta name="theme-color" content="#002A6A"/>
+<meta name="color-scheme" content="light"/>
+<title>Mi Comercio — Sálvame las Papas 🥔</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, updateDoc, deleteDoc,
+         doc, getDocs, query, where, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider,
+         signInWithEmailAndPassword, onAuthStateChanged, signOut }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAE8kEBAzDbPvCCD1KCyjq67iFL3dvthLM",
+  authDomain: "salvame-las-papas-cdelu.firebaseapp.com",
+  projectId: "salvame-las-papas-cdelu",
+  storageBucket: "salvame-las-papas-cdelu.firebasestorage.app",
+  messagingSenderId: "401048945476",
+  appId: "1:401048945476:web:58695553aa93928b36cd11"
+};
+
+const app  = initializeApp(firebaseConfig);
+const db   = getFirestore(app);
+const auth = getAuth(app);
+const gProvider = new GoogleAuthProvider();
+
+let miComercioId = null;
+let miComercio   = null;
+let misProductos = [];
+
+function esc(value){
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))
+}
+function safeArg(value){ return encodeURIComponent(String(value ?? '')) }
+
+// ── Auth ──
+onAuthStateChanged(auth, async user => {
+  if(user){
+    document.getElementById('login-screen').style.display = 'none'
+    document.getElementById('panel-screen').style.display = 'block'
+    document.getElementById('user-email').textContent = user.email
+    await cargarMiComercio(user.email)
+  } else {
+    document.getElementById('login-screen').style.display  = 'flex'
+    document.getElementById('panel-screen').style.display  = 'none'
+  }
+})
+
+// ── Cargar comercio del usuario ──
+async function cargarMiComercio(email){
+  try {
+    const snap = await getDocs(query(collection(db,'comercios'), where('email','==',email)))
+    if(snap.empty){
+      mostrarSeccion('sin-comercio')
+      return
+    }
+    snap.forEach(d => { miComercioId = d.id; miComercio = d.data() })
+    document.getElementById('comercio-nombre').textContent = miComercio.nombre || 'Mi comercio'
+    document.getElementById('comercio-cat').textContent    = (miComercio.categoria||'') + ' · ' + (miComercio.barrio||'CDU')
+    
+    const estadoBadge = {
+      activo:    '<span class="badge-activo">✅ Activo en la app</span>',
+      pendiente: '<span class="badge-pend">⏳ Pendiente de aprobación</span>',
+      rechazado: '<span class="badge-rech">❌ Rechazado</span>',
+    }[miComercio.estado] || '<span class="badge-pend">⏳ Pendiente</span>'
+    document.getElementById('comercio-estado').innerHTML = estadoBadge
+
+    mostrarSeccion('mi-panel')
+    await cargarProductos()
+  } catch(e){ toast('No se pudo cargar el comercio. Revisá la conexión o los permisos.') }
+}
+
+async function cargarProductos(){
+  if(!miComercioId) return
+  try {
+    const snap = await getDocs(collection(db,'comercios',miComercioId,'productos'))
+    misProductos = []
+    snap.forEach(d => misProductos.push({id:d.id,...d.data()}))
+    renderProductos()
+  } catch(e){ console.warn(e) }
+}
+
+function renderProductos(){
+  const grid = document.getElementById('productos-grid')
+  const counter = document.getElementById('prod-counter')
+  
+  // Límite según plan
+  const limite = miComercio?.plan?.includes('Max') ? 65
+    : miComercio?.plan?.includes('Pro') ? 25 : 10
+  
+  if(counter) counter.textContent = misProductos.length + ' / ' + limite + ' productos'
+
+  if(misProductos.length === 0){
+    grid.innerHTML = `
+      <div class="empty-state">
+        <div style="font-size:3rem;margin-bottom:1rem">📦</div>
+        <h3>Todavía no cargaste productos</h3>
+        <p>Hacé click en <strong>"+ Agregar producto"</strong> para empezar</p>
+      </div>`
+    return
+  }
+
+  grid.innerHTML = misProductos.map(p => `
+    <div class="prod-card">
+      <div class="prod-emoji">${p.emoji || '📦'}</div>
+      <div class="prod-info">
+        <div class="prod-nombre">${esc(p.nombre)}</div>
+        <div class="prod-precio">$${Number(p.precio).toLocaleString('es-AR')}</div>
+        ${p.descripcion ? '<div class="prod-desc">'+p.descripcion+'</div>' : ''}
+        <div class="prod-tags">
+          ${p.disponible !== false ? '<span class="tag-disp">✓ Disponible</span>' : '<span class="tag-no">✗ Sin stock</span>'}
+        </div>
+      </div>
+      <div class="prod-acciones">
+        <button onclick="editarProducto('${p.id}')" class="btn-edit">✏️</button>
+        <button onclick="toggleDisponible('${p.id}',${p.disponible !== false})" class="btn-toggle">
+          ${p.disponible !== false ? '⏸' : '▶'}
+        </button>
+        <button onclick="borrarProducto('${p.id}','${safeArg(p.nombre)}')" class="btn-del">🗑️</button>
+      </div>
+    </div>
+  `).join('')
+}
+
+// ── Mostrar modal agregar/editar producto ──
+window.abrirModalProducto = (id) => {
+  const p = id ? misProductos.find(x => x.id === id) : null
+  document.getElementById('modal-prod-titulo').textContent = p ? 'Editar producto' : 'Agregar producto'
+  document.getElementById('mp-id').value       = id || ''
+  document.getElementById('mp-emoji').value    = p?.emoji || '📦'
+  document.getElementById('mp-nombre').value   = p?.nombre || ''
+  document.getElementById('mp-precio').value   = p?.precio || ''
+  document.getElementById('mp-desc').value     = p?.descripcion || ''
+  document.getElementById('mp-stock').value    = p?.stock || ''
+  document.getElementById('mp-disp').checked  = p?.disponible !== false
+  document.getElementById('modal-prod').classList.add('open')
+}
+
+window.editarProducto = (id) => window.abrirModalProducto(id)
+
+window.cerrarModalProd = (e) => {
+  if(!e || e.target === document.getElementById('modal-prod'))
+    document.getElementById('modal-prod').classList.remove('open')
+}
+
+window.guardarProducto = async () => {
+  const id     = document.getElementById('mp-id').value
+  const emoji  = document.getElementById('mp-emoji').value.trim() || '📦'
+  const nombre = document.getElementById('mp-nombre').value.trim()
+  const precio = document.getElementById('mp-precio').value.trim()
+  const desc   = document.getElementById('mp-desc').value.trim()
+  const stock  = document.getElementById('mp-stock').value.trim()
+  const disp   = document.getElementById('mp-disp').checked
+
+  if(!nombre){ toast('⚠️ Ponele un nombre al producto'); return }
+  if(!precio){ toast('⚠️ Falta el precio'); return }
+
+  const limite = miComercio?.plan?.includes('Max') ? 65
+    : miComercio?.plan?.includes('Pro') ? 25 : 10
+  if(!id && misProductos.length >= limite){
+    toast('⚠️ Llegaste al límite de ' + limite + ' productos de tu plan')
+    return
+  }
+
+  const datos = { emoji, nombre, precio: parseFloat(precio.replace(',','.')),
+    descripcion: desc, stock, disponible: disp, actualizadoEn: serverTimestamp() }
+
+  const btn = document.getElementById('btn-guardar-prod')
+  btn.textContent = 'Guardando...'
+  btn.disabled = true
+
+  try {
+    if(id){
+      await updateDoc(doc(db,'comercios',miComercioId,'productos',id), datos)
+      toast('✅ Producto actualizado')
+    } else {
+      datos.creadoEn = serverTimestamp()
+      await addDoc(collection(db,'comercios',miComercioId,'productos'), datos)
+      toast('✅ Producto agregado')
+    }
+    document.getElementById('modal-prod').classList.remove('open')
+    await cargarProductos()
+  } catch(e){ toast('Error: ' + e.message) }
+  btn.textContent = 'Guardar producto'
+  btn.disabled = false
+}
+
+window.toggleDisponible = async (id, actualDisp) => {
+  try {
+    await updateDoc(doc(db,'comercios',miComercioId,'productos',id), { disponible: !actualDisp })
+    await cargarProductos()
+    toast(actualDisp ? 'Producto pausado' : '✅ Producto disponible')
+  } catch(e){ toast('Error: ' + e.message) }
+}
+
+window.borrarProducto = async (id, nombre) => {
+  nombre = decodeURIComponent(nombre || '')
+  if(!confirm('Eliminar ' + nombre + '?')) return
+  try {
+    await deleteDoc(doc(db,'comercios',miComercioId,'productos',id))
+    toast('🗑️ ' + nombre + ' eliminado')
+    await cargarProductos()
+  } catch(e){ toast('Error: ' + e.message) }
+}
+
+function mostrarSeccion(id){
+  ['sin-comercio','mi-panel'].forEach(s => {
+    const el = document.getElementById(s)
+    if(el) el.style.display = s === id ? 'block' : 'none'
+  })
+}
+
+// ── Auth functions ──
+window.loginGoogle = async () => {
+  try { await signInWithPopup(auth, gProvider) }
+  catch(e){ toast('Error Google: ' + e.message) }
+}
+window.loginEmail = async () => {
+  const email = document.getElementById('l-email').value.trim()
+  const pass  = document.getElementById('l-pass').value
+  if(!email||!pass){ toast('Completá email y contraseña'); return }
+  try { await signInWithEmailAndPassword(auth, email, pass) }
+  catch(e){
+    document.getElementById('l-error').textContent =
+      e.code === 'auth/invalid-credential' ? 'Email o contraseña incorrectos' : e.message
+    document.getElementById('l-error').style.display = 'block'
+  }
+}
+window.cerrarSesion = async () => { await signOut(auth) }
+
+function toast(msg){
+  const t = document.getElementById('panel-toast')
+  t.textContent = msg; t.classList.add('show')
+  setTimeout(() => t.classList.remove('show'), 3500)
+}
+
+window.abrirModalPerfil = () => {
+ if(!miComercio)return;
+ const vals={nombre:'nombre',desc:'descripcion',direccion:'direccion',telefono:'telefono',horarios:'horarios',instagram:'instagram'};
+ Object.entries(vals).forEach(([id,k])=>{const e=document.getElementById('pf-'+id);if(e)e.value=miComercio[k]||''});
+ document.getElementById('modal-perfil').classList.add('open')
+}
+window.cerrarModalPerfil = e => {if(!e||e.target===document.getElementById('modal-perfil'))document.getElementById('modal-perfil').classList.remove('open')}
+window.guardarPerfil = async () => {
+ if(!miComercioId)return; const btn=document.getElementById('btn-save-profile');btn.disabled=true;btn.textContent='Guardando...';
+ const datos={nombre:document.getElementById('pf-nombre').value.trim(),descripcion:document.getElementById('pf-desc').value.trim(),direccion:document.getElementById('pf-direccion').value.trim(),telefono:document.getElementById('pf-telefono').value.trim(),horarios:document.getElementById('pf-horarios').value.trim(),instagram:document.getElementById('pf-instagram').value.trim(),actualizadoEn:serverTimestamp()};
+ try{await updateDoc(doc(db,'comercios',miComercioId),datos);Object.assign(miComercio,datos);document.getElementById('comercio-nombre').textContent=datos.nombre||'Mi comercio';document.getElementById('modal-perfil').classList.remove('open');toast('✅ Perfil actualizado')}
+ catch(e){toast('Error: '+e.message)}finally{btn.disabled=false;btn.textContent='Guardar cambios'}
+}
+
+</script>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"DM Sans",sans-serif;background:#F0F4F8;color:#1A1A1A;min-height:100vh}
+:root{
+  --rojo:#CC0000;--azul:#003B8E;--azul-d:#002A6A;--azul-l:#E6EEF9;
+  --verde:#1B4332;--verde-l:#D8F3DC;--naranja:#F47521;
+  --borde:#DDD8CC;--radio:12px;
+}
+
+/* LOGIN */
+#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--azul-d)}
+.login-box{background:#fff;border-radius:var(--radio);padding:2.5rem 2rem;width:100%;max-width:380px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.login-logo{font-family:"Fraunces",serif;font-size:1.5rem;font-weight:900;color:var(--azul-d);margin-bottom:.25rem}
+.login-logo em{color:var(--rojo);font-style:normal}
+.login-sub{font-size:.85rem;color:#666;margin-bottom:1.75rem;line-height:1.5}
+.btn-google{width:100%;padding:12px;border-radius:8px;background:#fff;border:2px solid #DDD;font-family:"DM Sans",sans-serif;font-weight:600;font-size:.95rem;cursor:pointer;transition:all .15s;margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:10px;color:#333}
+.btn-google:hover{border-color:#4285F4;box-shadow:0 2px 10px rgba(66,133,244,.2)}
+.divider{display:flex;align-items:center;gap:10px;color:#aaa;font-size:.82rem;margin:12px 0}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:#EEE}
+.l-input{width:100%;border:2px solid var(--borde);border-radius:8px;padding:11px 14px;font-family:"DM Sans",sans-serif;font-size:.9rem;outline:none;transition:border-color .15s;margin-bottom:8px}
+.l-input:focus{border-color:var(--azul)}
+.l-error{color:var(--rojo);font-size:.82rem;margin-bottom:8px;display:none;text-align:left}
+.btn-login{width:100%;padding:12px;border-radius:8px;background:var(--rojo);color:#fff;border:none;font-family:"DM Sans",sans-serif;font-weight:700;font-size:.95rem;cursor:pointer}
+.btn-login:hover{background:#AA0000}
+
+/* PANEL */
+#panel-screen{display:none;min-height:100vh}
+.panel-nav{background:var(--azul-d);color:#fff;padding:0 2rem;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:3px solid var(--rojo)}
+.panel-logo{font-family:"Fraunces",serif;font-size:1.1rem;font-weight:900}
+.panel-logo em{color:var(--naranja);font-style:normal}
+.user-info{display:flex;align-items:center;gap:12px;font-size:.85rem;opacity:.8}
+.btn-salir{background:rgba(255,255,255,.15);border:none;color:#fff;padding:6px 14px;border-radius:99px;font-size:.82rem;cursor:pointer;font-family:"DM Sans",sans-serif;font-weight:600}
+.btn-salir:hover{background:rgba(255,255,255,.25)}
+
+.panel-body{max-width:1000px;margin:0 auto;padding:2rem}
+
+/* COMERCIO HEADER */
+.comercio-header{background:#fff;border-radius:var(--radio);padding:1.5rem 2rem;border:2px solid var(--borde);margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.comercio-info h2{font-family:"Fraunces",serif;font-size:1.4rem;font-weight:900;margin-bottom:2px}
+.comercio-cat-text{font-size:.88rem;color:#666;margin-bottom:.5rem}
+.badge-activo{background:var(--verde-l);color:var(--verde);font-size:.8rem;font-weight:700;padding:4px 12px;border-radius:99px;border:1.5px solid #66BB6A}
+.badge-pend{background:#FFF8E1;color:#7A5C00;font-size:.8rem;font-weight:700;padding:4px 12px;border-radius:99px;border:1.5px solid #FFD54F}
+.badge-rech{background:#FFEBEE;color:#9B1C1C;font-size:.8rem;font-weight:700;padding:4px 12px;border-radius:99px;border:1.5px solid #EF9A9A}
+
+/* PRODUCTOS */
+.prod-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.75rem}
+.prod-toolbar h3{font-family:"Fraunces",serif;font-size:1.2rem;font-weight:700}
+.prod-counter{font-size:.85rem;color:#666;background:#F0F4F8;padding:5px 12px;border-radius:99px}
+.btn-agregar-prod{background:var(--rojo);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-family:"DM Sans",sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;transition:background .15s;display:flex;align-items:center;gap:6px}
+.btn-agregar-prod:hover{background:#AA0000}
+
+.productos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.prod-card{background:#fff;border:2px solid var(--borde);border-radius:var(--radio);padding:1.1rem;display:flex;gap:12px;align-items:flex-start;transition:box-shadow .15s}
+.prod-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.prod-emoji{font-size:2.2rem;flex-shrink:0;width:48px;text-align:center}
+.prod-info{flex:1;min-width:0}
+.prod-nombre{font-weight:700;font-size:.95rem;margin-bottom:2px}
+.prod-precio{font-family:"Fraunces",serif;font-size:1.2rem;font-weight:900;color:var(--rojo);margin-bottom:4px}
+.prod-desc{font-size:.78rem;color:#666;line-height:1.4;margin-bottom:6px}
+.prod-tags{display:flex;gap:6px;flex-wrap:wrap}
+.tag-disp{background:var(--verde-l);color:var(--verde);font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:99px}
+.tag-no{background:#FFEBEE;color:#9B1C1C;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:99px}
+.prod-acciones{display:flex;flex-direction:column;gap:5px;flex-shrink:0}
+.btn-edit,.btn-toggle,.btn-del{width:32px;height:32px;border-radius:7px;border:1.5px solid var(--borde);background:#fff;cursor:pointer;font-size:.9rem;transition:all .15s;display:flex;align-items:center;justify-content:center}
+.btn-edit:hover{border-color:var(--azul);background:var(--azul-l)}
+.btn-toggle:hover{border-color:var(--naranja);background:#FFF3E8}
+.btn-del:hover{border-color:var(--rojo);background:#FFF0F0}
+
+.empty-state{text-align:center;padding:3rem;color:#666;grid-column:1/-1}
+.empty-state h3{font-size:1rem;font-weight:600;margin-bottom:.4rem;color:#444}
+
+/* SIN COMERCIO */
+#sin-comercio{display:none;text-align:center;padding:3rem;background:#fff;border-radius:var(--radio);border:2px solid var(--borde)}
+
+/* MODAL PRODUCTO */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:var(--radio);padding:2rem;width:100%;max-width:480px;animation:slideUp .2s ease;position:relative;max-height:90vh;overflow-y:auto}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal h2{font-family:"Fraunces",serif;font-size:1.3rem;font-weight:700;margin-bottom:1.5rem}
+.mclose{position:absolute;top:16px;right:16px;background:rgba(0,0,0,.08);border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center}
+.mclose:hover{background:rgba(0,0,0,.15)}
+.form-group{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.form-group label{font-size:.85rem;font-weight:600;color:#555}
+.form-input{border:2px solid var(--borde);border-radius:8px;padding:11px 14px;font-family:"DM Sans",sans-serif;font-size:.9rem;outline:none;transition:border-color .15s;width:100%}
+.form-input:focus{border-color:var(--azul)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.emoji-picker{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.ep-btn{width:36px;height:36px;border-radius:8px;border:1.5px solid var(--borde);background:#fff;font-size:1.2rem;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center}
+.ep-btn:hover{border-color:var(--rojo);background:#FFF0F0}
+.check-row{display:flex;align-items:center;gap:10px;font-size:.9rem;padding:10px 0}
+.check-row input{accent-color:var(--azul);width:18px;height:18px}
+.btn-guardar{width:100%;padding:13px;border-radius:8px;background:var(--rojo);color:#fff;border:none;font-family:"DM Sans",sans-serif;font-weight:700;font-size:1rem;cursor:pointer;margin-top:.5rem}
+.btn-guardar:hover{background:#AA0000}
+.hint{font-size:.75rem;color:#888;margin-top:2px}
+
+/* TOAST */
+.panel-toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(20px);background:#111;color:#fff;padding:12px 24px;border-radius:99px;font-size:.9rem;font-weight:500;opacity:0;transition:all .3s;pointer-events:none;z-index:999;white-space:nowrap}
+.panel-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:600px){
+  .panel-body{padding:1rem}
+  .form-row{grid-template-columns:1fr}
+  .comercio-header{flex-direction:column}
+}
+
+/* ===== MODERNIZACIÓN 2026 — SISTEMA UNIFICADO ===== */
+:root{
+  --brand-navy:#071a33;--brand-blue:#0756a8;--brand-red:#d6212a;
+  --brand-orange:#ff7a1a;--surface:#ffffff;--surface-soft:#f5f7fb;
+  --ink:#152033;--muted:#667085;--line:#dfe5ee;
+  --shadow-sm:0 8px 24px rgba(7,26,51,.08);
+  --shadow-lg:0 24px 70px rgba(7,26,51,.18);
+  --radius:18px;--radius-sm:12px;
+}
+body{background:var(--surface-soft);color:var(--ink);-webkit-font-smoothing:antialiased}
+button,a,input,select,textarea{font:inherit}
+button,a{-webkit-tap-highlight-color:transparent}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid rgba(255,122,26,.35);outline-offset:2px}
+.site-switcher{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.site-switcher a{display:inline-flex;align-items:center;gap:7px;color:#fff;text-decoration:none;font-size:.82rem;font-weight:700;padding:8px 12px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(255,255,255,.08);transition:.2s ease}
+.site-switcher a:hover{background:rgba(255,255,255,.17);transform:translateY(-1px)}
+.site-switcher a.active{background:var(--brand-orange);border-color:var(--brand-orange)}
+.login-box,.comercio-header,.comercio-card,.stat-card,.modal{border-color:var(--line)!important;border-radius:var(--radius)!important;box-shadow:var(--shadow-sm)}
+.l-input,.form-input,.buscar-input{border-color:var(--line)!important;border-radius:12px!important;background:#fff}
+.l-input:focus,.form-input:focus,.buscar-input:focus{border-color:var(--brand-blue)!important;box-shadow:0 0 0 4px rgba(7,86,168,.09)}
+.btn-login,.l-btn,.btn-guardar{border-radius:12px!important;box-shadow:0 8px 18px rgba(214,33,42,.18)}
+.panel-nav,.admin-nav{height:auto!important;min-height:72px;padding:10px max(18px,calc((100vw - 1280px)/2))!important;background:rgba(7,26,51,.97)!important;backdrop-filter:blur(16px);gap:18px}
+.panel-body,.admin-body{max-width:1280px!important;padding:clamp(18px,3vw,38px)!important}
+.panel-logo,.admin-logo{font-size:1.18rem!important;white-space:nowrap}
+.user-info,.admin-user-info{opacity:1!important;flex-wrap:wrap;justify-content:flex-end}
+.btn-salir{padding:9px 15px!important}
+.prod-card,.comercio-card{transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease!important}
+.prod-card:hover,.comercio-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)!important}
+.btn-accion,.btn-reload,.tab-btn,.btn-edit,.btn-toggle,.btn-del{min-height:40px;border-radius:10px!important}
+.admin-toast,.panel-toast{white-space:normal!important;width:max-content;max-width:calc(100vw - 28px);box-shadow:var(--shadow-lg)}
+.portal-login-link{display:inline-flex;margin-top:18px;color:var(--brand-blue);font-size:.86rem;font-weight:700;text-decoration:none}
+.portal-login-link:hover{text-decoration:underline}
+@media(max-width:760px){
+  .panel-nav,.admin-nav{align-items:flex-start;flex-direction:column;padding:12px 16px!important}
+  .user-info,.admin-user-info{width:100%;justify-content:space-between;gap:8px}
+  .site-switcher{width:100%;overflow-x:auto;flex-wrap:nowrap;padding-bottom:3px}
+  .site-switcher a{white-space:nowrap}
+  .panel-body,.admin-body{padding:16px!important}
+  .stats-grid{grid-template-columns:1fr 1fr!important}
+  .toolbar{align-items:stretch!important}
+  .toolbar .tab-btn{flex:1 1 calc(50% - 8px)}
+  .buscar-wrap{display:grid!important;grid-template-columns:1fr auto;width:100%}
+  .cc-header,.cc-body,.cc-footer{padding-left:1rem!important;padding-right:1rem!important}
+  .cc-grid{grid-template-columns:1fr!important}
+  .btn-borrar{margin-left:0!important}
+  .cc-footer .btn-accion{flex:1 1 145px}
+}
+@media(max-width:420px){.stats-grid{grid-template-columns:1fr!important}.buscar-wrap{grid-template-columns:1fr}.btn-reload{width:100%}}
+
+
+/* ── Accesibilidad y robustez ── */
+:focus-visible{outline:3px solid #F6B40E;outline-offset:3px}
+button,a,[role="button"]{-webkit-tap-highlight-color:transparent}
+button:disabled{cursor:not-allowed;opacity:.65}
+img{max-width:100%;height:auto}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto!important}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
+@media(max-width:420px){
+  .btn{padding-left:14px;padding-right:14px}
+  .toast{white-space:normal;width:calc(100% - 2rem)}
+}
+.btn-perfil{margin-top:12px;border:1.5px solid var(--azul);background:#fff;color:var(--azul);border-radius:9px;padding:9px 13px;font-weight:700;cursor:pointer}.profile-help{color:#666;margin:-4px 0 18px}.btn-save-profile{width:100%;border:0;border-radius:10px;background:var(--azul);color:#fff;padding:13px;font-weight:700;cursor:pointer}.form-input[type="text"],textarea.form-input{width:100%}
+</style>
+
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#002A6A">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Sálvame">
+<link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
+<link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">Sálvame <em>las Papas 🥔</em></div>
+    <p class="login-sub">Panel del comercio<br>Cargá tus productos y gestioná tu local</p>
+    <a class="portal-login-link" href="index.html">← Volver al sitio público</a>
+    <button class="btn-google" onclick="loginGoogle()">
+      <svg width="18" height="18" viewBox="0 0 24 24">
+        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+      </svg>
+      Entrar con Google
+    </button>
+    <div class="divider">o con email</div>
+    <input class="l-input" id="l-email" type="email" placeholder="Tu email"
+      onkeydown="if(event.key==='Enter')loginEmail()"/>
+    <input class="l-input" id="l-pass" type="password" placeholder="Contraseña"
+      onkeydown="if(event.key==='Enter')loginEmail()"/>
+    <div class="l-error" id="l-error"></div>
+    <button class="btn-login" onclick="loginEmail()">Entrar</button>
+  </div>
+</div>
+
+<!-- PANEL -->
+<div id="panel-screen">
+  <nav class="panel-nav">
+    <div class="panel-logo">Sálvame <em>las Papas</em> — Mi Comercio</div>
+    <div class="site-switcher" aria-label="Navegación del sitio">
+      <a href="index.html">🏠 Sitio público</a>
+      <a class="active" href="comercio.html">🏪 Mi comercio</a>
+      <a href="admin.html">⚙️ Admin</a>
+    </div>
+    <div class="user-info">
+      <span id="user-email"></span>
+      <button class="btn-salir" onclick="cerrarSesion()">Salir</button>
+    </div>
+  </nav>
+
+  <div class="panel-body">
+
+    <!-- Info del comercio -->
+    <div class="comercio-header">
+      <div class="comercio-info">
+        <h2 id="comercio-nombre">Mi Comercio</h2>
+        <div class="comercio-cat-text" id="comercio-cat"></div>
+        <div id="comercio-estado"></div><button class="btn-perfil" onclick="abrirModalPerfil()">✏️ Editar datos del comercio</button>
+      </div>
+      <div style="font-size:.85rem;color:#666;line-height:1.7;background:#F8F8F4;padding:.75rem 1rem;border-radius:8px;border:1.5px solid var(--borde)">
+        💡 <strong>¿Cómo cargar productos?</strong><br>
+        1. Hacé click en <strong>"+ Agregar producto"</strong><br>
+        2. Poné emoji, nombre, precio y descripción<br>
+        3. Guardá — aparece al instante para los clientes
+      </div>
+    </div>
+
+    <!-- Sin comercio registrado -->
+    <div id="sin-comercio">
+      <div style="font-size:3rem;margin-bottom:1rem">🥔</div>
+      <h3 style="font-family:'Fraunces',serif;font-size:1.3rem;margin-bottom:.5rem">No encontramos tu comercio</h3>
+      <p style="color:#666;margin-bottom:1.5rem">El email con el que entraste no tiene un comercio registrado en Sálvame las Papas.</p>
+      <a href="index.html#registro-comercio"
+         style="background:var(--rojo);color:#fff;padding:12px 24px;border-radius:8px;font-weight:700;text-decoration:none;display:inline-block">
+        Registrar mi comercio
+      </a>
+    </div>
+
+    <!-- Panel principal -->
+    <div id="mi-panel" style="display:none">
+      <div class="prod-toolbar">
+        <div>
+          <h3>🛍️ Mis productos</h3>
+          <div class="prod-counter" id="prod-counter">0 / 10 productos</div>
+        </div>
+        <button class="btn-agregar-prod" onclick="abrirModalProducto()">
+          + Agregar producto
+        </button>
+      </div>
+      <div class="productos-grid" id="productos-grid">
+        <p style="color:#666;text-align:center;padding:2rem;grid-column:1/-1">Cargando...</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL PRODUCTO -->
+<div class="modal-overlay" id="modal-prod" onclick="cerrarModalProd(event)">
+  <div class="modal">
+    <button class="mclose" onclick="cerrarModalProd()">✕</button>
+    <h2 id="modal-prod-titulo">Agregar producto</h2>
+    <input type="hidden" id="mp-id"/>
+
+    <div class="form-group">
+      <label>Emoji del producto</label>
+      <input class="form-input" id="mp-emoji" type="text" placeholder="📦" maxlength="2"/>
+      <div class="emoji-picker">
+        <button class="ep-btn" onclick="document.getElementById('mp-emoji').value='🍞'">🍞</button>
+        <button class="ep-btn" onclick="document.getElementById('mp-emoji').value='🥩'">🥩</button>
+        <button class="ep-btn" onclick="document.getElementById('mp-emoji').value='🥦'">🥦</button>
+        <button class="ep-btn" onclick="document.getElementById('mp-emoji').value='💊'">💊</button>
+        <button class="ep-btn" onclick="document.getElementById('mp-emoji').value='🔧'">🔧</button>
+        <button class="ep-btn" onclick="document.getElementById('mp-emoji').value='🧴'">🧴</button>
+        <button class="ep-btn" onclick="document.getElementById('mp-emoji').value='🥛'">🥛</button>
+        <button class="ep-btn" onclick="document.getElementById('mp-emoji').value='🍕'">🍕</button>
+        <button class="ep-btn" onclick="document.getElementById('mp-emoji').value='🧹'">🧹</button>
+        <button class="ep-btn" onclick="document.getElementById('mp-emoji').value='📦'">📦</button>
+        <button class="ep-btn" onclick="document.getElementById('mp-emoji').value='🥐'">🥐</button>
+        <button class="ep-btn" onclick="document.getElementById('mp-emoji').value='🍦'">🍦</button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Nombre del producto *</label>
+      <input class="form-input" id="mp-nombre" type="text"
+        placeholder="Ej: Pan francés x kg, Ibuprofeno 400mg..."/>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Precio ($) *</label>
+        <input class="form-input" id="mp-precio" type="number"
+          placeholder="Ej: 1850"/>
+        <span class="hint">En pesos argentinos</span>
+      </div>
+      <div class="form-group">
+        <label>Stock / cantidad disponible</label>
+        <input class="form-input" id="mp-stock" type="text"
+          placeholder="Ej: 20 unidades, ilimitado"/>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Descripción breve (opcional)</label>
+      <input class="form-input" id="mp-desc" type="text"
+        placeholder="Ej: Caja x10 comp, 500ml, de manteca..."/>
+    </div>
+
+    <div class="check-row">
+      <input type="checkbox" id="mp-disp" checked/>
+      <label for="mp-disp">Producto disponible ahora</label>
+    </div>
+
+    <button class="btn-guardar" id="btn-guardar-prod" onclick="guardarProducto()">
+      Guardar producto
+    </button>
+  </div>
+</div>
+
+
+<div class="modal-overlay" id="modal-perfil" onclick="cerrarModalPerfil(event)">
+  <div class="modal">
+    <button class="mclose" onclick="cerrarModalPerfil()">✕</button>
+    <h2>Editar perfil del comercio</h2>
+    <p class="profile-help">Estos datos se muestran en la página pública.</p>
+    <div class="form-group"><label>Nombre</label><input class="form-input" id="pf-nombre"></div>
+    <div class="form-group"><label>Descripción</label><textarea class="form-input" id="pf-desc" rows="3"></textarea></div>
+    <div class="form-group"><label>Dirección</label><input class="form-input" id="pf-direccion"></div>
+    <div class="form-group"><label>WhatsApp</label><input class="form-input" id="pf-telefono"></div>
+    <div class="form-group"><label>Horarios</label><input class="form-input" id="pf-horarios"></div>
+    <div class="form-group"><label>Instagram</label><input class="form-input" id="pf-instagram"></div>
+    <button class="btn-save-profile" id="btn-save-profile" onclick="guardarPerfil()">Guardar cambios</button>
+  </div>
+</div>
+
+<div class="panel-toast" id="panel-toast"></div>
+
+
+<script>
+(function(){
+  if ("serviceWorker" in navigator) window.addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js").catch(err=>console.warn("Service Worker:",err)));
+})();
+</script>
+</body>
+</html>
