@@ -14,8 +14,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { getFirestore, collection, addDoc, updateDoc, deleteDoc,
          doc, getDocs, query, where, serverTimestamp }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { getAuth, signInWithPopup, signInWithRedirect, GoogleAuthProvider,
-         signInWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged, signOut }
+import { getAuth, signInWithPopup, GoogleAuthProvider,
+         signInWithEmailAndPassword, onAuthStateChanged, signOut }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -35,7 +35,6 @@ const gProvider = new GoogleAuthProvider();
 let miComercioId = null;
 let miComercio   = null;
 let misProductos = [];
-let misPedidos = [];
 
 function esc(value){
   return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))
@@ -58,25 +57,12 @@ onAuthStateChanged(auth, async user => {
 // ── Cargar comercio del usuario ──
 async function cargarMiComercio(email){
   try {
-    const normalizado = (email || '').trim().toLowerCase()
-    let snap = await getDocs(query(collection(db,'comercios'), where('email','==',normalizado)))
-    let encontrado = null
-    if(!snap.empty){
-      snap.forEach(d => { if(!encontrado) encontrado = {id:d.id,data:d.data()} })
-    } else {
-      // Compatibilidad con registros antiguos que tenían mayúsculas o espacios en el email.
-      const todos = await getDocs(collection(db,'comercios'))
-      todos.forEach(d => {
-        const dato=d.data()
-        if(!encontrado && String(dato.email||'').trim().toLowerCase()===normalizado)
-          encontrado={id:d.id,data:dato}
-      })
-    }
-    if(!encontrado){
+    const snap = await getDocs(query(collection(db,'comercios'), where('email','==',email)))
+    if(snap.empty){
       mostrarSeccion('sin-comercio')
       return
     }
-    miComercioId = encontrado.id; miComercio = encontrado.data
+    snap.forEach(d => { miComercioId = d.id; miComercio = d.data() })
     document.getElementById('comercio-nombre').textContent = miComercio.nombre || 'Mi comercio'
     document.getElementById('comercio-cat').textContent    = (miComercio.categoria||'') + ' · ' + (miComercio.barrio||'CDU')
     
@@ -89,7 +75,6 @@ async function cargarMiComercio(email){
 
     mostrarSeccion('mi-panel')
     await cargarProductos()
-    await cargarPedidos() 
   } catch(e){ toast('No se pudo cargar el comercio. Revisá la conexión o los permisos.') }
 }
 
@@ -226,39 +211,6 @@ window.borrarProducto = async (id, nombre) => {
   } catch(e){ toast('Error: ' + e.message) }
 }
 
-
-async function cargarPedidos(){
-  if(!miComercioId) return
-  const cont=document.getElementById('pedidos-lista')
-  try{
-    const snap=await getDocs(query(collection(db,'pedidos'),where('comercioId','==',miComercioId)))
-    misPedidos=[];snap.forEach(d=>misPedidos.push({id:d.id,...d.data()}))
-    misPedidos.sort((a,b)=>(b.creadoEn?.seconds||0)-(a.creadoEn?.seconds||0))
-    renderPedidos()
-  }catch(e){
-    if(cont) cont.innerHTML='<div class="pedido-empty">No se pudieron cargar los pedidos: '+esc(e.message)+'</div>'
-  }
-}
-function renderPedidos(){
-  const cont=document.getElementById('pedidos-lista');const count=document.getElementById('pedidos-count')
-  if(count) count.textContent=misPedidos.length+' pedido'+(misPedidos.length===1?'':'s')
-  if(!cont) return
-  if(!misPedidos.length){cont.innerHTML='<div class="pedido-empty">Todavía no recibiste pedidos registrados.</div>';return}
-  cont.innerHTML=misPedidos.map(p=>{
-    const fecha=p.creadoEn?.toDate?p.creadoEn.toDate().toLocaleString('es-AR'):'Fecha pendiente'
-    const items=Array.isArray(p.items)?p.items.map(i=>`${esc(i.emoji||'📦')} ${esc(i.nombre)} × ${Number(i.cantidad)||1}`).join('<br>'):'—'
-    const tel=String(p.clienteTelefono||'').replace(/\D/g,'')
-    return `<article class="pedido-card">
-      <div class="pedido-head"><div><strong>Pedido #${esc(p.id.slice(0,8).toUpperCase())}</strong><small>${esc(fecha)}</small></div><span class="pedido-status">${esc(p.estado||'pendiente')}</span></div>
-      <div class="pedido-grid"><div><b>Cliente</b>${esc(p.clienteNombre||'—')}<br><a href="https://wa.me/${tel}" target="_blank" rel="noopener noreferrer">${esc(p.clienteTelefono||'—')}</a><br><small>${esc(p.clienteEmail||'')}</small></div><div><b>Entrega y pago</b>${esc(p.entrega||'—')}<br>${esc(p.direccion||'')}<br>${esc(p.pago||'—')} · ${esc(p.estadoPago||'pendiente')}</div><div><b>Productos</b>${items}</div><div><b>Total</b><strong class="pedido-total">$${Number(p.total||0).toLocaleString('es-AR')}</strong>${p.observaciones?'<small>'+esc(p.observaciones)+'</small>':''}</div></div>
-      <div class="pedido-actions"><button onclick="cambiarEstadoPedido('${p.id}','confirmado')">✅ Confirmar</button><button onclick="cambiarEstadoPedido('${p.id}','en preparación')">👨‍🍳 Preparando</button><button onclick="cambiarEstadoPedido('${p.id}','entregado')">📦 Entregado</button><button onclick="cambiarEstadoPedido('${p.id}','cancelado')">❌ Cancelar</button></div>
-    </article>`
-  }).join('')
-}
-window.cambiarEstadoPedido=async(id,estado)=>{
-  try{await updateDoc(doc(db,'pedidos',id),{estado,actualizadoEn:serverTimestamp()});toast('Pedido actualizado: '+estado);await cargarPedidos()}catch(e){toast('Error: '+e.message)}
-}
-
 function mostrarSeccion(id){
   ['sin-comercio','mi-panel'].forEach(s => {
     const el = document.getElementById(s)
@@ -268,57 +220,18 @@ function mostrarSeccion(id){
 
 // ── Auth functions ──
 window.loginGoogle = async () => {
-  const err=document.getElementById('l-error')
-  err.style.display='none'
-  try {
-    await signInWithPopup(auth, gProvider)
-  } catch(e){
-    console.error('Google login:',e)
-    if(e.code==='auth/popup-blocked'){
-      await signInWithRedirect(auth,gProvider)
-      return
-    }
-    const mensajes={
-      'auth/unauthorized-domain':'Este dominio todavía no está autorizado en Firebase. Agregalo en Authentication → Settings → Authorized domains.',
-      'auth/operation-not-allowed':'El acceso con Google no está habilitado en Firebase Authentication.',
-      'auth/popup-closed-by-user':'Cerraste la ventana de Google antes de terminar.',
-      'auth/account-exists-with-different-credential':'Ese email ya fue registrado con contraseña. Entrá con email o recuperá la contraseña.'
-    }
-    err.textContent=mensajes[e.code]||('No se pudo entrar con Google: '+e.message)
-    err.style.display='block'
-  }
+  try { await signInWithPopup(auth, gProvider) }
+  catch(e){ toast('Error Google: ' + e.message) }
 }
 window.loginEmail = async () => {
-  const email = document.getElementById('l-email').value.trim().toLowerCase()
+  const email = document.getElementById('l-email').value.trim()
   const pass  = document.getElementById('l-pass').value
-  const err=document.getElementById('l-error')
-  err.style.display='none'
   if(!email||!pass){ toast('Completá email y contraseña'); return }
   try { await signInWithEmailAndPassword(auth, email, pass) }
   catch(e){
-    const mensajes={
-      'auth/invalid-credential':'Email o contraseña incorrectos.',
-      'auth/user-disabled':'Esta cuenta fue deshabilitada.',
-      'auth/too-many-requests':'Hubo demasiados intentos. Esperá unos minutos o recuperá la contraseña.'
-    }
-    err.textContent=mensajes[e.code]||e.message
-    err.style.display='block'
-  }
-}
-window.recuperarClave = async () => {
-  const email=document.getElementById('l-email').value.trim().toLowerCase()
-  const err=document.getElementById('l-error')
-  if(!email){
-    err.textContent='Escribí primero tu email y después tocá “Olvidé mi contraseña”.'
-    err.style.display='block'; return
-  }
-  try{
-    await sendPasswordResetEmail(auth,email)
-    err.textContent='✅ Te enviamos un correo para crear una nueva contraseña. Revisá también Spam.'
-    err.style.display='block'
-  }catch(e){
-    err.textContent=e.code==='auth/invalid-email'?'El email no es válido.':'No se pudo enviar el correo: '+e.message
-    err.style.display='block'
+    document.getElementById('l-error').textContent =
+      e.code === 'auth/invalid-credential' ? 'Email o contraseña incorrectos' : e.message
+    document.getElementById('l-error').style.display = 'block'
   }
 }
 window.cerrarSesion = async () => { await signOut(auth) }
@@ -515,10 +428,6 @@ img{max-width:100%;height:auto}
   .toast{white-space:normal;width:calc(100% - 2rem)}
 }
 .btn-perfil{margin-top:12px;border:1.5px solid var(--azul);background:#fff;color:var(--azul);border-radius:9px;padding:9px 13px;font-weight:700;cursor:pointer}.profile-help{color:#666;margin:-4px 0 18px}.btn-save-profile{width:100%;border:0;border-radius:10px;background:var(--azul);color:#fff;padding:13px;font-weight:700;cursor:pointer}.form-input[type="text"],textarea.form-input{width:100%}
-
-/* PEDIDOS */
-.pedidos-section{margin-top:2rem}.pedidos-title{display:flex;align-items:end;justify-content:space-between;gap:1rem;margin-bottom:1rem}.pedidos-title h3{font-family:"Fraunces",serif;font-size:1.45rem}.pedidos-count{font-size:.85rem;color:#666}.pedidos-lista{display:grid;gap:13px}.pedido-card{background:#fff;border:1.5px solid #dbe3ec;border-radius:16px;padding:1rem;box-shadow:0 7px 22px rgba(0,42,106,.06)}.pedido-head{display:flex;justify-content:space-between;gap:1rem;border-bottom:1px solid #edf0f4;padding-bottom:.7rem;margin-bottom:.8rem}.pedido-head strong,.pedido-head small{display:block}.pedido-head small{color:#777;margin-top:3px}.pedido-status{align-self:start;background:#fff3d7;color:#7a4c00;border-radius:99px;padding:5px 10px;font-size:.78rem;font-weight:700}.pedido-grid{display:grid;grid-template-columns:1.1fr 1.1fr 1.5fr .7fr;gap:14px;font-size:.88rem;line-height:1.5}.pedido-grid b{display:block;color:var(--azul-d);margin-bottom:4px}.pedido-grid small{display:block;color:#666}.pedido-total{display:block;font-family:"Fraunces",serif;font-size:1.25rem;color:var(--rojo)}.pedido-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:.9rem}.pedido-actions button{border:1px solid #d4dce6;background:#f8fafc;border-radius:8px;padding:7px 10px;font-weight:700;cursor:pointer}.pedido-empty{background:#fff;border:1px dashed #cbd5df;border-radius:14px;padding:1.5rem;text-align:center;color:#666}@media(max-width:850px){.pedido-grid{grid-template-columns:1fr 1fr}}@media(max-width:520px){.pedido-grid{grid-template-columns:1fr}.pedido-head{flex-direction:column}}
-
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -554,8 +463,6 @@ img{max-width:100%;height:auto}
       onkeydown="if(event.key==='Enter')loginEmail()"/>
     <div class="l-error" id="l-error"></div>
     <button class="btn-login" onclick="loginEmail()">Entrar</button>
-    <button type="button" onclick="recuperarClave()" style="margin-top:10px;background:none;border:none;color:#003B8E;font-weight:700;cursor:pointer">¿Olvidaste tu contraseña?</button>
-    <p style="font-size:.82rem;color:#666;margin-top:12px;line-height:1.45">¿Todavía no registraste tu comercio? <a href="index.html#registro-comercio" style="color:#CC0000;font-weight:700">Crear cuenta y registrar comercio</a></p>
   </div>
 </div>
 
@@ -616,10 +523,6 @@ img{max-width:100%;height:auto}
       <div class="productos-grid" id="productos-grid">
         <p style="color:#666;text-align:center;padding:2rem;grid-column:1/-1">Cargando...</p>
       </div>
-      <section class="pedidos-section">
-        <div class="pedidos-title"><div><h3>🧾 Pedidos recibidos</h3><p class="pedidos-count" id="pedidos-count">Cargando...</p></div><button class="btn-agregar-prod" onclick="cargarPedidos()">Actualizar</button></div>
-        <div class="pedidos-lista" id="pedidos-lista"><div class="pedido-empty">Cargando pedidos...</div></div>
-      </section>
     </div>
 
   </div>

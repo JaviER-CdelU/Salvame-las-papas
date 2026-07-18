@@ -12,10 +12,10 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, orderBy, limit, where, doc, setDoc }
+import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, orderBy, limit, where }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
-         sendEmailVerification, updateProfile, reload, onAuthStateChanged, signOut }
+         sendEmailVerification, onAuthStateChanged, signOut }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -32,9 +32,9 @@ const app = initializeApp(firebaseConfig);
 const db  = getFirestore(app);
 const auth = getAuth(app);
 window._fb = { db, auth, collection, addDoc, serverTimestamp,
-               getDocs, query, orderBy, limit, where, doc, setDoc,
+               getDocs, query, orderBy, limit, where,
                createUserWithEmailAndPassword, signInWithEmailAndPassword,
-               sendEmailVerification, updateProfile, reload, onAuthStateChanged, signOut };
+               sendEmailVerification, onAuthStateChanged, signOut };
 window._fbReady = () => true;
 
 onAuthStateChanged(auth, u => {
@@ -808,13 +808,6 @@ img{max-width:100%;height:auto}
 @media(max-width:900px){.smart-filters{grid-template-columns:1fr 1fr}.smart-filters label:first-child{grid-column:1/-1}.how-grid,.trust-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:600px){.smart-filters,.how-grid,.trust-grid{grid-template-columns:1fr}.smart-filters label:first-child{grid-column:auto}.how-section,.trust-strip{padding-left:1.25rem;padding-right:1.25rem}}
 
-/* CLIENTE Y CONFIRMACIÓN DE PEDIDO */
-.checkout-overlay{display:none;position:fixed;inset:0;background:rgba(4,22,46,.76);z-index:900;align-items:center;justify-content:center;padding:1rem}
-.checkout-overlay.open{display:flex}.checkout-box{width:min(560px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:22px;padding:1.5rem;box-shadow:0 28px 80px rgba(0,0,0,.32);position:relative}
-.checkout-box h2{font:900 1.65rem Fraunces;color:var(--azul-d);margin-bottom:.35rem}.checkout-sub{color:var(--suave);line-height:1.5;margin-bottom:1rem}.checkout-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.checkout-full{grid-column:1/-1}.checkout-label{display:flex;flex-direction:column;gap:5px;font-size:.85rem;font-weight:700;color:var(--azul-d)}
-.checkout-label input,.checkout-label select,.checkout-label textarea{width:100%;border:1.5px solid #ccd6e2;border-radius:10px;padding:11px 12px;font:inherit}.checkout-actions{display:flex;gap:10px;margin-top:1rem;flex-wrap:wrap}.checkout-actions button{flex:1;min-width:160px}.checkout-note{background:#eef5ff;border:1px solid #cbdcf4;border-radius:11px;padding:10px 12px;font-size:.83rem;line-height:1.45;margin:.8rem 0}.checkout-error{display:none;color:#a40000;background:#fff0f0;border:1px solid #f0b7b7;border-radius:9px;padding:9px 11px;margin-top:8px;font-size:.85rem}.checkout-error.show{display:block}.checkout-tabs{display:flex;gap:8px;margin-bottom:12px}.checkout-tabs button{flex:1;padding:10px;border-radius:10px;border:1.5px solid #ccd6e2;background:#fff;font-weight:700;cursor:pointer}.checkout-tabs button.active{background:var(--azul-d);color:#fff;border-color:var(--azul-d)}
-@media(max-width:560px){.checkout-grid{grid-template-columns:1fr}.checkout-full{grid-column:auto}.checkout-box{padding:1.15rem;border-radius:18px}.checkout-actions button{width:100%}}
-
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -825,40 +818,6 @@ img{max-width:100%;height:auto}
 <meta name="apple-mobile-web-app-title" content="Sálvame">
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
-
-<style id="install-app-styles">
-.install-app-section{padding:1.5rem 3rem;background:linear-gradient(180deg,#fff7ed,#fff)}
-.install-app-card{width:100%;max-width:1200px;margin:0 auto;display:grid;grid-template-columns:170px 1fr;align-items:center;gap:1.6rem;background:#fff;border:2px solid #f2c49f;border-radius:24px;padding:1.5rem 1.8rem;box-shadow:0 14px 40px rgba(0,42,106,.10)}
-.install-app-visual{display:grid;place-items:center}
-.install-app-visual img{display:block;width:150px;height:150px;border-radius:32px;box-shadow:0 12px 28px rgba(0,42,106,.24)}
-.install-kicker{display:inline-block;color:#a94308;font-size:.82rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.35rem}
-.install-app-copy h2{font-family:"Fraunces",serif;font-size:clamp(1.65rem,3vw,2.35rem);color:#002A6A;margin:0 0 .4rem}
-.install-app-copy>p{max-width:760px;color:#555548;line-height:1.6;margin:0}
-.install-app-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:1rem}
-.install-primary,.install-secondary{border-radius:999px;padding:12px 20px;font:700 .95rem "DM Sans",system-ui;cursor:pointer;transition:transform .15s,box-shadow .15s}
-.install-primary{border:0;background:#CC0000;color:#fff;box-shadow:0 8px 20px rgba(204,0,0,.22)}
-.install-secondary{border:2px solid #003B8E;background:#fff;color:#003B8E}
-.install-primary:hover,.install-secondary:hover{transform:translateY(-2px)}
-.install-primary:disabled{opacity:.65;cursor:default;transform:none}
-.install-status{font-size:.82rem!important;margin-top:.7rem!important;color:#777!important}
-.install-help-overlay{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,20,48,.76);padding:20px;align-items:center;justify-content:center}
-.install-help-overlay.open{display:flex}
-.install-help-modal{position:relative;width:100%;max-width:520px;background:#fff;border-radius:24px;padding:28px;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,.35)}
-.install-help-modal img{border-radius:22px}
-.install-help-modal h2{font-family:"Fraunces",serif;color:#002A6A;margin:.8rem 0}
-.install-help-modal ol{padding-left:1.3rem;text-align:left;color:#444;line-height:1.75}
-.install-help-modal p{text-align:left;color:#555;line-height:1.6}
-.install-help-close{position:absolute;right:14px;top:14px;border:0;border-radius:50%;width:36px;height:36px;background:#eef2f7;cursor:pointer}
-.install-help-ok{margin-top:10px}
-@media(max-width:700px){
- .install-app-section{padding:1.1rem 1.25rem}
- .install-app-card{grid-template-columns:1fr;text-align:center;padding:1.35rem}
- .install-app-visual img{width:112px;height:112px;border-radius:25px}
- .install-app-actions{justify-content:center}
- .install-app-copy>p{font-size:.94rem}
-}
-</style>
-
 </head>
 <body>
 
@@ -954,36 +913,6 @@ img{max-width:100%;height:auto}
       <div class="scat" onclick="filtrar('Verdulería')">🥦 Verdulería</div>
       <div class="scat" onclick="filtrar('Cerrajero')">🔑 Cerrajero</div>
     </div>
-  </div>
-</div>
-
-
-<!-- INSTALAR APLICACIÓN -->
-<section class="install-app-section" id="instalar-app" aria-labelledby="install-title">
-  <div class="install-app-card">
-    <div class="install-app-visual">
-      <img src="./icons/icon-512.png" alt="Súper Papa, ícono de Sálvame las Papas" width="150" height="150">
-    </div>
-    <div class="install-app-copy">
-      <span class="install-kicker">📲 Llevá la red de CDU con vos</span>
-      <h2 id="install-title">Instalá Sálvame las Papas</h2>
-      <p>Guardala como una aplicación en tu celular o computadora. Se abre desde un ícono de la <strong>Súper Papa</strong>, ocupa poco espacio y no necesita Play Store.</p>
-      <div class="install-app-actions">
-        <button class="install-primary" id="install-main-btn" type="button">📲 Instalar la aplicación</button>
-        <button class="install-secondary" type="button" onclick="abrirAyudaInstalacion()">¿Cómo se instala?</button>
-      </div>
-      <p class="install-status" id="install-status" role="status">Disponible en Android, iPhone y computadoras compatibles.</p>
-    </div>
-  </div>
-</section>
-
-<div class="install-help-overlay" id="install-help" role="dialog" aria-modal="true" aria-labelledby="install-help-title" onclick="cerrarAyudaInstalacion(event)">
-  <div class="install-help-modal">
-    <button class="install-help-close" type="button" aria-label="Cerrar" onclick="cerrarAyudaInstalacion()">✕</button>
-    <img src="./icons/icon-192.png" alt="" width="86" height="86">
-    <h2 id="install-help-title">Instalar Sálvame las Papas</h2>
-    <div id="install-help-content"></div>
-    <button class="install-primary install-help-ok" type="button" onclick="cerrarAyudaInstalacion()">Entendido</button>
   </div>
 </div>
 
@@ -1319,25 +1248,47 @@ img{max-width:100%;height:auto}
       <div class="frow">
         <div class="fgroup"><label>Nombre de fantasía *</label><input class="fi" id="f-nombre" type="text" placeholder="Ej: Almacén Don Pedro, Ferretería El Tornillo..."/></div>
         <div class="fgroup"><label>Categoría *</label>
-          <input class="fi" id="f-cat" list="lista-categorias" type="text"
-            placeholder="Elegí una categoría o escribí una nueva" autocomplete="off"/>
-          <datalist id="lista-categorias">
-            <option value="Almacén / Despensa"><option value="Panadería / Confitería">
-            <option value="Farmacia / Perfumería"><option value="Mecánico / Taller Automotriz">
-            <option value="Ferretería / Materiales"><option value="Verdulería / Frutería">
-            <option value="Carnicería / Fiambrería"><option value="Veterinaria / Mascotas">
-            <option value="Electricista"><option value="Plomero / Gas / Sanitario"><option value="Cerrajero">
-            <option value="Kiosco / Despensa"><option value="Indumentaria / Ropa / Calzado">
-            <option value="Compraventa / Usados"><option value="Ropa usada / Feria americana">
-            <option value="Librería / Papelería / Bazar"><option value="Peluquería / Estética">
-            <option value="Restaurante / Rotisería / Delivery"><option value="Pizzería / Empanadas">
-            <option value="Heladería / Confitería"><option value="Lavandería / Tintorería">
-            <option value="Carpintería / Mueblería"><option value="Pintor / Construcción">
-            <option value="Informática / Celulares / Reparación"><option value="Óptica"><option value="Floristería">
-            <option value="Mudanzas / Fletes"><option value="Clases particulares / Educación">
-            <option value="Contabilidad / Impuestos"><option value="Seguros"><option value="Inmobiliaria">
-          </datalist>
-          <span class="hint">¿No aparece? Escribila. Cuando el comercio sea aprobado, la categoría se sumará automáticamente a los filtros públicos.</span>
+          <select class="fs" id="f-cat">
+            <option value="">— Elegí una —</option>
+            <option>Almacén / Despensa</option>
+            <option>Panadería / Confitería</option>
+            <option>Farmacia / Perfumería</option>
+            <option>Mecánico / Taller Automotriz</option>
+            <option>Ferretería / Materiales</option>
+            <option>Verdulería / Frutería</option>
+            <option>Carnicería / Fiambrería</option>
+            <option>Veterinaria / Mascotas</option>
+            <option>Electricista</option>
+            <option>Plomero / Gas / Sanitario</option>
+            <option>Cerrajero</option>
+            <option>Kiosco / Despensa</option>
+            <option>Indumentaria / Ropa / Calzado</option>
+            <option>Librería / Papelería / Bazar</option>
+            <option>Peluquería / Estética</option>
+            <option>Restaurante / Rotisería / Delivery</option>
+            <option>Pizzería / Empanadas</option>
+            <option>Heladería / Confitería</option>
+            <option>Lavandería / Tintorería</option>
+            <option>Carpintería / Mueblería</option>
+            <option>Pintor / Construcción</option>
+            <option>Informática / Celulares / Reparación</option>
+            <option>Óptica</option>
+            <option>Floristería</option>
+            <option>Mudanzas / Fletes</option>
+            <option>Clases particulares / Educación</option>
+            <option>Contabilidad / Impuestos</option>
+            <option>Seguros</option>
+            <option>Inmobiliaria</option>
+            <option>Compraventa / Usados</option>
+            <option>Ropa Usada / Mercería</option>
+            <option>Otro — escribí cuál abajo</option>
+          </select>
+          <input class="fi" id="f-cat-otro" type="text" 
+            placeholder="Escribí la categoría de tu comercio..." 
+            style="display:none;margin-top:8px"/>
+          <span class="hint" id="f-cat-otro-hint" style="display:none">
+            Tu categoría nueva quedará registrada y la revisaremos para agregarla al listado
+          </span>
         </div>
       </div>
       <div class="frow full"><div class="fgroup"><label>Dirección completa *</label><input class="fi" id="f-dir" type="text" placeholder="Ej: Galarza 450, Concepción del Uruguay"/><span class="hint">📍 Se muestra en Google Maps automáticamente</span></div></div>
@@ -1522,44 +1473,6 @@ img{max-width:100%;height:auto}
 </div>
 
 
-<!-- MODAL CLIENTE / CONFIRMAR PEDIDO -->
-<div class="checkout-overlay" id="checkout-modal" onclick="cerrarCheckout(event)">
-  <div class="checkout-box">
-    <button class="mclose" onclick="cerrarCheckout()">✕</button>
-    <div id="checkout-auth">
-      <h2>Identificate para confirmar</h2>
-      <p class="checkout-sub">Podés mirar y armar el carrito sin registrarte. Solo pedimos una cuenta cuando vas a enviar el pedido.</p>
-      <div class="checkout-tabs">
-        <button id="co-tab-login" class="active" onclick="cambiarModoCliente('login')">Ya tengo cuenta</button>
-        <button id="co-tab-reg" onclick="cambiarModoCliente('registro')">Crear cuenta</button>
-      </div>
-      <div class="checkout-grid">
-        <label class="checkout-label checkout-full">Email<input id="co-email" type="email" autocomplete="email" placeholder="tuemail@ejemplo.com"></label>
-        <label class="checkout-label checkout-full">Contraseña<input id="co-pass" type="password" autocomplete="current-password" placeholder="Mínimo 6 caracteres"></label>
-        <label class="checkout-label checkout-full" id="co-pass2-wrap" style="display:none">Repetí la contraseña<input id="co-pass2" type="password" autocomplete="new-password"></label>
-      </div>
-      <div class="checkout-note">🔒 El comercio recibirá tu nombre, teléfono y datos del pedido. No verá tu contraseña.</div>
-      <div class="checkout-error" id="co-auth-error"></div>
-      <div class="checkout-actions"><button class="btn btn-azul" id="co-auth-btn" onclick="autenticarClientePedido()">Ingresar y continuar</button></div>
-    </div>
-    <div id="checkout-datos" style="display:none">
-      <h2>Confirmá tus datos</h2>
-      <p class="checkout-sub" id="co-resumen-cuenta"></p>
-      <div class="checkout-grid">
-        <label class="checkout-label">Nombre y apellido<input id="co-nombre" type="text" autocomplete="name"></label>
-        <label class="checkout-label">WhatsApp<input id="co-telefono" type="tel" autocomplete="tel" placeholder="+54 9 3442..."></label>
-        <label class="checkout-label">Entrega<select id="co-entrega" onchange="actualizarEntregaCliente()"><option value="Retiro en el comercio">Retiro en el comercio</option><option value="Envío a domicilio">Envío a domicilio</option></select></label>
-        <label class="checkout-label">Forma de pago<select id="co-pago"><option>Transferencia</option><option>Efectivo</option><option>Tarjeta / link de pago</option><option>A coordinar</option></select></label>
-        <label class="checkout-label checkout-full" id="co-direccion-wrap" style="display:none">Dirección de entrega<input id="co-direccion" type="text" autocomplete="street-address"></label>
-        <label class="checkout-label checkout-full">Observaciones<textarea id="co-observaciones" rows="3" placeholder="Timbre, sin cebolla, horario preferido..."></textarea></label>
-      </div>
-      <div class="checkout-note">El pedido quedará registrado con número, fecha, cliente y estado “pendiente de pago”. Luego se abrirá WhatsApp para coordinar con el comercio.</div>
-      <div class="checkout-error" id="co-datos-error"></div>
-      <div class="checkout-actions"><button class="btn btn-ghost" onclick="cerrarCheckout()">Cancelar</button><button class="btn btn-rojo" id="co-confirmar-btn" onclick="confirmarPedidoRegistrado()">Confirmar pedido</button></div>
-    </div>
-  </div>
-</div>
-
 <!-- MODAL COMERCIO + CARRITO -->
 <div class="comercio-modal-overlay" id="comercio-modal" onclick="cerrarComercioModal(event)">
   <div class="comercio-modal" id="comercio-modal-inner">
@@ -1712,8 +1625,14 @@ function validarPaso1(){
   const nombre = document.getElementById('f-nombre').value.trim()
   const tel = document.getElementById('f-tel').value.trim()
   const cat = document.getElementById('f-cat').value
+  const catOtro = document.getElementById('f-cat-otro').value.trim()
   if(!nombre){ toast('⚠️ Ponele el nombre al comercio primero'); document.getElementById('f-nombre').focus(); return }
   if(!cat){ toast('⚠️ Elegí la categoría del comercio'); document.getElementById('f-cat').focus(); return }
+  if(cat === 'Otro — escribí cuál abajo' && !catOtro){ 
+    toast('⚠️ Escribí cuál es la categoría de tu comercio')
+    document.getElementById('f-cat-otro').focus()
+    return 
+  }
   if(!tel){ toast('⚠️ Falta el WhatsApp del comercio'); document.getElementById('f-tel').focus(); return }
   irPaso(2)
 }
@@ -1786,7 +1705,9 @@ async function enviarForm(){
       costoEnvio:document.getElementById('f-costo').value.trim(),
       plan:planes[planSel],
       productos: productosForm,
-      categoria:document.getElementById('f-cat').value.trim(),
+      categoria:(document.getElementById('f-cat').value === 'Otro — escribí cuál abajo'
+        ? document.getElementById('f-cat-otro').value.trim()
+        : document.getElementById('f-cat').value),
       estado:'pendiente',
       emailVerificado:user.emailVerified===true,
       creadoEn:window._fb.serverTimestamp()
@@ -2108,7 +2029,6 @@ async function cargarComercios(){
           const d = doc.data()
           if(d.estado === 'activo'){
             fbComercics.push({
-              id: doc.id,
               plan: d.plan?.includes('Max') ? 3 : d.plan?.includes('Pro') ? 2 : 1,
               nombre: d.nombre,
               cat: d.categoria,
@@ -2128,7 +2048,6 @@ async function cargarComercios(){
   } catch(e){ console.warn('Firebase comercios:', e.message) }
 
   renderPagina(comerciosTodos, 1)
-  renderFiltrosCategoriasDinamicos()
 
   // Update stat counter
   const stat = document.getElementById('stat-cnt')
@@ -2325,135 +2244,22 @@ function actualizarCarritoUI(){
   }
 }
 
-// CLIENTES REGISTRADOS Y PEDIDOS
-let modoClientePedido = 'login'
-
+// Enviar pedido por WhatsApp
 function enviarPedidoWA(){
   if(!comercioActivo || carritoActual.length === 0) return
-  abrirCheckout()
-}
 
-function abrirCheckout(){
-  const modal=document.getElementById('checkout-modal')
-  modal.classList.add('open')
-  document.body.style.overflow='hidden'
-  const user=window._fb?.auth?.currentUser
-  if(user) mostrarDatosCliente(user)
-  else{
-    document.getElementById('checkout-auth').style.display='block'
-    document.getElementById('checkout-datos').style.display='none'
-    cambiarModoCliente('login')
-  }
-}
-function cerrarCheckout(e){
-  if(!e || e.target===document.getElementById('checkout-modal')){
-    document.getElementById('checkout-modal').classList.remove('open')
-    document.body.style.overflow=''
-  }
-}
-function cambiarModoCliente(modo){
-  modoClientePedido=modo
-  document.getElementById('co-tab-login').classList.toggle('active',modo==='login')
-  document.getElementById('co-tab-reg').classList.toggle('active',modo==='registro')
-  document.getElementById('co-pass2-wrap').style.display=modo==='registro'?'flex':'none'
-  document.getElementById('co-auth-btn').textContent=modo==='registro'?'Crear cuenta y continuar':'Ingresar y continuar'
-  document.getElementById('co-auth-error').classList.remove('show')
-}
-async function autenticarClientePedido(){
-  const email=document.getElementById('co-email').value.trim().toLowerCase()
-  const pass=document.getElementById('co-pass').value
-  const pass2=document.getElementById('co-pass2').value
-  const err=document.getElementById('co-auth-error')
-  const btn=document.getElementById('co-auth-btn')
-  err.classList.remove('show')
-  if(!/^\S+@\S+\.\S+$/.test(email)){err.textContent='Escribí un email válido.';err.classList.add('show');return}
-  if(pass.length<6){err.textContent='La contraseña debe tener al menos 6 caracteres.';err.classList.add('show');return}
-  if(modoClientePedido==='registro' && pass!==pass2){err.textContent='Las contraseñas no coinciden.';err.classList.add('show');return}
-  btn.disabled=true;btn.textContent='Procesando...'
-  try{
-    let cred
-    if(modoClientePedido==='registro'){
-      cred=await window._fb.createUserWithEmailAndPassword(window._fb.auth,email,pass)
-      await window._fb.sendEmailVerification(cred.user).catch(()=>{})
-    }else cred=await window._fb.signInWithEmailAndPassword(window._fb.auth,email,pass)
-    mostrarDatosCliente(cred.user)
-  }catch(e){
-    const map={'auth/email-already-in-use':'Ese email ya está registrado. Elegí “Ya tengo cuenta”.','auth/invalid-credential':'Email o contraseña incorrectos.','auth/weak-password':'La contraseña es demasiado débil.','auth/too-many-requests':'Demasiados intentos. Esperá unos minutos.'}
-    err.textContent=map[e.code]||e.message||'No se pudo ingresar.';err.classList.add('show')
-  }finally{btn.disabled=false;btn.textContent=modoClientePedido==='registro'?'Crear cuenta y continuar':'Ingresar y continuar'}
-}
-function mostrarDatosCliente(user){
-  document.getElementById('checkout-auth').style.display='none'
-  document.getElementById('checkout-datos').style.display='block'
-  document.getElementById('co-resumen-cuenta').textContent='Pedido asociado a '+(user.email||'tu cuenta')+(user.emailVerified?' · Email verificado':' · Te enviamos/veremos la verificación por email')
-  document.getElementById('co-nombre').value=user.displayName||localStorage.getItem('slp_cliente_nombre')||''
-  document.getElementById('co-telefono').value=localStorage.getItem('slp_cliente_tel')||''
-}
-function actualizarEntregaCliente(){
-  const envio=document.getElementById('co-entrega').value==='Envío a domicilio'
-  document.getElementById('co-direccion-wrap').style.display=envio?'flex':'none'
-}
-async function confirmarPedidoRegistrado(){
-  const user=window._fb?.auth?.currentUser
-  if(!user){abrirCheckout();return}
-  const nombre=document.getElementById('co-nombre').value.trim()
-  const telefono=document.getElementById('co-telefono').value.trim()
-  const entrega=document.getElementById('co-entrega').value
-  const pago=document.getElementById('co-pago').value
-  const direccion=document.getElementById('co-direccion').value.trim()
-  const observaciones=document.getElementById('co-observaciones').value.trim()
-  const err=document.getElementById('co-datos-error')
-  const btn=document.getElementById('co-confirmar-btn')
-  err.classList.remove('show')
-  if(nombre.length<3){err.textContent='Escribí tu nombre y apellido.';err.classList.add('show');return}
-  if(telefono.replace(/\D/g,'').length<8){err.textContent='Escribí un WhatsApp válido.';err.classList.add('show');return}
-  if(entrega==='Envío a domicilio' && direccion.length<5){err.textContent='Falta la dirección de entrega.';err.classList.add('show');return}
-  btn.disabled=true;btn.textContent='Registrando pedido...'
-  try{
-    const total=carritoActual.reduce((s,i)=>s+i.subtotal,0)
-    const pedido={
-      comercioId:comercioActivo.id||comercioActivo.nombre,
-      comercioNombre:comercioActivo.nombre,
-      comercioTelefono:comercioActivo.tel||'',
-      clienteUid:user.uid,clienteEmail:user.email||'',clienteEmailVerificado:user.emailVerified===true,
-      clienteNombre:nombre,clienteTelefono:telefono,
-      entrega,direccion:entrega==='Envío a domicilio'?direccion:'',pago,observaciones,
-      items:carritoActual.map(i=>({nombre:i.nombre,emoji:i.emoji||'📦',precio:Number(i.precio),cantidad:i.cantidad,subtotal:i.subtotal})),
-      total,estado:'pendiente',estadoPago:'pendiente de pago',creadoEn:window._fb.serverTimestamp()
-    }
-    await window._fb.setDoc(window._fb.doc(window._fb.db,'usuarios',user.uid),{nombre,telefono,email:user.email||'',rol:'cliente',actualizadoEn:window._fb.serverTimestamp()},{merge:true})
-    if(!user.displayName) await window._fb.updateProfile(user,{displayName:nombre}).catch(()=>{})
-    const ref=await window._fb.addDoc(window._fb.collection(window._fb.db,'pedidos'),pedido)
-    localStorage.setItem('slp_cliente_nombre',nombre);localStorage.setItem('slp_cliente_tel',telefono)
-    const lineas=carritoActual.map(i=>`• ${i.emoji||'📦'} ${i.nombre} x${i.cantidad} = $${i.subtotal.toLocaleString('es-AR')}`).join('\n')
-    const texto=`Hola ${comercioActivo.nombre}! Hice un pedido desde Sálvame las Papas 🥔\n\nPEDIDO #${ref.id.slice(0,8).toUpperCase()}\nCliente: ${nombre}\nWhatsApp: ${telefono}\nEntrega: ${entrega}${direccion?'\nDirección: '+direccion:''}\nPago: ${pago}\n\n${lineas}\n\nTOTAL: $${total.toLocaleString('es-AR')}${observaciones?'\n\nObservaciones: '+observaciones:''}\n\nEstado: pendiente de pago.`
-    const tel=(comercioActivo.tel||'5493442490585').replace(/\D/g,'')
-    cerrarCheckout();toast('✅ Pedido registrado. Abrimos WhatsApp para coordinar.')
-    window.open('https://wa.me/'+tel+'?text='+encodeURIComponent(texto),'_blank','noopener')
-    vaciarCarrito()
-  }catch(e){
-    console.error('Pedido:',e)
-    err.textContent=e.code==='permission-denied'?'Firebase no permitió guardar el pedido. Hay que actualizar las reglas de Firestore.':(e.message||'No se pudo registrar el pedido.')
-    err.classList.add('show')
-  }finally{btn.disabled=false;btn.textContent='Confirmar pedido'}
-}
+  const total = carritoActual.reduce((s,i) => s + i.subtotal, 0)
+  const lineas = carritoActual.map(i =>
+    `  • ${i.emoji} ${i.nombre} x${i.cantidad} = $${i.subtotal.toLocaleString('es-AR')}`
+  ).join('%0A')
 
-function emojiCategoria(cat){
-  const c=(cat||'').toLowerCase()
-  if(c.includes('ropa')||c.includes('indument')) return '👕'
-  if(c.includes('compra')||c.includes('usad')) return '♻️'
-  if(c.includes('pan')) return '🍞'; if(c.includes('farm')) return '💊'; if(c.includes('mec')) return '🚗'
-  if(c.includes('ferret')||c.includes('herram')) return '🔧'; if(c.includes('verd')) return '🥦'; if(c.includes('carn')) return '🥩'
-  if(c.includes('rest')||c.includes('rotis')) return '🍽️'; if(c.includes('pizza')) return '🍕'; if(c.includes('pelu')||c.includes('estét')) return '✂️'
-  if(c.includes('mascot')||c.includes('veter')) return '🐾'; if(c.includes('almac')||c.includes('kios')) return '🛒'
-  return '🏪'
-}
-function renderFiltrosCategoriasDinamicos(){
-  const bar=document.getElementById('filtro-bar'); if(!bar) return
-  const cats=[...new Set(comerciosTodos.map(c=>(c.cat||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es'))
-  bar.innerHTML='<button class="filtro-btn active" onclick="filtrarCat(\'todas\')" id="fb-todas">🏪 Todas</button>'+cats.map(cat=>`<button class="filtro-btn" onclick="filtrarCat(${JSON.stringify(cat)})">${emojiCategoria(cat)} ${escapeHTML(cat)}</button>`).join('')
-  const dl=document.getElementById('lista-categorias')
-  if(dl){const existentes=new Set([...dl.options].map(o=>o.value));cats.forEach(cat=>{if(!existentes.has(cat)){const op=document.createElement('option');op.value=cat;dl.appendChild(op)}})}
+  const msg = `Hola%20${encodeURIComponent(comercioActivo.nombre)}!%20Te%20hago%20un%20pedido%20desde%20Sálvame%20las%20Papas%20🥔%0A%0A`
+    + `*MI%20PEDIDO:*%0A${lineas}%0A%0A`
+    + `*TOTAL:%20$${total.toLocaleString('es-AR')}*%0A%0A`
+    + `Por%20favor%20confirmame%20disponibilidad%20y%20forma%20de%20entrega.%20Gracias!`
+
+  const tel = (comercioActivo.tel || '5493442490585').replace(/\D/g,'')
+  window.open('https://wa.me/' + tel + '?text=' + msg, '_blank')
 }
 
 
@@ -2687,85 +2493,10 @@ window.addEventListener('load',()=>setTimeout(()=>{poblarBarrios();abrirDesdeHas
 </style>
 <button id="pwa-install" type="button" aria-label="Instalar Sálvame las Papas">📲 Instalar app</button>
 <script>
-let slpInstallPrompt = null;
-const slpInstallBtn = document.getElementById("pwa-install");
-const slpInstallMainBtn = document.getElementById("install-main-btn");
-const slpInstallStatus = document.getElementById("install-status");
-
-function slpIsStandalone(){
-  return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
-}
-function slpIsIOS(){
-  return /iphone|ipad|ipod/i.test(navigator.userAgent);
-}
-function slpIsAndroid(){
-  return /android/i.test(navigator.userAgent);
-}
-function actualizarEstadoInstalacion(){
-  if(slpIsStandalone()){
-    if(slpInstallMainBtn){slpInstallMainBtn.textContent="✅ Aplicación instalada";slpInstallMainBtn.disabled=true}
-    if(slpInstallStatus) slpInstallStatus.textContent="Ya estás usando la aplicación instalada."
-    slpInstallBtn?.classList.remove("show");
-  } else if(slpInstallPrompt){
-    if(slpInstallMainBtn){slpInstallMainBtn.textContent="📲 Instalar ahora";slpInstallMainBtn.disabled=false}
-    if(slpInstallStatus) slpInstallStatus.textContent="Tu dispositivo está listo para instalarla."
-  } else if(slpIsIOS()){
-    if(slpInstallMainBtn) slpInstallMainBtn.textContent=" Ver pasos para iPhone"
-    if(slpInstallStatus) slpInstallStatus.textContent="En iPhone se instala desde Safari usando Compartir."
-  } else {
-    if(slpInstallMainBtn) slpInstallMainBtn.textContent="📲 Instalar / ver instrucciones"
-  }
-}
-async function solicitarInstalacion(){
-  if(slpIsStandalone()) return;
-  if(slpInstallPrompt){
-    slpInstallPrompt.prompt();
-    const choice = await slpInstallPrompt.userChoice;
-    slpInstallPrompt = null;
-    slpInstallBtn?.classList.remove("show");
-    if(choice.outcome === "accepted" && slpInstallStatus) slpInstallStatus.textContent="Instalación aceptada. Buscá el ícono de la Súper Papa."
-    actualizarEstadoInstalacion();
-    return;
-  }
-  abrirAyudaInstalacion();
-}
-function abrirAyudaInstalacion(){
-  const overlay=document.getElementById("install-help");
-  const content=document.getElementById("install-help-content");
-  if(!overlay||!content) return;
-  if(slpIsIOS()){
-    content.innerHTML='<p><strong>En iPhone o iPad:</strong></p><ol><li>Abrí esta página en <strong>Safari</strong>.</li><li>Tocá el botón <strong>Compartir</strong> (cuadrado con flecha hacia arriba).</li><li>Elegí <strong>Agregar a pantalla de inicio</strong>.</li><li>Confirmá con <strong>Agregar</strong>.</li></ol>';
-  } else if(slpIsAndroid()){
-    content.innerHTML='<p><strong>En Android:</strong></p><ol><li>Abrí la página en Chrome.</li><li>Tocá <strong>Instalar la aplicación</strong> en esta pantalla.</li><li>Si no aparece, abrí el menú ⋮ de Chrome y elegí <strong>Instalar aplicación</strong> o <strong>Agregar a pantalla principal</strong>.</li></ol>';
-  } else {
-    content.innerHTML='<p><strong>En computadora:</strong></p><ol><li>Abrí la página con Chrome o Edge.</li><li>Buscá el ícono de instalación en el extremo derecho de la barra de direcciones.</li><li>También podés abrir el menú del navegador y elegir <strong>Instalar Sálvame las Papas</strong>.</li></ol><p>La instalación aparece cuando la página está publicada con HTTPS, por ejemplo en GitHub Pages.</p>';
-  }
-  overlay.classList.add("open");
-  document.body.style.overflow="hidden";
-}
-function cerrarAyudaInstalacion(event){
-  const overlay=document.getElementById("install-help");
-  if(event && event.target !== overlay) return;
-  overlay?.classList.remove("open");
-  document.body.style.overflow="";
-}
-window.abrirAyudaInstalacion=abrirAyudaInstalacion;
-window.cerrarAyudaInstalacion=cerrarAyudaInstalacion;
-
-window.addEventListener("beforeinstallprompt",event=>{
-  event.preventDefault();
-  slpInstallPrompt=event;
-  slpInstallBtn?.classList.add("show");
-  actualizarEstadoInstalacion();
-});
-slpInstallBtn?.addEventListener("click",solicitarInstalacion);
-slpInstallMainBtn?.addEventListener("click",solicitarInstalacion);
-window.addEventListener("appinstalled",()=>{
-  slpInstallPrompt=null;
-  slpInstallBtn?.classList.remove("show");
-  actualizarEstadoInstalacion();
-});
-actualizarEstadoInstalacion();
+let slpInstallPrompt=null;const slpInstallBtn=document.getElementById("pwa-install");
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();slpInstallPrompt=e;slpInstallBtn?.classList.add("show")});
+slpInstallBtn?.addEventListener("click",async()=>{if(!slpInstallPrompt)return;slpInstallPrompt.prompt();await slpInstallPrompt.userChoice;slpInstallPrompt=null;slpInstallBtn.classList.remove("show")});
+window.addEventListener("appinstalled",()=>{slpInstallPrompt=null;slpInstallBtn?.classList.remove("show")});
 </script>
 </body>
 </html>
