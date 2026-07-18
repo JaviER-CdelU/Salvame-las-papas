@@ -5,6 +5,8 @@ const APP_SHELL = [
   "./comercio.html",
   "./admin.html",
   "./offline.html",
+  "./como-usar.html",
+  "./images/super-papa.webp",
   "./manifest.webmanifest",
   "./icons/icon-192.png",
   "./icons/icon-512.png",

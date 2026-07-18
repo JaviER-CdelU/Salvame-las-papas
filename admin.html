@@ -14,7 +14,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc,
          query, orderBy, where, serverTimestamp }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut }
+import { getAuth, signInWithEmailAndPassword, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signOut }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -30,6 +30,32 @@ const app  = initializeApp(firebaseConfig);
 const db   = getFirestore(app);
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
+googleProvider.setCustomParameters({ prompt: 'select_account' });
+
+function mensajeAuthGoogle(e){
+  const code = e?.code || '';
+  const mensajes = {
+    'auth/unauthorized-domain': 'Este dominio todavía no está autorizado en Firebase. Agregalo en Firebase → Authentication → Settings → Authorized domains.',
+    'auth/operation-not-allowed': 'El acceso con Google está deshabilitado. Activá Google en Firebase → Authentication → Sign-in method.',
+    'auth/popup-blocked': 'El navegador bloqueó la ventana de Google. Vamos a continuar en la misma pestaña.',
+    'auth/popup-closed-by-user': 'Cerraste la ventana de Google antes de terminar.',
+    'auth/cancelled-popup-request': 'Ya había una ventana de Google abierta. Cerrala y volvé a intentar.',
+    'auth/account-exists-with-different-credential': 'Ese correo ya existe con otro método de acceso. Entrá con email y contraseña.',
+    'auth/network-request-failed': 'No se pudo conectar con Google. Revisá internet y volvé a intentar.',
+    'auth/web-storage-unsupported': 'El navegador bloquea el almacenamiento necesario. Habilitá cookies y almacenamiento para este sitio.'
+  };
+  return mensajes[code] || ('No se pudo ingresar con Google' + (code ? ' (' + code + ')' : '') + '.');
+}
+
+function mostrarErrorLogin(mensaje){
+  const err = document.getElementById('l-error');
+  if(!err) return;
+  err.textContent = mensaje;
+  err.style.display = 'block';
+}
+
+// Completa el acceso cuando Google vuelve mediante redirección.
+getRedirectResult(auth).catch(e => mostrarErrorLogin(mensajeAuthGoogle(e)));
 
 // ── Auth state ──
 onAuthStateChanged(auth, user => {
@@ -46,21 +72,31 @@ onAuthStateChanged(auth, user => {
 
 // ── Login ──
 window.loginConGoogle = async () => {
-  const btn = document.getElementById('l-btn-google')
-  const err = document.getElementById('l-error')
-  btn.textContent = 'Conectando con Google...'
-  btn.disabled = true
-  err.style.display = 'none'
+  const btn = document.getElementById('l-btn-google');
+  const err = document.getElementById('l-error');
+  if(!btn) return;
+  const textoOriginal = btn.innerHTML;
+  btn.textContent = 'Conectando con Google...';
+  btn.disabled = true;
+  if(err) err.style.display = 'none';
+
   try {
-    await signInWithPopup(auth, googleProvider)
+    await signInWithPopup(auth, googleProvider);
   } catch(e) {
-    err.textContent = e.code === 'auth/popup-closed-by-user'
-      ? 'Cerraste la ventana de Google. Intentá de nuevo.'
-      : 'Error: ' + e.message
-    err.style.display = 'block'
+    if(e?.code === 'auth/popup-blocked' || e?.code === 'auth/web-storage-unsupported'){
+      try {
+        await signInWithRedirect(auth, googleProvider);
+        return;
+      } catch(redirError){
+        mostrarErrorLogin(mensajeAuthGoogle(redirError));
+      }
+    } else {
+      mostrarErrorLogin(mensajeAuthGoogle(e));
+    }
+  } finally {
+    btn.innerHTML = textoOriginal;
+    btn.disabled = false;
   }
-  btn.textContent = 'Continuar con Google'
-  btn.disabled = false
 }
 
 window.hacerLogin = async () => {
@@ -562,6 +598,8 @@ img{max-width:100%;height:auto}
   .btn{padding-left:14px;padding-right:14px}
   .toast{white-space:normal;width:calc(100% - 2rem)}
 }
+
+.google-help{font-size:.75rem;color:#6b7280;line-height:1.4;margin:-2px 0 14px}
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -592,6 +630,7 @@ img{max-width:100%;height:auto}
       </svg>
       Continuar con Google
     </button>
+    <p class="google-help">Usá únicamente la cuenta autorizada como administradora. Si Google no abre, habilitá ventanas emergentes para este sitio.</p>
 
     <div class="divider-o"><span>o entrá con email</span></div>
 
