@@ -1,4 +1,4 @@
-const CACHE_NAME = "salvame-papas-shell-v8-admin";
+const CACHE_NAME = "salvame-papas-shell-v10-admin-cdelu";
 const APP_SHELL = [
   "./",
   "./index.html",

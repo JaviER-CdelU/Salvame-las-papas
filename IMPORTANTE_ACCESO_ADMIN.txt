@@ -1,5 +1,5 @@
 ACCESO DE ADMINISTRACIÓN
 
-El panel permite ingresar únicamente con la cuenta de Google autorizada configurada internamente en admin.html.
+El panel permite ingresar únicamente con la cuenta de Google autorizada configurada internamente. El correo no se muestra en la pantalla pública.
 
-El correo no se muestra en la pantalla pública.
+Para usar GitHub Pages y Vercel, ambos dominios deben estar agregados en Firebase Authentication > Configuración > Dominios autorizados.
