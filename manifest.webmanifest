@@ -1,10 +1,9 @@
 {
-  "id": "./index.html",
-  "name": "Sálvame las Papas — C. del Uruguay",
+  "id": "./",
+  "name": "Sálvame las Papas",
   "short_name": "Sálvame",
-  "description": "Encontrá comercios, productos y pedidos por WhatsApp en Concepción del Uruguay.",
+  "description": "Comercios, productos, servicios y pedidos de Concepción del Uruguay.",
   "lang": "es-AR",
-  "dir": "ltr",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -18,8 +17,9 @@
   "theme_color": "#002A6A",
   "categories": [
     "shopping",
+    "food",
     "business",
-    "food"
+    "lifestyle"
   ],
   "icons": [
     {
@@ -29,16 +29,16 @@
       "purpose": "any"
     },
     {
-      "src": "./icons/icon-maskable-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
       "src": "./icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "./icons/icon-maskable-512.png",

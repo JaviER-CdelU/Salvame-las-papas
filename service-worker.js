@@ -1,44 +1,65 @@
-const CACHE_VERSION = "slp-pwa-v1.0.0";
+const CACHE_NAME = "salvame-papas-shell-v4";
 const APP_SHELL = [
-  "./", "./index.html", "./comercio.html", "./admin.html",
-  "./offline.html", "./manifest.webmanifest",
-  "./icons/icon-192.png", "./icons/icon-512.png",
-  "./icons/icon-maskable-192.png", "./icons/icon-maskable-512.png",
-  "./icons/icon-180.png", "./icons/favicon-32.png"
+  "./",
+  "./index.html",
+  "./comercio.html",
+  "./admin.html",
+  "./offline.html",
+  "./como-usar.html",
+  "./images/super-papa.webp",
+  "./manifest.webmanifest",
+  "./icons/icon-192.png",
+  "./icons/icon-512.png",
+  "./icons/icon-maskable-192.png",
+  "./icons/icon-maskable-512.png"
 ];
 
 self.addEventListener("install", event => {
-  event.waitUntil(caches.open(CACHE_VERSION).then(cache => cache.addAll(APP_SHELL)));
+  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL)));
   self.skipWaiting();
 });
 
 self.addEventListener("activate", event => {
-  event.waitUntil(caches.keys().then(keys => Promise.all(
-    keys.filter(key => key !== CACHE_VERSION).map(key => caches.delete(key))
-  )));
+  event.waitUntil(
+    caches.keys().then(keys => Promise.all(
+      keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
+    ))
+  );
   self.clients.claim();
 });
 
 self.addEventListener("fetch", event => {
   const request = event.request;
   if (request.method !== "GET") return;
+
   const url = new URL(request.url);
-  if (url.origin !== self.location.origin) return;
+
+  // Firebase and Google authentication must always use the network.
+  if (
+    url.hostname.includes("firebase") ||
+    url.hostname.includes("googleapis") ||
+    url.hostname.includes("gstatic") ||
+    url.hostname.includes("accounts.google")
+  ) return;
 
   if (request.mode === "navigate") {
     event.respondWith(
-      fetch(request).then(response => {
-        const copy=response.clone(); caches.open(CACHE_VERSION).then(c=>c.put(request,copy));
-        return response;
-      }).catch(async () => (await caches.match(request)) || caches.match("./offline.html"))
+      fetch(request)
+        .then(response => {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
+          return response;
+        })
+        .catch(() => caches.match(request).then(r => r || caches.match("./offline.html")))
     );
     return;
   }
 
   event.respondWith(
     caches.match(request).then(cached => cached || fetch(request).then(response => {
-      if (response && response.status === 200) {
-        const copy=response.clone(); caches.open(CACHE_VERSION).then(c=>c.put(request,copy));
+      if (response && response.status === 200 && response.type === "basic") {
+        const copy = response.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
       }
       return response;
     }))
