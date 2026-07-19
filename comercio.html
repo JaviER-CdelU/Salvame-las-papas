@@ -87,6 +87,29 @@ async function cargarMiComercio(email){
     }[miComercio.estado] || '<span class="badge-pend">⏳ Pendiente</span>'
     document.getElementById('comercio-estado').innerHTML = estadoBadge
 
+    const aviso = document.getElementById('publicacion-aviso')
+    if(aviso){
+      aviso.className = 'publicacion-aviso'
+      if(miComercio.estado === 'activo'){
+        aviso.classList.add('activo')
+        aviso.innerHTML = `
+          <strong>✅ Tu comercio está autorizado y publicado</strong>
+          Los productos disponibles que cargues se mostrarán en la página principal.
+          <small>Cuando pauses un producto o lo marques sin stock, dejará de mostrarse a los clientes.</small>`
+      } else if(miComercio.estado === 'rechazado'){
+        aviso.classList.add('rechazado')
+        aviso.innerHTML = `
+          <strong>❌ Tu comercio todavía no puede publicarse</strong>
+          Podés conservar y editar los productos cargados, pero no aparecerán en la página principal.
+          <small>Comunicate con Administración para revisar el motivo y completar la incorporación.</small>`
+      } else {
+        aviso.innerHTML = `
+          <strong>⏳ Tus productos están guardados, pero todavía no están publicados</strong>
+          Podés completar el catálogo ahora para adelantar trabajo. Nada aparecerá en la página principal hasta que se acredite el pago y Administración apruebe el comercio.
+          <small>La activación puede demorar hasta 24 horas desde que el pago se vea acreditado.</small>`
+      }
+    }
+
     mostrarSeccion('mi-panel')
     await cargarProductos()
     await cargarPedidos() 
@@ -118,7 +141,7 @@ function renderProductos(){
       <div class="empty-state">
         <div style="font-size:3rem;margin-bottom:1rem">📦</div>
         <h3>Todavía no cargaste productos</h3>
-        <p>Hacé click en <strong>"+ Agregar producto"</strong> para empezar</p>
+        <p>Podés prepararlos ahora. Se mostrarán al público únicamente cuando tu comercio esté aprobado.</p>
       </div>`
     return
   }
@@ -195,11 +218,11 @@ window.guardarProducto = async () => {
   try {
     if(id){
       await updateDoc(doc(db,'comercios',miComercioId,'productos',id), datos)
-      toast('✅ Producto actualizado')
+      toast(miComercio?.estado === 'activo' ? '✅ Producto actualizado y publicado' : '✅ Producto actualizado. Quedará publicado cuando se apruebe el comercio')
     } else {
       datos.creadoEn = serverTimestamp()
       await addDoc(collection(db,'comercios',miComercioId,'productos'), datos)
-      toast('✅ Producto agregado')
+      toast(miComercio?.estado === 'activo' ? '✅ Producto agregado y publicado' : '✅ Producto guardado. Quedará publicado cuando se apruebe el comercio')
     }
     document.getElementById('modal-prod').classList.remove('open')
     await cargarProductos()
@@ -388,6 +411,30 @@ body{font-family:"DM Sans",sans-serif;background:#F0F4F8;color:#1A1A1A;min-heigh
 .badge-activo{background:var(--verde-l);color:var(--verde);font-size:.8rem;font-weight:700;padding:4px 12px;border-radius:99px;border:1.5px solid #66BB6A}
 .badge-pend{background:#FFF8E1;color:#7A5C00;font-size:.8rem;font-weight:700;padding:4px 12px;border-radius:99px;border:1.5px solid #FFD54F}
 .badge-rech{background:#FFEBEE;color:#9B1C1C;font-size:.8rem;font-weight:700;padding:4px 12px;border-radius:99px;border:1.5px solid #EF9A9A}
+
+
+/* AVISO DE PUBLICACIÓN */
+.publicacion-aviso{
+  margin:0 0 1.2rem;
+  padding:1rem 1.1rem;
+  border-radius:12px;
+  border:2px solid #F0C36D;
+  background:#FFF8E7;
+  color:#59420B;
+  line-height:1.55;
+}
+.publicacion-aviso strong{display:block;font-size:1rem;margin-bottom:.25rem}
+.publicacion-aviso.activo{
+  border-color:#8BC79A;
+  background:#EAF8EE;
+  color:#155724;
+}
+.publicacion-aviso.rechazado{
+  border-color:#E69A9A;
+  background:#FFF0F0;
+  color:#8A1C1C;
+}
+.publicacion-aviso small{display:block;margin-top:.35rem;color:inherit}
 
 /* PRODUCTOS */
 .prod-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.75rem}
@@ -584,10 +631,10 @@ img{max-width:100%;height:auto}
         <div id="comercio-estado"></div><button class="btn-perfil" onclick="abrirModalPerfil()">✏️ Editar datos del comercio</button>
       </div>
       <div style="font-size:.85rem;color:#666;line-height:1.7;background:#F8F8F4;padding:.75rem 1rem;border-radius:8px;border:1.5px solid var(--borde)">
-        💡 <strong>¿Cómo cargar productos?</strong><br>
+        💡 <strong>¿Cómo preparar tus productos?</strong><br>
         1. Hacé click en <strong>"+ Agregar producto"</strong><br>
-        2. Poné emoji, nombre, precio y descripción<br>
-        3. Guardá — aparece al instante para los clientes
+        2. Completá nombre, precio y descripción<br>
+        3. Guardalos ahora: se publicarán cuando tu comercio sea aprobado
       </div>
     </div>
 
@@ -604,6 +651,11 @@ img{max-width:100%;height:auto}
 
     <!-- Panel principal -->
     <div id="mi-panel" style="display:none">
+      <div id="publicacion-aviso" class="publicacion-aviso">
+        <strong>⏳ Tu comercio está pendiente</strong>
+        Podés cargar y dejar preparados tus productos, pero todavía no se mostrarán en la página principal.
+        <small>Se publicarán cuando se acredite el pago y el comercio sea aprobado. La activación puede demorar hasta 24 horas desde la acreditación.</small>
+      </div>
       <div class="prod-toolbar">
         <div>
           <h3>🛍️ Mis productos</h3>

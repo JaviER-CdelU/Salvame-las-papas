@@ -1,4 +1,4 @@
-const CACHE_NAME = "salvame-papas-shell-v4";
+const CACHE_NAME = "salvame-papas-shell-v8-admin";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -44,10 +44,12 @@ self.addEventListener("fetch", event => {
 
   if (request.mode === "navigate") {
     event.respondWith(
-      fetch(request)
+      fetch(request, { cache: "no-store" })
         .then(response => {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
+          if (!url.pathname.endsWith("/admin.html") && !url.pathname.endsWith("admin.html")) {
+            const copy = response.clone();
+            caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
+          }
           return response;
         })
         .catch(() => caches.match(request).then(r => r || caches.match("./offline.html")))
