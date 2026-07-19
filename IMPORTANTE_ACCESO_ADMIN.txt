@@ -1,0 +1,10 @@
+ACCESO AL PANEL ADMINISTRADOR
+
+El archivo admin.html quedó configurado para permitir el ingreso únicamente con Google usando:
+
+salvamelaspapas@gmail.com
+
+Ya no aparecen campos de correo, teléfono ni contraseña.
+Una cuenta de Google diferente será cerrada automáticamente.
+
+IMPORTANTE: esta protección en la página debe complementarse con reglas seguras de Firestore.
