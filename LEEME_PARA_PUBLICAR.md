@@ -20,14 +20,3 @@ Subí **todo el contenido de esta carpeta** a la raíz del repositorio de GitHub
 
 ## Nota
 El modo sin conexión guarda la interfaz. Las operaciones de Firebase (login, altas, cambios, precios nuevos) necesitan internet.
-
-## Nueva versión: clientes registrados y categorías libres
-
-- El visitante puede mirar y armar el carrito sin cuenta.
-- Al confirmar, inicia sesión o crea una cuenta de cliente.
-- El pedido se guarda en la colección `pedidos` y luego abre WhatsApp.
-- El panel del comercio muestra los pedidos y permite cambiar su estado.
-- La categoría del comercio ahora se puede escribir libremente.
-- Las categorías de comercios activos se agregan automáticamente a los filtros públicos.
-
-IMPORTANTE: antes de probar pedidos, las reglas de Firestore deben permitir que el cliente autenticado cree su pedido y que el dueño del comercio pueda leer y actualizar los pedidos de su comercio.
