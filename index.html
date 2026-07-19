@@ -815,6 +815,19 @@ img{max-width:100%;height:auto}
 .checkout-label input,.checkout-label select,.checkout-label textarea{width:100%;border:1.5px solid #ccd6e2;border-radius:10px;padding:11px 12px;font:inherit}.checkout-actions{display:flex;gap:10px;margin-top:1rem;flex-wrap:wrap}.checkout-actions button{flex:1;min-width:160px}.checkout-note{background:#eef5ff;border:1px solid #cbdcf4;border-radius:11px;padding:10px 12px;font-size:.83rem;line-height:1.45;margin:.8rem 0}.checkout-error{display:none;color:#a40000;background:#fff0f0;border:1px solid #f0b7b7;border-radius:9px;padding:9px 11px;margin-top:8px;font-size:.85rem}.checkout-error.show{display:block}.checkout-tabs{display:flex;gap:8px;margin-bottom:12px}.checkout-tabs button{flex:1;padding:10px;border-radius:10px;border:1.5px solid #ccd6e2;background:#fff;font-weight:700;cursor:pointer}.checkout-tabs button.active{background:var(--azul-d);color:#fff;border-color:var(--azul-d)}
 @media(max-width:560px){.checkout-grid{grid-template-columns:1fr}.checkout-full{grid-column:auto}.checkout-box{padding:1.15rem;border-radius:18px}.checkout-actions button{width:100%}}
 
+
+.registro-final-card{max-width:820px;margin:0 auto;text-align:center;background:#fff;border:2px solid #B7D7C2;border-radius:22px;padding:clamp(1.5rem,4vw,3rem);box-shadow:0 14px 40px rgba(32,76,55,.10)}
+.registro-final-icon{font-size:3.4rem;margin-bottom:.4rem}
+.registro-final-card h3{font-family:"Fraunces",serif;font-size:clamp(1.7rem,4vw,2.5rem);margin-bottom:.8rem;color:#204C37}
+.registro-final-card>p{font-size:1.04rem;line-height:1.7;color:#555}
+.registro-final-plazo{margin:1.3rem 0;background:#FFF3CD;border:2px solid #F0CF69;border-radius:14px;padding:1rem;font-size:1rem;line-height:1.55}
+.registro-final-pasos{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:1.4rem 0;text-align:left}
+.registro-final-pasos div{background:#F4F8F5;border:1px solid #CFE1D4;border-radius:14px;padding:1rem;line-height:1.5}
+.registro-final-ayuda{font-size:.94rem!important;color:#666!important}
+.registro-final-botones{justify-content:center!important;flex-wrap:wrap}
+.registro-final-botones a{text-decoration:none}
+@media(max-width:700px){.registro-final-pasos{grid-template-columns:1fr}.registro-final-botones>*{width:100%;text-align:center}}
+
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -1095,118 +1108,7 @@ img{max-width:100%;height:auto}
     <div id="paginacion" style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:2rem;flex-wrap:wrap"></div>
 
 
-    <!-- PASO 4: PRODUCTOS -->
-    <div class="form-page" id="fpaso4">
 
-      <div class="plan-limite" id="plan-limite-msg">
-        📦 Según tu plan podés subir productos. ¡Agregá los más vendidos para que los clientes los vean!
-      </div>
-
-      <div class="prod-counter-bar">
-        <span class="pcb-text">Productos cargados</span>
-        <span class="pcb-num" id="prod-count-form">0 / 10</span>
-      </div>
-
-      <div class="mini-form">
-        <h4>➕ Agregar producto</h4>
-
-        <div style="margin-bottom:1rem">
-          <div style="font-size:.85rem;font-weight:600;color:var(--suave);margin-bottom:8px">Tipo de publicación</div>
-          <div class="check-tipo">
-            <button class="tipo-btn active-normal" id="tipo-normal" onclick="setTipo('normal')">📦 Normal</button>
-            <button class="tipo-btn" id="tipo-dest" onclick="setTipo('destacado')">⭐ Destacado (Plan Pro/Max)</button>
-            <button class="tipo-btn" id="tipo-oferta" onclick="setTipo('oferta')">🔥 Oferta semana (Plan Max)</button>
-          </div>
-        </div>
-
-        <div style="font-size:.82rem;font-weight:600;color:var(--suave);margin-bottom:6px">Elegí un emoji</div>
-        <div class="emoji-row" style="margin-bottom:12px">
-          <button class="ep" onclick="setEmoji('🍞')">🍞</button>
-          <button class="ep" onclick="setEmoji('🥩')">🥩</button>
-          <button class="ep" onclick="setEmoji('🥦')">🥦</button>
-          <button class="ep" onclick="setEmoji('💊')">💊</button>
-          <button class="ep" onclick="setEmoji('🔧')">🔧</button>
-          <button class="ep" onclick="setEmoji('🧴')">🧴</button>
-          <button class="ep" onclick="setEmoji('🥛')">🥛</button>
-          <button class="ep" onclick="setEmoji('🍕')">🍕</button>
-          <button class="ep" onclick="setEmoji('🥐')">🥐</button>
-          <button class="ep" onclick="setEmoji('👗')">👗</button>
-          <button class="ep" onclick="setEmoji('🔑')">🔑</button>
-          <button class="ep" onclick="setEmoji('⚡')">⚡</button>
-          <button class="ep" onclick="setEmoji('🏠')">🏠</button>
-          <button class="ep" onclick="setEmoji('📦')">📦</button>
-        </div>
-
-        <div class="mini-row">
-          <div>
-            <div style="font-size:.82rem;font-weight:600;color:var(--suave);margin-bottom:4px">Emoji</div>
-            <input class="mini-input" id="prod-emoji" value="📦" maxlength="2"/>
-          </div>
-          <div>
-            <div style="font-size:.82rem;font-weight:600;color:var(--suave);margin-bottom:4px">Nombre del producto *</div>
-            <input class="mini-input" id="prod-nombre" type="text" placeholder="Ej: Medialunas x6, Remera M..."/>
-          </div>
-        </div>
-
-        <div class="mini-row">
-          <div>
-            <div style="font-size:.82rem;font-weight:600;color:var(--suave);margin-bottom:4px">Precio actual ($) *</div>
-            <input class="mini-input" id="prod-precio" type="number" placeholder="Ej: 1850"/>
-          </div>
-          <div>
-            <div style="font-size:.82rem;font-weight:600;color:var(--suave);margin-bottom:4px">Precio anterior (si tiene oferta)</div>
-            <input class="mini-input" id="prod-precio-antes" type="number" placeholder="Ej: 2500"/>
-          </div>
-        </div>
-
-        <div class="mini-row">
-          <div>
-            <div style="font-size:.82rem;font-weight:600;color:var(--suave);margin-bottom:4px">Descripción / detalle</div>
-            <input class="mini-input" id="prod-desc" type="text" placeholder="Ej: Caja x10, 500ml, talle S/M/L..."/>
-          </div>
-          <div>
-            <div style="font-size:.82rem;font-weight:600;color:var(--suave);margin-bottom:4px">Stock disponible</div>
-            <input class="mini-input" id="prod-stock" type="text" placeholder="Ej: 20 unidades, ilimitado"/>
-          </div>
-        </div>
-
-        <div class="mini-row">
-          <div>
-            <div style="font-size:.82rem;font-weight:600;color:var(--suave);margin-bottom:4px">Cuotas</div>
-            <select class="mini-input" id="prod-cuotas">
-              <option value="">Sin cuotas</option>
-              <option>3 cuotas sin interés</option>
-              <option>6 cuotas sin interés</option>
-              <option>12 cuotas sin interés</option>
-              <option>Con recargo (consultar)</option>
-            </select>
-          </div>
-          <div>
-            <div style="font-size:.82rem;font-weight:600;color:var(--suave);margin-bottom:4px">Medios de pago de este producto</div>
-            <input class="mini-input" id="prod-pagos" type="text" placeholder="Ej: Efectivo, MP, débito..."/>
-          </div>
-        </div>
-
-        <button onclick="agregarProductoForm()"
-          style="width:100%;padding:13px;border-radius:var(--radio-sm);background:var(--azul);color:#fff;border:none;font-family:'DM Sans',sans-serif;font-weight:700;font-size:1rem;cursor:pointer;margin-top:.5rem">
-          ✅ Agregar este producto
-        </button>
-      </div>
-
-      <div class="prod-form-grid" id="prods-form-lista">
-        <div style="grid-column:1/-1;text-align:center;color:var(--suave);font-size:.9rem;padding:1.5rem;background:#F8F8F4;border-radius:var(--radio);border:2px dashed var(--borde)">
-          📦 Todavía no agregaste productos.<br>
-          <span style="font-size:.82rem">Podés saltear este paso y cargarlos después desde tu panel.</span>
-        </div>
-      </div>
-
-      <div class="form-nav">
-        <button class="btn btn-ghost btn-lg" onclick="irPaso(3)">← Volver al plan</button>
-        <button class="btn btn-rojo btn-xl" onclick="enviarForm()">
-          🥔 ¡Registrar mi comercio!
-        </button>
-      </div>
-    </div>
 
   </div>
 </section>
@@ -1345,7 +1247,7 @@ img{max-width:100%;height:auto}
 <section class="form-section" id="registro-comercio">
   <div class="form-inner">
     <h2 class="form-big-title">🥔 ¡Anotate, no te quedés en el horno!</h2>
-    <p class="form-big-sub">Completá los datos de tu comercio en 3 pasos. <strong>Sin costo de inscripción.</strong> En menos de 24hs estás en la app.</p>
+    <p class="form-big-sub">Completá los datos de tu comercio en 4 pasos y recibí una confirmación final. <strong>Sin costo de inscripción.</strong> En menos de 24hs estás en la app.</p>
 
     <div id="fb-status" class="fb-banner ok">
       <span>🔥</span><div><strong>Firebase conectado</strong> al proyecto <em>salvame-las-papas-cdelu</em>. Los registros se guardan en Firestore automáticamente.</div>
@@ -1464,6 +1366,139 @@ img{max-width:100%;height:auto}
       <div class="form-nav">
         <button class="btn btn-ghost btn-lg" onclick="irPaso(2)">← Volver</button>
         <button class="btn btn-rojo btn-xl" id="btn-enviar" onclick="enviarYSeguir()">Siguiente: Mis productos →</button>
+      </div>
+    </div>
+
+    <!-- PASO 4: PRODUCTOS -->
+    <div class="form-page" id="fpaso4">
+
+      <div class="plan-limite" id="plan-limite-msg">
+        📦 Según tu plan podés subir productos. ¡Agregá los más vendidos para que los clientes los vean!
+      </div>
+
+      <div class="prod-counter-bar">
+        <span class="pcb-text">Productos cargados</span>
+        <span class="pcb-num" id="prod-count-form">0 / 10</span>
+      </div>
+
+      <div class="mini-form">
+        <h4>➕ Agregar producto</h4>
+
+        <div style="margin-bottom:1rem">
+          <div style="font-size:.85rem;font-weight:600;color:var(--suave);margin-bottom:8px">Tipo de publicación</div>
+          <div class="check-tipo">
+            <button class="tipo-btn active-normal" id="tipo-normal" onclick="setTipo('normal')">📦 Normal</button>
+            <button class="tipo-btn" id="tipo-dest" onclick="setTipo('destacado')">⭐ Destacado (Plan Pro/Max)</button>
+            <button class="tipo-btn" id="tipo-oferta" onclick="setTipo('oferta')">🔥 Oferta semana (Plan Max)</button>
+          </div>
+        </div>
+
+        <div style="font-size:.82rem;font-weight:600;color:var(--suave);margin-bottom:6px">Elegí un emoji</div>
+        <div class="emoji-row" style="margin-bottom:12px">
+          <button class="ep" onclick="setEmoji('🍞')">🍞</button>
+          <button class="ep" onclick="setEmoji('🥩')">🥩</button>
+          <button class="ep" onclick="setEmoji('🥦')">🥦</button>
+          <button class="ep" onclick="setEmoji('💊')">💊</button>
+          <button class="ep" onclick="setEmoji('🔧')">🔧</button>
+          <button class="ep" onclick="setEmoji('🧴')">🧴</button>
+          <button class="ep" onclick="setEmoji('🥛')">🥛</button>
+          <button class="ep" onclick="setEmoji('🍕')">🍕</button>
+          <button class="ep" onclick="setEmoji('🥐')">🥐</button>
+          <button class="ep" onclick="setEmoji('👗')">👗</button>
+          <button class="ep" onclick="setEmoji('🔑')">🔑</button>
+          <button class="ep" onclick="setEmoji('⚡')">⚡</button>
+          <button class="ep" onclick="setEmoji('🏠')">🏠</button>
+          <button class="ep" onclick="setEmoji('📦')">📦</button>
+        </div>
+
+        <div class="mini-row">
+          <div>
+            <div style="font-size:.82rem;font-weight:600;color:var(--suave);margin-bottom:4px">Emoji</div>
+            <input class="mini-input" id="prod-emoji" value="📦" maxlength="2"/>
+          </div>
+          <div>
+            <div style="font-size:.82rem;font-weight:600;color:var(--suave);margin-bottom:4px">Nombre del producto *</div>
+            <input class="mini-input" id="prod-nombre" type="text" placeholder="Ej: Medialunas x6, Remera M..."/>
+          </div>
+        </div>
+
+        <div class="mini-row">
+          <div>
+            <div style="font-size:.82rem;font-weight:600;color:var(--suave);margin-bottom:4px">Precio actual ($) *</div>
+            <input class="mini-input" id="prod-precio" type="number" placeholder="Ej: 1850"/>
+          </div>
+          <div>
+            <div style="font-size:.82rem;font-weight:600;color:var(--suave);margin-bottom:4px">Precio anterior (si tiene oferta)</div>
+            <input class="mini-input" id="prod-precio-antes" type="number" placeholder="Ej: 2500"/>
+          </div>
+        </div>
+
+        <div class="mini-row">
+          <div>
+            <div style="font-size:.82rem;font-weight:600;color:var(--suave);margin-bottom:4px">Descripción / detalle</div>
+            <input class="mini-input" id="prod-desc" type="text" placeholder="Ej: Caja x10, 500ml, talle S/M/L..."/>
+          </div>
+          <div>
+            <div style="font-size:.82rem;font-weight:600;color:var(--suave);margin-bottom:4px">Stock disponible</div>
+            <input class="mini-input" id="prod-stock" type="text" placeholder="Ej: 20 unidades, ilimitado"/>
+          </div>
+        </div>
+
+        <div class="mini-row">
+          <div>
+            <div style="font-size:.82rem;font-weight:600;color:var(--suave);margin-bottom:4px">Cuotas</div>
+            <select class="mini-input" id="prod-cuotas">
+              <option value="">Sin cuotas</option>
+              <option>3 cuotas sin interés</option>
+              <option>6 cuotas sin interés</option>
+              <option>12 cuotas sin interés</option>
+              <option>Con recargo (consultar)</option>
+            </select>
+          </div>
+          <div>
+            <div style="font-size:.82rem;font-weight:600;color:var(--suave);margin-bottom:4px">Medios de pago de este producto</div>
+            <input class="mini-input" id="prod-pagos" type="text" placeholder="Ej: Efectivo, MP, débito..."/>
+          </div>
+        </div>
+
+        <button onclick="agregarProductoForm()"
+          style="width:100%;padding:13px;border-radius:var(--radio-sm);background:var(--azul);color:#fff;border:none;font-family:'DM Sans',sans-serif;font-weight:700;font-size:1rem;cursor:pointer;margin-top:.5rem">
+          ✅ Agregar este producto
+        </button>
+      </div>
+
+      <div class="prod-form-grid" id="prods-form-lista">
+        <div style="grid-column:1/-1;text-align:center;color:var(--suave);font-size:.9rem;padding:1.5rem;background:#F8F8F4;border-radius:var(--radio);border:2px dashed var(--borde)">
+          📦 Todavía no agregaste productos.<br>
+          <span style="font-size:.82rem">Podés saltear este paso y cargarlos después desde tu panel.</span>
+        </div>
+      </div>
+
+      <div class="form-nav">
+        <button class="btn btn-ghost btn-lg" onclick="irPaso(3)">← Volver al plan</button>
+        <button class="btn btn-rojo btn-xl" onclick="enviarForm()">
+          🥔 ¡Registrar mi comercio!
+        </button>
+      </div>
+    </div>
+
+    <div class="form-page" id="fpaso5">
+      <div class="registro-final-card">
+        <div class="registro-final-icon">✅</div>
+        <h3>¡Finalizaste la incorporación de tu comercio!</h3>
+        <p>Recibimos correctamente tus datos. Tu comercio quedó <strong>pendiente de revisión y acreditación del pago</strong>.</p>
+        <div class="registro-final-plazo">⏱️ La activación puede demorar hasta <strong>24 horas desde que se impacte el pago</strong>.</div>
+        <div class="registro-final-pasos">
+          <div><b>1.</b> Revisamos los datos del comercio.</div>
+          <div><b>2.</b> Confirmamos la acreditación del plan elegido.</div>
+          <div><b>3.</b> Aprobamos el comercio y aparece en la página principal.</div>
+        </div>
+        <p class="registro-final-ayuda">Podés coordinar o enviar el comprobante por WhatsApp. También recibirás la confirmación cuando el comercio sea aprobado.</p>
+        <div class="form-nav registro-final-botones">
+          <a class="btn btn-rojo btn-lg" id="btn-final-whatsapp" href="https://wa.me/5493442490585" target="_blank" rel="noopener noreferrer">💬 Enviar comprobante por WhatsApp</a>
+          <a class="btn btn-azul btn-lg" href="comercio.html">🏪 Ir a Mi comercio</a>
+          <button class="btn btn-ghost btn-lg" onclick="reiniciarRegistro()">Registrar otro comercio</button>
+        </div>
       </div>
     </div>
   </div>
@@ -1686,7 +1721,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   const busq = document.getElementById('busqueda')
   if(busq) busq.addEventListener('keydown',e=>{if(e.key==='Enter')buscar()})
   // Inicializar formulario - asegurar que paso 1 esté visible
-  for(let i=1;i<=4;i++){
+  for(let i=1;i<=5;i++){
     const pg = document.getElementById('fpaso'+i)
     if(pg) pg.style.display = (i===1) ? 'block' : 'none'
   }
@@ -1832,6 +1867,8 @@ async function enviarForm(){
       productos: productosForm,
       categoria:document.getElementById('f-cat').value.trim(),
       estado:'pendiente',
+      estadoPagoPlan:'pendiente',
+      plazoActivacion:'Hasta 24 horas desde la acreditación del pago',
       emailVerificado:user.emailVerified===true,
       creadoEn:window._fb.serverTimestamp()
     }
@@ -1843,8 +1880,10 @@ async function enviarForm(){
     banner.innerHTML='<span>✅</span><div><strong>¡Comercio registrado!</strong> '+(cuentaNueva?'Te enviamos un correo de verificación a <b>'+email+'</b>. Revisá también Spam o Correo no deseado.':'Tu comercio quedó asociado a tu cuenta actual.')+'</div>'
     toast('✅ ¡'+nombre+' quedó registrado!')
 
-    const msg='Hola!%20Quiero%20anotarme%20en%20Sálvame%20las%20Papas.%0ANegocio:%20'+encodeURIComponent(nombre)+'%0APlan:%20'+encodeURIComponent(planes[planSel])+'%0AWhatsApp:%20'+encodeURIComponent(tel)+'%0ADirección:%20'+encodeURIComponent(dir)+'%0AEmail:%20'+encodeURIComponent(email)
-    setTimeout(()=>window.open('https://wa.me/5493442490585?text='+msg,'_blank','noopener'),700)
+    const msg='Hola! Quiero completar la incorporación de mi comercio en Sálvame las Papas.%0A%0ANegocio: '+encodeURIComponent(nombre)+'%0APlan: '+encodeURIComponent(planes[planSel])+'%0AWhatsApp: '+encodeURIComponent(tel)+'%0ADirección: '+encodeURIComponent(dir)+'%0AEmail: '+encodeURIComponent(email)+'%0A%0AAdjunto o coordino el comprobante de pago.'
+    const wa=document.getElementById('btn-final-whatsapp')
+    if(wa) wa.href='https://wa.me/5493442490585?text='+msg
+    irPaso(5)
   }catch(e){
     console.error('Registro de comercio:',e)
     const mensajes={
@@ -1864,6 +1903,16 @@ async function enviarForm(){
   }
 }
 
+
+function reiniciarRegistro(){
+  document.querySelectorAll('#registro-comercio input:not([type=checkbox]), #registro-comercio textarea').forEach(el=>{
+    if(!['prod-emoji'].includes(el.id)) el.value=''
+  })
+  document.querySelectorAll('#registro-comercio input[type=checkbox]').forEach(el=>{el.checked=false;el.closest('.check-item')?.classList.remove('checked')})
+  productosForm=[]
+  renderProductosForm()
+  irPaso(1)
+}
 
 // ════════════════════════════════════
 //  ESTADO ABIERTO / CERRADO
@@ -2144,8 +2193,8 @@ async function cargarComercios(){
   // Intentar cargar desde Firebase
   try {
     if(window._fb && window._fbReady && window._fbReady()){
-      const {db, collection, getDocs, query, orderBy} = window._fb
-      const snap = await getDocs(query(collection(db,'comercios'), orderBy('creadoEn','desc')))
+      const {db, collection, getDocs} = window._fb
+      const snap = await getDocs(collection(db,'comercios'))
       if(!snap.empty){
         const fbComercics = []
         snap.forEach(doc => {

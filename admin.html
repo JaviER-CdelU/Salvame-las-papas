@@ -222,8 +222,8 @@ window.aprobarComercio = async (id, nombre, tel) => {
   nombre = decodeURIComponent(nombre || '')
   if(!confirm('Aprobar a ' + nombre + '?')) return
   try {
-    await updateDoc(doc(db,'comercios',id), { estado: 'activo' })
-    toast('✅ ' + nombre + ' aprobado y activo en la app')
+    await updateDoc(doc(db,'comercios',id), { estado: 'activo', estadoPagoPlan: 'acreditado', aprobadoEn: serverTimestamp(), actualizadoEn: serverTimestamp() })
+    toast('✅ ' + nombre + ' aprobado. Ya puede aparecer en la página principal.')
     // Notificar al comercio por WhatsApp
     if(tel){
       const msg = 'Hola%20' + encodeURIComponent(nombre) + '!%20Te%20confirmamos%20que%20tu%20comercio%20ya%20está%20ACTIVO%20en%20Sálvame%20las%20Papas%20🥔%0A%0A¡Bienvenido%20a%20la%20red%20de%20CDU!%20Ya%20podés%20ver%20tu%20local%20en%20la%20app.'
