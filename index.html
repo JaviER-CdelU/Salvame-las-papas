@@ -828,6 +828,148 @@ img{max-width:100%;height:auto}
 .registro-final-botones a{text-decoration:none}
 @media(max-width:700px){.registro-final-pasos{grid-template-columns:1fr}.registro-final-botones>*{width:100%;text-align:center}}
 
+
+/* =========================================================
+   AJUSTES RESPONSIVE PARA CELULARES
+   ========================================================= */
+html, body{
+  width:100%;
+  max-width:100%;
+  overflow-x:hidden;
+}
+
+*, *::before, *::after{
+  box-sizing:border-box;
+  min-width:0;
+}
+
+img, video, iframe, svg{
+  max-width:100%;
+  height:auto;
+}
+
+main, section, header, footer,
+.container, .contenedor, .wrap, .wrapper{
+  width:100%;
+  max-width:100%;
+}
+
+@media (max-width: 768px){
+  body{
+    overflow-x:hidden !important;
+  }
+
+  /* Contenedores generales */
+  .container, .contenedor, .wrap, .wrapper,
+  .comercios-grid, .cards-grid, .resultados-grid,
+  .planes-grid, .categorias-grid{
+    width:100% !important;
+    max-width:100% !important;
+    padding-left:12px !important;
+    padding-right:12px !important;
+    margin-left:auto !important;
+    margin-right:auto !important;
+  }
+
+  /* Grillas a una columna */
+  .comercios-grid, .cards-grid, .resultados-grid,
+  .planes-grid, .categorias-grid{
+    display:grid !important;
+    grid-template-columns:minmax(0, 1fr) !important;
+    gap:16px !important;
+  }
+
+  /* Tarjetas */
+  .comercio-card, .card-comercio, .card,
+  .resultado-card, .plan{
+    width:100% !important;
+    max-width:100% !important;
+    min-width:0 !important;
+    margin-left:0 !important;
+    margin-right:0 !important;
+    padding:18px 14px !important;
+    overflow:hidden !important;
+  }
+
+  /* Encabezados y textos largos */
+  .comercio-card h2, .comercio-card h3,
+  .card-comercio h2, .card-comercio h3,
+  .resultado-card h2, .resultado-card h3,
+  .plan h2, .plan h3{
+    font-size:clamp(1.45rem, 7vw, 2rem) !important;
+    line-height:1.08 !important;
+    overflow-wrap:anywhere !important;
+    word-break:break-word !important;
+  }
+
+  p, span, div, a, button, label, select, input{
+    overflow-wrap:anywhere;
+    word-break:normal;
+  }
+
+  /* Etiquetas y métodos de pago */
+  .badges, .chips, .tags, .metodos-pago,
+  .comercio-badges, .card-tags, .filtros-row{
+    display:flex !important;
+    flex-wrap:wrap !important;
+    gap:8px !important;
+    width:100% !important;
+  }
+
+  .badge, .chip, .tag, .metodo-pago,
+  .badges span, .chips span, .tags span{
+    max-width:100% !important;
+    white-space:normal !important;
+    text-align:center !important;
+  }
+
+  /* Botones y WhatsApp */
+  button, .btn, .btn-whatsapp, .whatsapp-btn,
+  a[class*="btn"], a[class*="whatsapp"]{
+    width:100% !important;
+    max-width:100% !important;
+    white-space:normal !important;
+    line-height:1.25 !important;
+    padding-left:12px !important;
+    padding-right:12px !important;
+  }
+
+  /* Formularios y filtros */
+  input, select, textarea{
+    width:100% !important;
+    max-width:100% !important;
+  }
+
+  /* Favorito y elementos flotantes */
+  .favorito, .fav-btn, .btn-favorito{
+    max-width:48px !important;
+    width:48px !important;
+    min-width:48px !important;
+  }
+
+  /* Productos en vitrina */
+  .productos-vitrina, .vitrina, .productos-grid{
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) !important;
+    width:100% !important;
+    max-width:100% !important;
+  }
+}
+
+@media (max-width: 420px){
+  .comercio-card, .card-comercio, .card,
+  .resultado-card, .plan{
+    border-radius:18px !important;
+    padding:16px 12px !important;
+  }
+
+  .comercio-card h2, .comercio-card h3,
+  .card-comercio h2, .card-comercio h3,
+  .resultado-card h2, .resultado-card h3{
+    font-size:1.55rem !important;
+  }
+}
+
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">

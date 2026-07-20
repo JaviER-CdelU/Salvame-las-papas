@@ -79,7 +79,8 @@ window.loginConGoogle = async () => {
     if (e.code === 'auth/popup-closed-by-user') {
       err.textContent = 'Cerraste la ventana de Google. Intentá de nuevo.';
     } else if (e.code === 'auth/unauthorized-domain') {
-      err.textContent = 'Este sitio todavía no está autorizado en Firebase. Hay que agregar javier-cdelu.github.io en Dominios autorizados.';
+      const dominioActual = window.location.hostname;
+      err.textContent = 'Firebase todavía no autorizó este dominio: ' + dominioActual + '. Agregalo exactamente así en Authentication → Configuración → Dominios autorizados.';
     } else if ((e.message || '').includes('Cuenta no autorizada')) {
       err.textContent = 'Esta cuenta de Google no está autorizada para administrar el sitio.';
     } else {
