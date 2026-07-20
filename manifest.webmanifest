@@ -1,7 +1,7 @@
 {
-  "id": "./",
+  "id": "salvame-las-papas",
   "name": "Sálvame las Papas",
-  "short_name": "Sálvame",
+  "short_name": "Salvame Papas",
   "description": "Comercios, productos, servicios y pedidos de Concepción del Uruguay.",
   "lang": "es-AR",
   "start_url": "./index.html",

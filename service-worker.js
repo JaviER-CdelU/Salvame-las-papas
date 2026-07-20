@@ -1,4 +1,4 @@
-const CACHE_NAME = "salvame-papas-shell-v10-responsive";
+const CACHE_NAME = "salvame-papas-shell-v11-mobile-cards";
 const APP_SHELL = [
   "./",
   "./index.html",
