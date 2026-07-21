@@ -1,0 +1,11 @@
+NUEVO DISEÑO DEL INDEX
+
+Se embellecieron sin cambiar la lógica:
+- listado y filtros de comercios;
+- formulario de registro en 4 pasos;
+- contacto, confianza y proyecto local;
+- diccionario y pie de página;
+- versión móvil.
+
+Se mantienen Firebase, pedidos, carrito, acceso, planes y datos reales.
+Caché: v22.

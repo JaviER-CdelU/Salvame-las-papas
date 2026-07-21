@@ -1,0 +1,13 @@
+ESTA VERSIÓN CAMBIA DE VERDAD EL FORMULARIO DEL INDEX
+
+- Panel lateral azul con la Súper Papa.
+- Beneficios para el comercio.
+- Formulario amplio a la derecha.
+- Pasos rediseñados como pestañas.
+- Campos modernos con foco azul.
+- Botones principales naranjas.
+- Vista móvil en una sola columna.
+- Se conservaron todos los IDs y funciones para no romper Firebase.
+
+La versión de caché es:
+salvame-papas-v22-formulario-real
