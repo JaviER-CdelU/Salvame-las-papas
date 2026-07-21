@@ -955,6 +955,54 @@ img,video,iframe,svg{max-width:100%;height:auto}
   .boton-diccionario{font-size:.9rem;padding:.58rem .85rem}
 }
 
+
+.info-publica-comercio{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  font-size:.82rem;
+  line-height:1.35;
+  margin-top:8px;
+}
+.info-linea{
+  display:flex;
+  align-items:flex-start;
+  gap:7px;
+  flex-wrap:wrap;
+}
+.info-linea a{
+  font-weight:700;
+  text-decoration:none;
+}
+.info-linea a:hover{text-decoration:underline}
+.papa-marcador{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:22px;
+  height:22px;
+  flex:0 0 22px;
+  border-radius:50%;
+  background:#ffe39a;
+  font-size:.85rem;
+}
+.cm-detalles-publicos{
+  margin-top:8px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  font-size:.85rem;
+  color:rgba(255,255,255,.84);
+}
+.cm-detalles-publicos a{
+  color:#ffe082;
+  font-weight:800;
+  text-decoration:none;
+}
+@media(max-width:600px){
+  .info-publica-comercio{font-size:.78rem}
+}
+
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -2112,47 +2160,77 @@ function registrarClicWhatsapp(comercio){
 
 const POR_PAGINA = 6  // comercios por página
 
-// Datos demo — se reemplazan con Firebase cuando hay registros reales
-const COMERCIOS_DEMO = [
-  // MAX
-  {
-    plan:3, nombre:"Farmacia Central", cat:"Farmacia", barrio:"Centro",
-    desc:"Todo para la salud de tu familia. Enviamos a domicilio, todas las obras sociales.",
-    tags:["Envío disponible","Débito · Crédito · Cuotas"],
-    horarios:"Lun a Vie: 8-13 y 16-21 Sab: 9-13",
-    productos:[{e:"💊",n:"Ibuprofeno 400",p:"$890",d:"Caja x10 comp"},{e:"🩹",n:"Curita grande",p:"$450",d:"Pack x6 unid"},{e:"🧴",n:"Crema Nivea",p:"$2.100",d:"200ml"}],
-    tel:"5493442490585", emoji:"💊", bg:"#D8F3DC"
-  },
-  // PRO
-  {
-    plan:2, nombre:"Almacén Don Pedro", cat:"Almacén", barrio:"Barrio Sur",
-    desc:"Abarrotes, lácteos, bebidas y limpieza.",
-    tags:["Cadete propio","Efectivo · Transferencia"],
-    horarios:"Lun a Sab: 8-13 y 17-22",
-    productos:[{e:"🥛",n:"Leche entera x1lt",p:"$1850",d:"La Serenísima"},{e:"🍝",n:"Fideos Matarazzo",p:"$920",d:"500g tallarín"}],
-    tel:"5493442490585", emoji:"🛒", bg:"#FFF3CD"
-  },
-  {
-    plan:2, nombre:"Panadería El Horno", cat:"Panadería", barrio:"Centro",
-    desc:"Pan del día, facturas y pizzas caseras.",
-    tags:["Retiro en local","Efectivo · Débito"],
-    horarios:"Lun a Vie: 7-12 y 16-20 Sab: 7-12",
-    productos:[{e:"🍞",n:"Pan francés x kg",p:"$2200",d:"Horneado del día"},{e:"🥐",n:"Medialunas x6",p:"$1400",d:"De manteca"}],
-    tel:"5493442490585", emoji:"🍞", bg:"#FDE8D8"
-  },
-  // BÁSICO
-  {plan:1, nombre:"Ferretería El Tornillo", cat:"Ferretería", barrio:"Norte", tags:["Abierto","Efectivo"], tel:"5493442490585", emoji:"🔧", bg:"#E8E8F4"},
-  {plan:1, nombre:"Verdulería La Cosecha", cat:"Verdulería", barrio:"Puerto", tags:["Abierto","Envío con cargo"], tel:"5493442490585", emoji:"🥦", bg:"#D8F3DC"},
-  {plan:1, nombre:"Carnicería El Gaucho", cat:"Carnicería", barrio:"120 Viviendas", tags:["Abierto","Efectivo"], tel:"5493442490585", emoji:"🥩", bg:"#FFE8CC"},
-  {plan:1, nombre:"Cerrajero 24hs", cat:"Cerrajero", barrio:"CDU", tags:["24 horas","Urgencias"], tel:"5493442490585", emoji:"🔑", bg:"#F0F0F0"},
-  {plan:1, nombre:"Electricista Ramírez", cat:"Electricista", barrio:"Barrio Sur", tags:["Abierto","Urgencias"], tel:"5493442490585", emoji:"⚡", bg:"#FFF9C4"},
-]
+// La página pública muestra únicamente comercios reales cargados en Firebase.
+const COMERCIOS_DEMO = []
 
 let pagActual = 1
 let comerciosTodos = []
 
 function ordenarPorPlan(lista){
   return [...lista].sort((a,b) => (b.plan||1) - (a.plan||1))
+}
+
+
+function textoSeguro(valor){
+  return String(valor ?? '').replace(/[&<>"']/g, ch => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
+  })[ch]);
+}
+
+function horarioTexto(horarios){
+  if(!horarios) return 'Horario no informado';
+  if(typeof horarios === 'string') return horarios;
+  if(Array.isArray(horarios)) return horarios.filter(Boolean).join(' · ');
+  if(typeof horarios === 'object'){
+    return Object.entries(horarios)
+      .filter(([,v]) => v)
+      .map(([dia,v]) => `${dia}: ${v}`)
+      .join(' · ') || 'Horario no informado';
+  }
+  return 'Horario no informado';
+}
+
+function direccionCompleta(c){
+  const partes = [
+    c.direccion,
+    c.barrio,
+    'Concepción del Uruguay',
+    'Entre Ríos'
+  ].filter(Boolean);
+  return [...new Set(partes)].join(', ');
+}
+
+function enlaceMaps(c){
+  const direccion = direccionCompleta(c);
+  return direccion
+    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(direccion)}`
+    : '';
+}
+
+function infoPublicaComercio(c, modoOscuro=false){
+  const horario = horarioTexto(c.horarios);
+  const direccion = direccionCompleta(c);
+  const maps = enlaceMaps(c);
+  const color = modoOscuro ? 'rgba(255,255,255,.82)' : '#4b5563';
+  const linkColor = modoOscuro ? '#ffe082' : '#0b5cad';
+
+  return `
+    <div class="info-publica-comercio" style="color:${color}">
+      <div class="info-linea">
+        <span class="papa-marcador">🥔</span>
+        ${direccion
+          ? `<a href="${maps}" target="_blank" rel="noopener noreferrer"
+                style="color:${linkColor}" onclick="event.stopPropagation()">
+               ${textoSeguro(direccion)} · Ver en Google Maps
+             </a>`
+          : `<span>Dirección todavía no informada</span>`}
+      </div>
+      <div class="info-linea">
+        <span>🕒</span>
+        <span>${textoSeguro(horario)}</span>
+        ${badgeEstado(c.horarios)}
+      </div>
+    </div>`;
 }
 
 function renderComercio(c, globalIdx){
@@ -2179,6 +2257,7 @@ function renderComercio(c, globalIdx){
           ${badgeEstado(c.horarios)}
         </div>
         <div class="cmax-cat">${c.cat} · ${c.barrio||"CDU"}</div>
+        ${infoPublicaComercio(c,true)}
         <p class="cmax-desc">${c.desc||""}</p>
         <div class="tienda-tags">${tags}</div>
         <a class="cmax-wa" href="${waLink}" target="_blank" rel="noopener noreferrer" onclick="registrarClicWhatsapp(window._comercioRefs[${globalIdx}])">
@@ -2207,6 +2286,7 @@ function renderComercio(c, globalIdx){
             ${badgeEstado(c.horarios)}
           </div>
           <div class="cpro-cat">${c.cat} · ${c.barrio||"CDU"}</div>
+          ${infoPublicaComercio(c,true)}
         </div>
       </div>
       <div class="tienda-tags">${tags}</div>
@@ -2233,6 +2313,7 @@ function renderComercio(c, globalIdx){
           ${badgeEstado(c.horarios)}
         </div>
         <div class="cbasico-cat">${c.cat} · ${c.barrio||"CDU"}</div>
+        ${infoPublicaComercio(c,false)}
       </div>
     </div>
     <div class="tienda-tags">${tags}</div>
@@ -2258,7 +2339,7 @@ function renderPagina(lista, pag){
   const grid = document.getElementById('lista-comercios')
   if(grid){
     if(pagina.length === 0){
-      grid.innerHTML = '<p style="color:var(--suave);grid-column:1/-1;padding:2rem;text-align:center">Pronto aparecerán los primeros comercios registrados 🥔</p>'
+      grid.innerHTML = '<p style="color:var(--suave);grid-column:1/-1;padding:2rem;text-align:center">Todavía no hay comercios reales activos para mostrar. Los comercios de demostración fueron retirados. 🥔</p>'
     } else {
       const globalOffset = inicio
       grid.innerHTML = pagina.map((c,i) => renderComercio(c, globalOffset+i)).join('')
@@ -2302,7 +2383,7 @@ function irPagina(n){
 }
 
 async function cargarComercios(){
-  comerciosTodos = ordenarPorPlan(COMERCIOS_DEMO)
+  comerciosTodos = []
 
   // Intentar cargar desde Firebase
   try {
@@ -2322,8 +2403,8 @@ async function cargarComercios(){
               cat: d.categoria,
               barrio: d.barrio,
               desc: d.descripcion,
-              direccion: d.direccion,
-              horarios: d.horarios,
+              direccion: d.direccion || d.domicilio || d.ubicacion || '',
+              horarios: d.horarios || d.horario || d.horarioAtencion || '',
               tags: [...(d.pagos||[]).slice(0,2), ...(d.envio||[]).slice(0,1)],
               tel: d.telefono?.replace(/\D/g,'') || '',
               emoji: d.emoji || '🏪',
@@ -2370,7 +2451,14 @@ function abrirComercio(c){
   document.getElementById('cm-avatar').textContent = c.emoji || '🏪'
   document.getElementById('cm-avatar').style.background = c.bg || '#E6EEF9'
   document.getElementById('cm-nombre').textContent = c.nombre
-  document.getElementById('cm-cat').textContent = (c.cat||'') + (c.barrio ? ' · ' + c.barrio : '') + (c.horarios ? ' · ' + badgeEstado(c.horarios) : '')
+  document.getElementById('cm-cat').innerHTML =
+    `<div>${textoSeguro(c.cat||'')}${c.barrio ? ' · ' + textoSeguro(c.barrio) : ''}</div>
+     <div class="cm-detalles-publicos">
+       <div>🕒 ${textoSeguro(horarioTexto(c.horarios))} ${badgeEstado(c.horarios)}</div>
+       <div>${c.direccion
+          ? `🥔 <a href="${enlaceMaps(c)}" target="_blank" rel="noopener noreferrer">${textoSeguro(direccionCompleta(c))} · Ver en Google Maps</a>`
+          : '🥔 Dirección todavía no informada'}</div>
+     </div>`
 
   prepararAccionesComercio(c)
 

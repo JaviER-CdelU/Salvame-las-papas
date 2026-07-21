@@ -1,0 +1,22 @@
+CAMBIOS REALIZADOS
+
+- Se eliminaron de la página pública todos los comercios ficticios de demostración:
+  Farmacia Central, Almacén Don Pedro, Panadería El Horno,
+  Ferretería El Tornillo, Verdulería La Cosecha y otros ejemplos.
+
+- La página principal muestra únicamente comercios reales cargados en Firebase,
+  aprobados, activos y no vencidos.
+
+- En cada tarjeta ahora se muestra:
+  * categoría y barrio;
+  * dirección señalada con una papa;
+  * enlace a Google Maps;
+  * horario;
+  * indicador abierto/cerrado.
+
+- Se corrigió el texto roto del modal. El indicador abierto/cerrado ya no aparece
+  como código HTML escrito.
+
+IMPORTANTE:
+Los comercios de ejemplo no eran promociones ni comercios inscriptos.
+Eran datos incluidos únicamente para mostrar el diseño.
