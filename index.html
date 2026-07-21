@@ -14,9 +14,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, orderBy, limit, where, doc, setDoc, updateDoc, increment, updateDoc, increment }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
-         sendEmailVerification, updateProfile, reload, onAuthStateChanged, signOut }
-  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, updateProfile, reload, onAuthStateChanged, signOut} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAE8kEBAzDbPvCCD1KCyjq67iFl3dvthLM",
@@ -928,6 +926,33 @@ img,video,iframe,svg{max-width:100%;height:auto}
   .cpro-avatar{width:50px!important;height:50px!important;flex-basis:50px!important}
 }
 
+
+#actualizacion-app{position:fixed;left:12px;right:12px;bottom:14px;z-index:10000;display:none;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:14px;background:#17324d;color:#fff;box-shadow:0 8px 30px rgba(0,0,0,.28);font-family:inherit}
+#actualizacion-app.visible{display:flex}
+#actualizacion-app button{border:0;border-radius:10px;padding:10px 14px;background:#ffd34e;color:#222;font-weight:800;cursor:pointer;white-space:nowrap}
+@media(max-width:520px){#actualizacion-app{align-items:stretch;flex-direction:column}#actualizacion-app button{width:100%}}
+
+
+.boton-diccionario{
+  display:inline-flex;
+  align-items:center;
+  gap:.5rem;
+  padding:.65rem 1rem;
+  border-radius:999px;
+  background:linear-gradient(135deg,#ffca28,#ff8f00);
+  color:#17202a;
+  font-weight:900;
+  text-decoration:none;
+  box-shadow:0 6px 18px rgba(255,143,0,.3);
+  border:2px solid rgba(255,255,255,.7);
+  transition:transform .18s ease, box-shadow .18s ease;
+}
+.boton-diccionario:hover{transform:translateY(-2px);box-shadow:0 9px 22px rgba(255,143,0,.38)}
+.boton-diccionario-wrap{text-align:center;margin:18px auto 8px;padding:0 12px}
+@media(max-width:520px){
+  .boton-diccionario{font-size:.9rem;padding:.58rem .85rem}
+}
+
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -1222,66 +1247,6 @@ img,video,iframe,svg{max-width:100%;height:auto}
       <div class="paso"><div class="paso-num">2</div><h3>Elegís el comercio</h3><p>Ves los locales con horarios, precios y formas de pago. <em>Sin andar dando vueltas</em> por toda la ciudad.</p></div>
       <div class="paso"><div class="paso-num">3</div><h3>Hablás directo</h3><p>Le mandás un WhatsApp al comercio. <em>Te hacen la gauchada</em> y coordinan la entrega.</p></div>
       <div class="paso"><div class="paso-num">4</div><h3>Recibís y listo</h3><p>Te lo mandan con cadete o retirás cuando querés. <em>¡Pa' las casas!</em> Problema resuelto.</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- DICCIONARIO ENTRERRIANO -->
-<section class="dicc-section" id="diccionario">
-  <div class="dicc-inner">
-    <div class="dicc-header">
-      <h2>🧉 Diccionario entrerriano</h2>
-      <p>Palabras y expresiones de nuestra provincia, explicadas en pocas líneas.</p>
-    </div>
-    <div class="dicc-grid">
-      <div class="dicc-card">
-        <div class="dicc-term">🔥 Estar en el horno</div>
-        <div class="dicc-def">Estar en problemas, en apuros. <strong>El alma de esta app.</strong></div>
-        <div class="dicc-ej"><strong>Ej:</strong> "Estoy en el horno, se me rompió la heladera y no sé a quién llamar."</div>
-        <div class="mate-badge">🧉 100% entrerriano</div>
-      </div>
-      <div class="dicc-card">
-        <div class="dicc-term">🤝 Hacer una gauchada</div>
-        <div class="dicc-def">Dar una mano, ayudar al prójimo. <strong>Lo que hacen los comercios registrados.</strong></div>
-        <div class="dicc-ej"><strong>Ej:</strong> "¿Me hacés la gauchada de mandarme el pedido hoy?"</div>
-        <div class="mate-badge">🧉 100% entrerriano</div>
-      </div>
-      <div class="dicc-card">
-        <div class="dicc-term">👦 Gurí / Gurisa</div>
-        <div class="dicc-def">Chico, pibe, persona joven. <strong>El cliente del futuro.</strong></div>
-        <div class="dicc-ej"><strong>Ej:</strong> "¿Qué necesitás, gurí? Preguntame que yo te canto quién está cerca."</div>
-        <div class="mate-badge">🧉 100% entrerriano</div>
-      </div>
-      <div class="dicc-card">
-        <div class="dicc-term">🏠 Pa' las casas</div>
-        <div class="dicc-def">Listo, asunto resuelto, hora de irse tranquilo.</div>
-        <div class="dicc-ej"><strong>Ej:</strong> "Encontraste al plomero. ¡Pa' las casas, problema resuelto!"</div>
-        <div class="mate-badge">🧉 100% entrerriano</div>
-      </div>
-      <div class="dicc-card">
-        <div class="dicc-term">🚶 Metele pata</div>
-        <div class="dicc-def">Apurarse, ponerse en movimiento. No quedarse dormido.</div>
-        <div class="dicc-ej"><strong>Ej:</strong> "¡Metele pata que la farmacia cierra a las 21!"</div>
-        <div class="mate-badge">🧉 100% entrerriano</div>
-      </div>
-      <div class="dicc-card">
-        <div class="dicc-term">😅 No te quedés en el horno</div>
-        <div class="dicc-def">No te quedés sin solución. Siempre hay alguien que puede ayudarte.</div>
-        <div class="dicc-ej"><strong>Ej:</strong> "No te quedés en el horno sin el pan. Acá tenés 8 panaderías disponibles."</div>
-        <div class="mate-badge">🧉 100% entrerriano</div>
-      </div>
-      <div class="dicc-card">
-        <div class="dicc-term">🛵 El flete</div>
-        <div class="dicc-def">El delivery, el reparto, el que lleva los pedidos.</div>
-        <div class="dicc-ej"><strong>Ej:</strong> "¿Quién me hace una gauchada con un flete para el barrio Sur?"</div>
-        <div class="mate-badge">🧉 100% entrerriano</div>
-      </div>
-      <div class="dicc-card">
-        <div class="dicc-term">😮 ¡Epa!</div>
-        <div class="dicc-def">Expresión de sorpresa o llamado de atención. El inicio de toda buena notificación.</div>
-        <div class="dicc-ej"><strong>Ej:</strong> "¡Epa, gurí! Mirá el descuento que sacó la ferretería del barrio."</div>
-        <div class="mate-badge">🧉 100% entrerriano</div>
-      </div>
     </div>
   </div>
 </section>
@@ -1632,6 +1597,13 @@ img,video,iframe,svg{max-width:100%;height:auto}
   </div>
 </section>
 <section class="slp-project"><div class="slp-project-card"><img src="./images/proyecto-local.webp" alt="Proyecto local de Concepción del Uruguay" loading="lazy"><div class="slp-project-copy"><span>PROYECTO LOCAL</span><h2>Hecho acá, para nuestra comunidad</h2><p>Una red para acercar vecinos, comercios, emprendedores y prestadores de servicios de Concepción del Uruguay.</p><p><a class="slp-guide-btn" href="./como-usar.html">Conocer cómo funciona</a></p></div></div></section>
+
+<div class="boton-diccionario-wrap">
+  <a class="boton-diccionario" href="diccionario-entrerriano.html">
+    🧉 Diccionario entrerriano
+  </a>
+</div>
+
 <footer>
   <div class="footer-grid">
     <div>
@@ -3007,6 +2979,53 @@ window.addEventListener("appinstalled",()=>{
   actualizarEstadoInstalacion();
 });
 actualizarEstadoInstalacion();
+</script>
+
+<div id="actualizacion-app" role="status" aria-live="polite">
+  <span>Hay una versión nueva de Sálvame las Papas.</span>
+  <button id="btn-actualizar-app" type="button">Actualizar ahora</button>
+</div>
+
+<script>
+(function(){
+  if(!('serviceWorker' in navigator)) return;
+  let esperando=null;
+  const aviso=document.getElementById('actualizacion-app');
+  const boton=document.getElementById('btn-actualizar-app');
+  function mostrar(reg){esperando=reg.waiting;if(aviso&&esperando) aviso.classList.add('visible');}
+  navigator.serviceWorker.register('./service-worker.js',{updateViaCache:'none'})
+    .then(reg=>{
+      reg.update();
+      if(reg.waiting) mostrar(reg);
+      reg.addEventListener('updatefound',()=>{
+        const nuevo=reg.installing;
+        if(!nuevo) return;
+        nuevo.addEventListener('statechange',()=>{
+          if(nuevo.state==='installed'&&navigator.serviceWorker.controller) mostrar(reg);
+        });
+      });
+      setInterval(()=>reg.update(),10*60*1000);
+    })
+    .catch(err=>console.warn('No se pudo registrar la actualización:',err));
+  boton?.addEventListener('click',()=>{if(esperando){esperando.postMessage({type:'SKIP_WAITING'});}else{location.reload();}});
+  let recargando=false;
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{if(recargando)return;recargando=true;location.reload();});
+})();
+</script>
+<script>
+function mensajeErrorCliente(error){
+  const codigo = error?.code || '';
+  const mapa = {
+    'auth/email-already-in-use':'Ese correo ya tiene una cuenta. Elegí “Ya tengo cuenta” e ingresá con tu contraseña.',
+    'auth/invalid-email':'El correo no tiene un formato válido.',
+    'auth/weak-password':'La contraseña debe tener al menos 6 caracteres.',
+    'auth/invalid-credential':'El correo o la contraseña no son correctos.',
+    'auth/wrong-password':'La contraseña no es correcta.',
+    'auth/user-not-found':'No encontramos una cuenta con ese correo.',
+    'auth/too-many-requests':'Hubo demasiados intentos. Esperá unos minutos y volvé a probar.'
+  };
+  return mapa[codigo] || ('No se pudo completar el acceso. Código: ' + (codigo || error?.message || 'desconocido'));
+}
 </script>
 </body>
 </html>

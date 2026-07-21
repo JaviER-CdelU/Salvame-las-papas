@@ -1,70 +1,47 @@
-const CACHE_NAME = "salvame-papas-shell-v13-control-completo";
-const APP_SHELL = [
-  "./",
-  "./index.html",
-  "./comercio.html",
-  "./admin.html",
-  "./seguimiento-comercios.html",
-  "./offline.html",
-  "./como-usar.html",
-  "./images/super-papa.webp",
-  "./manifest.webmanifest",
-  "./icons/icon-192.png",
-  "./icons/icon-512.png",
-  "./icons/icon-maskable-192.png",
-  "./icons/icon-maskable-512.png"
-];
+const CACHE_NAME = "salvame-papas-v15-cliente-diccionario";
+const APP_SHELL = ["./","./index.html","./comercio.html","./admin.html","./seguimiento-comercios.html","./como-usar.html","./diccionario-entrerriano.html","./offline.html","./manifest.webmanifest"];
 
-self.addEventListener("install", event => {
-  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL)));
-  self.skipWaiting();
+self.addEventListener("install",event=>{
+  event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(APP_SHELL)).then(()=>self.skipWaiting()));
 });
 
-self.addEventListener("activate", event => {
-  event.waitUntil(
-    caches.keys().then(keys => Promise.all(
-      keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
-    ))
-  );
-  self.clients.claim();
+self.addEventListener("activate",event=>{
+  event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));
 });
 
-self.addEventListener("fetch", event => {
-  const request = event.request;
-  if (request.method !== "GET") return;
+self.addEventListener("message",event=>{
+  if(event.data&&event.data.type==="SKIP_WAITING") self.skipWaiting();
+});
 
-  const url = new URL(request.url);
+self.addEventListener("fetch",event=>{
+  const request=event.request;
+  if(request.method!=="GET") return;
+  const url=new URL(request.url);
+  if(url.origin!==self.location.origin) return;
 
-  // Firebase and Google authentication must always use the network.
-  if (
-    url.hostname.includes("firebase") ||
-    url.hostname.includes("googleapis") ||
-    url.hostname.includes("gstatic") ||
-    url.hostname.includes("accounts.google")
-  ) return;
-
-  if (request.mode === "navigate") {
+  if(request.mode==="navigate"||request.headers.get("accept")?.includes("text/html")){
     event.respondWith(
-      fetch(request, { cache: "no-store" })
-        .then(response => {
-          if (!url.pathname.endsWith("/admin.html") && !url.pathname.endsWith("admin.html") && !url.pathname.endsWith("/seguimiento-comercios.html") && !url.pathname.endsWith("seguimiento-comercios.html")) {
-            const copy = response.clone();
-            caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
-          }
+      fetch(request,{cache:"no-store"})
+        .then(response=>{
+          const copy=response.clone();
+          caches.open(CACHE_NAME).then(cache=>cache.put(request,copy));
           return response;
         })
-        .catch(() => caches.match(request).then(r => r || caches.match("./offline.html")))
+        .catch(()=>caches.match(request).then(r=>r||caches.match("./offline.html")))
     );
     return;
   }
 
   event.respondWith(
-    caches.match(request).then(cached => cached || fetch(request).then(response => {
-      if (response && response.status === 200 && response.type === "basic") {
-        const copy = response.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
-      }
-      return response;
-    }))
+    caches.match(request).then(cached=>{
+      const fresh=fetch(request).then(response=>{
+        if(response&&response.ok){
+          const copy=response.clone();
+          caches.open(CACHE_NAME).then(cache=>cache.put(request,copy));
+        }
+        return response;
+      }).catch(()=>cached);
+      return cached||fresh;
+    })
   );
 });

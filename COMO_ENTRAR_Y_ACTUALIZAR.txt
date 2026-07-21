@@ -1,0 +1,22 @@
+CÓMO ENTRAR A SÁLVAME LAS PAPAS
+
+DESDE EL CELULAR
+1. Abrí Chrome.
+2. Entrá a la dirección oficial.
+3. Menú de tres puntos → Instalar aplicación o Agregar a pantalla de inicio.
+4. Cuando haya una versión nueva aparecerá “Actualizar ahora”.
+5. No hace falta desinstalar la aplicación.
+
+DESDE LA COMPUTADORA
+1. Abrí Chrome, Edge o Firefox.
+2. Entrá a la misma dirección.
+3. Podés usarla desde el navegador o instalarla desde Chrome/Edge.
+
+DIRECCIONES CONOCIDAS
+GitHub Pages:
+https://javier-cdelu.github.io/Salvame-las-papas/
+
+Vercel:
+https://salvame-las-papas.vercel.app/
+
+Conviene elegir una sola dirección como oficial.
