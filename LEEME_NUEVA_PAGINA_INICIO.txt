@@ -1,0 +1,9 @@
+NUEVA PÁGINA DE INICIO
+
+- Se mantuvieron Firebase, registro, acceso, carrito, pedidos, planes y formularios.
+- La cabecera usa las imágenes existentes de Sálvame las Papas.
+- Las ofertas se forman únicamente con productos reales cargados por comercios.
+- Los comercios destacados se ordenan por plan y se desplazan automáticamente.
+- Abierto ahora utiliza los horarios cargados por cada comercio.
+- No se agregaron comercios ficticios.
+- La versión de caché es v21.
