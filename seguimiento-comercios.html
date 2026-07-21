@@ -194,6 +194,174 @@ window.recordar = (tel,nombreCod,dias) => {
   window.open('https://wa.me/'+tel+'?text='+encodeURIComponent(msg),'_blank','noopener');
 };
 function toast(t){ const el=$('toast'); el.textContent=t; el.classList.add('ver'); setTimeout(()=>el.classList.remove('ver'),4000); }
+
+// ===== SEGUIMIENTO AVANZADO =====
+function normalizarFecha(valor){
+  if(!valor) return null;
+  if(valor.toDate) return valor.toDate();
+  const f = new Date(valor);
+  return isNaN(f.getTime()) ? null : f;
+}
+
+function diasHasta(fecha){
+  const f = normalizarFecha(fecha);
+  if(!f) return null;
+  const hoy = new Date();
+  hoy.setHours(0,0,0,0);
+  f.setHours(0,0,0,0);
+  return Math.ceil((f-hoy)/86400000);
+}
+
+function claseEstadoRenovacion(estado){
+  const mapa = {
+    "al-dia":"estado-al-dia",
+    "aviso-enviado":"estado-aviso",
+    "pendiente-pago":"estado-pendiente",
+    "pago-informado":"estado-informado",
+    "pago-acreditado":"estado-acreditado",
+    "vencido":"estado-vencido",
+    "promocion-ofrecida":"estado-promocion"
+  };
+  return mapa[estado] || "estado-al-dia";
+}
+
+function textoEstadoRenovacion(estado){
+  const mapa = {
+    "al-dia":"Al día",
+    "aviso-enviado":"Aviso enviado",
+    "pendiente-pago":"Pendiente de pago",
+    "pago-informado":"Pago informado",
+    "pago-acreditado":"Pago acreditado",
+    "vencido":"Vencido",
+    "promocion-ofrecida":"Promoción ofrecida"
+  };
+  return mapa[estado] || "Al día";
+}
+
+function abrirModalPago(id, plan){
+  document.getElementById("pago-comercio-id").value = id;
+  if(plan){
+    const sel = document.getElementById("pago-plan");
+    [...sel.options].forEach(o => {
+      o.selected = o.value.toLowerCase() === String(plan).toLowerCase();
+    });
+  }
+  document.getElementById("modal-pago").classList.add("activo");
+}
+
+function cerrarModalPago(){
+  document.getElementById("modal-pago").classList.remove("activo");
+}
+
+async function guardarPagoAvanzado(){
+  const id = document.getElementById("pago-comercio-id").value;
+  const importe = Number(document.getElementById("pago-importe").value || 0);
+  const plan = document.getElementById("pago-plan").value;
+  const medio = document.getElementById("pago-medio").value;
+  const dias = Number(document.getElementById("pago-periodo").value || 30);
+  const observaciones = document.getElementById("pago-observaciones").value.trim();
+  if(!id || importe <= 0){
+    alert("Completá el importe.");
+    return;
+  }
+  const ahora = new Date();
+  const nuevaRenovacion = new Date();
+  nuevaRenovacion.setDate(nuevaRenovacion.getDate() + dias);
+  const ref = doc(db, "comercios", id);
+  const snap = await getDoc(ref);
+  const datos = snap.exists() ? snap.data() : {};
+  const historial = Array.isArray(datos.historialPagos) ? datos.historialPagos : [];
+  historial.push({
+    fecha: ahora.toISOString(),
+    importe,
+    plan,
+    medio,
+    dias,
+    observaciones,
+    registradoPor: auth.currentUser?.email || "Administrador"
+  });
+  await updateDoc(ref, {
+    plan,
+    ultimoPago: ahora.toISOString(),
+    proximaRenovacion: nuevaRenovacion.toISOString(),
+    estadoRenovacion: "pago-acreditado",
+    historialPagos: historial,
+    updatedAt: ahora.toISOString()
+  });
+  cerrarModalPago();
+  alert("Pago registrado y renovación actualizada.");
+  if(typeof cargarComercios === "function") cargarComercios();
+  else location.reload();
+}
+
+async function cambiarEstadoRenovacion(id, estado){
+  await updateDoc(doc(db, "comercios", id), {
+    estadoRenovacion: estado,
+    updatedAt: new Date().toISOString()
+  });
+  if(typeof cargarComercios === "function") cargarComercios();
+  else location.reload();
+}
+
+function mensajeWhatsapp(comercio, tipo){
+  const nombre = comercio.nombre || comercio.nombreComercio || "tu comercio";
+  const fecha = normalizarFecha(comercio.proximaRenovacion);
+  const fechaTxt = fecha ? fecha.toLocaleDateString("es-AR") : "la fecha informada";
+  const visitas = comercio.visitas || 0;
+  const whatsapp = comercio.clicsWhatsApp || 0;
+  const pedidos = comercio.pedidosConfirmados || 0;
+  const mensajes = {
+    "7": `Hola, ${nombre}. Tu plan vence el ${fechaTxt}. Hasta hoy recibiste ${visitas} visitas, ${whatsapp} consultas por WhatsApp y ${pedidos} pedidos confirmados. Renovando con anticipación mantenés la publicación activa.`,
+    "3": `Hola, ${nombre}. Faltan pocos días para la renovación de tu plan, prevista para el ${fechaTxt}. Avisanos cuando realices el pago para evitar interrupciones.`,
+    "hoy": `Hola, ${nombre}. Tu plan vence hoy. Tus productos quedarán guardados, pero dejarán de mostrarse hasta registrar la renovación.`,
+    "promo": `Hola, ${nombre}. Queremos ayudarte a seguir creciendo. Podemos ofrecerte una promoción especial de renovación y mejorar la visibilidad de tus productos.`
+  };
+  return mensajes[tipo] || mensajes["7"];
+}
+
+function enviarWhatsAppAvanzado(comercio, tipo){
+  const tel = String(comercio.telefono || comercio.whatsapp || "").replace(/\D/g,"");
+  if(!tel){
+    alert("Este comercio no tiene teléfono cargado.");
+    return;
+  }
+  const url = `https://wa.me/${tel}?text=${encodeURIComponent(mensajeWhatsapp(comercio,tipo))}`;
+  window.open(url, "_blank");
+}
+
+function renderHistorialPagos(historial){
+  if(!Array.isArray(historial) || historial.length===0){
+    return '<div class="historial-box"><strong>Historial de pagos</strong><div class="historial-item">Todavía no hay pagos registrados.</div></div>';
+  }
+  const items = [...historial].reverse().map(h => {
+    const f = normalizarFecha(h.fecha);
+    const fecha = f ? f.toLocaleDateString("es-AR") : "-";
+    return `<div class="historial-item"><strong>${fecha}</strong> — $${Number(h.importe||0).toLocaleString("es-AR")} — ${h.plan||"-"} — ${h.medio||"-"}${h.observaciones ? `<br><small>${h.observaciones}</small>`:""}</div>`;
+  }).join("");
+  return `<div class="historial-box"><strong>Historial de pagos</strong>${items}</div>`;
+}
+
+function actualizarResumenAvanzado(comercios){
+  let activos=0, siete=0, tres=0, hoy=0, vencidos=0, pagos=0;
+  comercios.forEach(c=>{
+    const d = diasHasta(c.proximaRenovacion);
+    if(c.estado==="activo") activos++;
+    if(d !== null && d>=4 && d<=7) siete++;
+    if(d !== null && d>=1 && d<=3) tres++;
+    if(d===0) hoy++;
+    if(d !== null && d<0) vencidos++;
+    if(c.estadoRenovacion==="pago-informado" || c.estadoRenovacion==="pendiente-pago") pagos++;
+  });
+  const vals = {
+    "r-activos":activos,"r-7dias":siete,"r-3dias":tres,
+    "r-hoy":hoy,"r-vencidos":vencidos,"r-pagos":pagos
+  };
+  Object.entries(vals).forEach(([id,v])=>{
+    const el=document.getElementById(id);
+    if(el) el.textContent=v;
+  });
+}
+
 </script>
 <style>
 :root{--azul:#002a6a;--rojo:#c62828;--texto:#152033;--fondo:#eef3f8;--borde:#dbe3ec}
@@ -206,6 +374,92 @@ main{width:min(1280px,100%);margin:auto;padding:26px 18px 60px}.cabecera{display
 .lista{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.ficha{background:#fff;border-radius:18px;overflow:hidden;border:2px solid var(--borde);box-shadow:0 8px 28px #20334d12}.ficha-titulo{padding:17px 18px;color:#102236;display:flex;justify-content:space-between;align-items:flex-start;gap:14px}.ficha-titulo h2{font-family:Fraunces,serif;font-size:1.55rem;line-height:1.05;margin:4px 0 0;overflow-wrap:anywhere}.estado-tiempo{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em}.estado-comercio{background:#ffffffaa;border-radius:999px;padding:6px 10px;font-size:.72rem;font-weight:800;text-transform:uppercase;white-space:nowrap}.ficha-titulo.vigente{background:#9ee0a9}.ficha-titulo.aviso{background:#ffe36d}.ficha-titulo.urgente{background:#ff9e52}.ficha-titulo.hoy{background:#ef5350;color:#fff}.ficha-titulo.vencido{background:#861b24;color:#fff}.ficha-titulo.pendiente{background:#80b8ee}.datos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;border-top:1px solid #ffffff66}.datos>div{padding:12px 15px;border-bottom:1px solid #e7edf3;min-width:0}.datos b{display:block;font-size:.75rem;color:#69768a;margin-bottom:3px}.datos span{display:block;font-size:.92rem;overflow-wrap:anywhere}.acciones{padding:14px;display:flex;gap:8px;flex-wrap:wrap}.acciones button,.acciones a{border:1px solid #cbd5df;background:#fff;color:#26374b;border-radius:10px;padding:9px 11px;text-decoration:none;cursor:pointer;font-weight:700;font-size:.83rem}.acciones .primario{background:#167144;color:#fff;border-color:#167144}.acciones button:disabled{opacity:.45;cursor:not-allowed}.cargando,.vacio,.error{grid-column:1/-1;text-align:center;background:#fff;border-radius:16px;padding:40px;color:#687386}.error{color:#a31522}.toast{position:fixed;right:18px;bottom:18px;max-width:calc(100vw - 36px);background:#13243b;color:#fff;padding:13px 16px;border-radius:12px;opacity:0;transform:translateY(20px);transition:.2s;pointer-events:none;z-index:99}.toast.ver{opacity:1;transform:none}
 @media(max-width:900px){.resumen{grid-template-columns:repeat(3,1fr)}.lista{grid-template-columns:1fr}.nav-links{order:3;width:100%}nav{flex-wrap:wrap}}
 @media(max-width:600px){main{padding:18px 10px 45px}.cabecera{align-items:flex-start;flex-direction:column}.resumen{grid-template-columns:repeat(2,minmax(0,1fr))}.datos{grid-template-columns:1fr}.ficha-titulo{padding:15px 13px}.ficha-titulo h2{font-size:1.35rem}.estado-comercio{white-space:normal;text-align:center}.acciones>*{width:100%;text-align:center}.controles input{min-width:100%}}
+
+/* ===== SEGUIMIENTO AVANZADO ===== */
+.resumen-avanzado{
+  display:grid;
+  grid-template-columns:repeat(6,minmax(120px,1fr));
+  gap:10px;
+  margin:16px 0 20px;
+}
+.resumen-box{
+  background:#fff;
+  border:1px solid #ddd;
+  border-radius:14px;
+  padding:12px;
+  text-align:center;
+  box-shadow:0 3px 12px rgba(0,0,0,.06);
+}
+.resumen-box strong{display:block;font-size:1.55rem}
+.resumen-box span{font-size:.8rem;color:#555}
+.estado-renovacion{
+  display:inline-block;
+  padding:.3rem .65rem;
+  border-radius:999px;
+  font-weight:800;
+  font-size:.78rem;
+  margin-top:.35rem;
+}
+.estado-al-dia{background:#daf4df;color:#14532d}
+.estado-aviso{background:#fff4bf;color:#6b5200}
+.estado-pendiente{background:#ffe4b8;color:#7a3e00}
+.estado-informado{background:#dbeafe;color:#1e3a8a}
+.estado-acreditado{background:#d1fae5;color:#065f46}
+.estado-vencido{background:#fecaca;color:#7f1d1d}
+.estado-promocion{background:#ede9fe;color:#5b21b6}
+.historial-box{
+  margin-top:14px;
+  background:#f8fafc;
+  border:1px solid #dbe3ea;
+  border-radius:12px;
+  padding:12px;
+}
+.historial-item{
+  padding:8px 0;
+  border-bottom:1px dashed #ccd4db;
+  font-size:.86rem;
+}
+.historial-item:last-child{border-bottom:0}
+.acciones-extra{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:12px;
+}
+.acciones-extra button{
+  flex:1 1 180px;
+}
+.modal-pago{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.55);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+  padding:14px;
+}
+.modal-pago.activo{display:flex}
+.modal-contenido{
+  width:min(560px,100%);
+  max-height:92vh;
+  overflow:auto;
+  background:#fff;
+  border-radius:18px;
+  padding:20px;
+}
+.modal-contenido input,.modal-contenido select,.modal-contenido textarea{
+  width:100%;
+  margin:.35rem 0 .8rem;
+  padding:.75rem;
+  border:1px solid #ccc;
+  border-radius:9px;
+}
+.modal-botones{display:flex;gap:10px;flex-wrap:wrap}
+@media(max-width:800px){
+  .resumen-avanzado{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
 </style>
 </head>
 <body>
@@ -213,6 +467,15 @@ main{width:min(1280px,100%);margin:auto;padding:26px 18px 60px}.cabecera{display
 <div id="app" hidden>
 <nav><div class="logo">Sálvame las Papas — Seguimiento</div><div class="nav-links"><a href="index.html">🏠 Sitio</a><a href="admin.html">⚙️ Administración</a><a class="activo" href="seguimiento-comercios.html">📅 Seguimiento</a></div><button class="salir" onclick="salir()">Salir</button></nav>
 <main>
+<div id="resumen-avanzado" class="resumen-avanzado">
+  <div class="resumen-box"><strong id="r-activos">0</strong><span>Activos</span></div>
+  <div class="resumen-box"><strong id="r-7dias">0</strong><span>Vencen en 7 días</span></div>
+  <div class="resumen-box"><strong id="r-3dias">0</strong><span>Vencen en 3 días</span></div>
+  <div class="resumen-box"><strong id="r-hoy">0</strong><span>Vencen hoy</span></div>
+  <div class="resumen-box"><strong id="r-vencidos">0</strong><span>Vencidos</span></div>
+  <div class="resumen-box"><strong id="r-pagos">0</strong><span>Pagos para revisar</span></div>
+</div>
+
   <div class="cabecera"><div><h1>Seguimiento y renovaciones</h1><p>Cada ficha se crea automáticamente con los datos registrados por el comercio.</p></div><button class="actualizar" onclick="cargar()">↻ Actualizar</button></div>
   <section class="resumen">
     <div class="resumen-card"><strong id="r-total">—</strong><span>Total</span></div>
@@ -236,4 +499,39 @@ main{width:min(1280px,100%);margin:auto;padding:26px 18px 60px}.cabecera{display
 </main>
 </div>
 <div id="toast" class="toast"></div>
+
+<div id="modal-pago" class="modal-pago">
+  <div class="modal-contenido">
+    <h2>Registrar pago o renovación</h2>
+    <input type="hidden" id="pago-comercio-id">
+    <label>Importe</label>
+    <input type="number" id="pago-importe" min="0" step="1" placeholder="Ej.: 30000">
+    <label>Plan</label>
+    <select id="pago-plan">
+      <option value="Basico">Básico</option>
+      <option value="Destacado">Destacado</option>
+      <option value="Pro">Pro</option>
+    </select>
+    <label>Medio de pago</label>
+    <select id="pago-medio">
+      <option value="Transferencia">Transferencia</option>
+      <option value="Mercado Pago">Mercado Pago</option>
+      <option value="Efectivo">Efectivo</option>
+      <option value="Otro">Otro</option>
+    </select>
+    <label>Período cubierto</label>
+    <select id="pago-periodo">
+      <option value="30">30 días</option>
+      <option value="60">60 días</option>
+      <option value="90">90 días</option>
+    </select>
+    <label>Observaciones</label>
+    <textarea id="pago-observaciones" rows="3" placeholder="Ej.: pagó anticipado, promoción aplicada..."></textarea>
+    <div class="modal-botones">
+      <button onclick="guardarPagoAvanzado()">Guardar pago</button>
+      <button onclick="cerrarModalPago()" type="button">Cancelar</button>
+    </div>
+  </div>
+</div>
+
 </body></html>
