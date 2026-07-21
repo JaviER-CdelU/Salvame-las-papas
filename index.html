@@ -2776,6 +2776,35 @@ function actualizarEntregaCliente(){
   const envio=document.getElementById('co-entrega').value==='Envío a domicilio'
   document.getElementById('co-direccion-wrap').style.display=envio?'flex':'none'
 }
+
+function limpiarUndefined(valor){
+  if(Array.isArray(valor)){
+    return valor
+      .filter(v => v !== undefined)
+      .map(limpiarUndefined);
+  }
+  if(valor && typeof valor === 'object'){
+    const limpio = {};
+    Object.entries(valor).forEach(([clave,dato])=>{
+      if(dato !== undefined){
+        limpio[clave] = limpiarUndefined(dato);
+      }
+    });
+    return limpio;
+  }
+  return valor;
+}
+
+function textoPedidoSeguro(valor, alternativa=''){
+  const t = String(valor ?? '').trim();
+  return t || alternativa;
+}
+
+function numeroPedidoSeguro(valor, alternativa=0){
+  const n = Number(valor);
+  return Number.isFinite(n) ? n : alternativa;
+}
+
 async function confirmarPedidoRegistrado(){
   const user=window._fb?.auth?.currentUser
   if(!user){abrirCheckout();return}
@@ -2793,22 +2822,43 @@ async function confirmarPedidoRegistrado(){
   if(entrega==='Envío a domicilio' && direccion.length<5){err.textContent='Falta la dirección de entrega.';err.classList.add('show');return}
   btn.disabled=true;btn.textContent='Registrando pedido...'
   try{
-    const total=carritoActual.reduce((s,i)=>s+i.subtotal,0)
-    const pedido={
-      comercioId:comercioActivo.id||comercioActivo.nombre,
-      comercioNombre:comercioActivo.nombre,
-      comercioTelefono:comercioActivo.tel||'',
-      clienteUid:user.uid,clienteEmail:user.email||'',clienteEmailVerificado:user.emailVerified===true,
-      clienteNombre:nombre,clienteTelefono:telefono,
-      entrega,direccion:entrega==='Envío a domicilio'?direccion:'',pago,observaciones,
-      items:carritoActual.map(i=>({nombre:i.nombre,emoji:i.emoji||'📦',precio:Number(i.precio),cantidad:i.cantidad,subtotal:i.subtotal})),
-      total,estado:'pendiente',estadoPago:'pendiente de pago',creadoEn:window._fb.serverTimestamp()
-    }
+    const itemsPedido=carritoActual.map((i,indice)=>{
+      const precio=numeroPedidoSeguro(i?.precio,0)
+      const cantidad=Math.max(1,numeroPedidoSeguro(i?.cantidad,1))
+      const subtotal=numeroPedidoSeguro(i?.subtotal,precio*cantidad)
+      return {
+        nombre:textoPedidoSeguro(i?.nombre,`Producto ${indice+1}`),
+        emoji:textoPedidoSeguro(i?.emoji,'📦'),
+        precio,
+        cantidad,
+        subtotal
+      }
+    })
+    const total=itemsPedido.reduce((s,i)=>s+i.subtotal,0)
+    const pedido=limpiarUndefined({
+      comercioId:textoPedidoSeguro(comercioActivo?.id, textoPedidoSeguro(comercioActivo?.nombre,'comercio-sin-id')),
+      comercioNombre:textoPedidoSeguro(comercioActivo?.nombre,'Comercio'),
+      comercioTelefono:textoPedidoSeguro(comercioActivo?.tel,''),
+      clienteUid:textoPedidoSeguro(user?.uid,''),
+      clienteEmail:textoPedidoSeguro(user?.email,''),
+      clienteEmailVerificado:user?.emailVerified===true,
+      clienteNombre:textoPedidoSeguro(nombre,'Cliente'),
+      clienteTelefono:textoPedidoSeguro(telefono,''),
+      entrega:textoPedidoSeguro(entrega,'A coordinar'),
+      direccion:entrega==='Envío a domicilio'?textoPedidoSeguro(direccion,''):'',
+      pago:textoPedidoSeguro(pago,'A coordinar'),
+      observaciones:textoPedidoSeguro(observaciones,''),
+      items:itemsPedido,
+      total,
+      estado:'pendiente',
+      estadoPago:'pendiente de pago',
+      creadoEn:window._fb.serverTimestamp()
+    })
     await window._fb.setDoc(window._fb.doc(window._fb.db,'usuarios',user.uid),{nombre,telefono,email:user.email||'',rol:'cliente',actualizadoEn:window._fb.serverTimestamp()},{merge:true})
     if(!user.displayName) await window._fb.updateProfile(user,{displayName:nombre}).catch(()=>{})
     const ref=await window._fb.addDoc(window._fb.collection(window._fb.db,'pedidos'),pedido)
     localStorage.setItem('slp_cliente_nombre',nombre);localStorage.setItem('slp_cliente_tel',telefono)
-    const lineas=carritoActual.map(i=>`• ${i.emoji||'📦'} ${i.nombre} x${i.cantidad} = $${i.subtotal.toLocaleString('es-AR')}`).join('\n')
+    const lineas=itemsPedido.map(i=>`• ${i.emoji} ${i.nombre} x${i.cantidad} = $${i.subtotal.toLocaleString('es-AR')}`).join('\n')
     const texto=`Hola ${comercioActivo.nombre}! Hice un pedido desde Sálvame las Papas 🥔\n\nPEDIDO #${ref.id.slice(0,8).toUpperCase()}\nCliente: ${nombre}\nWhatsApp: ${telefono}\nEntrega: ${entrega}${direccion?'\nDirección: '+direccion:''}\nPago: ${pago}\n\n${lineas}\n\nTOTAL: $${total.toLocaleString('es-AR')}${observaciones?'\n\nObservaciones: '+observaciones:''}\n\nEstado: pendiente de pago.`
     const tel=(comercioActivo.tel||'5493442490585').replace(/\D/g,'')
     registrarMetrica(comercioActivo,'pedidosConfirmados',false);
@@ -2818,7 +2868,11 @@ async function confirmarPedidoRegistrado(){
     vaciarCarrito()
   }catch(e){
     console.error('Pedido:',e)
-    err.textContent=e.code==='permission-denied'?'Firebase no permitió guardar el pedido. Hay que actualizar las reglas de Firestore.':(e.message||'No se pudo registrar el pedido.')
+    err.textContent=e.code==='permission-denied'
+      ? 'Firebase no permitió guardar el pedido. Hay que revisar las reglas de Firestore.'
+      : (String(e.message||'').includes('Unsupported field value')
+          ? 'Uno de los datos del pedido estaba incompleto. La página ya intentó corregirlo; actualizá y volvé a confirmar.'
+          : (e.message||'No se pudo registrar el pedido.'))
     err.classList.add('show')
   }finally{btn.disabled=false;btn.textContent='Confirmar pedido'}
 }

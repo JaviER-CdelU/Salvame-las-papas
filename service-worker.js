@@ -1,4 +1,4 @@
-const CACHE_NAME = "salvame-papas-v19-password-update";
+const CACHE_NAME = "salvame-papas-v20-pedidos-limpios";
 const APP_SHELL = ["./","./index.html","./comercio.html","./admin.html","./seguimiento-comercios.html","./como-usar.html","./diccionario-entrerriano.html","./offline.html","./manifest.webmanifest"];
 
 self.addEventListener("install",event=>{

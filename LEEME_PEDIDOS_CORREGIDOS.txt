@@ -1,0 +1,14 @@
+CORRECCIÓN DE PEDIDOS
+
+El error “Unsupported field value: undefined” ocurría porque algún dato del
+comercio o producto llegaba vacío y Firestore no permite guardar valores undefined.
+
+Ahora:
+- se limpian todos los campos antes de guardar;
+- cada producto recibe nombre, cantidad, precio y subtotal seguros;
+- comercio, cliente, entrega y pago tienen valores de respaldo;
+- el mensaje de WhatsApp usa los datos ya limpiados;
+- se actualizó la caché para cargar la corrección.
+
+Después de subir los archivos, cerrá y abrí nuevamente la app o tocá
+“Actualizar ahora” cuando aparezca.
