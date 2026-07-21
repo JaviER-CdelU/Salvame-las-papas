@@ -582,6 +582,34 @@ img{max-width:100%;height:auto}
   .btn{padding-left:14px;padding-right:14px}
   .toast{white-space:normal;width:calc(100% - 2rem)}
 }
+
+.password-contenedor{
+  position:relative;
+  width:100%;
+}
+.password-contenedor input[type="password"],
+.password-contenedor input[type="text"]{
+  width:100%;
+  padding-right:54px !important;
+}
+.btn-ver-password{
+  position:absolute;
+  right:8px;
+  top:50%;
+  transform:translateY(-50%);
+  width:40px !important;
+  min-width:40px !important;
+  height:36px;
+  padding:0 !important;
+  border:0;
+  background:transparent;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:1.1rem;
+  line-height:1;
+}
+.btn-ver-password:hover{background:rgba(0,0,0,.06)}
+
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -688,6 +716,37 @@ img{max-width:100%;height:auto}
 (function(){
   if ("serviceWorker" in navigator) window.addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js").catch(err=>console.warn("Service Worker:",err)));
 })();
+</script>
+<script>
+function alternarPassword(id, boton){
+  const campo=document.getElementById(id);
+  if(!campo) return;
+  const mostrando=campo.type==='text';
+  campo.type=mostrando?'password':'text';
+  boton.textContent=mostrando?'👁️':'🙈';
+  boton.setAttribute('aria-label', mostrando?'Mostrar contraseña':'Ocultar contraseña');
+  boton.title=mostrando?'Mostrar contraseña':'Ocultar contraseña';
+}
+
+function prepararCamposPassword(){
+  document.querySelectorAll('input[type="password"]').forEach((campo,indice)=>{
+    if(campo.closest('.password-contenedor')) return;
+    if(!campo.id) campo.id='password-campo-'+indice+'-'+Math.random().toString(36).slice(2,7);
+    const cont=document.createElement('div');
+    cont.className='password-contenedor';
+    campo.parentNode.insertBefore(cont,campo);
+    cont.appendChild(campo);
+    const boton=document.createElement('button');
+    boton.type='button';
+    boton.className='btn-ver-password';
+    boton.textContent='👁️';
+    boton.title='Mostrar contraseña';
+    boton.setAttribute('aria-label','Mostrar contraseña');
+    boton.addEventListener('click',()=>alternarPassword(campo.id,boton));
+    cont.appendChild(boton);
+  });
+}
+document.addEventListener('DOMContentLoaded',prepararCamposPassword);
 </script>
 </body>
 </html>

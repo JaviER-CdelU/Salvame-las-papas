@@ -1009,6 +1009,34 @@ img,video,iframe,svg{max-width:100%;height:auto}
 .cm-opciones-lista{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
 .cm-opcion-chip{padding:5px 9px;border-radius:999px;background:#fff;border:1px solid #c7d7e9;font-weight:700;font-size:.78rem}
 
+
+.password-contenedor{
+  position:relative;
+  width:100%;
+}
+.password-contenedor input[type="password"],
+.password-contenedor input[type="text"]{
+  width:100%;
+  padding-right:54px !important;
+}
+.btn-ver-password{
+  position:absolute;
+  right:8px;
+  top:50%;
+  transform:translateY(-50%);
+  width:40px !important;
+  min-width:40px !important;
+  height:36px;
+  padding:0 !important;
+  border:0;
+  background:transparent;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:1.1rem;
+  line-height:1;
+}
+.btn-ver-password:hover{background:rgba(0,0,0,.06)}
+
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -2733,7 +2761,7 @@ async function autenticarClientePedido(){
     }else cred=await window._fb.signInWithEmailAndPassword(window._fb.auth,email,pass)
     mostrarDatosCliente(cred.user)
   }catch(e){
-    const map={'auth/email-already-in-use':'Ese email ya está registrado. Elegí “Ya tengo cuenta”.','auth/invalid-credential':'Email o contraseña incorrectos.','auth/weak-password':'La contraseña es demasiado débil.','auth/too-many-requests':'Demasiados intentos. Esperá unos minutos.'}
+    const map={'auth/email-already-in-use':'Ese email ya está registrado. Elegí “Ya tengo cuenta”.','auth/invalid-credential':'El correo o la contraseña no coinciden. Usá el botón del ojo para revisar la contraseña.','auth/weak-password':'La contraseña es demasiado débil.','auth/too-many-requests':'Demasiados intentos. Esperá unos minutos.'}
     err.textContent=map[e.code]||'No se pudo iniciar Firebase. Actualizá la página y volvé a intentar.'||'No se pudo ingresar.';err.classList.add('show')
   }finally{btn.disabled=false;btn.textContent=modoClientePedido==='registro'?'Crear cuenta y continuar':'Ingresar y continuar'}
 }
@@ -3136,7 +3164,17 @@ actualizarEstadoInstalacion();
   let esperando=null;
   const aviso=document.getElementById('actualizacion-app');
   const boton=document.getElementById('btn-actualizar-app');
-  function mostrar(reg){esperando=reg.waiting;if(aviso&&esperando) aviso.classList.add('visible');}
+  function mostrar(reg){
+    esperando=reg.waiting;
+    if(aviso&&esperando){
+      aviso.classList.add('visible');
+      aviso.dataset.visibleDesde=String(Date.now());
+      clearTimeout(window._slpOcultarActualizacion);
+      window._slpOcultarActualizacion=setTimeout(()=>{
+        aviso.classList.remove('visible');
+      },30000);
+    }
+  }
   navigator.serviceWorker.register('./service-worker.js',{updateViaCache:'none'})
     .then(reg=>{
       reg.update();
@@ -3163,13 +3201,44 @@ function mensajeErrorCliente(error){
     'auth/email-already-in-use':'Ese correo ya tiene una cuenta. Elegí “Ya tengo cuenta” e ingresá con tu contraseña.',
     'auth/invalid-email':'El correo no tiene un formato válido.',
     'auth/weak-password':'La contraseña debe tener al menos 6 caracteres.',
-    'auth/invalid-credential':'El correo o la contraseña no son correctos.',
-    'auth/wrong-password':'La contraseña no es correcta.',
-    'auth/user-not-found':'No encontramos una cuenta con ese correo.',
+    'auth/invalid-credential':'El correo o la contraseña no coinciden. Tocá el ojo para revisar lo escrito o usá “Olvidé mi contraseña”.',
+    'auth/wrong-password':'La contraseña no es correcta. Tocá el ojo para comprobarla o recuperala.',
+    'auth/user-not-found':'No encontramos una cuenta con ese correo. Revisá cómo está escrito o creá una cuenta.',
     'auth/too-many-requests':'Hubo demasiados intentos. Esperá unos minutos y volvé a probar.'
   };
   return mapa[codigo] || ('No se pudo completar el acceso. Código: ' + (codigo || error?.message || 'desconocido'));
 }
+</script>
+<script>
+function alternarPassword(id, boton){
+  const campo=document.getElementById(id);
+  if(!campo) return;
+  const mostrando=campo.type==='text';
+  campo.type=mostrando?'password':'text';
+  boton.textContent=mostrando?'👁️':'🙈';
+  boton.setAttribute('aria-label', mostrando?'Mostrar contraseña':'Ocultar contraseña');
+  boton.title=mostrando?'Mostrar contraseña':'Ocultar contraseña';
+}
+
+function prepararCamposPassword(){
+  document.querySelectorAll('input[type="password"]').forEach((campo,indice)=>{
+    if(campo.closest('.password-contenedor')) return;
+    if(!campo.id) campo.id='password-campo-'+indice+'-'+Math.random().toString(36).slice(2,7);
+    const cont=document.createElement('div');
+    cont.className='password-contenedor';
+    campo.parentNode.insertBefore(cont,campo);
+    cont.appendChild(campo);
+    const boton=document.createElement('button');
+    boton.type='button';
+    boton.className='btn-ver-password';
+    boton.textContent='👁️';
+    boton.title='Mostrar contraseña';
+    boton.setAttribute('aria-label','Mostrar contraseña');
+    boton.addEventListener('click',()=>alternarPassword(campo.id,boton));
+    cont.appendChild(boton);
+  });
+}
+document.addEventListener('DOMContentLoaded',prepararCamposPassword);
 </script>
 </body>
 </html>

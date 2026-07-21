@@ -21,6 +21,34 @@ body{margin:0;background:var(--fondo);font-family:"DM Sans",sans-serif;color:var
 .cta{margin-top:38px;background:linear-gradient(135deg,#CC0000,#a30000);color:#fff;border-radius:24px;padding:32px;text-align:center}.cta h2{font-family:"Fraunces",serif;font-size:2rem;margin:0 0 8px}.cta p{color:rgba(255,255,255,.84)}.cta a{display:inline-block;background:#fff;color:var(--rojo);text-decoration:none;font-weight:800;padding:12px 20px;border-radius:999px}
 footer{background:#04162e;color:rgba(255,255,255,.65);text-align:center;padding:24px}
 @media(max-width:760px){.heroin,.step{grid-template-columns:1fr}.hero img{max-width:260px}.step:nth-child(even) .pic{order:0}.pic{min-height:230px}.copy{padding:24px}.brand{font-size:.9rem}}
+
+.password-contenedor{
+  position:relative;
+  width:100%;
+}
+.password-contenedor input[type="password"],
+.password-contenedor input[type="text"]{
+  width:100%;
+  padding-right:54px !important;
+}
+.btn-ver-password{
+  position:absolute;
+  right:8px;
+  top:50%;
+  transform:translateY(-50%);
+  width:40px !important;
+  min-width:40px !important;
+  height:36px;
+  padding:0 !important;
+  border:0;
+  background:transparent;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:1.1rem;
+  line-height:1;
+}
+.btn-ver-password:hover{background:rgba(0,0,0,.06)}
+
 </style></head>
 <body>
 <header class="top"><div class="topin"><a class="brand" href="./index.html"><img src="./icons/icon-192.png" alt="">Sálvame las Papas</a><a class="back" href="./index.html">← Volver</a></div></header>
@@ -37,4 +65,35 @@ footer{background:#04162e;color:rgba(255,255,255,.65);text-align:center;padding:
 <section class="cta"><h2>¿Listo para empezar?</h2><p>Volvé al inicio y explorá la red local.</p><a href="./index.html#comercios">Buscar ahora</a></section>
 </main><footer>© 2026 Sálvame las Papas · Proyecto local independiente</footer>
 <script>if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js").catch(console.warn));</script>
+<script>
+function alternarPassword(id, boton){
+  const campo=document.getElementById(id);
+  if(!campo) return;
+  const mostrando=campo.type==='text';
+  campo.type=mostrando?'password':'text';
+  boton.textContent=mostrando?'👁️':'🙈';
+  boton.setAttribute('aria-label', mostrando?'Mostrar contraseña':'Ocultar contraseña');
+  boton.title=mostrando?'Mostrar contraseña':'Ocultar contraseña';
+}
+
+function prepararCamposPassword(){
+  document.querySelectorAll('input[type="password"]').forEach((campo,indice)=>{
+    if(campo.closest('.password-contenedor')) return;
+    if(!campo.id) campo.id='password-campo-'+indice+'-'+Math.random().toString(36).slice(2,7);
+    const cont=document.createElement('div');
+    cont.className='password-contenedor';
+    campo.parentNode.insertBefore(cont,campo);
+    cont.appendChild(campo);
+    const boton=document.createElement('button');
+    boton.type='button';
+    boton.className='btn-ver-password';
+    boton.textContent='👁️';
+    boton.title='Mostrar contraseña';
+    boton.setAttribute('aria-label','Mostrar contraseña');
+    boton.addEventListener('click',()=>alternarPassword(campo.id,boton));
+    cont.appendChild(boton);
+  });
+}
+document.addEventListener('DOMContentLoaded',prepararCamposPassword);
+</script>
 </body></html>
