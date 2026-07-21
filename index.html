@@ -1003,6 +1003,12 @@ img,video,iframe,svg{max-width:100%;height:auto}
   .info-publica-comercio{font-size:.78rem}
 }
 
+
+.cm-opciones-compra{margin:12px 0 4px;padding:12px 14px;border-radius:12px;background:#eef5ff;border:1px solid #bfd4ef;color:#183b63;font-size:.86rem;line-height:1.45}
+.cm-opciones-compra strong{display:block;margin-bottom:5px;color:#082f68}
+.cm-opciones-lista{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.cm-opcion-chip{padding:5px 9px;border-radius:999px;background:#fff;border:1px solid #c7d7e9;font-weight:700;font-size:.78rem}
+
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -1786,6 +1792,11 @@ img,video,iframe,svg{max-width:100%;height:auto}
       <!-- PRODUCTOS -->
       <div class="cm-productos">
         <div class="cm-prod-titulo">🛍️ Productos disponibles</div>
+        <div id="cm-opciones-compra" class="cm-opciones-compra">
+          <strong>Opciones para tu compra</strong>
+          <div id="cm-opciones-entrega" class="cm-opciones-lista"></div>
+          <div id="cm-opciones-pago" class="cm-opciones-lista"></div>
+        </div>
         <div class="prod-grid" id="cm-prod-grid">
           <p style="color:var(--suave);font-size:.9rem">Cargando productos...</p>
         </div>
@@ -1812,7 +1823,7 @@ img,video,iframe,svg{max-width:100%;height:auto}
           </div>
           <button class="btn-pedir" onclick="enviarPedidoWA()">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-            Pedir por WhatsApp
+            Continuar con entrega y pago
           </button>
           <button class="btn-vaciar" onclick="vaciarCarrito()">Vaciar carrito</button>
         </div>
@@ -2238,8 +2249,6 @@ function renderComercio(c, globalIdx){
   if(globalIdx !== undefined) window._comercioRefs = window._comercioRefs || {}
   if(globalIdx !== undefined) window._comercioRefs[globalIdx] = c
   const refCall = globalIdx !== undefined ? `abrirComercio(window._comercioRefs[${globalIdx}])` : 'abrirComercio({})'
-
-  const waLink = `https://wa.me/${c.tel}?text=Hola%20${encodeURIComponent(c.nombre)}%2C%20vi%20tu%20local%20en%20S%C3%A1lvame%20las%20Papas`
   const tags = (c.tags||[]).map(t => {
     let cls = t.includes('Abierto')||t.includes('horas') ? 't-abierto' : t.includes('nvío')||t.includes('Cadete')||t.includes('Retiro') ? 't-envio' : 't-efectivo'
     return `<span class="tag ${cls}">${t}</span>`
@@ -2260,10 +2269,9 @@ function renderComercio(c, globalIdx){
         ${infoPublicaComercio(c,true)}
         <p class="cmax-desc">${c.desc||""}</p>
         <div class="tienda-tags">${tags}</div>
-        <a class="cmax-wa" href="${waLink}" target="_blank" rel="noopener noreferrer" onclick="registrarClicWhatsapp(window._comercioRefs[${globalIdx}])">
-          <svg class="wa-icon" viewBox="0 0 24 24" fill="#7BFFA8"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-          Consultá por WhatsApp — te hacemos la gauchada
-        </a>
+        <button class="cmax-wa" type="button" onclick="${refCall}">
+          🛒 Ver productos, entrega y formas de pago
+        </button>
       </div>
       <div>
         <div style="font-size:.8rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem;font-weight:700">Productos en vitrina</div>
@@ -2295,9 +2303,7 @@ function renderComercio(c, globalIdx){
         <button class="btn-agregar" style="flex:1;padding:10px" onclick="${refCall}">
           🛒 Ver productos y comprar
         </button>
-        <a class="wa-btn" style="flex:0;padding:10px 12px" href="${waLink}" target="_blank" rel="noopener noreferrer" onclick="registrarClicWhatsapp(window._comercioRefs[${globalIdx}])">
-          <svg class="wa-icon" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-        </a>
+        <button class="wa-btn" type="button" style="flex:0;padding:10px 12px" onclick="${refCall}" title="Ver productos y opciones de compra">🛒</button>
       </div>
     </div>`
   }
@@ -2321,9 +2327,7 @@ function renderComercio(c, globalIdx){
       <button class="btn-agregar" style="flex:1" onclick="event.stopPropagation();${refCall}">
         🛒 Ver y comprar
       </button>
-      <a class="wa-btn" style="flex:0;padding:9px 12px" href="${waLink}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();registrarClicWhatsapp(window._comercioRefs[${globalIdx}])">
-        <svg class="wa-icon" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-      </a>
+      <button class="wa-btn" type="button" style="flex:0;padding:9px 12px" onclick="event.stopPropagation();${refCall}" title="Ver productos y opciones de compra">🛒</button>
     </div>
   </div>`
 }
@@ -2406,6 +2410,8 @@ async function cargarComercios(){
               direccion: d.direccion || d.domicilio || d.ubicacion || '',
               horarios: d.horarios || d.horario || d.horarioAtencion || '',
               tags: [...(d.pagos||[]).slice(0,2), ...(d.envio||[]).slice(0,1)],
+              pagos: Array.isArray(d.pagos) ? d.pagos : (d.pagos ? [d.pagos] : []),
+              envio: Array.isArray(d.envio) ? d.envio : (d.envio ? [d.envio] : []),
               tel: d.telefono?.replace(/\D/g,'') || '',
               emoji: d.emoji || '🏪',
               bg: d.bg || '#F0F4FF',
@@ -2442,6 +2448,52 @@ let carritoActual = []    // items en el carrito
 let comercioActivo = null // comercio abierto
 
 // Abrir página del comercio
+
+function listaNormalizada(valor){
+  if(!valor) return [];
+  if(Array.isArray(valor)) return valor.map(v=>String(v).trim()).filter(Boolean);
+  return String(valor).split(/[,;|]/).map(v=>v.trim()).filter(Boolean);
+}
+function opcionesEntregaComercio(c){
+  const originales=listaNormalizada(c?.envio), salida=[];
+  originales.forEach(v=>{
+    const x=v.toLowerCase();
+    if((x.includes('retiro')||x.includes('buscar')||x.includes('local'))&&!salida.includes('Retiro en el comercio')) salida.push('Retiro en el comercio');
+    if((x.includes('envío')||x.includes('envio')||x.includes('delivery')||x.includes('cadete')||x.includes('domicilio'))&&!salida.includes('Envío a domicilio')) salida.push('Envío a domicilio');
+  });
+  if(!salida.length) salida.push('Retiro en el comercio','A coordinar con el comercio');
+  return salida;
+}
+function opcionesPagoComercio(c){
+  const originales=listaNormalizada(c?.pagos), salida=[];
+  originales.forEach(v=>{
+    const x=v.toLowerCase();
+    if(x.includes('efectivo')&&!salida.includes('Efectivo')) salida.push('Efectivo');
+    if((x.includes('transfer')||x.includes('mercado pago'))&&!salida.includes('Transferencia')) salida.push('Transferencia');
+    if((x.includes('tarjeta')||x.includes('débito')||x.includes('debito')||x.includes('crédito')||x.includes('credito'))&&!salida.includes('Tarjeta / link de pago')) salida.push('Tarjeta / link de pago');
+  });
+  if(!salida.length) salida.push('A coordinar');
+  return salida;
+}
+function mostrarOpcionesCompra(c){
+  const entregas=opcionesEntregaComercio(c), pagos=opcionesPagoComercio(c);
+  const eb=document.getElementById('cm-opciones-entrega'), pb=document.getElementById('cm-opciones-pago');
+  if(eb) eb.innerHTML='<b>🚚 Entrega:</b> '+entregas.map(v=>`<span class="cm-opcion-chip">${textoSeguro(v)}</span>`).join('');
+  if(pb) pb.innerHTML='<b>💳 Pago:</b> '+pagos.map(v=>`<span class="cm-opcion-chip">${textoSeguro(v)}</span>`).join('');
+}
+function configurarOpcionesPedido(c){
+  const entrega=document.getElementById('co-entrega'), pago=document.getElementById('co-pago');
+  if(entrega){
+    const opciones=opcionesEntregaComercio(c);
+    entrega.innerHTML=opciones.map(v=>`<option value="${textoSeguro(v)}">${textoSeguro(v)}</option>`).join('');
+  }
+  if(pago){
+    const opciones=opcionesPagoComercio(c);
+    pago.innerHTML=opciones.map(v=>`<option value="${textoSeguro(v)}">${textoSeguro(v)}</option>`).join('');
+  }
+  actualizarEntregaCliente();
+}
+
 function abrirComercio(c){
   comercioActivo = c
   registrarMetrica(c, 'visitas', true)
@@ -2461,6 +2513,7 @@ function abrirComercio(c){
      </div>`
 
   prepararAccionesComercio(c)
+  mostrarOpcionesCompra(c)
 
   // Llenar productos
   const grid = document.getElementById('cm-prod-grid')
@@ -2635,6 +2688,7 @@ function enviarPedidoWA(){
 }
 
 function abrirCheckout(){
+  configurarOpcionesPedido(comercioActivo)
   const modal=document.getElementById('checkout-modal')
   modal.classList.add('open')
   document.body.style.overflow='hidden'

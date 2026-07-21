@@ -1,4 +1,4 @@
-const CACHE_NAME = "salvame-papas-v17-comercios-reales";
+const CACHE_NAME = "salvame-papas-v18-compra-antes-whatsapp";
 const APP_SHELL = ["./","./index.html","./comercio.html","./admin.html","./seguimiento-comercios.html","./como-usar.html","./diccionario-entrerriano.html","./offline.html","./manifest.webmanifest"];
 
 self.addEventListener("install",event=>{
