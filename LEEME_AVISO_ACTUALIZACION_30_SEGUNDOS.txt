@@ -1,0 +1,15 @@
+CORRECCIÓN REAL DEL AVISO DE ACTUALIZACIÓN
+
+El aviso desaparecía rápido porque el service worker ejecutaba skipWaiting()
+automáticamente durante la instalación. Eso activaba la versión y recargaba
+la página sin esperar al usuario.
+
+Ahora:
+- la versión nueva queda en espera;
+- no se recarga la página automáticamente;
+- el aviso permanece visible durante 30 segundos completos;
+- la actualización se activa solamente al tocar “Actualizar ahora”;
+- el botón cambia a “Actualizando...” mientras se realiza el cambio.
+
+Caché nueva:
+salvame-papas-v23-aviso-30-segundos-real

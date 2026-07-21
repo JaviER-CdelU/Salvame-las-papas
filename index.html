@@ -3728,7 +3728,7 @@ actualizarEstadoInstalacion();
 </script>
 
 <div id="actualizacion-app" role="status" aria-live="polite">
-  <span>Hay una versión nueva de Sálvame las Papas.</span>
+  <span><strong>Hay una versión nueva.</strong><br>Podés seguir usando esta página o tocar “Actualizar ahora”.</span>
   <button id="btn-actualizar-app" type="button">Actualizar ahora</button>
 </div>
 
@@ -3741,11 +3741,24 @@ actualizarEstadoInstalacion();
   function mostrar(reg){
     esperando=reg.waiting;
     if(aviso&&esperando){
+      const ahora=Date.now();
       aviso.classList.add('visible');
-      aviso.dataset.visibleDesde=String(Date.now());
+      aviso.dataset.visibleDesde=String(ahora);
+
       clearTimeout(window._slpOcultarActualizacion);
       window._slpOcultarActualizacion=setTimeout(()=>{
-        aviso.classList.remove('visible');
+        // Se controla el tiempo real transcurrido para impedir que otro
+        // evento lo oculte antes de los 30 segundos.
+        const desde=Number(aviso.dataset.visibleDesde||ahora);
+        const transcurrido=Date.now()-desde;
+        if(transcurrido>=30000){
+          aviso.classList.remove('visible');
+        }else{
+          window._slpOcultarActualizacion=setTimeout(
+            ()=>aviso.classList.remove('visible'),
+            30000-transcurrido
+          );
+        }
       },30000);
     }
   }
@@ -3763,7 +3776,15 @@ actualizarEstadoInstalacion();
       setInterval(()=>reg.update(),10*60*1000);
     })
     .catch(err=>console.warn('No se pudo registrar la actualización:',err));
-  boton?.addEventListener('click',()=>{if(esperando){esperando.postMessage({type:'SKIP_WAITING'});}else{location.reload();}});
+  boton?.addEventListener('click',()=>{
+    boton.disabled=true;
+    boton.textContent='Actualizando...';
+    if(esperando){
+      esperando.postMessage({type:'SKIP_WAITING'});
+    }else{
+      location.reload();
+    }
+  });
   let recargando=false;
   navigator.serviceWorker.addEventListener('controllerchange',()=>{if(recargando)return;recargando=true;location.reload();});
 })();
