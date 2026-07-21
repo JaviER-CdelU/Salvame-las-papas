@@ -15,7 +15,7 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc,
-         query, orderBy, where, serverTimestamp }
+         query, orderBy, where, serverTimestamp, Timestamp }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -231,7 +231,14 @@ window.aprobarComercio = async (id, nombre, tel) => {
   nombre = decodeURIComponent(nombre || '')
   if(!confirm('Aprobar a ' + nombre + '?')) return
   try {
-    await updateDoc(doc(db,'comercios',id), { estado: 'activo', estadoPagoPlan: 'acreditado', aprobadoEn: serverTimestamp(), actualizadoEn: serverTimestamp() })
+    const ahora = new Date()
+    const proxima = new Date(ahora)
+    proxima.setDate(proxima.getDate() + 30)
+    await updateDoc(doc(db,'comercios',id), {
+      estado: 'activo', estadoPagoPlan: 'acreditado', estadoSuscripcion: 'activo',
+      aprobadoEn: serverTimestamp(), ultimoPagoEn: Timestamp.fromDate(ahora),
+      proximaRenovacion: Timestamp.fromDate(proxima), actualizadoEn: serverTimestamp()
+    })
     toast('✅ ' + nombre + ' aprobado. Ya puede aparecer en la página principal.')
     // Notificar al comercio por WhatsApp
     if(tel){
@@ -622,6 +629,7 @@ img{max-width:100%;height:auto}
       <a href="index.html">🏠 Sitio público</a>
       <a href="comercio.html">🏪 Mi comercio</a>
       <a class="active" href="admin.html">⚙️ Admin</a>
+      <a href="seguimiento-comercios.html">📅 Seguimiento</a>
     </div>
     <div class="admin-user-info">
       <span id="admin-user"></span>

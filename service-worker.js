@@ -1,9 +1,10 @@
-const CACHE_NAME = "salvame-papas-shell-v11-mobile-cards";
+const CACHE_NAME = "salvame-papas-shell-v12-seguimiento";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./comercio.html",
   "./admin.html",
+  "./seguimiento-comercios.html",
   "./offline.html",
   "./como-usar.html",
   "./images/super-papa.webp",
@@ -46,7 +47,7 @@ self.addEventListener("fetch", event => {
     event.respondWith(
       fetch(request, { cache: "no-store" })
         .then(response => {
-          if (!url.pathname.endsWith("/admin.html") && !url.pathname.endsWith("admin.html")) {
+          if (!url.pathname.endsWith("/admin.html") && !url.pathname.endsWith("admin.html") && !url.pathname.endsWith("/seguimiento-comercios.html") && !url.pathname.endsWith("seguimiento-comercios.html")) {
             const copy = response.clone();
             caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
           }

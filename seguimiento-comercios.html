@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta name="description" content="Seguimiento privado de comercios de Sálvame las Papas."/>
+<meta name="theme-color" content="#002A6A"/>
+<title>Seguimiento de comercios — Sálvame las Papas</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, getDocs, doc, updateDoc, query, orderBy, serverTimestamp, Timestamp }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAE8kEBAzDbPvCCD1KCyjq67iFl3dvthLM",
+  authDomain: "salvame-las-papas-cdelu.firebaseapp.com",
+  projectId: "salvame-las-papas-cdelu",
+  storageBucket: "salvame-las-papas-cdelu.firebasestorage.app",
+  messagingSenderId: "401048945476",
+  appId: "1:401048945476:web:58695553aa93928b36cd11"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+provider.setCustomParameters({prompt:'select_account'});
+const ADMIN_EMAIL = 'salvamelaspapascdelu@gmail.com';
+let comercios = [];
+let filtroActual = 'todos';
+
+const $ = id => document.getElementById(id);
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function aFecha(valor){
+  if(!valor) return null;
+  if(typeof valor.toDate === 'function') return valor.toDate();
+  if(valor instanceof Date) return valor;
+  if(typeof valor === 'string'){
+    const d = new Date(valor.length === 10 ? valor + 'T12:00:00' : valor);
+    return isNaN(d) ? null : d;
+  }
+  if(typeof valor.seconds === 'number') return new Date(valor.seconds * 1000);
+  return null;
+}
+function fechaTexto(valor){
+  const d = aFecha(valor);
+  return d ? d.toLocaleDateString('es-AR') : 'Sin registrar';
+}
+function fechaBase(c){ return aFecha(c.aprobadoEn) || aFecha(c.creadoEn); }
+function vencimiento(c){
+  const guardado = aFecha(c.proximaRenovacion);
+  if(guardado) return guardado;
+  const base = fechaBase(c);
+  if(!base || c.estado !== 'activo') return null;
+  const d = new Date(base); d.setDate(d.getDate()+30); return d;
+}
+function diasRestantes(c){
+  const v = vencimiento(c); if(!v) return null;
+  const hoy = new Date(); hoy.setHours(0,0,0,0);
+  const fin = new Date(v); fin.setHours(0,0,0,0);
+  return Math.ceil((fin-hoy)/86400000);
+}
+function semaforo(c){
+  if(c.estado !== 'activo' || diasRestantes(c) === null) return {clase:'pendiente', etiqueta:'Pendiente / sin fecha', grupo:'pendiente'};
+  const d = diasRestantes(c);
+  if(d < 0) return {clase:'vencido', etiqueta:`Vencido hace ${Math.abs(d)} día${Math.abs(d)===1?'':'s'}`, grupo:'vencido'};
+  if(d === 0) return {clase:'hoy', etiqueta:'Vence hoy', grupo:'hoy'};
+  if(d <= 3) return {clase:'urgente', etiqueta:`Faltan ${d} día${d===1?'':'s'}`, grupo:'urgente'};
+  if(d <= 7) return {clase:'aviso', etiqueta:`Faltan ${d} días`, grupo:'aviso'};
+  return {clase:'vigente', etiqueta:`Faltan ${d} días`, grupo:'vigente'};
+}
+function planInfo(c){
+  const p = String(c.plan || '').toLowerCase();
+  if(p.includes('45.000') || p.includes('45000') || p.includes('max')) return {nombre:'Pro', precio:45000};
+  if(p.includes('30.000') || p.includes('30000') || p.includes('destacado') || p.includes('nivel 2')) return {nombre:'Destacado', precio:30000};
+  if(p.includes('15.000') || p.includes('15000') || p.includes('básico') || p.includes('basico') || p.includes('nivel 1')) return {nombre:'Básico', precio:15000};
+  if(p.includes('pro')) return {nombre:'Pro', precio:45000};
+  return {nombre:'Básico', precio:15000};
+}
+
+onAuthStateChanged(auth, async user => {
+  if(user && (user.email||'').toLowerCase() === ADMIN_EMAIL){
+    $('login').hidden = true; $('app').hidden = false; await cargar();
+  } else {
+    $('app').hidden = true; $('login').hidden = false;
+    if(user){ await signOut(auth); mostrarError('Esta cuenta de Google no está autorizada para administrar el sitio.'); }
+  }
+});
+
+window.entrarGoogle = async () => {
+  $('login-error').hidden = true;
+  try { await signInWithPopup(auth, provider); }
+  catch(e){
+    if(e.code === 'auth/unauthorized-domain') mostrarError('Firebase todavía no autorizó este dominio: '+location.hostname+'.');
+    else if(e.code !== 'auth/popup-closed-by-user') mostrarError('No se pudo ingresar con Google. Código: '+(e.code||'error desconocido'));
+  }
+};
+window.salir = () => signOut(auth);
+function mostrarError(t){ $('login-error').textContent=t; $('login-error').hidden=false; }
+
+async function cargar(){
+  $('lista').innerHTML='<div class="cargando">Cargando seguimiento… 🥔</div>';
+  try{
+    let snap;
+    try{ snap = await getDocs(query(collection(db,'comercios'), orderBy('creadoEn','desc'))); }
+    catch{ snap = await getDocs(collection(db,'comercios')); }
+    comercios=[]; snap.forEach(d=>comercios.push({id:d.id,...d.data()}));
+    actualizarResumen(); aplicarFiltros();
+  }catch(e){
+    $('lista').innerHTML='<div class="error">No se pudieron cargar los comercios. Revisá la conexión y las reglas de Firebase.</div>';
+  }
+}
+window.cargar = cargar;
+
+function actualizarResumen(){
+  const grupos={vigente:0,aviso:0,urgente:0,hoy:0,vencido:0,pendiente:0};
+  comercios.forEach(c=>grupos[semaforo(c).grupo]++);
+  $('r-total').textContent=comercios.length;
+  Object.keys(grupos).forEach(k=>{ const el=$('r-'+k); if(el) el.textContent=grupos[k]; });
+}
+window.filtrar = f => { filtroActual=f; document.querySelectorAll('.filtro').forEach(b=>b.classList.toggle('activo',b.dataset.f===f)); aplicarFiltros(); };
+function aplicarFiltros(){
+  const q=$('buscar').value.trim().toLowerCase();
+  let arr=comercios.filter(c=>{
+    const coincide=!q || [c.nombre,c.categoria,c.barrio,c.telefono,c.email,c.plan].some(v=>String(v||'').toLowerCase().includes(q));
+    const grupo=semaforo(c).grupo;
+    return coincide && (filtroActual==='todos' || grupo===filtroActual);
+  });
+  arr.sort((a,b)=>{
+    const da=diasRestantes(a), db=diasRestantes(b);
+    if(da===null && db===null) return String(a.nombre||'').localeCompare(String(b.nombre||''));
+    if(da===null) return 1; if(db===null) return -1; return da-db;
+  });
+  render(arr);
+}
+window.buscar = aplicarFiltros;
+
+function render(arr){
+  if(!arr.length){ $('lista').innerHTML='<div class="vacio">No hay comercios en esta categoría.</div>'; return; }
+  $('lista').innerHTML=arr.map(c=>{
+    const s=semaforo(c), p=planInfo(c), d=diasRestantes(c), tel=String(c.telefono||'').replace(/\D/g,'');
+    return `<article class="ficha ${s.clase}">
+      <header class="ficha-titulo ${s.clase}">
+        <div><span class="estado-tiempo">${esc(s.etiqueta)}</span><h2>${esc(c.nombre||'Comercio sin nombre')}</h2></div>
+        <span class="estado-comercio">${esc(c.estado||'pendiente')}</span>
+      </header>
+      <div class="datos">
+        <div><b>📅 Ingreso</b><span>${fechaTexto(c.creadoEn)}</span></div>
+        <div><b>✅ Aprobación</b><span>${fechaTexto(c.aprobadoEn)}</span></div>
+        <div><b>💼 Plan</b><span>${esc(p.nombre)} — $${p.precio.toLocaleString('es-AR')}</span></div>
+        <div><b>💳 Último pago</b><span>${fechaTexto(c.ultimoPagoEn || c.aprobadoEn)}</span></div>
+        <div><b>🔔 Próxima renovación</b><span>${fechaTexto(vencimiento(c))}</span></div>
+        <div><b>🏷️ Rubro</b><span>${esc(c.categoria||'Sin categoría')}</span></div>
+        <div><b>📱 Teléfono</b><span>${esc(c.telefono||'Sin teléfono')}</span></div>
+        <div><b>✉️ Correo</b><span>${esc(c.email||'Sin correo')}</span></div>
+      </div>
+      <div class="acciones">
+        <button class="primario" onclick="registrarPago('${c.id}','${encodeURIComponent(c.nombre||'')}')">💰 Registrar pago +30 días</button>
+        <button onclick="cambiarFecha('${c.id}')">📆 Cambiar vencimiento</button>
+        <button onclick="recordar('${tel}','${encodeURIComponent(c.nombre||'')}',${d===null?'null':d})" ${tel?'':'disabled'}>💬 Enviar recordatorio</button>
+        <a href="admin.html">⚙️ Ver en administración</a>
+      </div>
+    </article>`;
+  }).join('');
+}
+
+window.registrarPago = async (id,nombreCod) => {
+  const nombre=decodeURIComponent(nombreCod||'');
+  if(!confirm('¿Registrar el pago de '+nombre+' y renovar por 30 días?')) return;
+  const inicio=new Date(); const proxima=new Date(inicio); proxima.setDate(proxima.getDate()+30);
+  try{
+    await updateDoc(doc(db,'comercios',id),{
+      ultimoPagoEn:Timestamp.fromDate(inicio), proximaRenovacion:Timestamp.fromDate(proxima),
+      estadoPagoPlan:'acreditado', estadoSuscripcion:'activo', estado:'activo', actualizadoEn:serverTimestamp()
+    });
+    toast('✅ Pago registrado. Próxima renovación: '+proxima.toLocaleDateString('es-AR')); await cargar();
+  }catch(e){ toast('Error: '+e.message); }
+};
+window.cambiarFecha = async id => {
+  const valor=prompt('Nueva fecha de vencimiento (AAAA-MM-DD):'); if(!valor) return;
+  const fecha=new Date(valor+'T12:00:00'); if(isNaN(fecha)){toast('Fecha inválida');return;}
+  try{ await updateDoc(doc(db,'comercios',id),{proximaRenovacion:Timestamp.fromDate(fecha),actualizadoEn:serverTimestamp()}); toast('✅ Fecha actualizada'); await cargar(); }
+  catch(e){toast('Error: '+e.message);}
+};
+window.recordar = (tel,nombreCod,dias) => {
+  const nombre=decodeURIComponent(nombreCod||'');
+  const tiempo=dias===null?'se acerca':dias<0?'está vencido':dias===0?'vence hoy':`vence dentro de ${dias} días`;
+  const msg=`Hola ${nombre}. Te escribimos desde Sálvame las Papas 🥔. Tu plan ${tiempo}. Tus productos quedan guardados, pero para continuar publicados necesitamos registrar la renovación. ¿Te ayudamos?`;
+  window.open('https://wa.me/'+tel+'?text='+encodeURIComponent(msg),'_blank','noopener');
+};
+function toast(t){ const el=$('toast'); el.textContent=t; el.classList.add('ver'); setTimeout(()=>el.classList.remove('ver'),4000); }
+</script>
+<style>
+:root{--azul:#002a6a;--rojo:#c62828;--texto:#152033;--fondo:#eef3f8;--borde:#dbe3ec}
+*{box-sizing:border-box} html,body{margin:0;max-width:100%;overflow-x:hidden} body{font-family:"DM Sans",sans-serif;background:var(--fondo);color:var(--texto)}
+button,input,a{font:inherit}.login{min-height:100vh;display:grid;place-items:center;background:linear-gradient(135deg,#002a6a,#064f9b);padding:20px}.login-box{width:min(410px,100%);background:#fff;border-radius:22px;padding:30px;text-align:center;box-shadow:0 24px 70px #001b4670}.login h1{font-family:Fraunces,serif;color:var(--azul);margin:0 0 8px}.login p{color:#687386}.login button{width:100%;border:0;border-radius:12px;padding:14px;background:#fff;color:#263238;font-weight:700;border:2px solid #d9e0e8;cursor:pointer}.login-error{margin-top:14px;padding:11px;border-radius:10px;background:#ffebee;color:#a31522;text-align:left}
+nav{position:sticky;top:0;z-index:20;background:#071f43;color:#fff;padding:12px max(18px,calc((100vw - 1280px)/2));display:flex;align-items:center;gap:16px;justify-content:space-between;border-bottom:4px solid #d71920}.logo{font-family:Fraunces,serif;font-size:1.15rem;font-weight:900}.nav-links{display:flex;gap:8px;flex-wrap:wrap}.nav-links a,.salir{color:#fff;text-decoration:none;background:#ffffff18;border:1px solid #ffffff2b;border-radius:999px;padding:8px 12px}.nav-links a.activo{background:#fff;color:#071f43}.salir{cursor:pointer}
+main{width:min(1280px,100%);margin:auto;padding:26px 18px 60px}.cabecera{display:flex;justify-content:space-between;gap:20px;align-items:flex-end;margin-bottom:18px}.cabecera h1{font-family:Fraunces,serif;color:var(--azul);font-size:clamp(1.8rem,5vw,2.7rem);margin:0}.cabecera p{margin:6px 0 0;color:#667285}.actualizar{border:0;border-radius:10px;padding:11px 15px;background:var(--azul);color:#fff;font-weight:700;cursor:pointer}
+.resumen{display:grid;grid-template-columns:repeat(6,minmax(130px,1fr));gap:10px;margin-bottom:18px}.resumen-card{background:#fff;border:2px solid var(--borde);border-radius:14px;padding:13px;text-align:center}.resumen-card strong{display:block;font:900 1.8rem Fraunces,serif}.resumen-card span{font-size:.78rem;color:#687386}.resumen-card.vigente{border-color:#66bb6a;background:#edf9ef}.resumen-card.aviso{border-color:#f2cc43;background:#fff9db}.resumen-card.urgente{border-color:#ef8b31;background:#fff0e4}.resumen-card.hoy{border-color:#ef5350;background:#ffebee}.resumen-card.vencido{border-color:#8e1b1b;background:#f4dddd}.resumen-card.pendiente{border-color:#5792d7;background:#eaf3ff}
+.controles{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:#fff;padding:12px;border-radius:15px;border:1px solid var(--borde);margin-bottom:18px}.controles input{flex:1;min-width:220px;border:2px solid var(--borde);border-radius:10px;padding:10px 12px}.filtro{border:1px solid #cdd6e0;background:#fff;border-radius:999px;padding:8px 12px;cursor:pointer}.filtro.activo{background:var(--azul);color:#fff;border-color:var(--azul)}
+.lista{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.ficha{background:#fff;border-radius:18px;overflow:hidden;border:2px solid var(--borde);box-shadow:0 8px 28px #20334d12}.ficha-titulo{padding:17px 18px;color:#102236;display:flex;justify-content:space-between;align-items:flex-start;gap:14px}.ficha-titulo h2{font-family:Fraunces,serif;font-size:1.55rem;line-height:1.05;margin:4px 0 0;overflow-wrap:anywhere}.estado-tiempo{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em}.estado-comercio{background:#ffffffaa;border-radius:999px;padding:6px 10px;font-size:.72rem;font-weight:800;text-transform:uppercase;white-space:nowrap}.ficha-titulo.vigente{background:#9ee0a9}.ficha-titulo.aviso{background:#ffe36d}.ficha-titulo.urgente{background:#ff9e52}.ficha-titulo.hoy{background:#ef5350;color:#fff}.ficha-titulo.vencido{background:#861b24;color:#fff}.ficha-titulo.pendiente{background:#80b8ee}.datos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;border-top:1px solid #ffffff66}.datos>div{padding:12px 15px;border-bottom:1px solid #e7edf3;min-width:0}.datos b{display:block;font-size:.75rem;color:#69768a;margin-bottom:3px}.datos span{display:block;font-size:.92rem;overflow-wrap:anywhere}.acciones{padding:14px;display:flex;gap:8px;flex-wrap:wrap}.acciones button,.acciones a{border:1px solid #cbd5df;background:#fff;color:#26374b;border-radius:10px;padding:9px 11px;text-decoration:none;cursor:pointer;font-weight:700;font-size:.83rem}.acciones .primario{background:#167144;color:#fff;border-color:#167144}.acciones button:disabled{opacity:.45;cursor:not-allowed}.cargando,.vacio,.error{grid-column:1/-1;text-align:center;background:#fff;border-radius:16px;padding:40px;color:#687386}.error{color:#a31522}.toast{position:fixed;right:18px;bottom:18px;max-width:calc(100vw - 36px);background:#13243b;color:#fff;padding:13px 16px;border-radius:12px;opacity:0;transform:translateY(20px);transition:.2s;pointer-events:none;z-index:99}.toast.ver{opacity:1;transform:none}
+@media(max-width:900px){.resumen{grid-template-columns:repeat(3,1fr)}.lista{grid-template-columns:1fr}.nav-links{order:3;width:100%}nav{flex-wrap:wrap}}
+@media(max-width:600px){main{padding:18px 10px 45px}.cabecera{align-items:flex-start;flex-direction:column}.resumen{grid-template-columns:repeat(2,minmax(0,1fr))}.datos{grid-template-columns:1fr}.ficha-titulo{padding:15px 13px}.ficha-titulo h2{font-size:1.35rem}.estado-comercio{white-space:normal;text-align:center}.acciones>*{width:100%;text-align:center}.controles input{min-width:100%}}
+</style>
+</head>
+<body>
+<section id="login" class="login"><div class="login-box"><h1>Sálvame las Papas 🥔</h1><h2>Seguimiento de comercios</h2><p>Sección privada para Administración.</p><button onclick="entrarGoogle()">Ingresar con Google</button><div id="login-error" class="login-error" hidden></div></div></section>
+<div id="app" hidden>
+<nav><div class="logo">Sálvame las Papas — Seguimiento</div><div class="nav-links"><a href="index.html">🏠 Sitio</a><a href="admin.html">⚙️ Administración</a><a class="activo" href="seguimiento-comercios.html">📅 Seguimiento</a></div><button class="salir" onclick="salir()">Salir</button></nav>
+<main>
+  <div class="cabecera"><div><h1>Seguimiento y renovaciones</h1><p>Cada ficha se crea automáticamente con los datos registrados por el comercio.</p></div><button class="actualizar" onclick="cargar()">↻ Actualizar</button></div>
+  <section class="resumen">
+    <div class="resumen-card"><strong id="r-total">—</strong><span>Total</span></div>
+    <div class="resumen-card vigente"><strong id="r-vigente">—</strong><span>Más de 7 días</span></div>
+    <div class="resumen-card aviso"><strong id="r-aviso">—</strong><span>Entre 7 y 4 días</span></div>
+    <div class="resumen-card urgente"><strong id="r-urgente">—</strong><span>Entre 3 y 1 día</span></div>
+    <div class="resumen-card hoy"><strong id="r-hoy">—</strong><span>Vencen hoy</span></div>
+    <div class="resumen-card vencido"><strong id="r-vencido">—</strong><span>Vencidos</span></div>
+  </section>
+  <div class="controles">
+    <input id="buscar" oninput="buscar()" placeholder="Buscar comercio, rubro, teléfono o plan…"/>
+    <button class="filtro activo" data-f="todos" onclick="filtrar('todos')">Todos</button>
+    <button class="filtro" data-f="vigente" onclick="filtrar('vigente')">🟢 Vigentes</button>
+    <button class="filtro" data-f="aviso" onclick="filtrar('aviso')">🟡 7 a 4 días</button>
+    <button class="filtro" data-f="urgente" onclick="filtrar('urgente')">🟠 3 a 1 día</button>
+    <button class="filtro" data-f="hoy" onclick="filtrar('hoy')">🔴 Hoy</button>
+    <button class="filtro" data-f="vencido" onclick="filtrar('vencido')">🟥 Vencidos</button>
+    <button class="filtro" data-f="pendiente" onclick="filtrar('pendiente')">🔵 Pendientes</button>
+  </div>
+  <section id="lista" class="lista"><div class="cargando">Iniciá sesión para ver el seguimiento.</div></section>
+</main>
+</div>
+<div id="toast" class="toast"></div>
+</body></html>
