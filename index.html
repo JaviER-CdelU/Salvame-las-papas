@@ -11,10 +11,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, orderBy, limit, where, doc, setDoc, updateDoc, increment, updateDoc, increment }
-  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, updateProfile, reload, onAuthStateChanged, signOut} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, orderBy, limit, where, doc, setDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, updateProfile, reload, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAE8kEBAzDbPvCCD1KCyjq67iFl3dvthLM",
@@ -29,10 +28,13 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db  = getFirestore(app);
 const auth = getAuth(app);
-window._fb = { db, auth, collection, addDoc, serverTimestamp,
-               getDocs, query, orderBy, limit, where, doc, setDoc, updateDoc, increment,
-               createUserWithEmailAndPassword, signInWithEmailAndPassword,
-               sendEmailVerification, updateProfile, reload, onAuthStateChanged, signOut };
+window._fb = {
+  db, auth, collection, addDoc, serverTimestamp,
+  getDocs, query, orderBy, limit, where, doc, setDoc, updateDoc, increment,
+  createUserWithEmailAndPassword, signInWithEmailAndPassword,
+  sendEmailVerification, sendPasswordResetEmail,
+  updateProfile, reload, onAuthStateChanged, signOut
+};
 window._fbReady = () => true;
 
 onAuthStateChanged(auth, u => {
@@ -2590,7 +2592,7 @@ async function autenticarClientePedido(){
     mostrarDatosCliente(cred.user)
   }catch(e){
     const map={'auth/email-already-in-use':'Ese email ya está registrado. Elegí “Ya tengo cuenta”.','auth/invalid-credential':'Email o contraseña incorrectos.','auth/weak-password':'La contraseña es demasiado débil.','auth/too-many-requests':'Demasiados intentos. Esperá unos minutos.'}
-    err.textContent=map[e.code]||e.message||'No se pudo ingresar.';err.classList.add('show')
+    err.textContent=map[e.code]||'No se pudo iniciar Firebase. Actualizá la página y volvé a intentar.'||'No se pudo ingresar.';err.classList.add('show')
   }finally{btn.disabled=false;btn.textContent=modoClientePedido==='registro'?'Crear cuenta y continuar':'Ingresar y continuar'}
 }
 function mostrarDatosCliente(user){
