@@ -12,7 +12,7 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, orderBy, limit, where, doc, setDoc }
+import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, orderBy, limit, where, doc, setDoc, updateDoc, increment, updateDoc, increment }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
          sendEmailVerification, updateProfile, reload, onAuthStateChanged, signOut }
@@ -32,7 +32,7 @@ const app = initializeApp(firebaseConfig);
 const db  = getFirestore(app);
 const auth = getAuth(app);
 window._fb = { db, auth, collection, addDoc, serverTimestamp,
-               getDocs, query, orderBy, limit, where, doc, setDoc,
+               getDocs, query, orderBy, limit, where, doc, setDoc, updateDoc, increment,
                createUserWithEmailAndPassword, signInWithEmailAndPassword,
                sendEmailVerification, updateProfile, reload, onAuthStateChanged, signOut };
 window._fbReady = () => true;
@@ -2099,6 +2099,43 @@ function filtrarCat(cat){
 //  Prioridad: MAX(3) → PRO(2) → BÁSICO(1)
 // ════════════════════════════════════════
 
+
+function fechaFirebaseAFecha(valor){
+  if(!valor) return null;
+  if(typeof valor.toDate === 'function') return valor.toDate();
+  if(valor.seconds) return new Date(valor.seconds * 1000);
+  const f = new Date(valor);
+  return isNaN(f.getTime()) ? null : f;
+}
+
+function comercioPuedePublicarse(datos){
+  if(!datos || datos.estado !== 'activo') return false;
+  if(datos.estadoSuscripcion === 'vencido' || datos.estadoRenovacion === 'vencido') return false;
+  const venc = fechaFirebaseAFecha(datos.proximaRenovacion);
+  if(!venc) return true; // comercios activos anteriores sin fecha siguen visibles
+  venc.setHours(23,59,59,999);
+  return venc >= new Date();
+}
+
+async function registrarMetrica(comercio, campo, unaPorSesion=false){
+  if(!comercio || !comercio.id || !window._fb) return;
+  const clave = `slp_metrica_${campo}_${comercio.id}`;
+  if(unaPorSesion && sessionStorage.getItem(clave)) return;
+  if(unaPorSesion) sessionStorage.setItem(clave, '1');
+  try{
+    await window._fb.updateDoc(
+      window._fb.doc(window._fb.db,'comercios',comercio.id),
+      {[campo]: window._fb.increment(1)}
+    );
+  }catch(e){
+    console.warn('No se pudo registrar '+campo+':', e.message);
+  }
+}
+
+function registrarClicWhatsapp(comercio){
+  registrarMetrica(comercio, 'clicsWhatsApp', false);
+}
+
 const POR_PAGINA = 6  // comercios por página
 
 // Datos demo — se reemplazan con Firebase cuando hay registros reales
@@ -2170,7 +2207,7 @@ function renderComercio(c, globalIdx){
         <div class="cmax-cat">${c.cat} · ${c.barrio||"CDU"}</div>
         <p class="cmax-desc">${c.desc||""}</p>
         <div class="tienda-tags">${tags}</div>
-        <a class="cmax-wa" href="${waLink}" target="_blank" rel="noopener noreferrer">
+        <a class="cmax-wa" href="${waLink}" target="_blank" rel="noopener noreferrer" onclick="registrarClicWhatsapp(window._comercioRefs[${globalIdx}])">
           <svg class="wa-icon" viewBox="0 0 24 24" fill="#7BFFA8"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
           Consultá por WhatsApp — te hacemos la gauchada
         </a>
@@ -2204,7 +2241,7 @@ function renderComercio(c, globalIdx){
         <button class="btn-agregar" style="flex:1;padding:10px" onclick="${refCall}">
           🛒 Ver productos y comprar
         </button>
-        <a class="wa-btn" style="flex:0;padding:10px 12px" href="${waLink}" target="_blank" rel="noopener noreferrer">
+        <a class="wa-btn" style="flex:0;padding:10px 12px" href="${waLink}" target="_blank" rel="noopener noreferrer" onclick="registrarClicWhatsapp(window._comercioRefs[${globalIdx}])">
           <svg class="wa-icon" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
         </a>
       </div>
@@ -2229,7 +2266,7 @@ function renderComercio(c, globalIdx){
       <button class="btn-agregar" style="flex:1" onclick="event.stopPropagation();${refCall}">
         🛒 Ver y comprar
       </button>
-      <a class="wa-btn" style="flex:0;padding:9px 12px" href="${waLink}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
+      <a class="wa-btn" style="flex:0;padding:9px 12px" href="${waLink}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();registrarClicWhatsapp(window._comercioRefs[${globalIdx}])">
         <svg class="wa-icon" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
       </a>
     </div>
@@ -2300,25 +2337,30 @@ async function cargarComercios(){
       const snap = await getDocs(collection(db,'comercios'))
       if(!snap.empty){
         const fbComercics = []
-        snap.forEach(doc => {
-          const d = doc.data()
-          if(d.estado === 'activo'){
+        snap.forEach(registro => {
+          const d = registro.data()
+          if(comercioPuedePublicarse(d)){
             fbComercics.push({
-              id: doc.id,
-              plan: d.plan?.includes('Max') ? 3 : d.plan?.includes('Pro') ? 2 : 1,
+              id: registro.id,
+              plan: String(d.plan||'').toLowerCase().includes('pro') || Number(d.plan)===3 ? 3
+                    : String(d.plan||'').toLowerCase().includes('destacado') || Number(d.plan)===2 ? 2 : 1,
               nombre: d.nombre,
               cat: d.categoria,
               barrio: d.barrio,
               desc: d.descripcion,
+              direccion: d.direccion,
+              horarios: d.horarios,
               tags: [...(d.pagos||[]).slice(0,2), ...(d.envio||[]).slice(0,1)],
-              tel: d.telefono?.replace(/\D/g,'') || '5493442490585',
-              emoji: '🏪', bg: '#F0F4FF'
+              tel: d.telefono?.replace(/\D/g,'') || '',
+              emoji: d.emoji || '🏪',
+              bg: d.bg || '#F0F4FF',
+              productos: Array.isArray(d.productos) ? d.productos : []
             })
           }
         })
-        if(fbComercics.length > 0){
-          comerciosTodos = ordenarPorPlan(fbComercics)
-        }
+        // Si Firebase tiene comercios, se usan solo los reales y vigentes.
+        // Si todos vencieron, la página queda sin comercios: no reaparecen los ejemplos.
+        comerciosTodos = ordenarPorPlan(fbComercics)
       }
     }
   } catch(e){ console.warn('Firebase comercios:', e.message) }
@@ -2347,6 +2389,7 @@ let comercioActivo = null // comercio abierto
 // Abrir página del comercio
 function abrirComercio(c){
   comercioActivo = c
+  registrarMetrica(c, 'visitas', true)
   carritoActual = cargarCarritoGuardado(c)
 
   // Llenar header
@@ -2624,6 +2667,8 @@ async function confirmarPedidoRegistrado(){
     const lineas=carritoActual.map(i=>`• ${i.emoji||'📦'} ${i.nombre} x${i.cantidad} = $${i.subtotal.toLocaleString('es-AR')}`).join('\n')
     const texto=`Hola ${comercioActivo.nombre}! Hice un pedido desde Sálvame las Papas 🥔\n\nPEDIDO #${ref.id.slice(0,8).toUpperCase()}\nCliente: ${nombre}\nWhatsApp: ${telefono}\nEntrega: ${entrega}${direccion?'\nDirección: '+direccion:''}\nPago: ${pago}\n\n${lineas}\n\nTOTAL: $${total.toLocaleString('es-AR')}${observaciones?'\n\nObservaciones: '+observaciones:''}\n\nEstado: pendiente de pago.`
     const tel=(comercioActivo.tel||'5493442490585').replace(/\D/g,'')
+    registrarMetrica(comercioActivo,'pedidosConfirmados',false);
+    registrarMetrica(comercioActivo,'clicsWhatsApp',false);
     cerrarCheckout();toast('✅ Pedido registrado. Abrimos WhatsApp para coordinar.')
     window.open('https://wa.me/'+tel+'?text='+encodeURIComponent(texto),'_blank','noopener')
     vaciarCarrito()

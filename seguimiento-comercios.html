@@ -158,11 +158,15 @@ function render(arr){
         <div><b>🏷️ Rubro</b><span>${esc(c.categoria||'Sin categoría')}</span></div>
         <div><b>📱 Teléfono</b><span>${esc(c.telefono||'Sin teléfono')}</span></div>
         <div><b>✉️ Correo</b><span>${esc(c.email||'Sin correo')}</span></div>
+        <div><b>👁️ Visitas</b><span>${Number(c.visitas||0).toLocaleString('es-AR')}</span></div>
+        <div><b>💬 Clics en WhatsApp</b><span>${Number(c.clicsWhatsApp||0).toLocaleString('es-AR')}</span></div>
+        <div><b>🧾 Pedidos confirmados</b><span>${Number(c.pedidosConfirmados||0).toLocaleString('es-AR')}</span></div>
       </div>
       <div class="acciones">
         <button class="primario" onclick="registrarPago('${c.id}','${encodeURIComponent(c.nombre||'')}')">💰 Registrar pago +30 días</button>
         <button onclick="cambiarFecha('${c.id}')">📆 Cambiar vencimiento</button>
-        <button onclick="recordar('${tel}','${encodeURIComponent(c.nombre||'')}',${d===null?'null':d})" ${tel?'':'disabled'}>💬 Enviar recordatorio</button>
+        <button onclick="recordar('${tel}','${encodeURIComponent(c.nombre||'')}',${d===null?'null':d})" ${tel?'':'disabled'}>💬 Preparar WhatsApp</button>
+        <button onclick="prepararCorreo('${encodeURIComponent(c.email||'')}','${encodeURIComponent(c.nombre||'')}',${d===null?'null':d})" ${c.email?'':'disabled'}>✉️ Preparar correo</button>
         <a href="admin.html">⚙️ Ver en administración</a>
       </div>
     </article>`;
@@ -193,6 +197,26 @@ window.recordar = (tel,nombreCod,dias) => {
   const msg=`Hola ${nombre}. Te escribimos desde Sálvame las Papas 🥔. Tu plan ${tiempo}. Tus productos quedan guardados, pero para continuar publicados necesitamos registrar la renovación. ¿Te ayudamos?`;
   window.open('https://wa.me/'+tel+'?text='+encodeURIComponent(msg),'_blank','noopener');
 };
+
+window.prepararCorreo = (emailCod,nombreCod,dias) => {
+  const email=decodeURIComponent(emailCod||'');
+  const nombre=decodeURIComponent(nombreCod||'');
+  if(!email){ toast('Este comercio no tiene correo cargado.'); return; }
+  const tiempo=dias===null?'se acerca':dias<0?'está vencido':dias===0?'vence hoy':`vence dentro de ${dias} días`;
+  const asunto='Renovación de tu comercio en Sálvame las Papas';
+  const cuerpo=`Hola ${nombre}:
+
+Te escribimos desde Sálvame las Papas. Tu plan ${tiempo}.
+
+Tus productos quedan guardados, pero si el plan vence dejarán de aparecer en la página principal y en el buscador hasta que se registre la renovación.
+
+Podés responder este correo o comunicarte por WhatsApp para coordinar el pago.
+
+Muchas gracias.
+Sálvame las Papas`;
+  location.href=`mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
+};
+
 function toast(t){ const el=$('toast'); el.textContent=t; el.classList.add('ver'); setTimeout(()=>el.classList.remove('ver'),4000); }
 
 // ===== SEGUIMIENTO AVANZADO =====

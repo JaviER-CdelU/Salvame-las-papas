@@ -1,4 +1,4 @@
-const CACHE_NAME = "salvame-papas-shell-v12-seguimiento";
+const CACHE_NAME = "salvame-papas-shell-v13-control-completo";
 const APP_SHELL = [
   "./",
   "./index.html",
