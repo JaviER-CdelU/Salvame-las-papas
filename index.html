@@ -1341,6 +1341,218 @@ img,video,iframe,svg{max-width:100%;height:auto}
   #registro-comercio .form-nav button{width:100%!important}
 }
 
+
+/* ==========================================================
+   AJUSTES VISUALES Y DE ACTUALIZACIÓN — v24
+   ========================================================== */
+
+/* Encabezado: logo y enlaces legibles */
+nav{
+  background:linear-gradient(90deg,#052b65 0%,#06458f 58%,#052f70 100%)!important;
+}
+.logo{
+  color:#ffffff!important;
+  text-shadow:0 2px 8px rgba(0,0,0,.28)!important;
+  font-size:1.42rem!important;
+}
+.logo em{
+  color:#ffd54a!important;
+  text-shadow:0 2px 7px rgba(0,0,0,.30)!important;
+}
+.nav-link{
+  color:#ffffff!important;
+  font-weight:800!important;
+  opacity:1!important;
+  text-shadow:0 1px 4px rgba(0,0,0,.28)!important;
+}
+.nav-link:hover,.nav-link:focus{
+  color:#ffd54a!important;
+}
+.nav-link-special{
+  padding:8px 11px!important;
+  border-radius:999px!important;
+  background:rgba(255,255,255,.12)!important;
+  border:1px solid rgba(255,255,255,.25)!important;
+}
+.nav-portals a{
+  color:#fff!important;
+  border-color:rgba(255,255,255,.35)!important;
+  background:rgba(255,255,255,.10)!important;
+}
+.mobile-menu a,.mobile-menu button{
+  color:#082f68!important;
+  font-weight:800!important;
+}
+
+/* Cómo funciona: tarjetas visuales y conectadas */
+.how-home{
+  position:relative;
+  overflow:hidden;
+  padding:34px clamp(18px,4vw,56px)!important;
+  background:
+    radial-gradient(circle at 92% 12%,rgba(255,129,32,.13),transparent 25%),
+    linear-gradient(135deg,#edf5ff 0%,#fffaf2 100%)!important;
+  border-top:1px solid #dbe7f4;
+  border-bottom:1px solid #dbe7f4;
+}
+.how-home:before{
+  content:"";
+  position:absolute;
+  left:5%;right:5%;top:57%;
+  height:3px;
+  background:repeating-linear-gradient(90deg,#73a8df 0 10px,transparent 10px 19px);
+  opacity:.45;
+}
+.how-home-grid{
+  position:relative;
+  z-index:1;
+  gap:16px!important;
+}
+.how-home-grid article{
+  position:relative;
+  min-height:205px;
+  padding:24px 18px 20px!important;
+  border:1px solid #d6e3f1!important;
+  border-radius:20px!important;
+  background:rgba(255,255,255,.96)!important;
+  box-shadow:0 12px 28px rgba(7,55,116,.10)!important;
+  text-align:center;
+  transition:transform .2s,box-shadow .2s!important;
+}
+.how-home-grid article:hover{
+  transform:translateY(-5px);
+  box-shadow:0 18px 36px rgba(7,55,116,.16)!important;
+}
+.how-home-grid article>b{
+  position:absolute;
+  top:12px;left:12px;
+  width:34px;height:34px;
+  display:grid;place-items:center;
+  border-radius:50%;
+  background:#0b4b9d!important;
+  color:#fff!important;
+  box-shadow:0 5px 12px rgba(8,59,126,.22);
+}
+.how-home-grid article>span{
+  display:block;
+  margin:16px 0 9px;
+  font-size:3rem!important;
+  filter:drop-shadow(0 5px 8px rgba(0,0,0,.12));
+}
+.how-home-grid h3{
+  color:#073677!important;
+  font-size:1.16rem!important;
+}
+.how-home-grid p{
+  color:#5e6b7c!important;
+}
+
+/* Formulario compacto: elimina altura y espacios vacíos */
+#registro-comercio.form-section{
+  padding-top:30px!important;
+  padding-bottom:30px!important;
+}
+#registro-comercio .form-inner{
+  gap:24px!important;
+  padding:24px!important;
+  align-items:start!important;
+}
+.form-side-panel{
+  min-height:0!important;
+  height:auto!important;
+  grid-row:1 / span 6!important;
+  padding:22px 20px!important;
+}
+.form-side-panel h2{
+  margin-top:14px!important;
+  font-size:1.85rem!important;
+}
+.form-side-panel>p{
+  margin-bottom:15px!important;
+}
+.form-side-benefits{
+  gap:7px!important;
+}
+.form-side-benefits>div{
+  padding:8px!important;
+}
+.form-side-papa{
+  width:125px!important;
+  max-height:125px!important;
+  margin:12px auto 4px!important;
+}
+.form-side-note{
+  padding:11px!important;
+}
+#registro-comercio .form-big-title{
+  font-size:clamp(1.75rem,2.6vw,2.45rem)!important;
+}
+#registro-comercio .form-big-sub{
+  margin-bottom:12px!important;
+}
+#registro-comercio .form-page{
+  padding:20px!important;
+}
+#registro-comercio .frow{
+  margin-bottom:12px!important;
+}
+
+/* Aviso de actualización estable */
+#actualizacion-app{
+  display:none;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  padding:14px 16px!important;
+  border:2px solid #ffd34e;
+  background:linear-gradient(135deg,#062f6b,#0a4b98)!important;
+}
+#actualizacion-app.visible{display:flex!important}
+.update-copy{
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+}
+.update-copy strong{font-size:1rem;color:#fff}
+.update-copy span{font-size:.83rem;color:rgba(255,255,255,.83)}
+.update-actions{display:flex;gap:8px;align-items:center}
+#actualizacion-app .update-secondary{
+  background:#fff!important;
+  color:#073675!important;
+}
+#actualizacion-app .update-close{
+  width:38px;
+  min-width:38px;
+  padding:10px!important;
+  background:transparent!important;
+  color:#fff!important;
+  border:1px solid rgba(255,255,255,.4)!important;
+}
+#actualizacion-app .update-close:disabled{
+  opacity:.35;
+  cursor:not-allowed;
+}
+
+@media(max-width:900px){
+  .how-home:before{display:none}
+  .how-home-grid article{min-height:180px}
+  .form-side-panel{grid-row:auto!important}
+}
+@media(max-width:600px){
+  .logo{font-size:1.06rem!important;gap:7px!important}
+  .logo-flag{height:23px!important}
+  .how-home{padding:25px 14px!important}
+  .how-home-grid article{min-height:0}
+  #registro-comercio .form-inner{padding:12px!important}
+  .form-side-papa{width:92px!important;max-height:92px!important}
+  #actualizacion-app{
+    left:8px!important;right:8px!important;bottom:8px!important;
+    align-items:stretch!important;
+  }
+  .update-actions{display:grid;grid-template-columns:1fr 1fr auto}
+  #actualizacion-app button{width:auto!important;padding:10px 8px!important;font-size:.78rem}
+}
+
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -1617,7 +1829,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
     <div class="nav-links"><a class="nav-link" href="./como-usar.html">Cómo usar</a>
       <a class="nav-link" onclick="goTo('categorias')">¿Qué necesitás?</a>
       <a class="nav-link" onclick="goTo('comercios')">Comercios</a>
-      <a class="nav-link" onclick="goTo('diccionario')">Diccionario 🧉</a>
+      <a class="nav-link nav-link-special" href="./diccionario-entrerriano.html">Diccionario 🧉</a>
       <a class="nav-link" onclick="goTo('planes')">Planes</a>
       <a class="nav-link" onclick="goTo('registro-comercio')">Anotate</a>
     </div>
@@ -1636,6 +1848,8 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
 <div class="mobile-menu" id="mobile-menu">
   <button onclick="mobileGo('categorias')">🔎 ¿Qué necesitás?</button>
   <button onclick="mobileGo('comercios')">🏬 Comercios</button>
+  <a href="./como-usar.html">❓ Cómo funciona</a>
+  <a href="./diccionario-entrerriano.html">🧉 Diccionario entrerriano</a>
   <button onclick="mobileGo('planes')">📣 Planes</button>
   <button onclick="mobileGo('registro-comercio')">➕ Registrá tu comercio</button>
   <a href="comercio.html">🏪 Panel de comercio</a>
@@ -3636,7 +3850,6 @@ window.addEventListener('load',()=>setTimeout(()=>{poblarBarrios();abrirDesdeHas
 
 <script>
 (function(){
-  if ("serviceWorker" in navigator) window.addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js").catch(err=>console.warn("Service Worker:",err)));
 })();
 </script>
 
@@ -3728,65 +3941,114 @@ actualizarEstadoInstalacion();
 </script>
 
 <div id="actualizacion-app" role="status" aria-live="polite">
-  <span><strong>Hay una versión nueva.</strong><br>Podés seguir usando esta página o tocar “Actualizar ahora”.</span>
-  <button id="btn-actualizar-app" type="button">Actualizar ahora</button>
+  <div class="update-copy">
+    <strong>🔄 Hay una versión nueva disponible</strong>
+    <span>No se cerrará solo. Tocá “Actualizar ahora” para instalarla.</span>
+  </div>
+  <div class="update-actions">
+    <button id="btn-buscar-actualizacion" type="button" class="update-secondary">Buscar otra vez</button>
+    <button id="btn-actualizar-app" type="button">Actualizar ahora</button>
+    <button id="btn-cerrar-actualizacion" type="button" class="update-close" disabled title="Podrás cerrarlo después de 30 segundos">✕</button>
+  </div>
 </div>
 
 <script>
 (function(){
   if(!('serviceWorker' in navigator)) return;
-  let esperando=null;
+
+  const VERSION_SW='v24';
   const aviso=document.getElementById('actualizacion-app');
   const boton=document.getElementById('btn-actualizar-app');
-  function mostrar(reg){
-    esperando=reg.waiting;
-    if(aviso&&esperando){
-      const ahora=Date.now();
-      aviso.classList.add('visible');
-      aviso.dataset.visibleDesde=String(ahora);
+  const buscar=document.getElementById('btn-buscar-actualizacion');
+  const cerrar=document.getElementById('btn-cerrar-actualizacion');
+  let registro=null;
+  let esperando=null;
+  let recargando=false;
 
-      clearTimeout(window._slpOcultarActualizacion);
-      window._slpOcultarActualizacion=setTimeout(()=>{
-        // Se controla el tiempo real transcurrido para impedir que otro
-        // evento lo oculte antes de los 30 segundos.
-        const desde=Number(aviso.dataset.visibleDesde||ahora);
-        const transcurrido=Date.now()-desde;
-        if(transcurrido>=30000){
-          aviso.classList.remove('visible');
-        }else{
-          window._slpOcultarActualizacion=setTimeout(
-            ()=>aviso.classList.remove('visible'),
-            30000-transcurrido
-          );
-        }
+  function mostrar(reg){
+    esperando=reg?.waiting || esperando;
+    if(!aviso || !esperando) return;
+
+    aviso.classList.add('visible');
+    aviso.dataset.visibleDesde=String(Date.now());
+
+    // El cartel no se oculta automáticamente. Recién después de 30 segundos
+    // se habilita la X para que el usuario decida cerrarlo.
+    if(cerrar){
+      cerrar.disabled=true;
+      cerrar.title='Podrás cerrarlo después de 30 segundos';
+      clearTimeout(window._slpHabilitarCierre);
+      window._slpHabilitarCierre=setTimeout(()=>{
+        cerrar.disabled=false;
+        cerrar.title='Cerrar aviso';
       },30000);
     }
   }
-  navigator.serviceWorker.register('./service-worker.js',{updateViaCache:'none'})
+
+  async function buscarActualizacion(){
+    if(!registro) return;
+    if(buscar){
+      buscar.disabled=true;
+      buscar.textContent='Buscando...';
+    }
+    try{
+      await registro.update();
+      if(registro.waiting) mostrar(registro);
+    }catch(error){
+      console.warn('No se pudo buscar la actualización:',error);
+    }finally{
+      if(buscar){
+        buscar.disabled=false;
+        buscar.textContent='Buscar otra vez';
+      }
+    }
+  }
+
+  navigator.serviceWorker.register('./service-worker.js?'+VERSION_SW,{updateViaCache:'none'})
     .then(reg=>{
-      reg.update();
+      registro=reg;
       if(reg.waiting) mostrar(reg);
+
       reg.addEventListener('updatefound',()=>{
         const nuevo=reg.installing;
         if(!nuevo) return;
         nuevo.addEventListener('statechange',()=>{
-          if(nuevo.state==='installed'&&navigator.serviceWorker.controller) mostrar(reg);
+          if(nuevo.state==='installed' && navigator.serviceWorker.controller){
+            mostrar(reg);
+          }
         });
       });
-      setInterval(()=>reg.update(),10*60*1000);
+
+      buscarActualizacion();
+      setInterval(buscarActualizacion,5*60*1000);
+      document.addEventListener('visibilitychange',()=>{
+        if(document.visibilityState==='visible') buscarActualizacion();
+      });
     })
     .catch(err=>console.warn('No se pudo registrar la actualización:',err));
+
   boton?.addEventListener('click',()=>{
+    if(!esperando){
+      buscarActualizacion();
+      return;
+    }
     boton.disabled=true;
     boton.textContent='Actualizando...';
-    if(esperando){
-      esperando.postMessage({type:'SKIP_WAITING'});
-    }else{
-      location.reload();
-    }
+    esperando.postMessage({type:'SKIP_WAITING'});
   });
-  let recargando=false;
-  navigator.serviceWorker.addEventListener('controllerchange',()=>{if(recargando)return;recargando=true;location.reload();});
+
+  buscar?.addEventListener('click',buscarActualizacion);
+
+  cerrar?.addEventListener('click',()=>{
+    if(!cerrar.disabled) aviso?.classList.remove('visible');
+  });
+
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{
+    if(recargando) return;
+    recargando=true;
+    // Recarga sin caché visual para tomar el HTML nuevo.
+    location.reload();
+  });
 })();
 </script>
 <script>

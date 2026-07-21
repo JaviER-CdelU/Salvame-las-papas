@@ -158,7 +158,8 @@ function renderProductos(){
         </div>
       </div>
       <div class="prod-acciones">
-        <button onclick="editarProducto('${p.id}')" class="btn-edit">✏️</button>
+        <button onclick="duplicarProducto('${p.id}')" class="btn-copy" title="Duplicar producto">⧉</button>
+        <button onclick="editarProducto('${p.id}')" class="btn-edit" title="Editar producto">✏️</button>
         <button onclick="toggleDisponible('${p.id}',${p.disponible !== false})" class="btn-toggle">
           ${p.disponible !== false ? '⏸' : '▶'}
         </button>
@@ -167,6 +168,139 @@ function renderProductos(){
     </div>
   `).join('')
 }
+
+
+// ── Carga rápida de varios productos ──
+function limiteProductosActual(){
+  return miComercio?.plan?.includes('Max') ? 65
+    : miComercio?.plan?.includes('Pro') ? 25 : 10
+}
+
+function lineasCargaRapida(){
+  const texto=document.getElementById('carga-rapida-texto')?.value || ''
+  return texto.split(/\r?\n/)
+    .map(l=>l.trim())
+    .filter(Boolean)
+    .map((linea,indice)=>{
+      const partes=linea.split('|').map(v=>v.trim())
+      const nombre=partes[0] || ''
+      const precioTexto=(partes[1] || '').replace(/\$/g,'').replace(/\./g,'').replace(',','.')
+      const precio=Number(precioTexto)
+      return {
+        linea:indice+1,
+        nombre,
+        precio,
+        stock:partes[2] || '',
+        descripcion:partes[3] || ''
+      }
+    })
+}
+
+window.abrirCargaRapida=()=>{
+  const modal=document.getElementById('modal-carga-rapida')
+  const texto=document.getElementById('carga-rapida-texto')
+  const error=document.getElementById('carga-rapida-error')
+  if(texto) texto.value=''
+  if(error){error.textContent='';error.classList.remove('show')}
+  actualizarResumenCargaRapida()
+  modal?.classList.add('open')
+  setTimeout(()=>texto?.focus(),80)
+}
+
+window.cerrarCargaRapida=(e)=>{
+  const modal=document.getElementById('modal-carga-rapida')
+  if(!e || e.target===modal) modal?.classList.remove('open')
+}
+
+window.actualizarResumenCargaRapida=()=>{
+  const cantidad=lineasCargaRapida().length
+  const resumen=document.getElementById('carga-rapida-resumen')
+  if(resumen) resumen.textContent=cantidad+' producto'+(cantidad===1?'':'s')+' detectado'+(cantidad===1?'':'s')
+}
+
+window.guardarCargaRapida=async()=>{
+  const productos=lineasCargaRapida()
+  const error=document.getElementById('carga-rapida-error')
+  const btn=document.getElementById('btn-guardar-rapidos')
+  const disponible=document.getElementById('carga-rapida-disponible')?.checked!==false
+  const limite=limiteProductosActual()
+  const lugares=limite-misProductos.length
+
+  function mostrarError(mensaje){
+    if(error){error.textContent=mensaje;error.classList.add('show')}
+  }
+
+  if(!productos.length){
+    mostrarError('Escribí al menos un producto.')
+    return
+  }
+  const invalido=productos.find(p=>!p.nombre || !Number.isFinite(p.precio) || p.precio<0)
+  if(invalido){
+    mostrarError(`Revisá el renglón ${invalido.linea}: debe tener nombre y precio numérico.`)
+    return
+  }
+  if(productos.length>lugares){
+    mostrarError(`Tu plan permite ${limite} productos. Te quedan ${Math.max(0,lugares)} lugares disponibles.`)
+    return
+  }
+
+  btn.disabled=true
+  error?.classList.remove('show')
+  let guardados=0
+  try{
+    for(const p of productos){
+      await addDoc(collection(db,'comercios',miComercioId,'productos'),{
+        emoji:'📦',
+        nombre:p.nombre,
+        precio:p.precio,
+        stock:p.stock,
+        descripcion:p.descripcion,
+        disponible,
+        creadoEn:serverTimestamp(),
+        actualizadoEn:serverTimestamp()
+      })
+      guardados++
+      btn.textContent=`Guardando ${guardados} de ${productos.length}...`
+    }
+    document.getElementById('modal-carga-rapida')?.classList.remove('open')
+    await cargarProductos()
+    toast(`✅ ${guardados} productos agregados`)
+  }catch(e){
+    mostrarError('Se guardaron '+guardados+' productos. Error: '+e.message)
+  }finally{
+    btn.disabled=false
+    btn.textContent='Guardar todos los productos'
+  }
+}
+
+window.duplicarProducto=async(id)=>{
+  const original=misProductos.find(p=>p.id===id)
+  if(!original) return
+  const limite=limiteProductosActual()
+  if(misProductos.length>=limite){
+    toast('⚠️ Llegaste al límite de '+limite+' productos de tu plan')
+    return
+  }
+  try{
+    await addDoc(collection(db,'comercios',miComercioId,'productos'),{
+      emoji:original.emoji || '📦',
+      nombre:(original.nombre || 'Producto')+' (copia)',
+      precio:Number(original.precio || 0),
+      descripcion:original.descripcion || '',
+      stock:original.stock || '',
+      disponible:original.disponible !== false,
+      creadoEn:serverTimestamp(),
+      actualizadoEn:serverTimestamp()
+    })
+    await cargarProductos()
+    toast('✅ Producto duplicado. Ahora podés editarlo.')
+  }catch(e){ toast('Error: '+e.message) }
+}
+
+document.addEventListener('input',e=>{
+  if(e.target?.id==='carga-rapida-texto') actualizarResumenCargaRapida()
+})
+
 
 // ── Mostrar modal agregar/editar producto ──
 window.abrirModalProducto = (id) => {
@@ -594,6 +728,42 @@ img{max-width:100%;height:auto}
 }
 .btn-ver-password:hover{background:rgba(0,0,0,.06)}
 
+
+/* CARGA RÁPIDA DE PRODUCTOS — v24 */
+.product-toolbar-actions{display:flex;gap:9px;flex-wrap:wrap}
+.btn-carga-rapida{
+  border:0;border-radius:10px;padding:11px 17px;
+  background:linear-gradient(135deg,#ff7a18,#ff9a32);
+  color:#fff;font:700 .92rem "DM Sans",sans-serif;cursor:pointer;
+  box-shadow:0 7px 17px rgba(255,122,24,.22)
+}
+.btn-copy{
+  border:0;border-radius:8px;padding:7px 9px;background:#eef5ff;color:#074184;
+  cursor:pointer;font-size:1rem
+}
+.modal-rapido{width:min(680px,96vw)}
+.quick-kicker{display:inline-block;margin-bottom:7px;color:#f36b13;font-weight:900;font-size:.74rem;letter-spacing:.08em}
+.quick-help{margin:6px 0 10px;color:#59677a;line-height:1.5}
+.quick-example{
+  padding:12px 14px;border-radius:11px;background:#eef5ff;border:1px solid #cbdcf0;
+  color:#153b68;font-family:ui-monospace,Consolas,monospace;font-size:.82rem;line-height:1.7
+}
+.quick-label{display:block;margin:14px 0 6px;color:#07366f;font-weight:800}
+.quick-textarea{
+  width:100%;min-height:210px;resize:vertical;padding:13px;border:1.5px solid #c8d6e7;
+  border-radius:11px;font:500 .92rem/1.55 "DM Sans",sans-serif
+}
+.quick-textarea:focus{outline:none;border-color:#1767c5;box-shadow:0 0 0 4px rgba(23,103,197,.12)}
+.quick-options{display:flex;justify-content:space-between;gap:10px;align-items:center;margin:10px 0;font-size:.84rem;color:#506079}
+.quick-options label{display:flex;align-items:center;gap:7px;font-weight:700;color:#173e70}
+.quick-error{display:none;margin:9px 0;padding:10px;border-radius:9px;background:#fff0f0;border:1px solid #efb4b4;color:#a60000;font-size:.84rem}
+.quick-error.show{display:block}
+@media(max-width:620px){
+  .product-toolbar-actions{width:100%;display:grid;grid-template-columns:1fr 1fr}
+  .product-toolbar-actions button{padding:11px 7px;font-size:.82rem}
+  .quick-options{align-items:flex-start;flex-direction:column}
+}
+
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -695,9 +865,10 @@ img{max-width:100%;height:auto}
           <h3>🛍️ Mis productos</h3>
           <div class="prod-counter" id="prod-counter">0 / 10 productos</div>
         </div>
-        <button class="btn-agregar-prod" onclick="abrirModalProducto()">
-          + Agregar producto
-        </button>
+        <div class="product-toolbar-actions">
+          <button class="btn-carga-rapida" onclick="abrirCargaRapida()">⚡ Carga rápida</button>
+          <button class="btn-agregar-prod" onclick="abrirModalProducto()">+ Agregar uno</button>
+        </div>
       </div>
       <div class="productos-grid" id="productos-grid">
         <p style="color:#666;text-align:center;padding:2rem;grid-column:1/-1">Cargando...</p>
@@ -708,6 +879,35 @@ img{max-width:100%;height:auto}
       </section>
     </div>
 
+  </div>
+</div>
+
+
+<!-- MODAL CARGA RÁPIDA -->
+<div class="modal-overlay" id="modal-carga-rapida" onclick="cerrarCargaRapida(event)">
+  <div class="modal modal-rapido">
+    <button class="mclose" onclick="cerrarCargaRapida()">✕</button>
+    <span class="quick-kicker">⚡ AHORRÁ TIEMPO</span>
+    <h2>Cargar varios productos</h2>
+    <p class="quick-help">
+      Escribí un producto por renglón, separando los datos con una barra vertical:
+    </p>
+    <div class="quick-example">
+      Pan francés | 2200 | 20 | Por kilo<br>
+      Leche entera | 1850 | 12 | Botella de 1 litro<br>
+      Fideos | 920 | 30
+    </div>
+    <label class="quick-label" for="carga-rapida-texto">Productos para agregar</label>
+    <textarea id="carga-rapida-texto" class="quick-textarea" rows="10"
+      placeholder="Nombre | Precio | Stock | Descripción"></textarea>
+    <div class="quick-options">
+      <label><input type="checkbox" id="carga-rapida-disponible" checked> Marcarlos disponibles</label>
+      <span id="carga-rapida-resumen">0 productos detectados</span>
+    </div>
+    <div id="carga-rapida-error" class="quick-error"></div>
+    <button class="btn-guardar" id="btn-guardar-rapidos" onclick="guardarCargaRapida()">
+      Guardar todos los productos
+    </button>
   </div>
 </div>
 
