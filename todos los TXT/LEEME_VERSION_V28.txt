@@ -1,0 +1,8 @@
+VERSIÓN V28 — AJUSTES VISUALES Y FOTOS
+
+- Se eliminó el gran espacio blanco en Sumá tu comercio.
+- El formulario comienza junto al título.
+- El encabezado ajusta textos y botones.
+- La versión se muestra en el pie y no se superpone con Instalar app.
+- Los productos muestran la foto en Mi comercio y en la página pública.
+- Galería: Básico 1 foto, Destacado 2, Pro/Max hasta 4.

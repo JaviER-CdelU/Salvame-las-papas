@@ -426,17 +426,35 @@ document.addEventListener('input',e=>{
 
 
 
-let fotoProductoActual='';
+let fotosProductoActuales=['','','',''];
 
-function mostrarFotoProducto(src){
-  fotoProductoActual=src||'';
-  const img=document.getElementById('mp-foto-preview');
-  if(!img)return;
-  if(fotoProductoActual){img.src=fotoProductoActual;img.classList.add('show')}
-  else{img.removeAttribute('src');img.classList.remove('show')}
+function limiteFotosPlan(){
+  return miComercio?.plan?.includes('Max') || miComercio?.plan?.includes('Pro') ? 4
+    : miComercio?.plan?.includes('Destacado') ? 2 : 1;
 }
-window.quitarFotoProducto=()=>{const f=document.getElementById('mp-foto-file');if(f)f.value='';mostrarFotoProducto('')};
-
+function renderFotosProducto(){
+  const limite=limiteFotosPlan();
+  for(let i=0;i<4;i++){
+    const slot=document.getElementById('photo-slot-'+i);
+    const img=document.getElementById('mp-foto-preview-'+i);
+    if(!slot||!img) continue;
+    slot.style.display=i<limite?'block':'none';
+    const src=fotosProductoActuales[i]||'';
+    slot.classList.toggle('has',!!src);
+    if(src){img.src=src}else{img.removeAttribute('src')}
+  }
+}
+function cargarFotosProducto(fotos){
+  const lista=Array.isArray(fotos)?fotos.filter(Boolean):[];
+  fotosProductoActuales=[lista[0]||'',lista[1]||'',lista[2]||'',lista[3]||''];
+  renderFotosProducto();
+}
+window.quitarFotoProducto=(i)=>{
+  fotosProductoActuales[i]='';
+  const input=document.getElementById('mp-foto-file-'+i);
+  if(input) input.value='';
+  renderFotosProducto();
+};
 function reducirFotoProducto(file){
   return new Promise((resolve,reject)=>{
     const reader=new FileReader();
@@ -445,11 +463,11 @@ function reducirFotoProducto(file){
       const img=new Image();
       img.onerror=()=>reject(new Error('La imagen no es válida.'));
       img.onload=()=>{
-        let w=img.width,h=img.height,max=900;
+        let w=img.width,h=img.height,max=1000;
         if(w>max||h>max){const s=Math.min(max/w,max/h);w=Math.round(w*s);h=Math.round(h*s)}
         const c=document.createElement('canvas');c.width=w;c.height=h;
         c.getContext('2d').drawImage(img,0,0,w,h);
-        resolve(c.toDataURL('image/jpeg',.72));
+        resolve(c.toDataURL('image/jpeg',.74));
       };
       img.src=reader.result;
     };
@@ -457,11 +475,16 @@ function reducirFotoProducto(file){
   });
 }
 document.addEventListener('change',async e=>{
-  if(e.target?.id!=='mp-foto-file')return;
-  const file=e.target.files?.[0];if(!file)return;
+  const match=e.target?.id?.match(/^mp-foto-file-([0-3])$/);
+  if(!match)return;
+  const i=Number(match[1]),file=e.target.files?.[0];
+  if(!file)return;
   if(file.size>12*1024*1024){toast('La foto supera 12 MB. Elegí otra.');e.target.value='';return}
-  try{mostrarFotoProducto(await reducirFotoProducto(file));toast('✅ Foto preparada')}
-  catch(err){toast(err.message)}
+  try{
+    fotosProductoActuales[i]=await reducirFotoProducto(file);
+    renderFotosProducto();
+    toast('✅ Foto preparada');
+  }catch(err){toast(err.message)}
 });
 
 // ── Mostrar modal agregar/editar producto ──
@@ -504,7 +527,8 @@ window.guardarProducto = async () => {
     return
   }
 
-  const datos = { emoji, foto: fotoProductoActual || '', nombre, precio: parseFloat(precio.replace(',','.')),
+  const datos = { emoji, foto: fotosProductoActuales.filter(Boolean)[0] || '',
+    fotos: fotosProductoActuales.filter(Boolean).slice(0,limiteFotosPlan()), nombre, precio: parseFloat(precio.replace(',','.')),
     descripcion: desc, stock, disponible: disp, actualizadoEn: serverTimestamp() }
 
   const btn = document.getElementById('btn-guardar-prod')
@@ -1111,6 +1135,24 @@ img{max-width:100%;height:auto}
  .photo-actions{display:grid}
 }
 
+
+/* V28 — GALERÍA DE FOTOS Y TARJETAS */
+.photo-gallery-v28{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
+.photo-slot-v28{position:relative;min-height:120px;border:1.5px dashed #aabed6;border-radius:12px;background:#f7fbff;overflow:hidden}
+.photo-slot-v28 img{width:100%;height:140px;object-fit:cover;display:none}
+.photo-slot-v28.has img{display:block}
+.photo-slot-v28 label{position:absolute;inset:0;display:grid;place-items:center;cursor:pointer;font-weight:900;color:#0a4b95;text-align:center;padding:10px}
+.photo-slot-v28.has label{inset:auto 8px 8px auto;width:auto;min-height:auto;padding:7px 10px;border-radius:8px;background:rgba(5,43,101,.88);color:#fff;font-size:.72rem}
+.photo-slot-v28 button{position:absolute;top:7px;right:7px;display:none;width:30px;height:30px;border:0;border-radius:50%;background:rgba(185,0,0,.88);color:#fff;cursor:pointer}
+.photo-slot-v28.has button{display:block}
+.prod-card.has-photo{display:grid!important;grid-template-columns:150px minmax(0,1fr) auto!important;align-items:stretch!important}
+.prod-photo-panel{width:150px!important;height:100%!important;min-height:160px!important;object-fit:cover!important}
+@media(max-width:620px){
+ .photo-gallery-v28{grid-template-columns:1fr}
+ .prod-card.has-photo{grid-template-columns:105px minmax(0,1fr) auto!important}
+ .prod-photo-panel{width:105px!important;min-height:145px!important}
+}
+
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -1121,7 +1163,7 @@ img{max-width:100%;height:auto}
 <meta name="apple-mobile-web-app-title" content="Sálvame">
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
-<meta name="app-version" content="V27">
+<meta name="app-version" content="V28">
 </head>
 <body>
 
@@ -1358,18 +1400,18 @@ img{max-width:100%;height:auto}
     </div>
 
 
+    
     <div class="form-group">
-      <label>Foto principal</label>
-      <div class="photo-box">
-        <img id="mp-foto-preview" class="photo-preview" alt="Vista previa">
-        <div class="photo-actions">
-          <label for="mp-foto-file">📷 Elegir foto</label>
-          <input id="mp-foto-file" type="file" accept="image/*" hidden>
-          <button type="button" onclick="quitarFotoProducto()">Quitar foto</button>
-        </div>
-        <small class="photo-help">La foto se reduce automáticamente. Usá una imagen clara y horizontal cuando sea posible.</small>
+      <label>Fotos del producto o publicación</label>
+      <div class="photo-gallery-v28">
+        <div class="photo-slot-v28" id="photo-slot-0"><img id="mp-foto-preview-0" alt="Foto 1"><label for="mp-foto-file-0">📷 Foto principal</label><input id="mp-foto-file-0" type="file" accept="image/*" hidden><button type="button" onclick="quitarFotoProducto(0)">✕</button></div>
+        <div class="photo-slot-v28" id="photo-slot-1"><img id="mp-foto-preview-1" alt="Foto 2"><label for="mp-foto-file-1">＋ Foto 2</label><input id="mp-foto-file-1" type="file" accept="image/*" hidden><button type="button" onclick="quitarFotoProducto(1)">✕</button></div>
+        <div class="photo-slot-v28" id="photo-slot-2"><img id="mp-foto-preview-2" alt="Foto 3"><label for="mp-foto-file-2">＋ Foto 3</label><input id="mp-foto-file-2" type="file" accept="image/*" hidden><button type="button" onclick="quitarFotoProducto(2)">✕</button></div>
+        <div class="photo-slot-v28" id="photo-slot-3"><img id="mp-foto-preview-3" alt="Foto 4"><label for="mp-foto-file-3">＋ Foto 4</label><input id="mp-foto-file-3" type="file" accept="image/*" hidden><button type="button" onclick="quitarFotoProducto(3)">✕</button></div>
       </div>
+      <small class="photo-help">Básico: 1 foto · Destacado: 2 · Pro/Max: hasta 4 fotos.</small>
     </div>
+
 
     <div class="check-row">
       <input type="checkbox" id="mp-disp" checked/>
@@ -1437,8 +1479,6 @@ function prepararCamposPassword(){
 }
 document.addEventListener('DOMContentLoaded',prepararCamposPassword);
 </script>
-<div class="app-version-badge" title="Versión publicada de Sálvame las Papas">
-  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V27</a>
-</div>
+
 </body>
 </html>
