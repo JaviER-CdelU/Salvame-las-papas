@@ -1,8 +1,12 @@
-const CACHE_NAME = "salvame-papas-v21-nueva-portada";
-const APP_SHELL = ["./","./index.html","./comercio.html","./admin.html","./seguimiento-comercios.html","./como-usar.html","./diccionario-entrerriano.html","./offline.html","./manifest.webmanifest"];
+const CACHE_NAME = "salvame-papas-v27-fotos-enlaces";
+const APP_SHELL = ["./","./index.html","./comercio.html","./admin.html","./seguimiento-comercios.html","./como-usar.html","./diccionario-entrerriano.html","./offline.html","./manifest.webmanifest","./version.json"];
 
 self.addEventListener("install",event=>{
-  event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(APP_SHELL)).then(()=>self.skipWaiting()));
+  // La nueva versión queda esperando. Solo se activa cuando el usuario
+  // toca el botón “Actualizar ahora”.
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(cache=>cache.addAll(APP_SHELL))
+  );
 });
 
 self.addEventListener("activate",event=>{

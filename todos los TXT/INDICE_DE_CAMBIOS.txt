@@ -1,0 +1,42 @@
+SÁLVAME LAS PAPAS — ARCHIVO DE CAMBIOS
+
+Versión actual: V26
+Nombre de esta versión: Acceso y organización
+
+Esta carpeta reúne los archivos TXT que explican los cambios realizados
+en las distintas versiones del proyecto. Se movieron desde la raíz para
+que GitHub quede más limpio y ordenado.
+
+Archivos incluidos:
+- COMO_ENTRAR_Y_ACTUALIZAR.txt
+- LEEME_AJUSTES_COMPLETOS_V24.txt
+- LEEME_AVISO_ACTUALIZACION_30_SEGUNDOS.txt
+- LEEME_COMERCIOS_REALES.txt
+- LEEME_CONTROL_COMPLETO.txt
+- LEEME_EMBELLECIMIENTO_INDEX.txt
+- LEEME_FLUJO_DE_COMPRA.txt
+- LEEME_FORMULARIO_REAL_REDISENADO.txt
+- LEEME_MIS_COMERCIOS_V25.txt
+- LEEME_NUEVA_PAGINA_INICIO.txt
+- LEEME_PASSWORD_Y_ACTUALIZACION.txt
+- LEEME_PEDIDOS_CORREGIDOS.txt
+- LEEME_SEGUIMIENTO_AVANZADO.txt
+
+ORGANIZACIÓN RECOMENDADA EN GITHUB
+
+Raíz:
+- index.html
+- comercio.html
+- admin.html
+- seguimiento-comercios.html
+- como-usar.html
+- diccionario-entrerriano.html
+- offline.html
+- manifest.webmanifest
+- service-worker.js
+- version.json
+- icons/
+- images/
+- todos los TXT/
+
+La carpeta “todos los TXT” no afecta el funcionamiento de la página.

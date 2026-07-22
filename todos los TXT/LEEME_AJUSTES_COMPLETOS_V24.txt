@@ -1,0 +1,29 @@
+AJUSTES COMPLETOS V24
+
+1. ACTUALIZACIONES
+- Se eliminó el registro duplicado del service worker.
+- El aviso ya no se borra automáticamente.
+- La X se habilita después de 30 segundos.
+- Se agregó “Buscar otra vez”.
+- Se revisa al volver a la app y cada cinco minutos.
+- La computadora y el celular usan un único controlador.
+
+2. ENCABEZADO
+- Logo y enlaces blancos con mayor contraste.
+- Diccionario entrerriano vuelve a estar visible.
+- Cómo funciona y Diccionario se agregaron al menú celular.
+
+3. CÓMO FUNCIONA
+- Tarjetas más visuales, numeradas y con mejor contraste.
+
+4. SUMÁ TU COMERCIO
+- Panel lateral más compacto.
+- Papa más pequeña.
+- Menos márgenes y espacio libre.
+
+5. PRODUCTOS
+- Nuevo botón “Carga rápida”.
+- Permite pegar varios productos, uno por renglón:
+  Nombre | Precio | Stock | Descripción
+- Valida errores y límites del plan.
+- Se agregó botón para duplicar un producto existente.

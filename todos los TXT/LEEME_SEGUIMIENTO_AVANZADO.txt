@@ -1,0 +1,8 @@
+NUEVAS FUNCIONES
+- Historial de pagos y renovaciones.
+- Registro de importe, plan, medio de pago, período y observaciones.
+- Estados de renovación: al día, aviso enviado, pendiente de pago, pago informado, pago acreditado, vencido y promoción ofrecida.
+- Resumen general de activos, próximos vencimientos y pagos para revisar.
+- Mensajes de WhatsApp preparados para 7 días, 3 días, vencimiento y promoción.
+
+La conexión real debe probarse luego de subir los archivos a GitHub.

@@ -1,0 +1,5 @@
+NUEVO FLUJO DE COMPRA
+
+Todos los botones de las tarjetas abren primero la ficha del comercio.
+El cliente ve productos, entrega y formas de pago.
+Después arma el carrito, confirma sus datos y recién entonces se abre WhatsApp con el pedido completo.

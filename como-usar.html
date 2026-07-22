@@ -49,8 +49,52 @@ footer{background:#04162e;color:rgba(255,255,255,.65);text-align:center;padding:
 }
 .btn-ver-password:hover{background:rgba(0,0,0,.06)}
 
-</style></head>
+
+/* IDENTIFICACIÓN DE VERSIÓN — V26 */
+.app-version-badge{
+  position:fixed;
+  right:12px;
+  bottom:12px;
+  z-index:9000;
+  padding:7px 10px;
+  border-radius:999px;
+  background:rgba(5,43,101,.92);
+  color:#fff;
+  border:1px solid rgba(255,255,255,.32);
+  box-shadow:0 5px 18px rgba(0,0,0,.18);
+  font:800 .72rem/1 "DM Sans",Arial,sans-serif;
+  letter-spacing:.03em;
+}
+.app-version-badge a{color:#ffd34e;text-decoration:none}
+@media(max-width:600px){
+  .app-version-badge{right:8px;bottom:8px;font-size:.66rem;padding:6px 8px}
+}
+
+
+.guia-cliente-destacada{max-width:1000px;margin:24px auto;padding:22px;border-radius:20px;background:linear-gradient(135deg,#eef5ff,#fff8ec);border:1px solid #d5e2f0}
+.guia-cliente-destacada h1{color:#073574;font-family:"Fraunces",serif}
+.pasos-cliente-v27{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px}
+.paso-cliente-v27{padding:16px;border-radius:14px;background:#fff;border:1px solid #d9e3ef}
+.paso-cliente-v27 b{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:#0a4d9d;color:#fff;margin-bottom:8px}
+.aviso-cliente-v27{margin-top:15px;padding:13px;border-radius:12px;background:#edf9f0;border:1px solid #8dcc9a;color:#245f35}
+@media(max-width:760px){.pasos-cliente-v27{grid-template-columns:1fr 1fr}}
+@media(max-width:450px){.pasos-cliente-v27{grid-template-columns:1fr}}
+
+</style><meta name="app-version" content="V27">
+</head>
 <body>
+<section class="guia-cliente-destacada">
+ <h1>Cómo se usa para clientes</h1>
+ <p>Podés recorrer la página y comparar comercios sin crear una cuenta.</p>
+ <div class="pasos-cliente-v27">
+  <article class="paso-cliente-v27"><b>1</b><strong>Buscá</strong><p>Elegí una categoría, oferta o comercio.</p></article>
+  <article class="paso-cliente-v27"><b>2</b><strong>Mirá</strong><p>Revisá fotos, precios, horarios, ubicación y entrega.</p></article>
+  <article class="paso-cliente-v27"><b>3</b><strong>Elegí</strong><p>Agregá productos y seleccioná retiro o envío.</p></article>
+  <article class="paso-cliente-v27"><b>4</b><strong>Confirmá</strong><p>Recién ahí se solicitan tus datos y se prepara el pedido.</p></article>
+ </div>
+ <div class="aviso-cliente-v27"><strong>No te pedimos registrarte para mirar.</strong> Los datos se solicitan únicamente cuando decidís confirmar una compra.</div>
+</section>
+
 <header class="top"><div class="topin"><a class="brand" href="./index.html"><img src="./icons/icon-192.png" alt="">Sálvame las Papas</a><a class="back" href="./index.html">← Volver</a></div></header>
 <section class="hero"><div class="heroin"><div><span>GUÍA PARA CLIENTES</span><h1>¿Cómo se usa?</h1><p>Podés mirar comercios y armar el carrito sin registrarte. La cuenta se pide recién cuando confirmás una compra.</p></div><img src="./images/super-papa.webp" alt="Súper Papa"></div></section>
 <main class="wrap">
@@ -96,4 +140,7 @@ function prepararCamposPassword(){
 }
 document.addEventListener('DOMContentLoaded',prepararCamposPassword);
 </script>
+<div class="app-version-badge" title="Versión publicada de Sálvame las Papas">
+  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V27</a>
+</div>
 </body></html>

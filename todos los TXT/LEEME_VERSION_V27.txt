@@ -1,0 +1,11 @@
+VERSIÓN V27 — FOTOS, ENLACES Y ACCESO CLARO
+
+- Foto principal para cada producto o publicación.
+- Reducción automática de imágenes antes de guardar.
+- Ícono opcional y nuevos íconos de casas, cabañas y alojamientos.
+- Los productos cargados en Mi comercio se leen desde su subcolección y aparecen en la página pública.
+- Cómo se usa para clientes queda visible arriba.
+- El cliente puede mirar sin registrarse; los datos se piden al confirmar.
+- Enlaces al Diccionario entrerriano corregidos.
+- Formulario Sumá tu comercio más compacto.
+- Versión V27 visible en la página y en version.json.

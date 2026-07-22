@@ -1,0 +1,34 @@
+CONTROL COMPLETO DE COMERCIOS
+
+1. COMERCIOS VENCIDOS
+Los comercios activos con una próxima renovación vencida dejan de mostrarse en:
+- la página principal;
+- el buscador interno;
+- los filtros y categorías públicas.
+
+Sus datos y productos no se borran. Al registrar el pago y una nueva fecha vuelven a publicarse.
+
+2. ESTADÍSTICAS INTERNAS
+Se registran:
+- visitas: cuando una persona abre la ficha del comercio, una vez por sesión;
+- clics en WhatsApp;
+- pedidos confirmados desde la página.
+
+Son métricas orientativas. Para estadísticas auditadas y protección contra manipulación se necesitará
+un backend seguro o Analytics.
+
+3. MENSAJES
+El panel prepara mensajes para WhatsApp y correo con los datos del comercio.
+El usuario administrador confirma el envío desde WhatsApp o su aplicación de correo.
+El envío automático requiere WhatsApp Business API y un servicio de correo transaccional.
+
+4. ACCESO DE LOS COMERCIOS
+Se mantiene el correo real registrado por el comercio y una contraseña privada.
+No se usa el teléfono como contraseña porque es inseguro.
+
+No se crea todavía una dirección como comercio@salvamelaspapas.com porque primero hay que:
+- registrar el dominio;
+- contratar o configurar un servicio de correo;
+- crear y administrar esas casillas.
+
+Cuando el dominio esté listo se podrá evaluar un sistema de alias o cuentas profesionales.

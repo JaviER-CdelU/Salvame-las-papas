@@ -1037,6 +1037,628 @@ img,video,iframe,svg{max-width:100%;height:auto}
 }
 .btn-ver-password:hover{background:rgba(0,0,0,.06)}
 
+
+/* ==========================================================
+   REDISEÑO REAL DEL FORMULARIO DE COMERCIOS — v22
+   ========================================================== */
+#registro-comercio.form-section{
+  padding:clamp(28px,5vw,72px) clamp(14px,3vw,42px)!important;
+  background:
+    radial-gradient(circle at 8% 12%,rgba(255,119,28,.10),transparent 26%),
+    radial-gradient(circle at 90% 92%,rgba(8,55,116,.09),transparent 30%),
+    linear-gradient(180deg,#fffaf4 0%,#f5f9ff 100%)!important;
+}
+#registro-comercio .form-inner{
+  width:min(1420px,100%)!important;
+  max-width:1420px!important;
+  margin:0 auto!important;
+  display:grid!important;
+  grid-template-columns:minmax(250px,320px) minmax(0,1fr)!important;
+  gap:clamp(24px,3vw,46px)!important;
+  align-items:start!important;
+  padding:clamp(20px,3vw,38px)!important;
+  border:1px solid #dbe6f4!important;
+  border-radius:28px!important;
+  background:rgba(255,255,255,.94)!important;
+  box-shadow:0 24px 70px rgba(8,47,101,.13)!important;
+  overflow:hidden!important;
+}
+#registro-comercio .form-inner > :not(.form-side-panel){
+  grid-column:2!important;
+  min-width:0!important;
+}
+.form-side-panel{
+  grid-column:1!important;
+  grid-row:1 / span 30!important;
+  position:relative;
+  min-height:720px;
+  padding:28px 24px 24px;
+  border-radius:24px;
+  overflow:hidden;
+  color:#fff;
+  background:
+    radial-gradient(circle at 80% 5%,rgba(255,198,61,.28),transparent 28%),
+    linear-gradient(155deg,#062b63 0%,#07478e 58%,#0b69b7 100%);
+  box-shadow:0 18px 44px rgba(7,48,104,.23);
+}
+.form-side-panel:before{
+  content:"";
+  position:absolute;
+  inset:auto -90px -110px auto;
+  width:260px;height:260px;border-radius:50%;
+  background:rgba(255,255,255,.08);
+}
+.form-side-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:7px 11px;
+  border-radius:999px;
+  background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.25);
+  font-size:.74rem;
+  font-weight:900;
+  letter-spacing:.06em;
+}
+.form-side-panel h2{
+  margin:20px 0 10px;
+  color:#fff;
+  font-family:"Fraunces",serif;
+  font-size:clamp(1.8rem,2.4vw,2.55rem);
+  line-height:1.05;
+}
+.form-side-panel>p{
+  margin:0 0 24px;
+  color:rgba(255,255,255,.82);
+  line-height:1.55;
+}
+.form-side-benefits{
+  display:grid;
+  gap:11px;
+}
+.form-side-benefits>div{
+  display:grid;
+  grid-template-columns:30px 1fr;
+  column-gap:10px;
+  padding:11px;
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:14px;
+  background:rgba(255,255,255,.09);
+}
+.form-side-benefits span{
+  grid-row:1 / span 2;
+  width:28px;height:28px;
+  display:grid;place-items:center;
+  border-radius:50%;
+  background:#ff7a1a;
+  font-weight:1000;
+}
+.form-side-benefits strong{font-size:.9rem;color:#fff}
+.form-side-benefits small{margin-top:2px;color:rgba(255,255,255,.72);line-height:1.35}
+.form-side-papa{
+  display:block;
+  width:min(205px,90%);
+  max-height:220px;
+  object-fit:contain;
+  margin:22px auto 8px;
+  filter:drop-shadow(0 14px 20px rgba(0,0,0,.22));
+}
+.form-side-note{
+  position:relative;
+  z-index:1;
+  display:grid;
+  gap:4px;
+  padding:15px;
+  border-radius:15px;
+  background:#fff;
+  color:#082f68;
+}
+.form-side-note span{font-size:.8rem;color:#5e6d81}
+.form-side-note a{
+  margin-top:7px;
+  padding:10px 12px;
+  border-radius:10px;
+  background:#20c86a;
+  color:#fff;
+  text-decoration:none;
+  text-align:center;
+  font-weight:900;
+}
+#registro-comercio .form-big-title{
+  margin:2px 0 7px!important;
+  font-size:clamp(2rem,3.4vw,3.15rem)!important;
+}
+#registro-comercio .form-big-sub{
+  margin:0 0 18px!important;
+  max-width:900px;
+  font-size:1rem;
+  line-height:1.65;
+}
+#registro-comercio .fb-banner{
+  margin:0 0 20px!important;
+  border-radius:15px!important;
+  padding:13px 16px!important;
+  background:#eefaf1!important;
+  border:1px solid #7bcf8a!important;
+  box-shadow:none!important;
+}
+#registro-comercio .form-steps-nav{
+  display:grid!important;
+  grid-template-columns:repeat(4,1fr)!important;
+  gap:7px!important;
+  margin:0 0 22px!important;
+  padding:7px!important;
+  border:1px solid #d7e1ee!important;
+  border-radius:16px!important;
+  background:#f5f8fc!important;
+  overflow:visible!important;
+}
+#registro-comercio .fstep{
+  min-width:0!important;
+  min-height:66px!important;
+  padding:8px 10px!important;
+  border:0!important;
+  border-radius:12px!important;
+  background:transparent!important;
+  color:#536176!important;
+  font-size:.82rem!important;
+  font-weight:800!important;
+}
+#registro-comercio .fstep .snum{
+  display:block!important;
+  margin:0 auto 2px!important;
+  color:inherit!important;
+  font-size:1.12rem!important;
+}
+#registro-comercio .fstep.active{
+  background:linear-gradient(135deg,#06377d,#0954a8)!important;
+  color:#fff!important;
+  box-shadow:0 8px 20px rgba(8,61,132,.24)!important;
+}
+#registro-comercio .form-page{
+  padding:clamp(18px,2.4vw,30px)!important;
+  border:1px solid #dfe7f1!important;
+  border-radius:20px!important;
+  background:linear-gradient(180deg,#fff,#fbfdff)!important;
+  box-shadow:0 10px 28px rgba(9,49,102,.07)!important;
+}
+#registro-comercio .frow{
+  gap:18px!important;
+  margin-bottom:17px!important;
+}
+#registro-comercio .fgroup label{
+  margin-bottom:7px!important;
+  color:#0a356f!important;
+  font-weight:900!important;
+  font-size:.86rem!important;
+}
+#registro-comercio .fi,
+#registro-comercio .fta,
+#registro-comercio select{
+  min-height:50px!important;
+  padding:12px 14px!important;
+  border:1.5px solid #cbd9ea!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  color:#172033!important;
+  box-shadow:0 2px 0 rgba(9,49,102,.02)!important;
+  transition:border-color .2s,box-shadow .2s,transform .2s!important;
+}
+#registro-comercio .fta{min-height:108px!important;resize:vertical}
+#registro-comercio .fi:focus,
+#registro-comercio .fta:focus,
+#registro-comercio select:focus{
+  outline:none!important;
+  border-color:#1767c5!important;
+  box-shadow:0 0 0 4px rgba(23,103,197,.12)!important;
+}
+#registro-comercio .hint{
+  display:block!important;
+  margin-top:6px!important;
+  color:#65758a!important;
+  font-size:.76rem!important;
+  line-height:1.4!important;
+}
+#registro-comercio .form-nav{
+  display:flex!important;
+  justify-content:flex-end!important;
+  gap:10px!important;
+  margin-top:22px!important;
+}
+#registro-comercio .form-nav .btn-azul,
+#registro-comercio .form-nav .btn-rojo,
+#registro-comercio .form-nav button:last-child{
+  border:0!important;
+  border-radius:12px!important;
+  background:linear-gradient(135deg,#ff6a00,#ff8b24)!important;
+  color:#fff!important;
+  box-shadow:0 9px 22px rgba(255,106,0,.25)!important;
+}
+#registro-comercio .form-nav .btn-ghost{
+  border:1px solid #cbd8e8!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  color:#0a3979!important;
+}
+#registro-comercio .check-item,
+#registro-comercio .plan-opt{
+  border:1px solid #d6e1ef!important;
+  border-radius:14px!important;
+  background:#fff!important;
+}
+#registro-comercio .check-item:hover,
+#registro-comercio .plan-opt:hover{
+  border-color:#74a7dd!important;
+  box-shadow:0 8px 20px rgba(7,59,126,.09)!important;
+}
+#registro-comercio .plan-opt.sel{
+  border:2px solid #ff7620!important;
+  background:#fff8f2!important;
+}
+
+@media(max-width:900px){
+  #registro-comercio .form-inner{
+    grid-template-columns:1fr!important;
+    gap:18px!important;
+  }
+  #registro-comercio .form-inner > :not(.form-side-panel){
+    grid-column:1!important;
+  }
+  .form-side-panel{
+    grid-column:1!important;
+    grid-row:auto!important;
+    min-height:0!important;
+    padding:22px!important;
+  }
+  .form-side-panel h2{font-size:1.8rem}
+  .form-side-benefits{grid-template-columns:1fr 1fr}
+  .form-side-papa{
+    position:absolute;
+    right:12px;
+    top:12px;
+    width:120px;
+    opacity:.20;
+    margin:0;
+  }
+  .form-side-note{margin-top:16px}
+}
+@media(max-width:620px){
+  #registro-comercio.form-section{padding:16px 0!important}
+  #registro-comercio .form-inner{
+    padding:12px!important;
+    border-radius:0!important;
+    border-left:0!important;
+    border-right:0!important;
+  }
+  .form-side-panel{border-radius:18px}
+  .form-side-benefits{grid-template-columns:1fr}
+  #registro-comercio .form-steps-nav{
+    grid-template-columns:repeat(2,1fr)!important;
+  }
+  #registro-comercio .fstep{min-height:58px!important}
+  #registro-comercio .form-page{padding:16px 12px!important}
+  #registro-comercio .form-nav{display:grid!important}
+  #registro-comercio .form-nav button{width:100%!important}
+}
+
+
+/* ==========================================================
+   AJUSTES VISUALES Y DE ACTUALIZACIÓN — v24
+   ========================================================== */
+
+/* Encabezado: logo y enlaces legibles */
+nav{
+  background:linear-gradient(90deg,#052b65 0%,#06458f 58%,#052f70 100%)!important;
+}
+.logo{
+  color:#ffffff!important;
+  text-shadow:0 2px 8px rgba(0,0,0,.28)!important;
+  font-size:1.42rem!important;
+}
+.logo em{
+  color:#ffd54a!important;
+  text-shadow:0 2px 7px rgba(0,0,0,.30)!important;
+}
+.nav-link{
+  color:#ffffff!important;
+  font-weight:800!important;
+  opacity:1!important;
+  text-shadow:0 1px 4px rgba(0,0,0,.28)!important;
+}
+.nav-link:hover,.nav-link:focus{
+  color:#ffd54a!important;
+}
+.nav-link-special{
+  padding:8px 11px!important;
+  border-radius:999px!important;
+  background:rgba(255,255,255,.12)!important;
+  border:1px solid rgba(255,255,255,.25)!important;
+}
+.nav-portals a{
+  color:#fff!important;
+  border-color:rgba(255,255,255,.35)!important;
+  background:rgba(255,255,255,.10)!important;
+}
+.mobile-menu a,.mobile-menu button{
+  color:#082f68!important;
+  font-weight:800!important;
+}
+
+/* Cómo funciona: tarjetas visuales y conectadas */
+.how-home{
+  position:relative;
+  overflow:hidden;
+  padding:34px clamp(18px,4vw,56px)!important;
+  background:
+    radial-gradient(circle at 92% 12%,rgba(255,129,32,.13),transparent 25%),
+    linear-gradient(135deg,#edf5ff 0%,#fffaf2 100%)!important;
+  border-top:1px solid #dbe7f4;
+  border-bottom:1px solid #dbe7f4;
+}
+.how-home:before{
+  content:"";
+  position:absolute;
+  left:5%;right:5%;top:57%;
+  height:3px;
+  background:repeating-linear-gradient(90deg,#73a8df 0 10px,transparent 10px 19px);
+  opacity:.45;
+}
+.how-home-grid{
+  position:relative;
+  z-index:1;
+  gap:16px!important;
+}
+.how-home-grid article{
+  position:relative;
+  min-height:205px;
+  padding:24px 18px 20px!important;
+  border:1px solid #d6e3f1!important;
+  border-radius:20px!important;
+  background:rgba(255,255,255,.96)!important;
+  box-shadow:0 12px 28px rgba(7,55,116,.10)!important;
+  text-align:center;
+  transition:transform .2s,box-shadow .2s!important;
+}
+.how-home-grid article:hover{
+  transform:translateY(-5px);
+  box-shadow:0 18px 36px rgba(7,55,116,.16)!important;
+}
+.how-home-grid article>b{
+  position:absolute;
+  top:12px;left:12px;
+  width:34px;height:34px;
+  display:grid;place-items:center;
+  border-radius:50%;
+  background:#0b4b9d!important;
+  color:#fff!important;
+  box-shadow:0 5px 12px rgba(8,59,126,.22);
+}
+.how-home-grid article>span{
+  display:block;
+  margin:16px 0 9px;
+  font-size:3rem!important;
+  filter:drop-shadow(0 5px 8px rgba(0,0,0,.12));
+}
+.how-home-grid h3{
+  color:#073677!important;
+  font-size:1.16rem!important;
+}
+.how-home-grid p{
+  color:#5e6b7c!important;
+}
+
+/* Formulario compacto: elimina altura y espacios vacíos */
+#registro-comercio.form-section{
+  padding-top:30px!important;
+  padding-bottom:30px!important;
+}
+#registro-comercio .form-inner{
+  gap:24px!important;
+  padding:24px!important;
+  align-items:start!important;
+}
+.form-side-panel{
+  min-height:0!important;
+  height:auto!important;
+  grid-row:1 / span 6!important;
+  padding:22px 20px!important;
+}
+.form-side-panel h2{
+  margin-top:14px!important;
+  font-size:1.85rem!important;
+}
+.form-side-panel>p{
+  margin-bottom:15px!important;
+}
+.form-side-benefits{
+  gap:7px!important;
+}
+.form-side-benefits>div{
+  padding:8px!important;
+}
+.form-side-papa{
+  width:125px!important;
+  max-height:125px!important;
+  margin:12px auto 4px!important;
+}
+.form-side-note{
+  padding:11px!important;
+}
+#registro-comercio .form-big-title{
+  font-size:clamp(1.75rem,2.6vw,2.45rem)!important;
+}
+#registro-comercio .form-big-sub{
+  margin-bottom:12px!important;
+}
+#registro-comercio .form-page{
+  padding:20px!important;
+}
+#registro-comercio .frow{
+  margin-bottom:12px!important;
+}
+
+/* Aviso de actualización estable */
+#actualizacion-app{
+  display:none;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  padding:14px 16px!important;
+  border:2px solid #ffd34e;
+  background:linear-gradient(135deg,#062f6b,#0a4b98)!important;
+}
+#actualizacion-app.visible{display:flex!important}
+.update-copy{
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+}
+.update-copy strong{font-size:1rem;color:#fff}
+.update-copy span{font-size:.83rem;color:rgba(255,255,255,.83)}
+.update-actions{display:flex;gap:8px;align-items:center}
+#actualizacion-app .update-secondary{
+  background:#fff!important;
+  color:#073675!important;
+}
+#actualizacion-app .update-close{
+  width:38px;
+  min-width:38px;
+  padding:10px!important;
+  background:transparent!important;
+  color:#fff!important;
+  border:1px solid rgba(255,255,255,.4)!important;
+}
+#actualizacion-app .update-close:disabled{
+  opacity:.35;
+  cursor:not-allowed;
+}
+
+@media(max-width:900px){
+  .how-home:before{display:none}
+  .how-home-grid article{min-height:180px}
+  .form-side-panel{grid-row:auto!important}
+}
+@media(max-width:600px){
+  .logo{font-size:1.06rem!important;gap:7px!important}
+  .logo-flag{height:23px!important}
+  .how-home{padding:25px 14px!important}
+  .how-home-grid article{min-height:0}
+  #registro-comercio .form-inner{padding:12px!important}
+  .form-side-papa{width:92px!important;max-height:92px!important}
+  #actualizacion-app{
+    left:8px!important;right:8px!important;bottom:8px!important;
+    align-items:stretch!important;
+  }
+  .update-actions{display:grid;grid-template-columns:1fr 1fr auto}
+  #actualizacion-app button{width:auto!important;padding:10px 8px!important;font-size:.78rem}
+}
+
+
+/* IDENTIFICACIÓN DE VERSIÓN — V26 */
+.app-version-badge{
+  position:fixed;
+  right:12px;
+  bottom:12px;
+  z-index:9000;
+  padding:7px 10px;
+  border-radius:999px;
+  background:rgba(5,43,101,.92);
+  color:#fff;
+  border:1px solid rgba(255,255,255,.32);
+  box-shadow:0 5px 18px rgba(0,0,0,.18);
+  font:800 .72rem/1 "DM Sans",Arial,sans-serif;
+  letter-spacing:.03em;
+}
+.app-version-badge a{color:#ffd34e;text-decoration:none}
+@media(max-width:600px){
+  .app-version-badge{right:8px;bottom:8px;font-size:.66rem;padding:6px 8px}
+}
+
+
+/* ACCESO PERMANENTE A MI COMERCIO — V26 */
+.mi-comercio-fijo{
+  position:fixed;
+  left:14px;
+  bottom:14px;
+  z-index:8990;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:12px 15px;
+  border-radius:999px;
+  background:linear-gradient(135deg,#ff6b00,#ff932f);
+  color:#fff;
+  text-decoration:none;
+  font-weight:900;
+  box-shadow:0 10px 26px rgba(255,107,0,.30);
+}
+.mi-comercio-fijo:hover{transform:translateY(-2px)}
+.acceso-comercio-existente{
+  width:min(1420px,calc(100% - 28px));
+  margin:28px auto 0;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:20px;
+  align-items:center;
+  padding:22px 25px;
+  border-radius:20px;
+  background:
+    radial-gradient(circle at 88% 18%,rgba(255,211,78,.22),transparent 25%),
+    linear-gradient(135deg,#062f6b,#0753a5);
+  color:#fff;
+  box-shadow:0 16px 38px rgba(6,47,107,.18);
+}
+.acceso-comercio-existente h2{
+  margin:0 0 5px;
+  font-family:"Fraunces",serif;
+  font-size:clamp(1.45rem,2.5vw,2.1rem);
+}
+.acceso-comercio-existente p{margin:0;color:rgba(255,255,255,.82);line-height:1.5}
+.acceso-comercio-existente a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:13px 18px;
+  border-radius:12px;
+  background:#ff791c;
+  color:#fff;
+  text-decoration:none;
+  font-weight:900;
+  white-space:nowrap;
+  box-shadow:0 8px 20px rgba(0,0,0,.16);
+}
+.acceso-comercio-existente small{
+  display:block;
+  margin-top:7px;
+  color:#ffd95f;
+  font-weight:800;
+}
+@media(max-width:700px){
+  .mi-comercio-fijo{left:8px;bottom:48px;padding:10px 12px;font-size:.82rem}
+  .acceso-comercio-existente{grid-template-columns:1fr;padding:18px}
+  .acceso-comercio-existente a{width:100%}
+}
+
+
+/* V27 ENCABEZADO, GUÍA, FOTOS Y FORMULARIO */
+nav .nav-link,nav a.nav-link{color:#fff!important;font-weight:900!important;text-shadow:0 2px 5px rgba(0,0,0,.38)!important;opacity:1!important}
+nav .nav-link:hover,nav a.nav-link:hover{color:#ffd84d!important}
+.logo{color:#fff!important;text-shadow:0 3px 8px rgba(0,0,0,.45)!important}
+.logo em{color:#ffd84d!important}
+.nav-cliente-v27{padding:8px 11px!important;border:1px solid rgba(255,255,255,.4)!important;border-radius:999px!important;background:rgba(255,255,255,.14)!important}
+.guia-cliente-v27{width:min(1420px,calc(100% - 28px));margin:22px auto;display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center;padding:20px 24px;border-radius:18px;background:linear-gradient(135deg,#eef5ff,#fff8ed);border:1px solid #d6e3f1;box-shadow:0 10px 28px rgba(7,52,110,.08)}
+.guia-cliente-v27 h2{margin:0 0 5px;color:#073574;font-family:"Fraunces",serif}
+.guia-cliente-v27 p{margin:0;color:#5f6d80;line-height:1.55}.guia-cliente-v27 strong{color:#e66008}
+.guia-cliente-v27 a{padding:12px 16px;border-radius:11px;background:#0a4d9d;color:#fff;text-decoration:none;font-weight:900;white-space:nowrap}
+.public-product-photo{width:100%;height:120px;object-fit:cover;border-radius:10px;margin-bottom:8px;background:#eef4fb}
+.offer-home-media img{width:100%;height:100%;object-fit:cover}
+.cprod-photo{width:100%;height:72px;object-fit:cover;border-radius:8px;margin-bottom:5px}
+#registro-comercio .form-inner,.form-side-panel{min-height:0!important;height:auto!important}
+.form-side-panel{grid-row:auto!important;align-self:start!important;padding:18px!important}.form-side-papa{width:90px!important;max-height:90px!important;margin:6px auto!important}
+#registro-comercio.form-section{padding-top:18px!important;padding-bottom:18px!important}#registro-comercio .form-page{padding:17px!important}
+.footer-version-v27{text-align:center;margin-top:14px;color:rgba(255,255,255,.75);font-size:.76rem}
+@media(max-width:700px){.guia-cliente-v27{grid-template-columns:1fr;padding:16px}.guia-cliente-v27 a{text-align:center}.logo{font-size:1.05rem!important}}
+
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -1151,7 +1773,154 @@ nav{background:#fff;border-bottom:1px solid #e9e0d2;box-shadow:0 3px 18px rgba(0
 .home-install-compact{max-width:1480px!important;margin:18px auto!important;border-radius:18px!important;padding:18px!important}.legacy-home-section{display:none!important}.filtro-bar,.tiendas-section,.planes-bg,.form-section,.trust-strip,footer{max-width:1480px;margin-left:auto;margin-right:auto}.tiendas-section{border-radius:20px;margin-top:22px;border:1px solid #eee2d4}.planes-bg{border-radius:22px;overflow:hidden}.form-section{border-radius:22px}.home-empty{grid-column:1/-1;padding:25px;text-align:center;color:#687386;background:#f8fafc;border-radius:12px}
 @media(max-width:1050px){.nav-links,.nav-portals{display:none}.home-hero{margin:0;border-radius:0}.home-hero-inner{grid-template-columns:1fr 340px;padding:42px 28px}.offers-strip{grid-template-columns:repeat(4,260px)}.open-now-grid{grid-template-columns:repeat(2,1fr)}.home-categories{grid-template-columns:repeat(4,1fr)}}
 @media(max-width:720px){nav{position:sticky}.nav-inner{height:62px;padding:0 13px}.logo{font-size:1rem}.logo-flag{height:23px}.home-hero-inner{display:block;min-height:auto;padding:32px 18px 24px}.home-hero h1{font-size:2.45rem}.home-hero-copy>p{font-size:.95rem}.home-hero-papa{position:absolute;right:-22px;top:18px;opacity:.25;width:190px}.home-search{height:58px}.home-search button{padding:0 16px}.home-quick-filters{display:grid;grid-template-columns:repeat(2,1fr)}.home-location-row{padding:11px 16px;font-size:.78rem}.home-block,.how-home,.home-categories,.business-cta-home{border-radius:0;margin:12px 0;padding:17px}.home-section-title h2{font-size:1.35rem}.offer-home-card,.offer-home-card.featured{grid-column:auto;grid-template-columns:100px 1fr;min-width:270px}.how-home-grid{grid-template-columns:repeat(2,1fr)}.how-home-grid article:nth-child(2){border-right:0}.open-now-grid{display:flex;overflow-x:auto}.open-home-card{flex:0 0 245px}.home-categories{grid-template-columns:repeat(4,1fr);gap:7px}.business-cta-home{display:block;text-align:center}.business-cta-home>div{display:block}.business-cta-home button{margin-top:14px;width:100%}.filtro-bar,.tiendas-section,.planes-bg,.form-section,.trust-strip,footer{border-radius:0}.home-install-compact{margin:10px 0!important;border-radius:0!important}}
+
+/* ==========================================================
+   EMBELLECIMIENTO INSTITUCIONAL — COMERCIOS, REGISTRO Y PIE
+   ========================================================== */
+:root{
+  --slp-navy:#062b66;
+  --slp-blue:#0c4fa3;
+  --slp-orange:#ff6a00;
+  --slp-red:#e10600;
+  --slp-cream:#fffaf2;
+  --slp-soft:#f5f8fd;
+  --slp-border:#dce5f1;
+  --slp-shadow:0 16px 44px rgba(8,39,82,.10);
+}
+body{background:linear-gradient(180deg,#fff 0,#fffaf5 52%,#f7f9fc 100%)}
+
+/* COMERCIOS */
+.tiendas-section{
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(180deg,#fff 0%,#fffdf9 100%)!important;
+  border:1px solid #eadfce!important;
+  box-shadow:var(--slp-shadow);
+  padding-top:0!important;
+}
+.tiendas-inner{position:relative;padding:0!important}
+.comercios-hero-mini{
+  min-height:160px;
+  margin:0 -1px 24px!important;
+  padding:34px 48px 26px!important;
+  border-bottom:1px solid #eadfce;
+  background:
+    radial-gradient(circle at 76% 25%,rgba(255,191,83,.18),transparent 23%),
+    linear-gradient(135deg,#ffffff 0%,#fffaf1 58%,#f5f9ff 100%);
+  position:relative;
+  isolation:isolate;
+}
+.comercios-hero-mini:after{
+  content:"";
+  position:absolute;inset:auto 0 0 36%;height:64px;z-index:-1;
+  opacity:.11;
+  background:linear-gradient(90deg,transparent,#f5a623 18%,#0c4fa3 55%,transparent);
+  clip-path:polygon(0 100%,7% 78%,12% 86%,18% 42%,23% 79%,29% 58%,34% 87%,42% 31%,48% 79%,55% 48%,61% 86%,69% 59%,75% 82%,82% 43%,88% 83%,94% 62%,100% 100%);
+}
+.section-title{font-size:clamp(2rem,3vw,3.2rem)!important;letter-spacing:-.035em}
+.section-title span{color:var(--slp-red)!important}
+.section-subtitle{margin-top:8px;color:#6c6256;font-size:1rem}
+.mini-papa-wrap{display:flex;align-items:center;gap:20px;color:#665d52;font-size:.86rem}
+.mini-papa-wrap img{width:150px;height:110px;object-fit:contain;filter:drop-shadow(0 12px 12px rgba(8,39,82,.14))}
+
+.tiendas-inner>.smart-filters,
+.tiendas-inner>.resultados-resumen,
+.tiendas-inner>.comercios-grid,
+.tiendas-inner>#paginacion,
+.tiendas-inner>div[style*="margin-bottom:1.5rem"]{margin-left:48px!important;margin-right:48px!important}
+.smart-filters{
+  background:linear-gradient(180deg,#f8fbff,#f1f6fc)!important;
+  border:1px solid #d4e0ef!important;
+  border-radius:18px!important;
+  padding:16px!important;
+  box-shadow:inset 0 1px 0 #fff;
+}
+.smart-filters label span{color:var(--slp-navy)!important;font-weight:850!important}
+.smart-filters input,.smart-filters select{
+  border:1.5px solid #cbd8e8!important;border-radius:12px!important;background:#fff!important;
+  min-height:48px!important;transition:.2s ease;
+}
+.smart-filters input:focus,.smart-filters select:focus{border-color:#1e66c1!important;box-shadow:0 0 0 4px rgba(30,102,193,.11)!important}
+.filter-reset{background:var(--slp-navy)!important;color:#fff!important;border-radius:12px!important;min-height:48px!important;padding:0 20px!important;box-shadow:0 8px 18px rgba(6,43,102,.16)}
+.comercios-grid{gap:18px!important;padding-bottom:12px}
+.comercios-grid>*{transition:transform .22s ease,box-shadow .22s ease}
+.comercios-grid>*:hover{transform:translateY(-4px);box-shadow:0 15px 30px rgba(8,39,82,.12)}
+
+/* REGISTRO */
+.form-section{
+  position:relative;overflow:hidden;
+  background:linear-gradient(145deg,#fff 0%,#fbfdff 65%,#fff8ee 100%)!important;
+  border:1px solid #dbe5f0!important;
+  box-shadow:var(--slp-shadow);
+}
+.form-section:before{
+  content:"";position:absolute;left:-90px;bottom:-100px;width:330px;height:330px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,162,61,.18),rgba(255,162,61,0) 68%);pointer-events:none;
+}
+.form-inner{position:relative;max-width:1320px!important}
+.form-big-title{font-size:clamp(1.9rem,3vw,3rem)!important;color:var(--slp-navy)!important;line-height:1.05!important}
+.form-big-title span{color:var(--slp-red)}
+.form-big-sub{max-width:790px;color:#5f6670!important;font-size:1.05rem!important}
+.fb-banner{
+  max-width:820px;border-radius:16px!important;padding:15px 18px!important;
+  border:1.5px solid #6cc67a!important;background:linear-gradient(135deg,#effbf1,#e8f7eb)!important;
+  box-shadow:0 8px 20px rgba(44,139,66,.08);
+}
+.form-steps-nav{
+  border:1px solid #d6e0ed!important;border-radius:16px!important;overflow:hidden!important;
+  background:#fff!important;box-shadow:0 10px 28px rgba(8,39,82,.07);padding:0!important;
+}
+.fstep{min-height:76px!important;background:#fff!important;border-radius:0!important;color:#4b5059!important}
+.fstep.active{background:linear-gradient(135deg,var(--slp-navy),#0b4b9a)!important;color:#fff!important;box-shadow:inset 0 -4px 0 #ffad24}
+.fstep .snum{font-size:1.45rem!important}
+.form-page{margin-top:22px;padding:28px;border:1px solid #e0e7f0;border-radius:18px;background:rgba(255,255,255,.92);box-shadow:0 12px 30px rgba(8,39,82,.06)}
+.fgroup label{color:#16355f!important;font-weight:850!important}
+.fi,.fta{border:1.5px solid #ced9e7!important;border-radius:12px!important;background:#fff!important;min-height:52px!important}
+.fi:focus,.fta:focus{border-color:#1a63bc!important;box-shadow:0 0 0 4px rgba(26,99,188,.10)!important}
+.hint{color:#6a6f78!important}
+.form-nav .btn-azul,.form-nav .btn-rojo{background:linear-gradient(135deg,#ff7b16,#ef4a00)!important;border:none!important;color:#fff!important;box-shadow:0 10px 22px rgba(239,74,0,.22)}
+.form-nav .btn-ghost{border:1.5px solid #ccd7e6!important;background:#fff!important;color:var(--slp-navy)!important}
+
+/* CONTACTO */
+.cta-strip{background:linear-gradient(115deg,#062b66 0%,#063f87 55%,#e10600 100%)!important;border-radius:22px 22px 0 0!important;overflow:hidden;position:relative}
+.cta-strip:after{content:"🥔";position:absolute;right:28px;bottom:-18px;font-size:92px;opacity:.18;transform:rotate(-12deg)}
+.cta-text h3{font-size:2rem!important;color:#fff!important}.cta-text p{color:rgba(255,255,255,.82)!important}
+.cta-btn{border-radius:12px!important;min-height:56px!important;padding:0 22px!important;font-weight:850!important;box-shadow:0 10px 24px rgba(0,0,0,.16)}
+.cta-btn.cwa{background:#fff!important;color:#12783a!important}.cta-btn.cmail{background:#f04b3f!important;border-color:rgba(255,255,255,.42)!important;color:#fff!important}
+
+/* CONFIANZA */
+.trust-strip{background:#fff!important;border:1px solid #e2e7ef!important;border-top:0!important;box-shadow:0 18px 38px rgba(8,39,82,.07)}
+.trust-grid>div{padding:18px 20px;border-right:1px solid #edf0f5}
+.trust-grid>div:last-child{border-right:0}.trust-grid strong{color:var(--slp-navy)!important}.trust-grid span{color:#6f7580!important}
+
+/* PROYECTO LOCAL */
+.slp-project{padding:34px!important;background:linear-gradient(180deg,#f7fbff,#eef7ff)!important}
+.slp-project-card{border-radius:24px!important;overflow:hidden;box-shadow:0 20px 46px rgba(8,39,82,.13)!important;border:1px solid #cfe0f2!important;background:#fff!important}
+.slp-project-card img{min-height:370px;object-fit:cover}
+.slp-project-copy{padding:44px!important;background:linear-gradient(135deg,#fff,#fffaf1)!important}
+.slp-project-copy h2{color:var(--slp-navy)!important;font-size:clamp(2rem,3vw,3rem)!important}
+.slp-guide-btn{background:linear-gradient(135deg,#ff7b16,#ef4a00)!important;color:#fff!important;border-radius:999px!important;padding:14px 24px!important;box-shadow:0 10px 22px rgba(239,74,0,.22)}
+
+/* DICCIONARIO */
+.boton-diccionario-wrap{background:#eef7ff!important;padding:0 20px 28px!important}.boton-diccionario{background:#fff!important;color:var(--slp-navy)!important;border:1.5px solid #cbdcee!important;box-shadow:0 8px 22px rgba(8,39,82,.08)!important}
+
+/* PIE */
+footer{background:linear-gradient(135deg,#031c42 0%,#062f69 60%,#04162e 100%)!important;border-radius:0!important;position:relative;overflow:hidden}
+footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,rgba(255,119,0,.18),transparent 70%)}
+.footer-brand{font-size:2rem!important}.footer-brand em{color:#ff8b1f!important}.footer-grid h4{color:#fff!important}.flinks a{color:rgba(255,255,255,.72)!important}.flinks a:hover{color:#fff!important}.footer-bottom{opacity:.62!important}
+
+@media(max-width:800px){
+  .comercios-hero-mini{padding:26px 20px 20px!important;min-height:130px;align-items:flex-end!important}
+  .mini-papa-wrap img{width:100px;height:82px}.mini-papa-wrap{gap:8px;flex-direction:column;align-items:flex-end}
+  .tiendas-inner>.smart-filters,.tiendas-inner>.resultados-resumen,.tiendas-inner>.comercios-grid,.tiendas-inner>#paginacion,.tiendas-inner>div[style*="margin-bottom:1.5rem"]{margin-left:16px!important;margin-right:16px!important}
+  .smart-filters{grid-template-columns:1fr!important}.filter-reset{width:100%}
+  .form-section{padding:24px 14px!important}.form-page{padding:18px 14px}.form-steps-nav{display:grid!important;grid-template-columns:repeat(2,1fr)!important}.fstep{min-height:64px!important}
+  .cta-strip{border-radius:0!important}.cta-btns{width:100%}.cta-btn{width:100%;justify-content:center}
+  .trust-grid>div{border-right:0;border-bottom:1px solid #edf0f5}.slp-project{padding:16px!important}.slp-project-copy{padding:26px!important}.slp-project-card img{min-height:230px}
+}
+
 </style>
+<meta name="app-version" content="V27">
 </head>
 <body>
 
@@ -1167,7 +1936,8 @@ nav{background:#fff;border-bottom:1px solid #e9e0d2;box-shadow:0 3px 18px rgba(0
     <div class="nav-links"><a class="nav-link" href="./como-usar.html">Cómo usar</a>
       <a class="nav-link" onclick="goTo('categorias')">¿Qué necesitás?</a>
       <a class="nav-link" onclick="goTo('comercios')">Comercios</a>
-      <a class="nav-link" onclick="goTo('diccionario')">Diccionario 🧉</a>
+      <a class="nav-link nav-cliente-v27" href="./como-usar.html">Cómo se usa para clientes</a>
+<a class="nav-link nav-link-special" href="./diccionario-entrerriano.html">Diccionario 🧉</a>
       <a class="nav-link" onclick="goTo('planes')">Planes</a>
       <a class="nav-link" onclick="goTo('registro-comercio')">Anotate</a>
     </div>
@@ -1186,6 +1956,8 @@ nav{background:#fff;border-bottom:1px solid #e9e0d2;box-shadow:0 3px 18px rgba(0
 <div class="mobile-menu" id="mobile-menu">
   <button onclick="mobileGo('categorias')">🔎 ¿Qué necesitás?</button>
   <button onclick="mobileGo('comercios')">🏬 Comercios</button>
+  <a href="./como-usar.html">❓ Cómo funciona</a>
+  <a href="./diccionario-entrerriano.html">🧉 Diccionario entrerriano</a>
   <button onclick="mobileGo('planes')">📣 Planes</button>
   <button onclick="mobileGo('registro-comercio')">➕ Registrá tu comercio</button>
   <a href="comercio.html">🏪 Panel de comercio</a>
@@ -1224,6 +1996,12 @@ nav{background:#fff;border-bottom:1px solid #e9e0d2;box-shadow:0 3px 18px rgba(0
 </section>
 
 <!-- OFERTAS, DESTACADOS Y ABIERTOS: se completan con comercios reales -->
+
+<section class="guia-cliente-v27">
+ <div><h2>👤 Cómo se usa para clientes</h2><p>Podés mirar comercios, fotos, precios y ofertas <strong>sin registrarte</strong>. Recién al confirmar una compra se solicitan los datos necesarios para entrega, retiro y contacto.</p></div>
+ <a href="./como-usar.html">Ver la guía completa →</a>
+</section>
+
 <section class="home-block" id="ofertas-semana">
   <div class="home-section-title"><div><span class="title-icon">🔥</span><h2>Oferta de la semana</h2></div><button onclick="goTo('comercios')">Ver todos los productos</button></div>
   <div class="offers-strip" id="ofertas-home"><div class="home-empty">Cargando ofertas reales…</div></div>
@@ -1320,9 +2098,15 @@ nav{background:#fff;border-bottom:1px solid #e9e0d2;box-shadow:0 3px 18px rgba(0
 <!-- COMERCIOS — PAGINADO CON PRIORIDAD POR PLAN -->
 <section class="tiendas-section" id="comercios">
   <div class="tiendas-inner">
-    <div class="section-header">
-      <h2 class="section-title">Todos los <span>comercios</span></h2>
-      <span style="font-size:.88rem;color:var(--suave)" id="pag-info">Mostrando página 1</span>
+    <div class="section-header comercios-hero-mini">
+      <div>
+        <h2 class="section-title">Todos los <span>comercios</span></h2>
+        <p class="section-subtitle">Conectamos tu barrio con lo que necesitás cada día.</p>
+      </div>
+      <div class="mini-papa-wrap">
+        <img src="./images/super-papa.webp" alt="Sálvame las Papas" loading="lazy">
+        <span id="pag-info">Mostrando página 1</span>
+      </div>
     </div>
 
     <!-- Leyenda -->
@@ -1440,9 +2224,39 @@ nav{background:#fff;border-bottom:1px solid #e9e0d2;box-shadow:0 3px 18px rgba(0
 </div>
 
 <!-- FORMULARIO -->
+
+<section class="acceso-comercio-existente" aria-label="Acceso de comercios registrados">
+  <div>
+    <h2>🏪 ¿Tu comercio ya está registrado?</h2>
+    <p>Entrá con el correo y la contraseña que elegiste al inscribirte. Desde ahí podés editar los datos, agregar artículos, usar la carga rápida y revisar pedidos.</p>
+    <small>No vuelvas a inscribir el mismo comercio.</small>
+  </div>
+  <a href="./comercio.html">Ingresar a Mi comercio →</a>
+</section>
+
 <section class="form-section" id="registro-comercio">
   <div class="form-inner">
-    <h2 class="form-big-title">🥔 ¡Anotate, no te quedés en el horno!</h2>
+    <aside class="form-side-panel" aria-label="Información para registrar un comercio">
+      <div class="form-side-badge">🚀 PARA COMERCIOS</div>
+      <h2>Sumá tu negocio a la red local</h2>
+      <p>Publicá tus productos, recibí pedidos y conectá con vecinos de Concepción del Uruguay.</p>
+
+      <div class="form-side-benefits">
+        <div><span>✓</span><strong>Inscripción sin costo</strong><small>Completás los datos y elegís el plan.</small></div>
+        <div><span>✓</span><strong>Alta revisada</strong><small>Verificamos la información antes de publicar.</small></div>
+        <div><span>✓</span><strong>Pedidos directos</strong><small>El cliente arma el pedido y te contacta.</small></div>
+        <div><span>✓</span><strong>Tu comercio ubicado</strong><small>Dirección, horarios y enlace a Google Maps.</small></div>
+      </div>
+
+      <img class="form-side-papa" src="./images/super-papa.webp" alt="Súper Papa, ayudante local">
+      <div class="form-side-note">
+        <strong>¿Necesitás ayuda?</strong>
+        <span>Te acompañamos durante la carga.</span>
+        <a href="https://wa.me/5493442490585" target="_blank" rel="noopener noreferrer">💬 Escribir por WhatsApp</a>
+      </div>
+    </aside>
+
+    <h2 class="form-big-title">🚀 Sumá tu comercio a <span>Sálvame las Papas</span></h2>
     <p class="form-big-sub">Completá los datos de tu comercio en 4 pasos y recibí una confirmación final. <strong>Sin costo de inscripción.</strong> En menos de 24hs estás en la app.</p>
 
     <div id="fb-status" class="fb-banner ok">
@@ -1753,7 +2567,7 @@ nav{background:#fff;border-bottom:1px solid #e9e0d2;box-shadow:0 3px 18px rgba(0
       <ul class="flinks"><li><a href="./como-usar.html">Cómo usar la plataforma</a></li>
         <li><a onclick="focusSearch()">Buscar comercios</a></li>
         <li><a onclick="goTo('categorias')">Categorías</a></li>
-        <li><a onclick="goTo('diccionario')">Diccionario 🧉</a></li>
+        <li><a href="./diccionario-entrerriano.html">Diccionario 🧉</a></li>
         <li><a onclick="openModal('cliente')">Ingresar</a></li>
       </ul>
     </div>
@@ -2328,7 +3142,7 @@ function renderComercio(c, globalIdx){
 
   if(c.plan === 3){
     const prods = (c.productos||[]).map(p =>
-      `<div class="cprod"><span class="cprod-emoji">${p.e}</span><div class="cprod-name">${p.n}</div><div class="cprod-price">${p.p}</div></div>`
+      `<div class="cprod">${p.foto?`<img class="cprod-photo" src="${p.foto}" alt="${textoSeguro(p.n)}" loading="lazy">`:`<span class="cprod-emoji">${p.e||'📦'}</span>`}<div class="cprod-name">${p.n}</div><div class="cprod-price">${p.p}</div></div>`
     ).join('')
     return `
     <div class="comercio-max">
@@ -2493,6 +3307,32 @@ async function cargarComercios(){
         })
         // Si Firebase tiene comercios, se usan solo los reales y vigentes.
         // Si todos vencieron, la página queda sin comercios: no reaparecen los ejemplos.
+        // Los productos cargados desde “Mi comercio” viven en una subcolección.
+        // Se cargan aquí para que aparezcan en la página pública.
+        for(const comercio of fbComercics){
+          try{
+            const ps=await getDocs(collection(db,'comercios',comercio.id,'productos'))
+            comercio.productos=[]
+            ps.forEach(pr=>{
+              const p=pr.data()
+              if(p.disponible!==false){
+                comercio.productos.push({
+                  id:pr.id,
+                  n:p.nombre||'Producto',
+                  nombre:p.nombre||'Producto',
+                  e:p.emoji||'',
+                  emoji:p.emoji||'',
+                  foto:p.foto||'',
+                  p:'$'+Number(p.precio||0).toLocaleString('es-AR'),
+                  precio:Number(p.precio||0),
+                  d:p.descripcion||'',
+                  descripcion:p.descripcion||'',
+                  stock:p.stock||''
+                })
+              }
+            })
+          }catch(error){console.warn('Productos de '+comercio.nombre,error)}
+        }
         comerciosTodos = ordenarPorPlan(fbComercics)
       }
     }
@@ -2596,7 +3436,7 @@ function abrirComercio(c){
   } else {
     grid.innerHTML = productos.map((p,i) => `
       <div class="prod-card" id="prod-card-${i}">
-        <span class="prod-emoji">${p.e || '📦'}</span>
+        ${p.foto?`<img class="public-product-photo" src="${p.foto}" alt="${textoSeguro(p.n||'Producto')}" loading="lazy">`:`<span class="prod-emoji">${p.e || '📦'}</span>`}
         <div class="prod-nombre">${p.n}</div>
         <div class="prod-precio">${p.p}</div>
         ${p.d ? '<div class="prod-desc">'+p.d+'</div>' : ''}
@@ -3160,7 +4000,6 @@ window.addEventListener('load',()=>setTimeout(()=>{poblarBarrios();abrirDesdeHas
 
 <script>
 (function(){
-  if ("serviceWorker" in navigator) window.addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js").catch(err=>console.warn("Service Worker:",err)));
 })();
 </script>
 
@@ -3252,44 +4091,114 @@ actualizarEstadoInstalacion();
 </script>
 
 <div id="actualizacion-app" role="status" aria-live="polite">
-  <span>Hay una versión nueva de Sálvame las Papas.</span>
-  <button id="btn-actualizar-app" type="button">Actualizar ahora</button>
+  <div class="update-copy">
+    <strong>🔄 Hay una versión nueva disponible</strong>
+    <span>No se cerrará solo. Tocá “Actualizar ahora” para instalarla.</span>
+  </div>
+  <div class="update-actions">
+    <button id="btn-buscar-actualizacion" type="button" class="update-secondary">Buscar otra vez</button>
+    <button id="btn-actualizar-app" type="button">Actualizar ahora</button>
+    <button id="btn-cerrar-actualizacion" type="button" class="update-close" disabled title="Podrás cerrarlo después de 30 segundos">✕</button>
+  </div>
 </div>
 
 <script>
 (function(){
   if(!('serviceWorker' in navigator)) return;
-  let esperando=null;
+
+  const VERSION_SW='v24';
   const aviso=document.getElementById('actualizacion-app');
   const boton=document.getElementById('btn-actualizar-app');
+  const buscar=document.getElementById('btn-buscar-actualizacion');
+  const cerrar=document.getElementById('btn-cerrar-actualizacion');
+  let registro=null;
+  let esperando=null;
+  let recargando=false;
+
   function mostrar(reg){
-    esperando=reg.waiting;
-    if(aviso&&esperando){
-      aviso.classList.add('visible');
-      aviso.dataset.visibleDesde=String(Date.now());
-      clearTimeout(window._slpOcultarActualizacion);
-      window._slpOcultarActualizacion=setTimeout(()=>{
-        aviso.classList.remove('visible');
+    esperando=reg?.waiting || esperando;
+    if(!aviso || !esperando) return;
+
+    aviso.classList.add('visible');
+    aviso.dataset.visibleDesde=String(Date.now());
+
+    // El cartel no se oculta automáticamente. Recién después de 30 segundos
+    // se habilita la X para que el usuario decida cerrarlo.
+    if(cerrar){
+      cerrar.disabled=true;
+      cerrar.title='Podrás cerrarlo después de 30 segundos';
+      clearTimeout(window._slpHabilitarCierre);
+      window._slpHabilitarCierre=setTimeout(()=>{
+        cerrar.disabled=false;
+        cerrar.title='Cerrar aviso';
       },30000);
     }
   }
-  navigator.serviceWorker.register('./service-worker.js',{updateViaCache:'none'})
+
+  async function buscarActualizacion(){
+    if(!registro) return;
+    if(buscar){
+      buscar.disabled=true;
+      buscar.textContent='Buscando...';
+    }
+    try{
+      await registro.update();
+      if(registro.waiting) mostrar(registro);
+    }catch(error){
+      console.warn('No se pudo buscar la actualización:',error);
+    }finally{
+      if(buscar){
+        buscar.disabled=false;
+        buscar.textContent='Buscar otra vez';
+      }
+    }
+  }
+
+  navigator.serviceWorker.register('./service-worker.js?'+VERSION_SW,{updateViaCache:'none'})
     .then(reg=>{
-      reg.update();
+      registro=reg;
       if(reg.waiting) mostrar(reg);
+
       reg.addEventListener('updatefound',()=>{
         const nuevo=reg.installing;
         if(!nuevo) return;
         nuevo.addEventListener('statechange',()=>{
-          if(nuevo.state==='installed'&&navigator.serviceWorker.controller) mostrar(reg);
+          if(nuevo.state==='installed' && navigator.serviceWorker.controller){
+            mostrar(reg);
+          }
         });
       });
-      setInterval(()=>reg.update(),10*60*1000);
+
+      buscarActualizacion();
+      setInterval(buscarActualizacion,5*60*1000);
+      document.addEventListener('visibilitychange',()=>{
+        if(document.visibilityState==='visible') buscarActualizacion();
+      });
     })
     .catch(err=>console.warn('No se pudo registrar la actualización:',err));
-  boton?.addEventListener('click',()=>{if(esperando){esperando.postMessage({type:'SKIP_WAITING'});}else{location.reload();}});
-  let recargando=false;
-  navigator.serviceWorker.addEventListener('controllerchange',()=>{if(recargando)return;recargando=true;location.reload();});
+
+  boton?.addEventListener('click',()=>{
+    if(!esperando){
+      buscarActualizacion();
+      return;
+    }
+    boton.disabled=true;
+    boton.textContent='Actualizando...';
+    esperando.postMessage({type:'SKIP_WAITING'});
+  });
+
+  buscar?.addEventListener('click',buscarActualizacion);
+
+  cerrar?.addEventListener('click',()=>{
+    if(!cerrar.disabled) aviso?.classList.remove('visible');
+  });
+
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{
+    if(recargando) return;
+    recargando=true;
+    // Recarga sin caché visual para tomar el HTML nuevo.
+    location.reload();
+  });
 })();
 </script>
 <script>
@@ -3344,7 +4253,7 @@ let homeSliderTimer=null;
 function precioNumero(valor){return Number(String(valor??'').replace(/[^0-9,.-]/g,'').replace('.','').replace(',','.'))||0}
 function monedaHome(n){return '$'+Number(n||0).toLocaleString('es-AR')}
 function planNombreHome(p){return p===3?'PRO':p===2?'DESTACADO':'BÁSICO'}
-function productoNormalizadoHome(p){return {nombre:p?.n||p?.nombre||'Producto',emoji:p?.e||p?.emoji||'📦',precio:precioNumero(p?.precio??p?.p),antes:precioNumero(p?.precioAntes??p?.antes??p?.precio_antes),tipo:String(p?.tipo||'').toLowerCase()}}
+function productoNormalizadoHome(p){return {nombre:p?.n||p?.nombre||'Producto',emoji:p?.e||p?.emoji||'📦',foto:p?.foto||'',precio:precioNumero(p?.precio??p?.p),antes:precioNumero(p?.precioAntes??p?.antes??p?.precio_antes),tipo:String(p?.tipo||'').toLowerCase()}}
 function comercioAbiertoHome(c){const b=badgeEstado(c?.horarios||'');return !String(b).includes('Cerrado')}
 function mostrarAbiertosInicio(){goTo('comercios');setTimeout(()=>{const q=document.getElementById('filtro-texto');if(q){q.value='Abierto';aplicarFiltrosAvanzados()}},350)}
 function filtrarEntregaInicio(tipo){goTo('comercios');setTimeout(()=>{const s=document.getElementById('filtro-envio');if(s){s.value=tipo;aplicarFiltrosAvanzados()}},350)}
@@ -3359,7 +4268,7 @@ function renderHomeVisual(){
  const abiertosLista=ordenados.filter(comercioAbiertoHome).slice(0,8);
  abiertos.innerHTML=(abiertosLista.length?abiertosLista:ordenados.slice(0,4)).map(c=>{const idx=comerciosTodos.indexOf(c);return `<article class="open-home-card" onclick="abrirHomeComercio(${idx})"><div class="open-home-cover"><span class="open-label">${comercioAbiertoHome(c)?'Abierto':'Consultar'}</span>${textoSeguro(c.emoji||'🏪')}</div><div class="open-home-info"><h3>${textoSeguro(c.nombre||'Comercio')}</h3><p>${textoSeguro(c.cat||'')} · ${textoSeguro(c.barrio||'CDU')}</p><p>🕒 ${textoSeguro(horarioTexto(c.horarios))}</p><p>🥔 ${textoSeguro(c.direccion||'Dirección por confirmar')}</p><button type="button">Ver productos</button></div></article>`}).join('');
  let lista=[];ordenados.forEach(c=>(c.productos||[]).forEach(p=>{const pr=productoNormalizadoHome(p);if(pr.precio>0)lista.push({c,p:pr,oferta:pr.antes>pr.precio||pr.tipo.includes('oferta')})}));lista.sort((a,b)=>Number(b.oferta)-Number(a.oferta)||b.c.plan-a.c.plan);lista=lista.slice(0,6);
- ofertas.innerHTML=lista.length?lista.map((x,i)=>{const idx=comerciosTodos.indexOf(x.c);return `<article class="offer-home-card ${i===0?'featured':''}" onclick="abrirHomeComercio(${idx})"><div class="offer-home-media">${textoSeguro(x.p.emoji)}</div><div class="offer-home-info">${x.oferta?'<span class="offer-home-badge">OFERTA DESTACADA</span>':''}<b>${textoSeguro(x.p.nombre)}</b><span class="offer-home-store">${textoSeguro(x.c.nombre)}</span><span class="offer-home-price">${monedaHome(x.p.precio)}${x.p.antes>x.p.precio?`<small class="offer-home-old">${monedaHome(x.p.antes)}</small>`:''}</span></div></article>`}).join(''):'<div class="home-empty">Los comercios todavía no cargaron productos con precio. Cuando lo hagan aparecerán acá automáticamente.</div>';
+ ofertas.innerHTML=lista.length?lista.map((x,i)=>{const idx=comerciosTodos.indexOf(x.c);return `<article class="offer-home-card ${i===0?'featured':''}" onclick="abrirHomeComercio(${idx})"><div class="offer-home-media">${x.p.foto?`<img src="${x.p.foto}" alt="${textoSeguro(x.p.nombre)}" loading="lazy">`:textoSeguro(x.p.emoji)}</div><div class="offer-home-info">${x.oferta?'<span class="offer-home-badge">OFERTA DESTACADA</span>':''}<b>${textoSeguro(x.p.nombre)}</b><span class="offer-home-store">${textoSeguro(x.c.nombre)}</span><span class="offer-home-price">${monedaHome(x.p.precio)}${x.p.antes>x.p.precio?`<small class="offer-home-old">${monedaHome(x.p.antes)}</small>`:''}</span></div></article>`}).join(''):'<div class="home-empty">Los comercios todavía no cargaron productos con precio. Cuando lo hagan aparecerán acá automáticamente.</div>';
  iniciarDestacadosAuto();
 }
 function moverDestacados(dir){const el=document.getElementById('destacados-home');if(el)el.scrollBy({left:dir*290,behavior:'smooth'})}
@@ -3367,5 +4276,9 @@ function iniciarDestacadosAuto(){clearInterval(homeSliderTimer);homeSliderTimer=
 const cargarComerciosHomeOriginal=cargarComercios;cargarComercios=async function(){await cargarComerciosHomeOriginal();renderHomeVisual()}
 document.addEventListener('visibilitychange',()=>{if(document.hidden)clearInterval(homeSliderTimer);else iniciarDestacadosAuto()})
 </script>
+<div class="app-version-badge" title="Versión publicada de Sálvame las Papas">
+  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V27</a>
+</div>
+<a class="mi-comercio-fijo" href="./comercio.html" aria-label="Entrar a Mi comercio">🏪 Mi comercio</a>
 </body>
 </html>

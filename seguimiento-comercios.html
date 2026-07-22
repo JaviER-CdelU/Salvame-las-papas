@@ -512,12 +512,55 @@ main{width:min(1280px,100%);margin:auto;padding:26px 18px 60px}.cabecera{display
 }
 .btn-ver-password:hover{background:rgba(0,0,0,.06)}
 
+
+/* IDENTIFICACIÓN DE VERSIÓN — V26 */
+.app-version-badge{
+  position:fixed;
+  right:12px;
+  bottom:12px;
+  z-index:9000;
+  padding:7px 10px;
+  border-radius:999px;
+  background:rgba(5,43,101,.92);
+  color:#fff;
+  border:1px solid rgba(255,255,255,.32);
+  box-shadow:0 5px 18px rgba(0,0,0,.18);
+  font:800 .72rem/1 "DM Sans",Arial,sans-serif;
+  letter-spacing:.03em;
+}
+.app-version-badge a{color:#ffd34e;text-decoration:none}
+@media(max-width:600px){
+  .app-version-badge{right:8px;bottom:8px;font-size:.66rem;padding:6px 8px}
+}
+
+
+.admin-scope-note{
+  max-width:1200px;
+  margin:14px auto;
+  padding:13px 16px;
+  border-radius:12px;
+  background:#eef5ff;
+  border:1px solid #c5d9f0;
+  color:#153c6a;
+  font-size:.86rem;
+  line-height:1.5;
+}
+.admin-scope-note a{color:#d85e00;font-weight:900}
+
 </style>
+<meta name="app-version" content="V27">
 </head>
 <body>
 <section id="login" class="login"><div class="login-box"><h1>Sálvame las Papas 🥔</h1><h2>Seguimiento de comercios</h2><p>Sección privada para Administración.</p><button onclick="entrarGoogle()">Ingresar con Google</button><div id="login-error" class="login-error" hidden></div></div></section>
 <div id="app" hidden>
 <nav><div class="logo">Sálvame las Papas — Seguimiento</div><div class="nav-links"><a href="index.html">🏠 Sitio</a><a href="admin.html">⚙️ Administración</a><a class="activo" href="seguimiento-comercios.html">📅 Seguimiento</a></div><button class="salir" onclick="salir()">Salir</button></nav>
+
+<div class="admin-scope-note">
+  <strong>Vista de administración:</strong> esta página sirve para seguimiento, pagos,
+  renovaciones y estados. Para editar datos o productos como dueño del negocio,
+  ingresá en <a href="./comercio.html">Mi comercio</a> con el correo y la contraseña registrados.
+</div>
+
 <main>
 <div id="resumen-avanzado" class="resumen-avanzado">
   <div class="resumen-box"><strong id="r-activos">0</strong><span>Activos</span></div>
@@ -617,4 +660,7 @@ function prepararCamposPassword(){
 }
 document.addEventListener('DOMContentLoaded',prepararCamposPassword);
 </script>
+<div class="app-version-badge" title="Versión publicada de Sálvame las Papas">
+  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V27</a>
+</div>
 </body></html>

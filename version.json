@@ -1,0 +1,15 @@
+{
+  "version": "V27",
+  "nombre": "Fotos, enlaces y acceso claro",
+  "fecha": "2026-07-22",
+  "cambios": [
+    "Foto principal para productos y publicaciones",
+    "Imágenes reducidas automáticamente",
+    "Íconos opcionales con opciones para cabañas",
+    "Productos del panel cargados desde la subcolección y visibles públicamente",
+    "Cómo se usa para clientes visible en el encabezado",
+    "Diccionario entrerriano conectado",
+    "Formulario de inscripción más compacto",
+    "Versión visible en el pie de página"
+  ]
+}

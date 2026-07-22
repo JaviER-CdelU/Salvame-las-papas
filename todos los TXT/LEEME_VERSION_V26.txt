@@ -1,0 +1,10 @@
+VERSIÓN V26 — ACCESO Y ORGANIZACIÓN
+
+- Se agregó un número de versión visible en las páginas.
+- La versión también se puede consultar en version.json.
+- Todos los archivos TXT quedaron dentro de la carpeta “todos los TXT”.
+- Se agregó un botón flotante “Mi comercio” en la página principal.
+- Antes del formulario aparece un acceso para comercios ya registrados.
+- Se mejoró el ingreso con correo y contraseña en comercio.html.
+- El dueño puede elegir el comercio, editar datos y administrar productos.
+- Seguimiento de comercios aclara que es una vista administrativa.

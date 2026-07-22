@@ -1,0 +1,11 @@
+MIS COMERCIOS V25
+
+- El panel busca todos los comercios asociados al UID de la cuenta.
+- También busca registros antiguos por correo, ignorando mayúsculas y espacios.
+- Los registros antiguos cuyo correo coincide se vinculan automáticamente al UID.
+- Se muestra una tarjeta por comercio.
+- Cada tarjeta permite editar datos o administrar productos.
+- Se recuerda el último comercio elegido.
+- “No encontramos tu comercio” ahora permite volver a buscar.
+- No se permite apropiarse de un comercio buscando solo por nombre o WhatsApp:
+  si fue registrado con otro correo, el administrador debe corregirlo.

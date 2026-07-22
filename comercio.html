@@ -36,6 +36,8 @@ let miComercioId = null;
 let miComercio   = null;
 let misProductos = [];
 let misPedidos = [];
+let comerciosDeLaCuenta = [];
+let usuarioActual = null;
 
 function esc(value){
   return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))
@@ -45,75 +47,196 @@ function safeArg(value){ return encodeURIComponent(String(value ?? '')) }
 // ── Auth ──
 onAuthStateChanged(auth, async user => {
   if(user){
+    usuarioActual = user
     document.getElementById('login-screen').style.display = 'none'
     document.getElementById('panel-screen').style.display = 'block'
     document.getElementById('user-email').textContent = user.email
     await cargarMiComercio(user.email)
   } else {
+    usuarioActual = null
+    comerciosDeLaCuenta = []
     document.getElementById('login-screen').style.display  = 'flex'
     document.getElementById('panel-screen').style.display  = 'none'
   }
 })
 
-// ── Cargar comercio del usuario ──
+// ── Cargar todos los comercios de la cuenta ──
 async function cargarMiComercio(email){
+  const estado=document.getElementById('busqueda-comercios-estado'); const estadoVacio=document.getElementById('busqueda-comercios-estado-vacio')
   try {
-    const normalizado = (email || '').trim().toLowerCase()
-    let snap = await getDocs(query(collection(db,'comercios'), where('email','==',normalizado)))
-    let encontrado = null
-    if(!snap.empty){
-      snap.forEach(d => { if(!encontrado) encontrado = {id:d.id,data:d.data()} })
-    } else {
-      // Compatibilidad con registros antiguos que tenían mayúsculas o espacios en el email.
-      const todos = await getDocs(collection(db,'comercios'))
-      todos.forEach(d => {
-        const dato=d.data()
-        if(!encontrado && String(dato.email||'').trim().toLowerCase()===normalizado)
-          encontrado={id:d.id,data:dato}
-      })
-    }
-    if(!encontrado){
-      mostrarSeccion('sin-comercio')
-      return
-    }
-    miComercioId = encontrado.id; miComercio = encontrado.data
-    document.getElementById('comercio-nombre').textContent = miComercio.nombre || 'Mi comercio'
-    document.getElementById('comercio-cat').textContent    = (miComercio.categoria||'') + ' · ' + (miComercio.barrio||'CDU')
-    
-    const estadoBadge = {
-      activo:    '<span class="badge-activo">✅ Activo en la app</span>',
-      pendiente: '<span class="badge-pend">⏳ Pendiente de aprobación</span>',
-      rechazado: '<span class="badge-rech">❌ Rechazado</span>',
-    }[miComercio.estado] || '<span class="badge-pend">⏳ Pendiente</span>'
-    document.getElementById('comercio-estado').innerHTML = estadoBadge
+    if(estado) estado.textContent='Buscando comercios asociados...'; if(estadoVacio) estadoVacio.textContent='Buscando comercios asociados...'
 
-    const aviso = document.getElementById('publicacion-aviso')
-    if(aviso){
-      aviso.className = 'publicacion-aviso'
-      if(miComercio.estado === 'activo'){
-        aviso.classList.add('activo')
-        aviso.innerHTML = `
-          <strong>✅ Tu comercio está autorizado y publicado</strong>
-          Los productos disponibles que cargues se mostrarán en la página principal.
-          <small>Cuando pauses un producto o lo marques sin stock, dejará de mostrarse a los clientes.</small>`
-      } else if(miComercio.estado === 'rechazado'){
-        aviso.classList.add('rechazado')
-        aviso.innerHTML = `
-          <strong>❌ Tu comercio todavía no puede publicarse</strong>
-          Podés conservar y editar los productos cargados, pero no aparecerán en la página principal.
-          <small>Comunicate con Administración para revisar el motivo y completar la incorporación.</small>`
-      } else {
-        aviso.innerHTML = `
-          <strong>⏳ Tus productos están guardados, pero todavía no están publicados</strong>
-          Podés completar el catálogo ahora para adelantar trabajo. Nada aparecerá en la página principal hasta que se acredite el pago y Administración apruebe el comercio.
-          <small>La activación puede demorar hasta 24 horas desde que el pago se vea acreditado.</small>`
+    const normalizado=(email||'').trim().toLowerCase()
+    const porId=new Map()
+
+    // Registros nuevos: asociación segura mediante UID.
+    if(usuarioActual?.uid){
+      const porUid=await getDocs(
+        query(collection(db,'comercios'),where('ownerUid','==',usuarioActual.uid))
+      )
+      porUid.forEach(d=>porId.set(d.id,{id:d.id,data:d.data()}))
+    }
+
+    // Registros por correo exacto.
+    if(normalizado){
+      const porEmail=await getDocs(
+        query(collection(db,'comercios'),where('email','==',normalizado))
+      )
+      porEmail.forEach(d=>porId.set(d.id,{id:d.id,data:d.data()}))
+    }
+
+    // Compatibilidad con comercios antiguos: correo con mayúsculas o espacios.
+    const todos=await getDocs(collection(db,'comercios'))
+    todos.forEach(d=>{
+      const dato=d.data()
+      const correoGuardado=String(dato.email||'').trim().toLowerCase()
+      if(correoGuardado && correoGuardado===normalizado){
+        porId.set(d.id,{id:d.id,data:dato})
+      }
+    })
+
+    comerciosDeLaCuenta=[...porId.values()].sort((a,b)=>
+      String(a.data.nombre||'').localeCompare(String(b.data.nombre||''),'es')
+    )
+
+    // Vincular de forma segura registros antiguos cuyo correo coincide.
+    if(usuarioActual?.uid){
+      for(const comercio of comerciosDeLaCuenta){
+        if(!comercio.data.ownerUid){
+          try{
+            await updateDoc(doc(db,'comercios',comercio.id),{
+              ownerUid:usuarioActual.uid,
+              email:String(comercio.data.email||normalizado).trim().toLowerCase(),
+              vinculadoEn:serverTimestamp()
+            })
+            comercio.data.ownerUid=usuarioActual.uid
+          }catch(error){
+            console.warn('No se pudo vincular el comercio antiguo:',error)
+          }
+        }
       }
     }
 
-    mostrarSeccion('mi-panel')
-    await cargarProductos()
-    await cargarPedidos() 
-  } catch(e){ toast('No se pudo cargar el comercio. Revisá la conexión o los permisos.') }
+    renderSelectorComercios()
+
+    if(!comerciosDeLaCuenta.length){
+      miComercioId=null
+      miComercio=null
+      mostrarSeccion('sin-comercio')
+      if(estado) estado.textContent='No apareció ningún comercio asociado a '+normalizado+'.'; if(estadoVacio) estadoVacio.textContent='No apareció ningún comercio asociado a '+normalizado+'.'
+      return
+    }
+
+    const ultimo=localStorage.getItem('slp_ultimo_comercio')
+    const elegido=comerciosDeLaCuenta.find(c=>c.id===ultimo) || comerciosDeLaCuenta[0]
+    await seleccionarComercio(elegido.id)
+    if(estado) estado.textContent=comerciosDeLaCuenta.length===1
+      ? 'Encontramos 1 comercio asociado.'
+      : `Encontramos ${comerciosDeLaCuenta.length} comercios asociados.`
+  } catch(e){
+    console.error(e)
+    if(estado) estado.textContent='No se pudo completar la búsqueda. Revisá la conexión o los permisos.'; if(estadoVacio) estadoVacio.textContent='No se pudo completar la búsqueda. Revisá la conexión o los permisos.'
+    toast('No se pudieron cargar tus comercios.')
+    mostrarSeccion('sin-comercio')
+  }
+}
+
+function renderSelectorComercios(){
+  const cont=document.getElementById('mis-comercios-lista')
+  const bloque=document.getElementById('selector-mis-comercios')
+  if(!cont||!bloque) return
+
+  if(!comerciosDeLaCuenta.length){
+    bloque.style.display='none'
+    cont.innerHTML=''
+    return
+  }
+
+  bloque.style.display='block'
+  cont.innerHTML=comerciosDeLaCuenta.map(c=>{
+    const d=c.data||{}
+    const activo=c.id===miComercioId
+    const estado=d.estado==='activo'?'✅ Activo'
+      : d.estado==='rechazado'?'❌ Rechazado':'⏳ Pendiente'
+    return `
+      <article class="mi-comercio-card ${activo?'seleccionado':''}">
+        <button class="mi-comercio-main" type="button" onclick="seleccionarComercio('${c.id}')">
+          <span class="mi-comercio-icon">🏪</span>
+          <span>
+            <strong>${esc(d.nombre||'Comercio sin nombre')}</strong>
+            <small>${esc(d.categoria||'Sin categoría')} · ${esc(d.barrio||'Zona no informada')}</small>
+            <em>${estado}</em>
+          </span>
+        </button>
+        <div class="mi-comercio-actions">
+          <button type="button" onclick="seleccionarYEditar('${c.id}')">✏️ Editar datos</button>
+          <button type="button" onclick="seleccionarComercio('${c.id}')">📦 Administrar productos</button>
+        </div>
+      </article>`
+  }).join('')
+}
+
+window.seleccionarComercio=async(id)=>{
+  const encontrado=comerciosDeLaCuenta.find(c=>c.id===id)
+  if(!encontrado) return
+
+  miComercioId=encontrado.id
+  miComercio=encontrado.data
+  localStorage.setItem('slp_ultimo_comercio',id)
+
+  document.getElementById('comercio-nombre').textContent=miComercio.nombre||'Mi comercio'
+  document.getElementById('comercio-cat').textContent=
+    (miComercio.categoria||'Sin categoría')+' · '+(miComercio.barrio||'CDU')
+
+  const estadoBadge={
+    activo:'<span class="badge-activo">✅ Activo en la app</span>',
+    pendiente:'<span class="badge-pend">⏳ Pendiente de aprobación</span>',
+    rechazado:'<span class="badge-rech">❌ Rechazado</span>'
+  }[miComercio.estado] || '<span class="badge-pend">⏳ Pendiente</span>'
+  document.getElementById('comercio-estado').innerHTML=estadoBadge
+
+  const aviso=document.getElementById('publicacion-aviso')
+  if(aviso){
+    aviso.className='publicacion-aviso'
+    if(miComercio.estado==='activo'){
+      aviso.classList.add('activo')
+      aviso.innerHTML=`
+        <strong>✅ Este comercio está autorizado y publicado</strong>
+        Los productos disponibles se muestran en la página principal.
+        <small>Podés editar los datos o administrar el catálogo desde esta misma pantalla.</small>`
+    }else if(miComercio.estado==='rechazado'){
+      aviso.classList.add('rechazado')
+      aviso.innerHTML=`
+        <strong>❌ Este comercio todavía no puede publicarse</strong>
+        Podés editar sus datos y productos mientras revisás el estado con Administración.`
+    }else{
+      aviso.innerHTML=`
+        <strong>⏳ Este comercio está pendiente</strong>
+        Podés completar datos y productos; se publicarán cuando sea aprobado.`
+    }
+  }
+
+  mostrarSeccion('mi-panel')
+  renderSelectorComercios()
+  await cargarProductos()
+  await cargarPedidos()
+  document.getElementById('mi-panel')?.scrollIntoView({behavior:'smooth',block:'start'})
+}
+
+window.seleccionarYEditar=async(id)=>{
+  await seleccionarComercio(id)
+  abrirModalPerfil()
+}
+
+window.volverABuscarComercios=async()=>{
+  if(!usuarioActual?.email){
+    toast('Primero iniciá sesión.')
+    return
+  }
+  const btn=document.getElementById('btn-rebuscar-comercios') || document.getElementById('btn-rebuscar-comercios-vacio')
+  if(btn){btn.disabled=true;btn.textContent='Buscando...'}
+  await cargarMiComercio(usuarioActual.email)
+  if(btn){btn.disabled=false;btn.textContent='🔄 Volver a buscar mis comercios'}
 }
 
 async function cargarProductos(){
@@ -158,7 +281,8 @@ function renderProductos(){
         </div>
       </div>
       <div class="prod-acciones">
-        <button onclick="editarProducto('${p.id}')" class="btn-edit">✏️</button>
+        <button onclick="duplicarProducto('${p.id}')" class="btn-copy" title="Duplicar producto">⧉</button>
+        <button onclick="editarProducto('${p.id}')" class="btn-edit" title="Editar producto">✏️</button>
         <button onclick="toggleDisponible('${p.id}',${p.disponible !== false})" class="btn-toggle">
           ${p.disponible !== false ? '⏸' : '▶'}
         </button>
@@ -167,6 +291,178 @@ function renderProductos(){
     </div>
   `).join('')
 }
+
+
+// ── Carga rápida de varios productos ──
+function limiteProductosActual(){
+  return miComercio?.plan?.includes('Max') ? 65
+    : miComercio?.plan?.includes('Pro') ? 25 : 10
+}
+
+function lineasCargaRapida(){
+  const texto=document.getElementById('carga-rapida-texto')?.value || ''
+  return texto.split(/\r?\n/)
+    .map(l=>l.trim())
+    .filter(Boolean)
+    .map((linea,indice)=>{
+      const partes=linea.split('|').map(v=>v.trim())
+      const nombre=partes[0] || ''
+      const precioTexto=(partes[1] || '').replace(/\$/g,'').replace(/\./g,'').replace(',','.')
+      const precio=Number(precioTexto)
+      return {
+        linea:indice+1,
+        nombre,
+        precio,
+        stock:partes[2] || '',
+        descripcion:partes[3] || ''
+      }
+    })
+}
+
+window.abrirCargaRapida=()=>{
+  const modal=document.getElementById('modal-carga-rapida')
+  const texto=document.getElementById('carga-rapida-texto')
+  const error=document.getElementById('carga-rapida-error')
+  if(texto) texto.value=''
+  if(error){error.textContent='';error.classList.remove('show')}
+  actualizarResumenCargaRapida()
+  modal?.classList.add('open')
+  setTimeout(()=>texto?.focus(),80)
+}
+
+window.cerrarCargaRapida=(e)=>{
+  const modal=document.getElementById('modal-carga-rapida')
+  if(!e || e.target===modal) modal?.classList.remove('open')
+}
+
+window.actualizarResumenCargaRapida=()=>{
+  const cantidad=lineasCargaRapida().length
+  const resumen=document.getElementById('carga-rapida-resumen')
+  if(resumen) resumen.textContent=cantidad+' producto'+(cantidad===1?'':'s')+' detectado'+(cantidad===1?'':'s')
+}
+
+window.guardarCargaRapida=async()=>{
+  const productos=lineasCargaRapida()
+  const error=document.getElementById('carga-rapida-error')
+  const btn=document.getElementById('btn-guardar-rapidos')
+  const disponible=document.getElementById('carga-rapida-disponible')?.checked!==false
+  const limite=limiteProductosActual()
+  const lugares=limite-misProductos.length
+
+  function mostrarError(mensaje){
+    if(error){error.textContent=mensaje;error.classList.add('show')}
+  }
+
+  if(!productos.length){
+    mostrarError('Escribí al menos un producto.')
+    return
+  }
+  const invalido=productos.find(p=>!p.nombre || !Number.isFinite(p.precio) || p.precio<0)
+  if(invalido){
+    mostrarError(`Revisá el renglón ${invalido.linea}: debe tener nombre y precio numérico.`)
+    return
+  }
+  if(productos.length>lugares){
+    mostrarError(`Tu plan permite ${limite} productos. Te quedan ${Math.max(0,lugares)} lugares disponibles.`)
+    return
+  }
+
+  btn.disabled=true
+  error?.classList.remove('show')
+  let guardados=0
+  try{
+    for(const p of productos){
+      await addDoc(collection(db,'comercios',miComercioId,'productos'),{
+        emoji:'📦',
+        nombre:p.nombre,
+        precio:p.precio,
+        stock:p.stock,
+        descripcion:p.descripcion,
+        disponible,
+        creadoEn:serverTimestamp(),
+        actualizadoEn:serverTimestamp()
+      })
+      guardados++
+      btn.textContent=`Guardando ${guardados} de ${productos.length}...`
+    }
+    document.getElementById('modal-carga-rapida')?.classList.remove('open')
+    await cargarProductos()
+    toast(`✅ ${guardados} productos agregados`)
+  }catch(e){
+    mostrarError('Se guardaron '+guardados+' productos. Error: '+e.message)
+  }finally{
+    btn.disabled=false
+    btn.textContent='Guardar todos los productos'
+  }
+}
+
+window.duplicarProducto=async(id)=>{
+  const original=misProductos.find(p=>p.id===id)
+  if(!original) return
+  const limite=limiteProductosActual()
+  if(misProductos.length>=limite){
+    toast('⚠️ Llegaste al límite de '+limite+' productos de tu plan')
+    return
+  }
+  try{
+    await addDoc(collection(db,'comercios',miComercioId,'productos'),{
+      emoji:original.emoji || '📦',
+      nombre:(original.nombre || 'Producto')+' (copia)',
+      precio:Number(original.precio || 0),
+      descripcion:original.descripcion || '',
+      stock:original.stock || '',
+      disponible:original.disponible !== false,
+      creadoEn:serverTimestamp(),
+      actualizadoEn:serverTimestamp()
+    })
+    await cargarProductos()
+    toast('✅ Producto duplicado. Ahora podés editarlo.')
+  }catch(e){ toast('Error: '+e.message) }
+}
+
+document.addEventListener('input',e=>{
+  if(e.target?.id==='carga-rapida-texto') actualizarResumenCargaRapida()
+})
+
+
+
+let fotoProductoActual='';
+
+function mostrarFotoProducto(src){
+  fotoProductoActual=src||'';
+  const img=document.getElementById('mp-foto-preview');
+  if(!img)return;
+  if(fotoProductoActual){img.src=fotoProductoActual;img.classList.add('show')}
+  else{img.removeAttribute('src');img.classList.remove('show')}
+}
+window.quitarFotoProducto=()=>{const f=document.getElementById('mp-foto-file');if(f)f.value='';mostrarFotoProducto('')};
+
+function reducirFotoProducto(file){
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onerror=()=>reject(new Error('No se pudo leer la foto.'));
+    reader.onload=()=>{
+      const img=new Image();
+      img.onerror=()=>reject(new Error('La imagen no es válida.'));
+      img.onload=()=>{
+        let w=img.width,h=img.height,max=900;
+        if(w>max||h>max){const s=Math.min(max/w,max/h);w=Math.round(w*s);h=Math.round(h*s)}
+        const c=document.createElement('canvas');c.width=w;c.height=h;
+        c.getContext('2d').drawImage(img,0,0,w,h);
+        resolve(c.toDataURL('image/jpeg',.72));
+      };
+      img.src=reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+document.addEventListener('change',async e=>{
+  if(e.target?.id!=='mp-foto-file')return;
+  const file=e.target.files?.[0];if(!file)return;
+  if(file.size>12*1024*1024){toast('La foto supera 12 MB. Elegí otra.');e.target.value='';return}
+  try{mostrarFotoProducto(await reducirFotoProducto(file));toast('✅ Foto preparada')}
+  catch(err){toast(err.message)}
+});
 
 // ── Mostrar modal agregar/editar producto ──
 window.abrirModalProducto = (id) => {
@@ -191,7 +487,7 @@ window.cerrarModalProd = (e) => {
 
 window.guardarProducto = async () => {
   const id     = document.getElementById('mp-id').value
-  const emoji  = document.getElementById('mp-emoji').value.trim() || '📦'
+  const emoji  = document.getElementById('mp-emoji').value.trim()
   const nombre = document.getElementById('mp-nombre').value.trim()
   const precio = document.getElementById('mp-precio').value.trim()
   const desc   = document.getElementById('mp-desc').value.trim()
@@ -208,7 +504,7 @@ window.guardarProducto = async () => {
     return
   }
 
-  const datos = { emoji, nombre, precio: parseFloat(precio.replace(',','.')),
+  const datos = { emoji, foto: fotoProductoActual || '', nombre, precio: parseFloat(precio.replace(',','.')),
     descripcion: desc, stock, disponible: disp, actualizadoEn: serverTimestamp() }
 
   const btn = document.getElementById('btn-guardar-prod')
@@ -594,6 +890,227 @@ img{max-width:100%;height:auto}
 }
 .btn-ver-password:hover{background:rgba(0,0,0,.06)}
 
+
+/* CARGA RÁPIDA DE PRODUCTOS — v24 */
+.product-toolbar-actions{display:flex;gap:9px;flex-wrap:wrap}
+.btn-carga-rapida{
+  border:0;border-radius:10px;padding:11px 17px;
+  background:linear-gradient(135deg,#ff7a18,#ff9a32);
+  color:#fff;font:700 .92rem "DM Sans",sans-serif;cursor:pointer;
+  box-shadow:0 7px 17px rgba(255,122,24,.22)
+}
+.btn-copy{
+  border:0;border-radius:8px;padding:7px 9px;background:#eef5ff;color:#074184;
+  cursor:pointer;font-size:1rem
+}
+.modal-rapido{width:min(680px,96vw)}
+.quick-kicker{display:inline-block;margin-bottom:7px;color:#f36b13;font-weight:900;font-size:.74rem;letter-spacing:.08em}
+.quick-help{margin:6px 0 10px;color:#59677a;line-height:1.5}
+.quick-example{
+  padding:12px 14px;border-radius:11px;background:#eef5ff;border:1px solid #cbdcf0;
+  color:#153b68;font-family:ui-monospace,Consolas,monospace;font-size:.82rem;line-height:1.7
+}
+.quick-label{display:block;margin:14px 0 6px;color:#07366f;font-weight:800}
+.quick-textarea{
+  width:100%;min-height:210px;resize:vertical;padding:13px;border:1.5px solid #c8d6e7;
+  border-radius:11px;font:500 .92rem/1.55 "DM Sans",sans-serif
+}
+.quick-textarea:focus{outline:none;border-color:#1767c5;box-shadow:0 0 0 4px rgba(23,103,197,.12)}
+.quick-options{display:flex;justify-content:space-between;gap:10px;align-items:center;margin:10px 0;font-size:.84rem;color:#506079}
+.quick-options label{display:flex;align-items:center;gap:7px;font-weight:700;color:#173e70}
+.quick-error{display:none;margin:9px 0;padding:10px;border-radius:9px;background:#fff0f0;border:1px solid #efb4b4;color:#a60000;font-size:.84rem}
+.quick-error.show{display:block}
+@media(max-width:620px){
+  .product-toolbar-actions{width:100%;display:grid;grid-template-columns:1fr 1fr}
+  .product-toolbar-actions button{padding:11px 7px;font-size:.82rem}
+  .quick-options{align-items:flex-start;flex-direction:column}
+}
+
+
+/* MIS COMERCIOS — v25 */
+.selector-mis-comercios{
+  margin-bottom:22px;padding:20px;border:1px solid #d7e3f0;border-radius:18px;
+  background:linear-gradient(135deg,#f4f8ff,#fffaf4);
+  box-shadow:0 10px 28px rgba(7,52,110,.08)
+}
+.selector-heading{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:15px}
+.selector-kicker{font-size:.72rem;font-weight:900;letter-spacing:.08em;color:#f06a10}
+.selector-heading h2{font-family:"Fraunces",serif;color:#063574;margin:4px 0;font-size:1.45rem}
+.selector-heading p{color:#617086;font-size:.87rem}
+.selector-heading>button{
+  border:1px solid #b8cde6;border-radius:10px;padding:10px 13px;background:#fff;color:#073c80;
+  font-weight:800;cursor:pointer;white-space:nowrap
+}
+.mis-comercios-lista{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.mi-comercio-card{
+  border:1.5px solid #d5dfeb;border-radius:15px;background:#fff;overflow:hidden;
+  transition:.18s;box-shadow:0 5px 15px rgba(8,45,93,.05)
+}
+.mi-comercio-card.seleccionado{border-color:#ff7620;box-shadow:0 0 0 3px rgba(255,118,32,.12)}
+.mi-comercio-main{
+  width:100%;display:flex;gap:11px;align-items:flex-start;text-align:left;padding:14px;border:0;background:#fff;cursor:pointer
+}
+.mi-comercio-icon{
+  width:42px;height:42px;display:grid;place-items:center;border-radius:12px;background:#eef5ff;font-size:1.35rem;flex:0 0 42px
+}
+.mi-comercio-main strong{display:block;color:#082f68;font-size:1rem}
+.mi-comercio-main small{display:block;color:#697689;margin:3px 0;font-size:.77rem}
+.mi-comercio-main em{font-style:normal;color:#2b7352;font-size:.75rem;font-weight:800}
+.mi-comercio-actions{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid #e4ebf3}
+.mi-comercio-actions button{
+  padding:10px 7px;border:0;background:#f8fbff;color:#073c80;font-weight:800;cursor:pointer;font-size:.78rem
+}
+.mi-comercio-actions button+button{border-left:1px solid #e4ebf3}
+.busqueda-comercios-estado{margin-top:10px;color:#66758a;font-size:.78rem}
+#sin-comercio{
+  max-width:680px!important;margin:30px auto!important;padding:30px!important;border:1px solid #d7e3ef!important;
+  border-radius:20px!important;background:#fff!important;box-shadow:0 15px 38px rgba(8,45,95,.10)!important
+}
+#sin-comercio .sin-comercio-icon{font-size:3.2rem;margin-bottom:8px}
+#sin-comercio h3{font-family:"Fraunces",serif;color:#073574;font-size:1.55rem;margin-bottom:8px}
+#sin-comercio p{color:#627086;line-height:1.55;margin-bottom:10px}
+.sin-comercio-actions{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}
+.sin-comercio-actions button,.sin-comercio-actions a{
+  padding:11px 16px;border-radius:10px;text-decoration:none;font-weight:800;cursor:pointer;font-family:inherit
+}
+.sin-comercio-actions button{border:0;background:#073d83;color:#fff}
+.sin-comercio-actions a{background:#f47521;color:#fff}
+#sin-comercio>small{display:block;color:#788495;line-height:1.5}
+@media(max-width:650px){
+  .selector-heading{align-items:flex-start;flex-direction:column}
+  .selector-heading>button{width:100%}
+  .mis-comercios-lista{grid-template-columns:1fr}
+  .sin-comercio-actions{display:grid}
+}
+
+
+/* IDENTIFICACIÓN DE VERSIÓN — V26 */
+.app-version-badge{
+  position:fixed;
+  right:12px;
+  bottom:12px;
+  z-index:9000;
+  padding:7px 10px;
+  border-radius:999px;
+  background:rgba(5,43,101,.92);
+  color:#fff;
+  border:1px solid rgba(255,255,255,.32);
+  box-shadow:0 5px 18px rgba(0,0,0,.18);
+  font:800 .72rem/1 "DM Sans",Arial,sans-serif;
+  letter-spacing:.03em;
+}
+.app-version-badge a{color:#ffd34e;text-decoration:none}
+@media(max-width:600px){
+  .app-version-badge{right:8px;bottom:8px;font-size:.66rem;padding:6px 8px}
+}
+
+
+/* ACCESO DEL DUEÑO DEL COMERCIO — V26 */
+#login-screen{
+  padding:24px!important;
+  background:
+    radial-gradient(circle at 15% 20%,rgba(255,127,28,.22),transparent 25%),
+    radial-gradient(circle at 86% 80%,rgba(52,145,255,.18),transparent 28%),
+    linear-gradient(145deg,#052a63,#0751a1)!important;
+}
+#login-screen .login-box{
+  width:min(520px,100%)!important;
+  max-width:520px!important;
+  padding:30px!important;
+  border-radius:24px!important;
+  background:rgba(255,255,255,.98)!important;
+  box-shadow:0 24px 65px rgba(0,0,0,.28)!important;
+}
+.owner-login-kicker{
+  display:inline-flex;
+  padding:6px 10px;
+  border-radius:999px;
+  background:#fff1e6;
+  color:#e75d00;
+  font-weight:900;
+  font-size:.72rem;
+  letter-spacing:.08em;
+}
+.owner-login-title{
+  margin:12px 0 6px;
+  color:#073574;
+  font-family:"Fraunces",serif;
+  font-size:2rem;
+}
+.owner-login-help{
+  margin:0 0 18px;
+  color:#5f6d80;
+  line-height:1.55;
+}
+.owner-login-features{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin:15px 0 18px;
+}
+.owner-login-features span{
+  padding:9px 10px;
+  border-radius:10px;
+  background:#eef5ff;
+  color:#16416f;
+  font-size:.78rem;
+  font-weight:800;
+}
+.owner-login-label{
+  display:block;
+  margin:9px 0 5px;
+  color:#073574;
+  font-size:.8rem;
+  font-weight:900;
+  text-align:left;
+}
+.owner-login-note{
+  margin-top:16px;
+  padding:12px;
+  border-radius:12px;
+  background:#fff8e8;
+  border:1px solid #f2d38b;
+  color:#70531b;
+  font-size:.82rem;
+  line-height:1.45;
+}
+.panel-version{
+  display:inline-block;
+  margin-left:8px;
+  padding:4px 8px;
+  border-radius:999px;
+  background:rgba(255,255,255,.14);
+  color:#ffd34e;
+  font-size:.68rem;
+  vertical-align:middle;
+}
+@media(max-width:560px){
+  #login-screen{padding:12px!important}
+  #login-screen .login-box{padding:22px 16px!important}
+  .owner-login-features{grid-template-columns:1fr}
+}
+
+
+/* V27 FOTOS DE PRODUCTOS */
+.prod-card{overflow:hidden}
+.prod-card.has-photo{display:grid;grid-template-columns:130px 1fr auto;padding:0}
+.prod-card.has-photo .prod-info{padding:12px 0}
+.prod-photo-panel{width:130px;height:100%;min-height:150px;object-fit:cover;background:#eef4fb}
+.photo-box{padding:12px;border:1.5px dashed #adc2da;border-radius:12px;background:#f7fbff}
+.photo-preview{display:none;width:100%;max-height:260px;object-fit:cover;border-radius:10px;margin-bottom:10px}
+.photo-preview.show{display:block}
+.photo-actions{display:flex;gap:8px;flex-wrap:wrap}
+.photo-actions label,.photo-actions button{padding:10px 13px;border-radius:9px;font-weight:800;cursor:pointer}
+.photo-actions label{background:#0752a5;color:#fff}
+.photo-actions button{border:1px solid #cbd8e7;background:#fff;color:#24486f}
+.photo-help{display:block;margin-top:8px;color:#69778a;font-size:.76rem;line-height:1.45}
+.icon-note{font-size:.76rem;color:#69778a;margin-top:6px}
+@media(max-width:620px){
+ .prod-card.has-photo{grid-template-columns:95px 1fr auto}
+ .prod-photo-panel{width:95px;min-height:135px}
+ .photo-actions{display:grid}
+}
+
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -604,14 +1121,26 @@ img{max-width:100%;height:auto}
 <meta name="apple-mobile-web-app-title" content="Sálvame">
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
+<meta name="app-version" content="V27">
 </head>
 <body>
 
 <!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
+    <span class="owner-login-kicker">PANEL DEL COMERCIO · V26</span>
     <div class="login-logo">Sálvame <em>las Papas 🥔</em></div>
-    <p class="login-sub">Panel del comercio<br>Cargá tus productos y gestioná tu local</p>
+    <h1 class="owner-login-title">Administrá tu comercio</h1>
+    <p class="owner-login-help">
+      Ingresá con el mismo correo y contraseña que usaste al registrar el negocio.
+      El sistema buscará todos los comercios asociados a tu cuenta.
+    </p>
+    <div class="owner-login-features">
+      <span>✏️ Editar datos</span>
+      <span>📦 Agregar productos</span>
+      <span>⚡ Carga rápida</span>
+      <span>🧾 Revisar pedidos</span>
+    </div>
     <a class="portal-login-link" href="index.html">← Volver al sitio público</a>
     <button class="btn-google" onclick="loginGoogle()">
       <svg width="18" height="18" viewBox="0 0 24 24">
@@ -623,17 +1152,19 @@ img{max-width:100%;height:auto}
       Entrar con Google
     </button>
     <div class="divider">o con email</div>
-    <input class="l-input" id="l-email" type="email" placeholder="Tu email"
-      onkeydown="if(event.key==='Enter')loginEmail()"/>
-    <input class="l-input" id="l-pass" type="password" placeholder="Contraseña"
-      onkeydown="if(event.key==='Enter')loginEmail()"/>
+    <label class="owner-login-label" for="l-email">Correo electrónico del comercio</label>
+    <input class="l-input" id="l-email" type="email" placeholder="ejemplo@correo.com"
+      autocomplete="email" onkeydown="if(event.key==='Enter')loginEmail()"/>
+    <label class="owner-login-label" for="l-pass">Contraseña</label>
+    <input class="l-input" id="l-pass" type="password" placeholder="Tu contraseña"
+      autocomplete="current-password" onkeydown="if(event.key==='Enter')loginEmail()"/>
     <div class="l-error" id="l-error"></div>
     <button class="btn-login" onclick="loginEmail()">Entrar</button>
     <button type="button" onclick="recuperarClave()" style="margin-top:10px;background:none;border:none;color:#003B8E;font-weight:700;cursor:pointer">¿Olvidaste tu contraseña?</button>
-<div style="margin-top:14px;padding:12px;border-radius:10px;background:#eef5ff;border:1px solid #b9d2f1;color:#15385f;font-size:.88rem;line-height:1.45">
-  <strong>Acceso seguro:</strong> ingresá con el correo real con el que registraste el comercio.
-  No uses el número de teléfono como contraseña. Si no la recordás, escribí tu correo y tocá
-  <strong>“¿Olvidaste tu contraseña?”</strong>.
+<div class="owner-login-note">
+  <strong>Importante:</strong> si el comercio ya existe, no lo registres otra vez.
+  Entrá con el correo original. Después elegí el comercio y tocá
+  <strong>Editar datos</strong> o <strong>Productos</strong>.
 </div>
 
     <p style="font-size:.82rem;color:#666;margin-top:12px;line-height:1.45">¿Todavía no registraste tu comercio? <a href="index.html#registro-comercio" style="color:#CC0000;font-weight:700">Crear cuenta y registrar comercio</a></p>
@@ -643,7 +1174,7 @@ img{max-width:100%;height:auto}
 <!-- PANEL -->
 <div id="panel-screen">
   <nav class="panel-nav">
-    <div class="panel-logo">Sálvame <em>las Papas</em> — Mi Comercio</div>
+    <div class="panel-logo">Sálvame <em>las Papas</em> — Mi Comercio <span class="panel-version">V26</span></div>
     <div class="site-switcher" aria-label="Navegación del sitio">
       <a href="index.html">🏠 Sitio público</a>
       <a class="active" href="comercio.html">🏪 Mi comercio</a>
@@ -656,6 +1187,22 @@ img{max-width:100%;height:auto}
   </nav>
 
   <div class="panel-body">
+
+
+    <section id="selector-mis-comercios" class="selector-mis-comercios" style="display:none">
+      <div class="selector-heading">
+        <div>
+          <span class="selector-kicker">🏪 TUS NEGOCIOS</span>
+          <h2>Elegí el comercio que querés administrar</h2>
+          <p>Podés editar sus datos y cargar productos sin volver a registrarlo.</p>
+        </div>
+        <button id="btn-rebuscar-comercios" type="button" onclick="volverABuscarComercios()">
+          🔄 Volver a buscar
+        </button>
+      </div>
+      <div id="mis-comercios-lista" class="mis-comercios-lista"></div>
+      <div id="busqueda-comercios-estado" class="busqueda-comercios-estado"></div>
+    </section>
 
     <!-- Info del comercio -->
     <div class="comercio-header">
@@ -674,13 +1221,23 @@ img{max-width:100%;height:auto}
 
     <!-- Sin comercio registrado -->
     <div id="sin-comercio">
-      <div style="font-size:3rem;margin-bottom:1rem">🥔</div>
-      <h3 style="font-family:'Fraunces',serif;font-size:1.3rem;margin-bottom:.5rem">No encontramos tu comercio</h3>
-      <p style="color:#666;margin-bottom:1.5rem">El email con el que entraste no tiene un comercio registrado en Sálvame las Papas.</p>
-      <a href="index.html#registro-comercio"
-         style="background:var(--rojo);color:#fff;padding:12px 24px;border-radius:8px;font-weight:700;text-decoration:none;display:inline-block">
-        Registrar mi comercio
-      </a>
+      <div class="sin-comercio-icon">🥔</div>
+      <h3>No encontramos un comercio asociado</h3>
+      <p>
+        Buscamos por la cuenta iniciada y por el correo guardado en los registros anteriores.
+        No hace falta volver a registrar un negocio que ya existe.
+      </p>
+      <div id="busqueda-comercios-estado-vacio" class="busqueda-comercios-estado"></div>
+      <div class="sin-comercio-actions">
+        <button id="btn-rebuscar-comercios-vacio" type="button" onclick="volverABuscarComercios()">
+          🔄 Volver a buscar mis comercios
+        </button>
+        <a href="index.html#registro-comercio">➕ Registrar uno nuevo</a>
+      </div>
+      <small>
+        Si el comercio antiguo fue registrado con otro correo, primero hay que cambiar ese correo
+        desde Administración para evitar que otra persona pueda apropiarse del negocio.
+      </small>
     </div>
 
     <!-- Panel principal -->
@@ -695,9 +1252,10 @@ img{max-width:100%;height:auto}
           <h3>🛍️ Mis productos</h3>
           <div class="prod-counter" id="prod-counter">0 / 10 productos</div>
         </div>
-        <button class="btn-agregar-prod" onclick="abrirModalProducto()">
-          + Agregar producto
-        </button>
+        <div class="product-toolbar-actions">
+          <button class="btn-carga-rapida" onclick="abrirCargaRapida()">⚡ Carga rápida</button>
+          <button class="btn-agregar-prod" onclick="abrirModalProducto()">+ Agregar uno</button>
+        </div>
       </div>
       <div class="productos-grid" id="productos-grid">
         <p style="color:#666;text-align:center;padding:2rem;grid-column:1/-1">Cargando...</p>
@@ -711,6 +1269,35 @@ img{max-width:100%;height:auto}
   </div>
 </div>
 
+
+<!-- MODAL CARGA RÁPIDA -->
+<div class="modal-overlay" id="modal-carga-rapida" onclick="cerrarCargaRapida(event)">
+  <div class="modal modal-rapido">
+    <button class="mclose" onclick="cerrarCargaRapida()">✕</button>
+    <span class="quick-kicker">⚡ AHORRÁ TIEMPO</span>
+    <h2>Cargar varios productos</h2>
+    <p class="quick-help">
+      Escribí un producto por renglón, separando los datos con una barra vertical:
+    </p>
+    <div class="quick-example">
+      Pan francés | 2200 | 20 | Por kilo<br>
+      Leche entera | 1850 | 12 | Botella de 1 litro<br>
+      Fideos | 920 | 30
+    </div>
+    <label class="quick-label" for="carga-rapida-texto">Productos para agregar</label>
+    <textarea id="carga-rapida-texto" class="quick-textarea" rows="10"
+      placeholder="Nombre | Precio | Stock | Descripción"></textarea>
+    <div class="quick-options">
+      <label><input type="checkbox" id="carga-rapida-disponible" checked> Marcarlos disponibles</label>
+      <span id="carga-rapida-resumen">0 productos detectados</span>
+    </div>
+    <div id="carga-rapida-error" class="quick-error"></div>
+    <button class="btn-guardar" id="btn-guardar-rapidos" onclick="guardarCargaRapida()">
+      Guardar todos los productos
+    </button>
+  </div>
+</div>
+
 <!-- MODAL PRODUCTO -->
 <div class="modal-overlay" id="modal-prod" onclick="cerrarModalProd(event)">
   <div class="modal">
@@ -719,9 +1306,15 @@ img{max-width:100%;height:auto}
     <input type="hidden" id="mp-id"/>
 
     <div class="form-group">
-      <label>Emoji del producto</label>
-      <input class="form-input" id="mp-emoji" type="text" placeholder="📦" maxlength="2"/>
+      <label>Ícono opcional</label>
+      <input class="form-input" id="mp-emoji" type="text" placeholder="Podés dejarlo vacío" maxlength="4"/>
       <div class="emoji-picker">
+        <button type="button" class="ep-btn" onclick="document.getElementById('mp-emoji').value=''">Sin</button>
+        <button type="button" class="ep-btn" onclick="document.getElementById('mp-emoji').value='🏠'">🏠</button>
+        <button type="button" class="ep-btn" onclick="document.getElementById('mp-emoji').value='🏡'">🏡</button>
+        <button type="button" class="ep-btn" onclick="document.getElementById('mp-emoji').value='🛖'">🛖</button>
+        <button type="button" class="ep-btn" onclick="document.getElementById('mp-emoji').value='🏕️'">🏕️</button>
+        <button type="button" class="ep-btn" onclick="document.getElementById('mp-emoji').value='🏘️'">🏘️</button>
         <button class="ep-btn" onclick="document.getElementById('mp-emoji').value='🍞'">🍞</button>
         <button class="ep-btn" onclick="document.getElementById('mp-emoji').value='🥩'">🥩</button>
         <button class="ep-btn" onclick="document.getElementById('mp-emoji').value='🥦'">🥦</button>
@@ -735,10 +1328,11 @@ img{max-width:100%;height:auto}
         <button class="ep-btn" onclick="document.getElementById('mp-emoji').value='🥐'">🥐</button>
         <button class="ep-btn" onclick="document.getElementById('mp-emoji').value='🍦'">🍦</button>
       </div>
+      <div class="icon-note">La foto será lo principal. El ícono puede quedar vacío.</div>
     </div>
 
     <div class="form-group">
-      <label>Nombre del producto *</label>
+      <label>Nombre del producto o publicación *</label>
       <input class="form-input" id="mp-nombre" type="text"
         placeholder="Ej: Pan francés x kg, Ibuprofeno 400mg..."/>
     </div>
@@ -761,6 +1355,20 @@ img{max-width:100%;height:auto}
       <label>Descripción breve (opcional)</label>
       <input class="form-input" id="mp-desc" type="text"
         placeholder="Ej: Caja x10 comp, 500ml, de manteca..."/>
+    </div>
+
+
+    <div class="form-group">
+      <label>Foto principal</label>
+      <div class="photo-box">
+        <img id="mp-foto-preview" class="photo-preview" alt="Vista previa">
+        <div class="photo-actions">
+          <label for="mp-foto-file">📷 Elegir foto</label>
+          <input id="mp-foto-file" type="file" accept="image/*" hidden>
+          <button type="button" onclick="quitarFotoProducto()">Quitar foto</button>
+        </div>
+        <small class="photo-help">La foto se reduce automáticamente. Usá una imagen clara y horizontal cuando sea posible.</small>
+      </div>
     </div>
 
     <div class="check-row">
@@ -829,5 +1437,8 @@ function prepararCamposPassword(){
 }
 document.addEventListener('DOMContentLoaded',prepararCamposPassword);
 </script>
+<div class="app-version-badge" title="Versión publicada de Sálvame las Papas">
+  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V27</a>
+</div>
 </body>
 </html>
