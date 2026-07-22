@@ -1,0 +1,10 @@
+VERSIÓN V30 — PORTADA COMPACTA Y TODOS LOS COMERCIOS
+
+- Portada y hero más cortos.
+- Franja con estadísticas reales.
+- Mensaje: Hecho en Concepción del Uruguay para Concepción del Uruguay.
+- Categorías más pequeñas en dos filas.
+- CTA de comercio e instalación más compactos.
+- Todos los comercios aparecen en la portada.
+- Pro/Max grandes, Destacados medianos y Básicos compactos.
+- Cada tarjeta muestra plan, productos, horario, dirección y WhatsApp.

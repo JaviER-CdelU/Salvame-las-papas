@@ -1859,6 +1859,407 @@ nav .nav-btns,nav .nav-portals{display:none!important}
   margin-bottom:24px!important;
 }
 
+
+/* ==========================================================
+   V30 — PORTADA COMPACTA, ESTADÍSTICAS Y TODOS LOS PLANES
+   ========================================================== */
+
+/* Hero más compacto */
+.hero-inner{
+  padding-top:1.35rem!important;
+  padding-bottom:0!important;
+  min-height:420px!important;
+}
+.hero h1{
+  font-size:clamp(2.35rem,4vw,4.25rem)!important;
+  margin-bottom:.8rem!important;
+}
+.hero-desc{
+  margin-bottom:1.15rem!important;
+  font-size:1rem!important;
+}
+.hero-ctas{
+  margin-bottom:1.25rem!important;
+}
+.hero-stats{
+  display:none!important;
+}
+.hero-img img{
+  max-height:410px!important;
+  object-fit:cover!important;
+}
+
+/* Estadísticas compactas */
+.stats-local-v30{
+  width:min(1420px,calc(100% - 28px));
+  margin:-22px auto 24px;
+  position:relative;
+  z-index:5;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:0;
+  background:#fff;
+  border-radius:16px;
+  border:1px solid #dfe6ee;
+  box-shadow:0 12px 30px rgba(0,42,106,.12);
+  overflow:hidden;
+}
+.stats-local-v30 article{
+  display:grid;
+  grid-template-columns:44px 1fr;
+  gap:10px;
+  align-items:center;
+  padding:16px 18px;
+  border-right:1px solid #e6ebf1;
+}
+.stats-local-v30 article:last-child{border-right:0}
+.stats-local-v30 .stat-icon{
+  width:42px;height:42px;
+  display:grid;place-items:center;
+  border-radius:12px;
+  background:#eef5ff;
+  font-size:1.45rem;
+}
+.stats-local-v30 strong{
+  display:block;
+  color:#073574;
+  font-size:1.18rem;
+  line-height:1;
+}
+.stats-local-v30 span{
+  display:block;
+  margin-top:4px;
+  color:#68768a;
+  font-size:.72rem;
+}
+
+/* Mensaje local compacto */
+.local-made-v30{
+  width:min(1420px,calc(100% - 28px));
+  margin:0 auto 24px;
+  padding:18px 22px;
+  border-radius:18px;
+  background:linear-gradient(135deg,#052f6c,#0b5bad);
+  color:#fff;
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  gap:16px;
+  align-items:center;
+  box-shadow:0 12px 28px rgba(5,47,108,.15);
+}
+.local-made-v30 .local-icon{
+  font-size:2rem;
+}
+.local-made-v30 h2{
+  margin:0 0 4px;
+  font-family:"Fraunces",serif;
+  font-size:1.55rem;
+}
+.local-made-v30 p{
+  margin:0;
+  color:rgba(255,255,255,.82);
+  font-size:.9rem;
+  line-height:1.45;
+}
+.local-made-v30 .local-chip{
+  padding:8px 12px;
+  border-radius:999px;
+  background:#ff7a1a;
+  color:#fff;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+/* Categorías más chicas y muchas opciones */
+.categories-v30{
+  width:min(1420px,calc(100% - 28px));
+  margin:0 auto 22px;
+  padding:16px;
+  border-radius:17px;
+  background:#fff;
+  border:1px solid #e2e7ed;
+}
+.categories-v30-grid{
+  display:grid;
+  grid-template-columns:repeat(8,minmax(0,1fr));
+  gap:8px;
+}
+.categories-v30 button{
+  min-height:66px;
+  padding:8px 5px;
+  border:1px solid #ddd8cc;
+  border-radius:12px;
+  background:#fff;
+  color:#17314f;
+  cursor:pointer;
+  font-family:"DM Sans",sans-serif;
+  font-weight:800;
+  font-size:.73rem;
+}
+.categories-v30 button span{
+  display:block;
+  margin-bottom:4px;
+  font-size:1.35rem;
+}
+.categories-v30 button:hover{
+  border-color:#f47521;
+  background:#fff8f2;
+}
+
+/* CTA comercio más compacto */
+.business-cta-v30{
+  width:min(1420px,calc(100% - 28px));
+  margin:0 auto 22px;
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  gap:16px;
+  align-items:center;
+  padding:16px 20px;
+  border-radius:17px;
+  border:1px solid #ffc8b7;
+  background:linear-gradient(90deg,#fff2ed,#fffaf0);
+}
+.business-cta-v30 .icon{font-size:2rem}
+.business-cta-v30 h2{
+  margin:0 0 3px;
+  color:#082f68;
+  font-family:"Fraunces",serif;
+  font-size:1.45rem;
+}
+.business-cta-v30 p{margin:0;color:#68758a;font-size:.88rem}
+.business-cta-v30 button{
+  padding:12px 18px;
+  border:0;
+  border-radius:11px;
+  background:#ff531c;
+  color:#fff;
+  font-weight:900;
+  cursor:pointer;
+}
+
+/* Instalación más compacta */
+.install-section-v30{
+  width:min(1180px,calc(100% - 28px));
+  margin:0 auto 24px;
+  display:grid;
+  grid-template-columns:120px 1fr auto;
+  gap:18px;
+  align-items:center;
+  padding:18px 22px;
+  border:1px solid #f6a06c;
+  border-radius:18px;
+  background:#fff;
+}
+.install-section-v30 img{
+  width:110px;
+  height:110px;
+  border-radius:22px;
+  object-fit:cover;
+}
+.install-section-v30 h2{
+  margin:0 0 6px;
+  color:#073574;
+  font-family:"Fraunces",serif;
+  font-size:1.75rem;
+}
+.install-section-v30 p{
+  margin:0;
+  color:#606d80;
+  font-size:.88rem;
+}
+.install-section-v30 .install-actions{
+  display:grid;
+  gap:8px;
+}
+.install-section-v30 button,
+.install-section-v30 a{
+  padding:11px 15px;
+  border-radius:11px;
+  font-weight:900;
+  text-decoration:none;
+  text-align:center;
+}
+.install-section-v30 button{
+  border:0;
+  background:#d90000;
+  color:#fff;
+}
+.install-section-v30 a{
+  border:2px solid #0750a0;
+  color:#0750a0;
+  background:#fff;
+}
+
+/* Todos los comercios por plan */
+.all-plans-home-v30{
+  width:min(1420px,calc(100% - 28px));
+  margin:30px auto;
+}
+.all-plans-home-v30 .section-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  gap:14px;
+  margin-bottom:16px;
+}
+.all-plans-home-v30 h2{
+  margin:0;
+  color:#073574;
+  font-family:"Fraunces",serif;
+  font-size:2rem;
+}
+.all-plans-home-v30 p{
+  margin:4px 0 0;
+  color:#68758a;
+  font-size:.88rem;
+}
+.plan-groups-v30{
+  display:grid;
+  gap:18px;
+}
+.plan-row-v30{
+  display:grid;
+  grid-template-columns:repeat(12,1fr);
+  gap:12px;
+}
+.plan-card-v30{
+  position:relative;
+  overflow:hidden;
+  border-radius:16px;
+  background:#fff;
+  border:1px solid #dce3eb;
+  box-shadow:0 8px 22px rgba(6,47,107,.08);
+  cursor:pointer;
+}
+.plan-card-v30.max{
+  grid-column:span 6;
+  min-height:245px;
+  background:linear-gradient(135deg,#052f6c,#0a4b98);
+  color:#fff;
+  border:2px solid #ff7a1a;
+}
+.plan-card-v30.pro{
+  grid-column:span 4;
+  min-height:220px;
+  background:linear-gradient(135deg,#eef5ff,#ffffff);
+  border:2px solid #6aa0d8;
+}
+.plan-card-v30.basic{
+  grid-column:span 3;
+  min-height:180px;
+}
+.plan-card-v30 .card-cover{
+  height:105px;
+  background:linear-gradient(135deg,#eaf2ff,#fff7ef);
+  display:grid;
+  place-items:center;
+  font-size:2.8rem;
+}
+.plan-card-v30.max .card-cover{
+  height:115px;
+  background:rgba(255,255,255,.10);
+}
+.plan-card-v30 .card-cover img{
+  width:100%;height:100%;object-fit:cover;
+}
+.plan-card-v30 .card-body{
+  padding:13px;
+}
+.plan-card-v30 h3{
+  margin:0 0 4px;
+  font-size:1.08rem;
+}
+.plan-card-v30.max h3{font-size:1.35rem}
+.plan-card-v30 .meta{
+  font-size:.76rem;
+  color:#68758a;
+  line-height:1.5;
+}
+.plan-card-v30.max .meta{
+  color:rgba(255,255,255,.80);
+}
+.plan-card-v30 .product-mini{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+  margin-top:9px;
+}
+.plan-card-v30 .product-mini span{
+  padding:5px 7px;
+  border-radius:8px;
+  background:#f4f7fb;
+  font-size:.69rem;
+  font-weight:800;
+}
+.plan-card-v30.max .product-mini span{
+  background:rgba(255,255,255,.12);
+  color:#fff;
+}
+.plan-card-v30 .plan-label{
+  position:absolute;
+  top:9px;
+  right:9px;
+  padding:6px 9px;
+  border-radius:999px;
+  background:#ff7a1a;
+  color:#fff;
+  font-size:.65rem;
+  font-weight:900;
+}
+.plan-card-v30.basic .plan-label{
+  background:#677789;
+}
+.plan-card-v30 .card-actions{
+  display:flex;
+  gap:6px;
+  margin-top:10px;
+}
+.plan-card-v30 .card-actions span{
+  flex:1;
+  padding:7px;
+  border-radius:8px;
+  text-align:center;
+  font-size:.68rem;
+  font-weight:900;
+  background:#eef5ff;
+  color:#0750a0;
+}
+.plan-card-v30.max .card-actions span{
+  background:rgba(255,255,255,.13);
+  color:#fff;
+}
+
+/* Ocultar versiones anteriores que duplican bloques */
+.categories-home,
+.business-home-cta,
+.install-home-section{
+  display:none!important;
+}
+
+@media(max-width:1100px){
+  .categories-v30-grid{grid-template-columns:repeat(6,1fr)}
+  .plan-card-v30.max{grid-column:span 6}
+  .plan-card-v30.pro{grid-column:span 6}
+  .plan-card-v30.basic{grid-column:span 4}
+}
+@media(max-width:760px){
+  .stats-local-v30{grid-template-columns:1fr 1fr;margin-top:12px}
+  .stats-local-v30 article:nth-child(2){border-right:0}
+  .stats-local-v30 article:nth-child(-n+2){border-bottom:1px solid #e6ebf1}
+  .local-made-v30,.business-cta-v30,.install-section-v30{
+    grid-template-columns:1fr;
+    text-align:center;
+  }
+  .local-made-v30 .local-icon,.business-cta-v30 .icon{display:none}
+  .categories-v30-grid{grid-template-columns:repeat(4,1fr)}
+  .plan-card-v30.max,.plan-card-v30.pro,.plan-card-v30.basic{grid-column:span 12}
+  .install-section-v30 img{margin:auto}
+}
+@media(max-width:460px){
+  .categories-v30-grid{grid-template-columns:repeat(3,1fr)}
+  .stats-local-v30 article{padding:12px}
+}
+
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -2120,7 +2521,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
 }
 
 </style>
-<meta name="app-version" content="V29">
+<meta name="app-version" content="V30">
 </head>
 <body>
 
@@ -2190,6 +2591,23 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
     <button type="button" onclick="usarMiUbicacion()">Usar mi ubicación</button>
   </div>
 </section>
+
+<section class="stats-local-v30" aria-label="Estadísticas de la red local">
+  <article><div class="stat-icon">🏬</div><div><strong id="stat-comercios-v30">0</strong><span>Comercios activos</span></div></article>
+  <article><div class="stat-icon">📦</div><div><strong id="stat-productos-v30">0</strong><span>Productos publicados</span></div></article>
+  <article><div class="stat-icon">👁️</div><div><strong id="stat-visitas-v30">0</strong><span>Visitas acumuladas</span></div></article>
+  <article><div class="stat-icon">📍</div><div><strong>100%</strong><span>Hecho en C. del Uruguay</span></div></article>
+</section>
+
+<section class="local-made-v30">
+  <div class="local-icon">🥔</div>
+  <div>
+    <h2>Hecho en Concepción del Uruguay para Concepción del Uruguay</h2>
+    <p>Una red local para conectar vecinos, comercios, emprendedores y prestadores de servicios. Más adelante podrá crecer hacia otras localidades.</p>
+  </div>
+  <div class="local-chip">Proyecto local</div>
+</section>
+
 
 <!-- OFERTAS, DESTACADOS Y ABIERTOS: se completan con comercios reales -->
 
@@ -2794,7 +3212,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
   </div>
   <div class="footer-bottom">© 2025 Sálvame las Papas · Concepción del Uruguay, La Histórica · Hecho con ❤️ y mate 🧉 para los vecinos del barrio</div>
 <div class="app-version-badge" title="Versión publicada de Sálvame las Papas">
-  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V29</a>
+  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V30</a>
 </div>
 </footer>
 
@@ -4491,5 +4909,81 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)clearInterv
 </script>
 
 <a class="mi-comercio-fijo" href="./comercio.html" aria-label="Entrar a Mi comercio">🏪 Mi comercio</a>
+<script>
+function filtrarCategoriaV30(categoria){
+  goTo('comercios');
+  setTimeout(()=>{
+    const texto=document.getElementById('filtro-texto');
+    if(texto){
+      texto.value=categoria;
+      aplicarFiltrosAvanzados();
+    }
+  },250);
+}
+
+function fotoComercioV30(c){
+  return c?.productos?.find(p=>p?.foto)?.foto || '';
+}
+function miniProductosV30(c,limite){
+  return (c?.productos||[]).slice(0,limite).map(p=>
+    `<span>${textoSeguro(p.emoji||'📦')} ${textoSeguro(p.nombre||p.n||'Producto')}</span>`
+  ).join('');
+}
+function datosComercioV30(c){
+  const horario=textoSeguro(horarioTexto(c.horarios));
+  const direccion=textoSeguro(c.direccion||'Dirección por confirmar');
+  const whatsapp=c.tel?'WhatsApp disponible':'Sin WhatsApp';
+  return `${horario}<br>${direccion}<br>${whatsapp}`;
+}
+function renderTodosPlanesV30(){
+  const cont=document.getElementById('plan-groups-v30');
+  if(!cont) return;
+
+  const ordenados=ordenarPorPlan(comerciosTodos);
+  if(!ordenados.length){
+    cont.innerHTML='<div class="home-empty">Todavía no hay comercios activos para mostrar.</div>';
+    return;
+  }
+
+  cont.innerHTML=`<div class="plan-row-v30">${
+    ordenados.map(c=>{
+      const idx=comerciosTodos.indexOf(c);
+      const clase=c.plan===3?'max':c.plan===2?'pro':'basic';
+      const etiqueta=c.plan===3?'PLAN PRO / MAX':c.plan===2?'PLAN DESTACADO':'PLAN BÁSICO';
+      const limite=c.plan===3?3:c.plan===2?2:2;
+      const foto=fotoComercioV30(c);
+      return `<article class="plan-card-v30 ${clase}" onclick="abrirHomeComercio(${idx})">
+        <span class="plan-label">${etiqueta}</span>
+        <div class="card-cover">${foto?`<img src="${foto}" alt="${textoSeguro(c.nombre)}" loading="lazy">`:textoSeguro(c.emoji||'🏪')}</div>
+        <div class="card-body">
+          <h3>${textoSeguro(c.nombre||'Comercio')}</h3>
+          <div class="meta">${textoSeguro(c.cat||'Comercio')} · ${textoSeguro(c.barrio||'CDU')}<br>${datosComercioV30(c)}</div>
+          <div class="product-mini">${miniProductosV30(c,limite)||'<span>Ver productos</span>'}</div>
+          <div class="card-actions"><span>Ver comercio</span><span>${c.tel?'WhatsApp':'Ubicación'}</span></div>
+        </div>
+      </article>`;
+    }).join('')
+  }</div>`;
+}
+
+function actualizarEstadisticasV30(){
+  const comercios=comerciosTodos.length;
+  const productos=comerciosTodos.reduce((s,c)=>s+(c.productos||[]).length,0);
+  const visitas=comerciosTodos.reduce((s,c)=>s+Number(c.visitas||0),0);
+  const c=document.getElementById('stat-comercios-v30');
+  const p=document.getElementById('stat-productos-v30');
+  const v=document.getElementById('stat-visitas-v30');
+  if(c)c.textContent=comercios.toLocaleString('es-AR');
+  if(p)p.textContent=productos.toLocaleString('es-AR');
+  if(v)v.textContent=visitas.toLocaleString('es-AR');
+}
+
+const renderHomeVisualV29=renderHomeVisual;
+renderHomeVisual=function(){
+  renderHomeVisualV29();
+  renderTodosPlanesV30();
+  actualizarEstadisticasV30();
+};
+</script>
 </body>
 </html>

@@ -1,15 +1,14 @@
 {
-  "version": "V29",
-  "nombre": "Navegación, guía y diccionario",
+  "version": "V30",
+  "nombre": "Portada compacta y todos los comercios",
   "fecha": "2026-07-22",
   "cambios": [
-    "Encabezado definitivo en dos filas",
-    "Marca y bandera más grandes",
-    "Accesos de comercio y administración separados",
-    "Guía externa con cinco pasos e imágenes",
-    "Diccionario editorial completo con buscador y letras",
-    "Ofertas y destacados reubicados antes de los planes",
-    "Reconocimiento ampliado de planes Pro, Max, Destacado y Nivel 3",
-    "Prioridad corregida para comercios destacados"
+    "Hero más compacto",
+    "Estadísticas reales de comercios, productos y visitas",
+    "Mensaje local de Concepción del Uruguay",
+    "Categorías pequeñas en dos filas",
+    "Instalación compacta",
+    "Todos los comercios visibles según plan",
+    "Max grandes, Pro medianos y Básicos compactos"
   ]
 }
