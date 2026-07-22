@@ -1,4 +1,4 @@
-const CACHE_NAME = "salvame-papas-v28-ajustes-fotos";
+const CACHE_NAME = "salvame-papas-v29-navegacion-guia-diccionario";
 const APP_SHELL = ["./","./index.html","./comercio.html","./admin.html","./seguimiento-comercios.html","./como-usar.html","./diccionario-entrerriano.html","./offline.html","./manifest.webmanifest","./version.json"];
 
 self.addEventListener("install",event=>{

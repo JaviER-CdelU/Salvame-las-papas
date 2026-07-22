@@ -1705,6 +1705,160 @@ nav .nav-portals a{font-size:.74rem!important;padding:7px 9px!important}.logo{fo
  .install-fab{bottom:58px!important}
 }
 
+
+/* ==========================================================
+   V29 — ENCABEZADO DEFINITIVO EN DOS FILAS
+   ========================================================== */
+nav{
+  background:linear-gradient(180deg,#063d83 0%,#063d83 60%,#052e68 60%,#052e68 100%)!important;
+  border-bottom:3px solid #d50000!important;
+}
+nav .nav-inner{
+  max-width:1600px!important;
+  min-height:112px!important;
+  height:auto!important;
+  padding:8px clamp(18px,3vw,48px) 9px!important;
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr) auto!important;
+  grid-template-rows:54px 42px!important;
+  column-gap:24px!important;
+  row-gap:4px!important;
+  align-items:center!important;
+}
+nav .logo{
+  grid-column:1!important;
+  grid-row:1!important;
+  font-size:clamp(1.28rem,1.65vw,1.72rem)!important;
+  gap:12px!important;
+  white-space:nowrap!important;
+  color:#fff!important;
+}
+nav .logo-flag{
+  height:40px!important;
+  width:auto!important;
+  border-radius:5px!important;
+  box-shadow:0 3px 10px rgba(0,0,0,.22)!important;
+}
+nav .logo em{color:#ffd54a!important}
+nav .nav-links{
+  grid-column:2 / 4!important;
+  grid-row:1!important;
+  display:flex!important;
+  justify-content:flex-end!important;
+  align-items:center!important;
+  flex-wrap:wrap!important;
+  gap:5px 12px!important;
+  min-width:0!important;
+}
+nav .nav-link{
+  padding:8px 9px!important;
+  border-radius:10px!important;
+  color:#fff!important;
+  font-size:.83rem!important;
+  font-weight:900!important;
+  white-space:nowrap!important;
+  text-shadow:0 2px 4px rgba(0,0,0,.3)!important;
+}
+nav .nav-link:hover{
+  background:rgba(255,255,255,.13)!important;
+  color:#ffd54a!important;
+}
+nav .nav-link-special{
+  background:rgba(255,255,255,.12)!important;
+  border:1px solid rgba(255,255,255,.30)!important;
+}
+nav .nav-actions-row{
+  grid-column:1 / 4!important;
+  grid-row:2!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:8px!important;
+  min-width:0!important;
+}
+nav .nav-action{
+  min-height:34px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:7px 14px!important;
+  border-radius:999px!important;
+  border:1px solid transparent!important;
+  font-family:"DM Sans",sans-serif!important;
+  font-size:.78rem!important;
+  font-weight:900!important;
+  text-decoration:none!important;
+  cursor:pointer!important;
+  white-space:nowrap!important;
+}
+.nav-action-register{
+  margin-right:auto!important;
+  background:#fff!important;
+  color:#d85000!important;
+  border-color:#ff7a1a!important;
+}
+.nav-action-login{
+  background:#d90000!important;
+  color:#fff!important;
+}
+.nav-action-commerce{
+  background:#ff7a1a!important;
+  color:#fff!important;
+}
+.nav-action-admin{
+  background:#fff!important;
+  color:#083d82!important;
+  border-color:#aac5e5!important;
+}
+nav .nav-btns,nav .nav-portals{display:none!important}
+
+@media(max-width:1050px){
+  nav .nav-inner{
+    grid-template-columns:auto minmax(0,1fr)!important;
+    grid-template-rows:auto auto!important;
+  }
+  nav .nav-links{
+    grid-column:2!important;
+    justify-content:flex-end!important;
+  }
+  nav .nav-actions-row{
+    grid-column:1 / 3!important;
+  }
+}
+@media(max-width:790px){
+  nav .nav-inner{
+    min-height:68px!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    grid-template-rows:60px!important;
+    padding:4px 12px!important;
+  }
+  nav .logo{
+    grid-column:1!important;
+    font-size:1.12rem!important;
+  }
+  nav .logo-flag{height:35px!important}
+  nav .nav-links,nav .nav-actions-row{display:none!important}
+  nav .mobile-toggle{
+    display:flex!important;
+    grid-column:2!important;
+    grid-row:1!important;
+  }
+}
+
+
+/* V29 — BLOQUE COMERCIAL ANTES DE LOS PLANES */
+.promociones-before-plans{
+  padding:38px 0 12px;
+  background:
+    radial-gradient(circle at 8% 15%,rgba(255,123,28,.10),transparent 23%),
+    linear-gradient(180deg,#f7faff,#fffaf3);
+  border-top:1px solid #dfe8f3;
+}
+.promociones-before-plans .home-block{
+  margin-top:0!important;
+  margin-bottom:24px!important;
+}
+
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -1966,7 +2120,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
 }
 
 </style>
-<meta name="app-version" content="V28">
+<meta name="app-version" content="V29">
 </head>
 <body>
 
@@ -1979,36 +2133,32 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
       <img src="data:image/jpeg;base64,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" class="logo-flag" alt="Bandera CDU"/>
       Sálvame <em>&nbsp;las Papas 🥔</em>
     </div>
-    <div class="nav-links"><a class="nav-link" href="./como-usar.html">Cómo usar</a>
+    <div class="nav-links">
+      <a class="nav-link" href="./como-usar.html">Cómo funciona</a>
       <a class="nav-link" onclick="goTo('categorias')">¿Qué necesitás?</a>
       <a class="nav-link" onclick="goTo('comercios')">Comercios</a>
-      <a class="nav-link nav-cliente-v27" href="./como-usar.html">Cómo se usa para clientes</a>
-<a class="nav-link nav-link-special" href="./diccionario-entrerriano.html">Diccionario 🧉</a>
+      <a class="nav-link nav-link-special" href="./diccionario-entrerriano.html">Diccionario 🧉</a>
       <a class="nav-link" onclick="goTo('planes')">Planes</a>
-      <a class="nav-link" onclick="goTo('registro-comercio')">Anotate</a>
     </div>
-    <div class="nav-portals" aria-label="Accesos del sitio">
-      <a href="comercio.html">🏪 Mi comercio</a>
-      <a href="admin.html">⚙️ Admin</a>
-    </div>
-    <div class="nav-btns">
-      <button class="btn btn-ghost" onclick="goTo('registro-comercio')">Registrá tu comercio</button>
-      <button class="btn btn-rojo" id="nav-btn-ingresar" onclick="openModal('cliente')">Ingresar</button>
-      <button class="btn btn-ghost" id="nav-btn-salir" style="display:none" onclick="cerrarSesion()">Salir</button>
+    <div class="nav-actions-row" aria-label="Accesos para clientes, comercios y administración">
+      <button class="nav-action nav-action-register" onclick="goTo('registro-comercio')">🚀 Registrá tu comercio</button>
+      <button class="nav-action nav-action-login" id="nav-btn-ingresar" onclick="openModal('cliente')">👤 Ingresar</button>
+      <button class="nav-action nav-action-login" id="nav-btn-salir" style="display:none" onclick="cerrarSesion()">Salir</button>
+      <a class="nav-action nav-action-commerce" href="./comercio.html">🏪 Mi comercio</a>
+      <a class="nav-action nav-action-admin" href="./admin.html">⚙️ Administración</a>
     </div>
     <button class="mobile-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" onclick="toggleMobileMenu(this)">☰</button>
   </div>
 </nav>
 <div class="mobile-menu" id="mobile-menu">
+  <a href="./como-usar.html">📖 Cómo funciona</a>
   <button onclick="mobileGo('categorias')">🔎 ¿Qué necesitás?</button>
   <button onclick="mobileGo('comercios')">🏬 Comercios</button>
-  <a href="./como-usar.html">❓ Cómo funciona</a>
   <a href="./diccionario-entrerriano.html">🧉 Diccionario entrerriano</a>
-  <button onclick="mobileGo('planes')">📣 Planes</button>
-  <button onclick="mobileGo('registro-comercio')">➕ Registrá tu comercio</button>
-  <a href="comercio.html">🏪 Panel de comercio</a>
-  <a href="admin.html">⚙️ Administración</a>
-  <button onclick="openModal('cliente');closeMobileMenu()">👤 Ingresar como cliente</button>
+  <button onclick="mobileGo('planes')">💼 Planes</button>
+  <button onclick="mobileGo('registro-comercio')">🚀 Registrar mi comercio</button>
+  <a href="./comercio.html">🏪 Mi comercio</a>
+  <a href="./admin.html">⚙️ Administración</a>
 </div>
 
 <!-- NUEVA CABECERA VISUAL -->
@@ -2048,17 +2198,9 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
  <a href="./como-usar.html">Ver la guía completa →</a>
 </section>
 
-<section class="home-block" id="ofertas-semana">
-  <div class="home-section-title"><div><span class="title-icon">🔥</span><h2>Oferta de la semana</h2></div><button onclick="goTo('comercios')">Ver todos los productos</button></div>
-  <div class="offers-strip" id="ofertas-home"><div class="home-empty">Cargando ofertas reales…</div></div>
-</section>
 
-<section class="home-block home-featured-wrap" id="destacados-home-section">
-  <div class="home-section-title"><div><span class="title-icon">⭐</span><h2>Comercios destacados</h2><small>Los planes con mayor difusión aparecen primero</small></div>
-    <div class="slider-controls"><button onclick="moverDestacados(-1)" aria-label="Anterior">‹</button><button onclick="moverDestacados(1)" aria-label="Siguiente">›</button></div>
-  </div>
-  <div class="featured-slider" id="destacados-home"><div class="home-empty">Cargando comercios reales…</div></div>
-</section>
+
+
 
 <section class="how-home" id="como-funciona-home">
   <div class="home-section-title"><div><span class="title-icon">🥔</span><h2>¿Cómo funciona?</h2></div><a href="./como-usar.html">Ver guía completa</a></div>
@@ -2208,6 +2350,21 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
     </div>
   </div>
 </section>
+
+
+<!-- PROMOCIONES REUBICADAS: ANTES DE LOS PLANES -->
+<div class="promociones-before-plans">
+  <section class="home-block" id="ofertas-semana">
+  <div class="home-section-title"><div><span class="title-icon">🔥</span><h2>Oferta de la semana</h2></div><button onclick="goTo('comercios')">Ver todos los productos</button></div>
+  <div class="offers-strip" id="ofertas-home"><div class="home-empty">Cargando ofertas reales…</div></div>
+</section>
+  <section class="home-block home-featured-wrap" id="destacados-home-section">
+  <div class="home-section-title"><div><span class="title-icon">⭐</span><h2>Comercios destacados</h2><small>Pro/Max primero, luego Destacado y después Básico</small></div>
+    <div class="slider-controls"><button onclick="moverDestacados(-1)" aria-label="Anterior">‹</button><button onclick="moverDestacados(1)" aria-label="Siguiente">›</button></div>
+  </div>
+  <div class="featured-slider" id="destacados-home"><div class="home-empty">Cargando comercios reales…</div></div>
+</section>
+</div>
 
 <!-- PLANES -->
 <div class="planes-bg" id="planes">
@@ -2637,7 +2794,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
   </div>
   <div class="footer-bottom">© 2025 Sálvame las Papas · Concepción del Uruguay, La Histórica · Hecho con ❤️ y mate 🧉 para los vecinos del barrio</div>
 <div class="app-version-badge" title="Versión publicada de Sálvame las Papas">
-  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V28</a>
+  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V29</a>
 </div>
 </footer>
 
@@ -3336,8 +3493,14 @@ async function cargarComercios(){
           if(comercioPuedePublicarse(d)){
             fbComercics.push({
               id: registro.id,
-              plan: String(d.plan||'').toLowerCase().includes('pro') || Number(d.plan)===3 ? 3
-                    : String(d.plan||'').toLowerCase().includes('destacado') || Number(d.plan)===2 ? 2 : 1,
+              plan: (() => {
+                const p=String(d.plan||'').toLowerCase();
+                if(Number(d.plan)===3 || p.includes('nivel 3') || p.includes('45.000') ||
+                   p.includes('45000') || p.includes('max') || p.includes('pro')) return 3;
+                if(Number(d.plan)===2 || p.includes('nivel 2') || p.includes('30.000') ||
+                   p.includes('30000') || p.includes('destacado') || p.includes('intermedio')) return 2;
+                return 1;
+              })(),
               nombre: d.nombre,
               cat: d.categoria,
               barrio: d.barrio,

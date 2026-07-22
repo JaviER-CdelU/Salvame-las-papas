@@ -1,0 +1,13 @@
+VERSIÓN V29 — NAVEGACIÓN, GUÍA Y DICCIONARIO
+
+- Encabezado en dos filas.
+- Bandera y nombre Sálvame las Papas más grandes.
+- Primera fila: navegación del cliente.
+- Segunda fila: registrar, ingresar, Mi comercio y Administración.
+- Cómo funciona vuelve a una página externa completa.
+- La guía tiene cinco pasos e imágenes.
+- Diccionario completo a partir del borrador editorial.
+- Diccionario con buscador, letras, tarjetas y etiquetas.
+- Ofertas y comercios destacados quedaron antes de los planes.
+- Se amplió el reconocimiento de planes para Nivel 3, Pro, Max y Destacado.
+- Caché actualizada a V29.

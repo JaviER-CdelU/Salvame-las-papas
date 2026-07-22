@@ -3,125 +3,1004 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#002A6A">
+<meta name="description" content="Diccionario entrerriano de Sálvame las Papas.">
+<meta name="app-version" content="V29">
 <title>Diccionario entrerriano | Sálvame las Papas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--azul:#0b2f6b;--crema:#fffaf0;--naranja:#ff9800}
+:root{--azul:#082f6b;--azul2:#0753a5;--crema:#fff9ef;--naranja:#f47521;--texto:#1d2733;--suave:#647184}
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:var(--crema);color:#1d2733}
-header{background:var(--azul);color:white;padding:22px 16px;text-align:center}
-header h1{margin:0 0 8px;font-size:clamp(1.7rem,6vw,2.5rem)}
-main{max-width:900px;margin:auto;padding:18px 14px 40px}
-.volver{display:inline-block;margin-bottom:16px;color:var(--azul);font-weight:800;text-decoration:none}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.card{background:white;border-radius:15px;padding:14px;border:1px solid #eadcc8;box-shadow:0 4px 14px rgba(0,0,0,.06)}
-.card strong{display:block;color:var(--azul);font-size:1.05rem;margin-bottom:5px}
-.card span{color:#5b6570;line-height:1.4}
-@media(min-width:760px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-
-.password-contenedor{
-  position:relative;
-  width:100%;
+body{margin:0;font-family:"DM Sans",sans-serif;background:linear-gradient(180deg,#f7faff,var(--crema));color:var(--texto)}
+.top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.97);border-bottom:1px solid #dfe6ef;box-shadow:0 4px 16px rgba(7,47,107,.06)}
+.topin{max-width:1220px;margin:auto;padding:10px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:9px;color:var(--azul);text-decoration:none;font-family:"Fraunces",serif;font-weight:900}
+.brand img{width:44px;height:44px;border-radius:12px}
+.back{padding:10px 15px;border-radius:999px;background:var(--azul);color:#fff;text-decoration:none;font-weight:800}
+.hero{background:linear-gradient(135deg,#052e68,#0870ba);color:#fff}
+.heroin{max-width:1220px;margin:auto;padding:52px 18px;text-align:center}
+.hero h1{margin:0 0 9px;font-family:"Fraunces",serif;font-size:clamp(2.35rem,7vw,4.7rem)}
+.hero p{margin:0 auto;max-width:760px;color:rgba(255,255,255,.84);line-height:1.65}
+.wrap{max-width:1220px;margin:auto;padding:30px 16px 55px}
+.tools{position:sticky;top:65px;z-index:10;padding:14px;border-radius:18px;background:rgba(255,255,255,.96);border:1px solid #dce5ef;box-shadow:0 10px 28px rgba(7,47,107,.09)}
+.search{display:flex;align-items:center;gap:9px;padding:0 15px;border:1.5px solid #bdd0e5;border-radius:13px;background:#fff}
+.search input{width:100%;height:50px;border:0;outline:0;font:600 1rem "DM Sans",sans-serif}
+.letters{display:flex;gap:6px;flex-wrap:wrap;margin-top:11px}
+.letters button{width:35px;height:35px;border:1px solid #c8d7e7;border-radius:9px;background:#f4f8fd;color:var(--azul);font-weight:900;cursor:pointer}
+.letters button.active{background:var(--naranja);border-color:var(--naranja);color:#fff}
+.result-info{margin:16px 3px;color:var(--suave);font-size:.86rem}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.word-card{background:#fff;border-radius:17px;padding:17px;border:1px solid #dfdfd9;box-shadow:0 6px 18px rgba(5,43,101,.06)}
+.word-card.sensitive{border-color:#edc5c5;background:#fffafa}
+.word-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.letter-chip{display:grid;place-items:center;width:31px;height:31px;border-radius:9px;background:#e9f2ff;color:var(--azul);font-weight:900}
+.use-tag{padding:5px 8px;border-radius:999px;background:#fff0dd;color:#a34b06;font-size:.66rem;font-weight:900;text-align:right}
+.word-card.sensitive .use-tag{background:#ffe5e5;color:#a30000}
+.word-card h2{font-family:"Fraunces",serif;color:var(--azul);font-size:1.35rem;margin:12px 0 7px}
+.word-card p{margin:0;color:#4f5d6c;line-height:1.55}
+.word-card .example{margin-top:10px;padding-top:10px;border-top:1px solid #e7ebef;color:#667384;font-size:.86rem}
+.editorial-note{margin-top:30px;padding:18px;border-radius:17px;background:#eef5ff;border:1px solid #c5d8ef;color:#244a75;line-height:1.6}
+.empty{grid-column:1/-1;padding:35px;text-align:center;color:#697689;background:#fff;border-radius:16px}
+footer{background:#04162e;color:rgba(255,255,255,.68);text-align:center;padding:24px}
+.version{display:inline-block;margin-top:8px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.10);color:#ffd34e;font-size:.72rem;font-weight:800}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:590px){
+ .grid{grid-template-columns:1fr}
+ .tools{top:62px}
+ .topin{padding:8px 10px}
+ .brand{font-size:.88rem}
+ .back{font-size:.78rem;padding:9px 11px}
 }
-.password-contenedor input[type="password"],
-.password-contenedor input[type="text"]{
-  width:100%;
-  padding-right:54px !important;
-}
-.btn-ver-password{
-  position:absolute;
-  right:8px;
-  top:50%;
-  transform:translateY(-50%);
-  width:40px !important;
-  min-width:40px !important;
-  height:36px;
-  padding:0 !important;
-  border:0;
-  background:transparent;
-  border-radius:8px;
-  cursor:pointer;
-  font-size:1.1rem;
-  line-height:1;
-}
-.btn-ver-password:hover{background:rgba(0,0,0,.06)}
-
-
-/* IDENTIFICACIÓN DE VERSIÓN — V26 */
-.app-version-badge{
-  position:fixed;
-  right:12px;
-  bottom:12px;
-  z-index:9000;
-  padding:7px 10px;
-  border-radius:999px;
-  background:rgba(5,43,101,.92);
-  color:#fff;
-  border:1px solid rgba(255,255,255,.32);
-  box-shadow:0 5px 18px rgba(0,0,0,.18);
-  font:800 .72rem/1 "DM Sans",Arial,sans-serif;
-  letter-spacing:.03em;
-}
-.app-version-badge a{color:#ffd34e;text-decoration:none}
-@media(max-width:600px){
-  .app-version-badge{right:8px;bottom:8px;font-size:.66rem;padding:6px 8px}
-}
-
 </style>
-<meta name="app-version" content="V28">
 </head>
 <body>
-<header>
+<header class="top"><div class="topin">
+  <a class="brand" href="./index.html"><img src="./icons/icon-192.png" alt="">Sálvame las Papas</a>
+  <a class="back" href="./index.html">← Volver</a>
+</div></header>
+
+<section class="hero"><div class="heroin">
   <h1>🧉 Diccionario entrerriano</h1>
-  <p>Palabras y expresiones nuestras, en una sección aparte.</p>
-</header>
-<main>
-  <a class="volver" href="index.html">← Volver a Sálvame las Papas</a>
-  <div class="grid">
-    <div class="card"><strong>Gauchada</strong><span>Un favor o una ayuda que alguien hace de buena onda.</span></div>
-    <div class="card"><strong>Gurí / Gurisa</strong><span>Chico o chica.</span></div>
-    <div class="card"><strong>Chango</strong><span>Carrito para llevar las compras.</span></div>
-    <div class="card"><strong>De una</strong><span>Sin vueltas; aceptado inmediatamente.</span></div>
-    <div class="card"><strong>Al toque</strong><span>Muy rápido, enseguida.</span></div>
-    <div class="card"><strong>Una masa</strong><span>Algo o alguien muy bueno.</span></div>
-    <div class="card"><strong>Qué macana</strong><span>Qué pena o qué problema.</span></div>
-    <div class="card"><strong>Andar corto</strong><span>Tener poco dinero o pocos recursos.</span></div>
-    <div class="card"><strong>Hacer una vaquita</strong><span>Juntar dinero entre varias personas.</span></div>
-    <div class="card"><strong>Mandarse</strong><span>Animarse a hacer algo.</span></div>
-    <div class="card"><strong>Estar al horno</strong><span>Estar en una situación complicada.</span></div>
-    <div class="card"><strong>Salvar las papas</strong><span>Resolver un problema justo a tiempo.</span></div>
+  <p>Palabras, expresiones y costumbres que forman parte de nuestra manera de hablar. Algunas son tradicionales, otras informales y otras deben usarse con cuidado.</p>
+</div></section>
+
+<main class="wrap">
+  <section class="tools">
+    <label class="search">🔎 <input id="dictionary-search" type="search" placeholder="Buscar una palabra o significado..." autocomplete="off"></label>
+    <div class="letters"><button type="button" data-letter="TODAS" class="active">Todas</button><button type="button" data-letter="A">A</button><button type="button" data-letter="B">B</button><button type="button" data-letter="C">C</button><button type="button" data-letter="D">D</button><button type="button" data-letter="E">E</button><button type="button" data-letter="F">F</button><button type="button" data-letter="G">G</button><button type="button" data-letter="H">H</button><button type="button" data-letter="J">J</button><button type="button" data-letter="M">M</button><button type="button" data-letter="N">N</button><button type="button" data-letter="P">P</button><button type="button" data-letter="R">R</button><button type="button" data-letter="S">S</button><button type="button" data-letter="T">T</button><button type="button" data-letter="V">V</button></div>
+  </section>
+  <div class="result-info" id="result-info">98 vocablos disponibles</div>
+  <section class="grid" id="dictionary-grid">
+    <article class="word-card" data-letter="A"
+             data-search="abatatarse avergonzarse, ponerse nervioso o no saber cómo reaccionar. uso informal">
+          <div class="word-top">
+            <span class="letter-chip">A</span>
+            <span class="use-tag">Uso informal</span>
+          </div>
+          <h2>Abatatarse</h2>
+          <p>Avergonzarse, ponerse nervioso o no saber cómo reaccionar.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Se abatato cuando tuvo que hablar delante de todos.”</p>
+        </article><article class="word-card" data-letter="A"
+             data-search="allí forma coloquial de señalar que algo queda cerca o ahí nomás. uso regional">
+          <div class="word-top">
+            <span class="letter-chip">A</span>
+            <span class="use-tag">Uso regional</span>
+          </div>
+          <h2>Allí</h2>
+          <p>Forma coloquial de señalar que algo queda cerca o ahí nomás.</p>
+          <p class="example"><strong>Ejemplo:</strong> “La despensa queda allí, cruzando la calle.”</p>
+        </article><article class="word-card" data-letter="A"
+             data-search="achacar culpar o responsabilizar a alguien por algo. uso informal">
+          <div class="word-top">
+            <span class="letter-chip">A</span>
+            <span class="use-tag">Uso informal</span>
+          </div>
+          <h2>Achacar</h2>
+          <p>Culpar o responsabilizar a alguien por algo.</p>
+          <p class="example"><strong>Ejemplo:</strong> “A mí no me achaqués, que yo no tuve nada que ver.”</p>
+        </article><article class="word-card sensitive" data-letter="A"
+             data-search="a todo culo expresión para decir que algo se hizo con mucho lujo, despliegue o gasto. uso vulgar">
+          <div class="word-top">
+            <span class="letter-chip">A</span>
+            <span class="use-tag">Uso vulgar</span>
+          </div>
+          <h2>A todo culo</h2>
+          <p>Expresión para decir que algo se hizo con mucho lujo, despliegue o gasto.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Abrieron el bar nuevo a todo culo.”</p>
+        </article><article class="word-card" data-letter="A"
+             data-search="angurriento persona ansiosa por comer, obtener o quedarse con más de lo que le corresponde. uso informal">
+          <div class="word-top">
+            <span class="letter-chip">A</span>
+            <span class="use-tag">Uso informal</span>
+          </div>
+          <h2>Angurriento</h2>
+          <p>Persona ansiosa por comer, obtener o quedarse con más de lo que le corresponde.</p>
+          <p class="example"><strong>Ejemplo:</strong> “No seas angurriento, dejá un poco para los demás.”</p>
+        </article><article class="word-card" data-letter="A"
+             data-search="apestado muy enfermo, engripado o con fuerte malestar. uso informal">
+          <div class="word-top">
+            <span class="letter-chip">A</span>
+            <span class="use-tag">Uso informal</span>
+          </div>
+          <h2>Apestado</h2>
+          <p>Muy enfermo, engripado o con fuerte malestar.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Hoy no salgo, estoy apestado.”</p>
+        </article><article class="word-card" data-letter="A"
+             data-search="apichonado triste, desanimado o bajoneado. uso informal">
+          <div class="word-top">
+            <span class="letter-chip">A</span>
+            <span class="use-tag">Uso informal</span>
+          </div>
+          <h2>Apichonado</h2>
+          <p>Triste, desanimado o bajoneado.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Después del partido quedó apichonado.”</p>
+        </article><article class="word-card" data-letter="A"
+             data-search="aprontar preparar algo para que quede listo. uso regional">
+          <div class="word-top">
+            <span class="letter-chip">A</span>
+            <span class="use-tag">Uso regional</span>
+          </div>
+          <h2>Aprontar</h2>
+          <p>Preparar algo para que quede listo.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Aprontá las cosas, que en diez minutos nos vamos.”</p>
+        </article><article class="word-card sensitive" data-letter="A"
+             data-search="afrechudo persona con mucha energía o excitación acumulada. uso vulgar / revisar contexto">
+          <div class="word-top">
+            <span class="letter-chip">A</span>
+            <span class="use-tag">Uso vulgar / revisar contexto</span>
+          </div>
+          <h2>Afrechudo</h2>
+          <p>Persona con mucha energía o excitación acumulada.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Mirá cómo corre ese afrechudo.”</p>
+        </article><article class="word-card" data-letter="A"
+             data-search="almacén / despensa comercio pequeño de barrio donde se venden alimentos y productos cotidianos. uso cotidiano">
+          <div class="word-top">
+            <span class="letter-chip">A</span>
+            <span class="use-tag">Uso cotidiano</span>
+          </div>
+          <h2>Almacén / Despensa</h2>
+          <p>Comercio pequeño de barrio donde se venden alimentos y productos cotidianos.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Voy al almacén a comprar yerba y pan.”</p>
+        </article><article class="word-card" data-letter="B"
+             data-search="bolacero persona que miente, exagera o inventa historias difíciles de creer. uso informal">
+          <div class="word-top">
+            <span class="letter-chip">B</span>
+            <span class="use-tag">Uso informal</span>
+          </div>
+          <h2>Bolacero</h2>
+          <p>Persona que miente, exagera o inventa historias difíciles de creer.</p>
+          <p class="example"><strong>Ejemplo:</strong> “No le creas todo, ese gurí es medio bolacero.”</p>
+        </article><article class="word-card" data-letter="B"
+             data-search="bolazo mentira, exageración o historia poco creíble. uso informal">
+          <div class="word-top">
+            <span class="letter-chip">B</span>
+            <span class="use-tag">Uso informal</span>
+          </div>
+          <h2>Bolazo</h2>
+          <p>Mentira, exageración o historia poco creíble.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Manso bolazo me acabás de decir.”</p>
+        </article><article class="word-card" data-letter="B"
+             data-search="butifarra embutido preparado generalmente con carne de cerdo y condimentos. gastronomía">
+          <div class="word-top">
+            <span class="letter-chip">B</span>
+            <span class="use-tag">Gastronomía</span>
+          </div>
+          <h2>Butifarra</h2>
+          <p>Embutido preparado generalmente con carne de cerdo y condimentos.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Para la picada compramos queso y butifarra.”</p>
+        </article><article class="word-card" data-letter="B"
+             data-search="bajo el agua expresión para indicar una situación económica muy difícil. también se pronuncia “bajolagua”. uso informal">
+          <div class="word-top">
+            <span class="letter-chip">B</span>
+            <span class="use-tag">Uso informal</span>
+          </div>
+          <h2>Bajo el agua</h2>
+          <p>Expresión para indicar una situación económica muy difícil. También se pronuncia “bajolagua”.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Este mes no puedo salir, estoy bajolagua.”</p>
+        </article><article class="word-card" data-letter="B"
+             data-search="bollo factura redonda, muchas veces con crema pastelera. panadería">
+          <div class="word-top">
+            <span class="letter-chip">B</span>
+            <span class="use-tag">Panadería</span>
+          </div>
+          <h2>Bollo</h2>
+          <p>Factura redonda, muchas veces con crema pastelera.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Traeme dos bollos para el mate.”</p>
+        </article><article class="word-card sensitive" data-letter="B"
+             data-search="bagallo persona considerada poco atractiva. uso despectivo">
+          <div class="word-top">
+            <span class="letter-chip">B</span>
+            <span class="use-tag">Uso despectivo</span>
+          </div>
+          <h2>Bagallo</h2>
+          <p>Persona considerada poco atractiva.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Ese comentario fue desubicado; no da decirle bagallo a nadie.”</p>
+        </article><article class="word-card" data-letter="C"
+             data-search="caballito forma de llevar a una persona sobre la espalda. uso cotidiano">
+          <div class="word-top">
+            <span class="letter-chip">C</span>
+            <span class="use-tag">Uso cotidiano</span>
+          </div>
+          <h2>Caballito</h2>
+          <p>Forma de llevar a una persona sobre la espalda.</p>
+          <p class="example"><strong>Ejemplo:</strong> “El gurí volvió a casa a caballito.”</p>
+        </article><article class="word-card" data-letter="C"
+             data-search="caldero persona tacaña o poco dispuesta a compartir. uso informal">
+          <div class="word-top">
+            <span class="letter-chip">C</span>
+            <span class="use-tag">Uso informal</span>
+          </div>
+          <h2>Caldero</h2>
+          <p>Persona tacaña o poco dispuesta a compartir.</p>
+          <p class="example"><strong>Ejemplo:</strong> “No seas caldero, convidá un poco.”</p>
+        </article><article class="word-card sensitive" data-letter="C"
+             data-search="calzonudo persona considerada débil de carácter o muy dominada por su pareja. uso despectivo / revisar">
+          <div class="word-top">
+            <span class="letter-chip">C</span>
+            <span class="use-tag">Uso despectivo / revisar</span>
+          </div>
+          <h2>Calzonudo</h2>
+          <p>Persona considerada débil de carácter o muy dominada por su pareja.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Le dijeron calzonudo porque nunca decide nada solo.”</p>
+        </article><article class="word-card" data-letter="C"
+             data-search="cachiquengue desorden, lío o situación caótica. uso regional">
+          <div class="word-top">
+            <span class="letter-chip">C</span>
+            <span class="use-tag">Uso regional</span>
+          </div>
+          <h2>Cachiquengue</h2>
+          <p>Desorden, lío o situación caótica.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Ordená ese cachiquengue antes de que llegue la gente.”</p>
+        </article><article class="word-card" data-letter="C"
+             data-search="carpir / salir carpiendo carpir es cortar malezas; salir carpiendo es huir o irse rápidamente. doble significado">
+          <div class="word-top">
+            <span class="letter-chip">C</span>
+            <span class="use-tag">Doble significado</span>
+          </div>
+          <h2>Carpir / salir carpiendo</h2>
+          <p>Carpir es cortar malezas; salir carpiendo es huir o irse rápidamente.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Cuando vio venir la tormenta, salió carpiendo.”</p>
+        </article><article class="word-card" data-letter="C"
+             data-search="catinga olor fuerte y desagradable. uso informal">
+          <div class="word-top">
+            <span class="letter-chip">C</span>
+            <span class="use-tag">Uso informal</span>
+          </div>
+          <h2>Catinga</h2>
+          <p>Olor fuerte y desagradable.</p>
+          <p class="example"><strong>Ejemplo:</strong> “¡Qué catinga quedó después de limpiar el pescado!”</p>
+        </article><article class="word-card" data-letter="C"
+             data-search="chinguiado torcido, desviado o mal alineado. uso regional">
+          <div class="word-top">
+            <span class="letter-chip">C</span>
+            <span class="use-tag">Uso regional</span>
+          </div>
+          <h2>Chinguiado</h2>
+          <p>Torcido, desviado o mal alineado.</p>
+          <p class="example"><strong>Ejemplo:</strong> “El estante quedó medio chinguiado.”</p>
+        </article><article class="word-card" data-letter="C"
+             data-search="chispear llover muy suavemente. clima">
+          <div class="word-top">
+            <span class="letter-chip">C</span>
+            <span class="use-tag">Clima</span>
+          </div>
+          <h2>Chispear</h2>
+          <p>Llover muy suavemente.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Todavía no llueve fuerte, está chispeando nomás.”</p>
+        </article><article class="word-card" data-letter="C"
+             data-search="churrasquera lugar preparado para cocinar carne a las brasas. gastronomía">
+          <div class="word-top">
+            <span class="letter-chip">C</span>
+            <span class="use-tag">Gastronomía</span>
+          </div>
+          <h2>Churrasquera</h2>
+          <p>Lugar preparado para cocinar carne a las brasas.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Prendé el fuego en la churrasquera.”</p>
+        </article><article class="word-card sensitive" data-letter="C"
+             data-search="cocoño castigo o juego brusco que consiste en dar golpes con los nudillos en la cabeza. uso infantil / advertencia">
+          <div class="word-top">
+            <span class="letter-chip">C</span>
+            <span class="use-tag">Uso infantil / advertencia</span>
+          </div>
+          <h2>Cocoño</h2>
+          <p>Castigo o juego brusco que consiste en dar golpes con los nudillos en la cabeza.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Al que pierde le hacen cocoño.”</p>
+        </article><article class="word-card sensitive" data-letter="C"
+             data-search="cara de guasca insulto leve o burlón, generalmente entre personas de confianza. uso vulgar">
+          <div class="word-top">
+            <span class="letter-chip">C</span>
+            <span class="use-tag">Uso vulgar</span>
+          </div>
+          <h2>Cara de guasca</h2>
+          <p>Insulto leve o burlón, generalmente entre personas de confianza.</p>
+          <p class="example"><strong>Ejemplo:</strong> “¡Dejá de molestar, careguasca!”</p>
+        </article><article class="word-card" data-letter="C"
+             data-search="camorra conflicto buscado de manera intencional para provocar una pelea. uso informal">
+          <div class="word-top">
+            <span class="letter-chip">C</span>
+            <span class="use-tag">Uso informal</span>
+          </div>
+          <h2>Camorra</h2>
+          <p>Conflicto buscado de manera intencional para provocar una pelea.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Dejá de buscar camorra.”</p>
+        </article><article class="word-card" data-letter="C"
+             data-search="calorito calentador eléctrico utilizado para calentar agua dentro del termo. objeto cotidiano">
+          <div class="word-top">
+            <span class="letter-chip">C</span>
+            <span class="use-tag">Objeto cotidiano</span>
+          </div>
+          <h2>Calorito</h2>
+          <p>Calentador eléctrico utilizado para calentar agua dentro del termo.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Cuidado con prender el calorito fuera del agua.”</p>
+        </article><article class="word-card" data-letter="C"
+             data-search="camorrero persona que busca peleas o conflictos. uso informal">
+          <div class="word-top">
+            <span class="letter-chip">C</span>
+            <span class="use-tag">Uso informal</span>
+          </div>
+          <h2>Camorrero</h2>
+          <p>Persona que busca peleas o conflictos.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Ese muchacho es muy camorrero.”</p>
+        </article><article class="word-card" data-letter="C"
+             data-search="colero gomita para atarse el pelo. uso regional">
+          <div class="word-top">
+            <span class="letter-chip">C</span>
+            <span class="use-tag">Uso regional</span>
+          </div>
+          <h2>Colero</h2>
+          <p>Gomita para atarse el pelo.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Prestame un colero.”</p>
+        </article><article class="word-card" data-letter="C"
+             data-search="carlitos sándwich caliente de jamón y queso. gastronomía">
+          <div class="word-top">
+            <span class="letter-chip">C</span>
+            <span class="use-tag">Gastronomía</span>
+          </div>
+          <h2>Carlitos</h2>
+          <p>Sándwich caliente de jamón y queso.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Pedimos dos carlitos y una gaseosa.”</p>
+        </article><article class="word-card" data-letter="C"
+             data-search="chijete salida o movimiento muy rápido. uso regional">
+          <div class="word-top">
+            <span class="letter-chip">C</span>
+            <span class="use-tag">Uso regional</span>
+          </div>
+          <h2>Chijete</h2>
+          <p>Salida o movimiento muy rápido.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Salió como chijete.”</p>
+        </article><article class="word-card" data-letter="C"
+             data-search="cuerear hablar mal de una persona cuando no está presente. uso informal">
+          <div class="word-top">
+            <span class="letter-chip">C</span>
+            <span class="use-tag">Uso informal</span>
+          </div>
+          <h2>Cuerear</h2>
+          <p>Hablar mal de una persona cuando no está presente.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Dejá de cuerear a los demás.”</p>
+        </article><article class="word-card sensitive" data-letter="C"
+             data-search="cursiadera diarrea o malestar intestinal fuerte. uso vulgar">
+          <div class="word-top">
+            <span class="letter-chip">C</span>
+            <span class="use-tag">Uso vulgar</span>
+          </div>
+          <h2>Cursiadera</h2>
+          <p>Diarrea o malestar intestinal fuerte.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Me agarró una cursiadera en el viaje.”</p>
+        </article><article class="word-card" data-letter="C"
+             data-search="cluenque mueble u objeto desnivelado o inestable. uso regional">
+          <div class="word-top">
+            <span class="letter-chip">C</span>
+            <span class="use-tag">Uso regional</span>
+          </div>
+          <h2>Cluenque</h2>
+          <p>Mueble u objeto desnivelado o inestable.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Esta mesa está en cluenque.”</p>
+        </article><article class="word-card" data-letter="C"
+             data-search="clinudo persona de pelo largo. uso informal">
+          <div class="word-top">
+            <span class="letter-chip">C</span>
+            <span class="use-tag">Uso informal</span>
+          </div>
+          <h2>Clinudo</h2>
+          <p>Persona de pelo largo.</p>
+          <p class="example"><strong>Ejemplo:</strong> “El gurí clinudo toca en una banda.”</p>
+        </article><article class="word-card" data-letter="C"
+             data-search="chico / manso / flor palabras usadas para intensificar y expresar que algo es grande o notable. uso expresivo">
+          <div class="word-top">
+            <span class="letter-chip">C</span>
+            <span class="use-tag">Uso expresivo</span>
+          </div>
+          <h2>Chico / Manso / Flor</h2>
+          <p>Palabras usadas para intensificar y expresar que algo es grande o notable.</p>
+          <p class="example"><strong>Ejemplo:</strong> “¡Manso auto! / Flor de problema.”</p>
+        </article><article class="word-card" data-letter="C"
+             data-search="cuentero persona que inventa historias y las presenta como verdaderas. uso informal">
+          <div class="word-top">
+            <span class="letter-chip">C</span>
+            <span class="use-tag">Uso informal</span>
+          </div>
+          <h2>Cuentero</h2>
+          <p>Persona que inventa historias y las presenta como verdaderas.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Dejá de decir bolazos, sos re cuentero.”</p>
+        </article><article class="word-card" data-letter="C"
+             data-search="corajudo valiente, decidido o esforzado. uso positivo">
+          <div class="word-top">
+            <span class="letter-chip">C</span>
+            <span class="use-tag">Uso positivo</span>
+          </div>
+          <h2>Corajudo</h2>
+          <p>Valiente, decidido o esforzado.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Fue corajudo y se animó a intentarlo.”</p>
+        </article><article class="word-card" data-letter="C"
+             data-search="chuleta bife con hueso. gastronomía">
+          <div class="word-top">
+            <span class="letter-chip">C</span>
+            <span class="use-tag">Gastronomía</span>
+          </div>
+          <h2>Chuleta</h2>
+          <p>Bife con hueso.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Compramos unas chuletas para la parrilla.”</p>
+        </article><article class="word-card sensitive" data-letter="C"
+             data-search="cachonda persona excitada o con actitud provocativa. uso sexual / revisar">
+          <div class="word-top">
+            <span class="letter-chip">C</span>
+            <span class="use-tag">Uso sexual / revisar</span>
+          </div>
+          <h2>Cachonda</h2>
+          <p>Persona excitada o con actitud provocativa.</p>
+          <p class="example"><strong>Ejemplo:</strong> “La palabra puede resultar incómoda fuera de ámbitos de confianza.”</p>
+        </article><article class="word-card" data-letter="C"
+             data-search="caché expresión para indicar que se descubrió a alguien haciendo algo. uso informal">
+          <div class="word-top">
+            <span class="letter-chip">C</span>
+            <span class="use-tag">Uso informal</span>
+          </div>
+          <h2>Caché</h2>
+          <p>Expresión para indicar que se descubrió a alguien haciendo algo.</p>
+          <p class="example"><strong>Ejemplo:</strong> “¡Ah, te caché sacando fotos!”</p>
+        </article><article class="word-card" data-letter="C"
+             data-search="chito orden para pedir silencio. uso informal">
+          <div class="word-top">
+            <span class="letter-chip">C</span>
+            <span class="use-tag">Uso informal</span>
+          </div>
+          <h2>Chito</h2>
+          <p>Orden para pedir silencio.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Chito, no digas nada todavía.”</p>
+        </article><article class="word-card" data-letter="C"
+             data-search="cobija frazada o manta para abrigarse. uso cotidiano">
+          <div class="word-top">
+            <span class="letter-chip">C</span>
+            <span class="use-tag">Uso cotidiano</span>
+          </div>
+          <h2>Cobija</h2>
+          <p>Frazada o manta para abrigarse.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Alcanzame una cobija, hace frío.”</p>
+        </article><article class="word-card" data-letter="D"
+             data-search="despelote gran desorden, confusión o conflicto. uso informal">
+          <div class="word-top">
+            <span class="letter-chip">D</span>
+            <span class="use-tag">Uso informal</span>
+          </div>
+          <h2>Despelote</h2>
+          <p>Gran desorden, confusión o conflicto.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Quedó un despelote después de la fiesta.”</p>
+        </article><article class="word-card" data-letter="D"
+             data-search="descuajeringar desarmar, romper o dejar algo muy deteriorado. uso informal">
+          <div class="word-top">
+            <span class="letter-chip">D</span>
+            <span class="use-tag">Uso informal</span>
+          </div>
+          <h2>Descuajeringar</h2>
+          <p>Desarmar, romper o dejar algo muy deteriorado.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Se descuajeringó la bicicleta.”</p>
+        </article><article class="word-card" data-letter="D"
+             data-search="desmayau persona distraída, desorientada o que suele estar en otra. uso regional">
+          <div class="word-top">
+            <span class="letter-chip">D</span>
+            <span class="use-tag">Uso regional</span>
+          </div>
+          <h2>Desmayau</h2>
+          <p>Persona distraída, desorientada o que suele estar en otra.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Ese gurí es un desmayau.”</p>
+        </article><article class="word-card" data-letter="D"
+             data-search="dificilongo algo especialmente difícil o complicado. uso humorístico">
+          <div class="word-top">
+            <span class="letter-chip">D</span>
+            <span class="use-tag">Uso humorístico</span>
+          </div>
+          <h2>Dificilongo</h2>
+          <p>Algo especialmente difícil o complicado.</p>
+          <p class="example"><strong>Ejemplo:</strong> “El trámite está dificilongo.”</p>
+        </article><article class="word-card" data-letter="D"
+             data-search="disparada con mucha rapidez o urgencia. uso regional">
+          <div class="word-top">
+            <span class="letter-chip">D</span>
+            <span class="use-tag">Uso regional</span>
+          </div>
+          <h2>Disparada</h2>
+          <p>Con mucha rapidez o urgencia.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Salió de disparada para el trabajo.”</p>
+        </article><article class="word-card" data-letter="D"
+             data-search="despelechar perder o sacar la piel superficial, especialmente después de tomar sol. uso cotidiano">
+          <div class="word-top">
+            <span class="letter-chip">D</span>
+            <span class="use-tag">Uso cotidiano</span>
+          </div>
+          <h2>Despelechar</h2>
+          <p>Perder o sacar la piel superficial, especialmente después de tomar sol.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Me estoy despelechando todo.”</p>
+        </article><article class="word-card" data-letter="E"
+             data-search="elastiquín gomita elástica para cerrar bolsas o sujetar objetos. uso regional">
+          <div class="word-top">
+            <span class="letter-chip">E</span>
+            <span class="use-tag">Uso regional</span>
+          </div>
+          <h2>Elastiquín</h2>
+          <p>Gomita elástica para cerrar bolsas o sujetar objetos.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Poné un elastiquín al paquete.”</p>
+        </article><article class="word-card" data-letter="E"
+             data-search="el parque forma local de referirse a un parque conocido de la ciudad. referencia local">
+          <div class="word-top">
+            <span class="letter-chip">E</span>
+            <span class="use-tag">Referencia local</span>
+          </div>
+          <h2>El Parque</h2>
+          <p>Forma local de referirse a un parque conocido de la ciudad.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Nos encontramos en El Parque.”</p>
+        </article><article class="word-card" data-letter="E"
+             data-search="espores zapatillas deportivas. deriva humorísticamente de “sport shoes”. uso regional">
+          <div class="word-top">
+            <span class="letter-chip">E</span>
+            <span class="use-tag">Uso regional</span>
+          </div>
+          <h2>Espores</h2>
+          <p>Zapatillas deportivas. Deriva humorísticamente de “sport shoes”.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Me compré unos espores nuevos.”</p>
+        </article><article class="word-card" data-letter="E"
+             data-search="esquela nota breve o comunicación familiar para avisar algo. uso tradicional">
+          <div class="word-top">
+            <span class="letter-chip">E</span>
+            <span class="use-tag">Uso tradicional</span>
+          </div>
+          <h2>Esquela</h2>
+          <p>Nota breve o comunicación familiar para avisar algo.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Dejale una esquela diciendo dónde fuimos.”</p>
+        </article><article class="word-card" data-letter="E"
+             data-search="empilcharse vestirse bien o con ropa elegante. uso rioplatense">
+          <div class="word-top">
+            <span class="letter-chip">E</span>
+            <span class="use-tag">Uso rioplatense</span>
+          </div>
+          <h2>Empilcharse</h2>
+          <p>Vestirse bien o con ropa elegante.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Se empilchó para la fiesta.”</p>
+        </article><article class="word-card" data-letter="E"
+             data-search="encularse / enchincharse enojarse o quedar muy molesto. uso informal">
+          <div class="word-top">
+            <span class="letter-chip">E</span>
+            <span class="use-tag">Uso informal</span>
+          </div>
+          <h2>Encularse / Enchincharse</h2>
+          <p>Enojarse o quedar muy molesto.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Se enchinchó porque no lo invitaron.”</p>
+        </article><article class="word-card" data-letter="E"
+             data-search="engañapichanga engaño, mentira o maniobra poco seria. uso regional">
+          <div class="word-top">
+            <span class="letter-chip">E</span>
+            <span class="use-tag">Uso regional</span>
+          </div>
+          <h2>Engañapichanga</h2>
+          <p>Engaño, mentira o maniobra poco seria.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Eso fue una engañapichanga.”</p>
+        </article><article class="word-card" data-letter="E"
+             data-search="enyetado con mala suerte o atravesando una racha negativa. uso informal">
+          <div class="word-top">
+            <span class="letter-chip">E</span>
+            <span class="use-tag">Uso informal</span>
+          </div>
+          <h2>Enyetado</h2>
+          <p>Con mala suerte o atravesando una racha negativa.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Últimamente ando medio enyetado.”</p>
+        </article><article class="word-card" data-letter="F"
+             data-search="fiero muy feo, desagradable o difícil. uso informal">
+          <div class="word-top">
+            <span class="letter-chip">F</span>
+            <span class="use-tag">Uso informal</span>
+          </div>
+          <h2>Fiero</h2>
+          <p>Muy feo, desagradable o difícil.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Está fiero el tiempo.”</p>
+        </article><article class="word-card" data-letter="F"
+             data-search="forrado persona con mucho dinero. uso informal">
+          <div class="word-top">
+            <span class="letter-chip">F</span>
+            <span class="use-tag">Uso informal</span>
+          </div>
+          <h2>Forrado</h2>
+          <p>Persona con mucho dinero.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Dicen que está forrado en plata.”</p>
+        </article><article class="word-card" data-letter="G"
+             data-search="galleta pieza de panadería cuadrada, parecida a un librito. panadería">
+          <div class="word-top">
+            <span class="letter-chip">G</span>
+            <span class="use-tag">Panadería</span>
+          </div>
+          <h2>Galleta</h2>
+          <p>Pieza de panadería cuadrada, parecida a un librito.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Compramos galletas para el mate.”</p>
+        </article><article class="word-card" data-letter="G"
+             data-search="gurí / gurisa niño o niña. uso regional">
+          <div class="word-top">
+            <span class="letter-chip">G</span>
+            <span class="use-tag">Uso regional</span>
+          </div>
+          <h2>Gurí / Gurisa</h2>
+          <p>Niño o niña.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Ese gurí juega a la pelota todo el día.”</p>
+        </article><article class="word-card" data-letter="G"
+             data-search="gollete / goyete sentido o lógica. se usa en la frase “no tiene gollete/goyete”. variante regional">
+          <div class="word-top">
+            <span class="letter-chip">G</span>
+            <span class="use-tag">Variante regional</span>
+          </div>
+          <h2>Gollete / Goyete</h2>
+          <p>Sentido o lógica. Se usa en la frase “no tiene gollete/goyete”.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Lo que hizo no tiene gollete.”</p>
+        </article><article class="word-card" data-letter="G"
+             data-search="guachazo golpe fuerte y repentino. uso informal">
+          <div class="word-top">
+            <span class="letter-chip">G</span>
+            <span class="use-tag">Uso informal</span>
+          </div>
+          <h2>Guachazo</h2>
+          <p>Golpe fuerte y repentino.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Me pegué un guachazo con la ventana.”</p>
+        </article><article class="word-card" data-letter="G"
+             data-search="girasoles semillas de girasol para comer. uso cotidiano">
+          <div class="word-top">
+            <span class="letter-chip">G</span>
+            <span class="use-tag">Uso cotidiano</span>
+          </div>
+          <h2>Girasoles</h2>
+          <p>Semillas de girasol para comer.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Compramos maní y girasoles.”</p>
+        </article><article class="word-card" data-letter="G"
+             data-search="guarangada / guasada acción grosera, tosca o de mala educación. uso informal">
+          <div class="word-top">
+            <span class="letter-chip">G</span>
+            <span class="use-tag">Uso informal</span>
+          </div>
+          <h2>Guarangada / Guasada</h2>
+          <p>Acción grosera, tosca o de mala educación.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Lo que dijo fue una guasada.”</p>
+        </article><article class="word-card sensitive" data-letter="G"
+             data-search="guampudo / guampuda persona a la que su pareja le fue infiel. uso despectivo">
+          <div class="word-top">
+            <span class="letter-chip">G</span>
+            <span class="use-tag">Uso despectivo</span>
+          </div>
+          <h2>Guampudo / Guampuda</h2>
+          <p>Persona a la que su pareja le fue infiel.</p>
+          <p class="example"><strong>Ejemplo:</strong> “La expresión puede ser humillante.”</p>
+        </article><article class="word-card" data-letter="H"
+             data-search="haciendo cruz expresión para indicar que un lugar está enfrente y un poco hacia un costado. orientación">
+          <div class="word-top">
+            <span class="letter-chip">H</span>
+            <span class="use-tag">Orientación</span>
+          </div>
+          <h2>Haciendo cruz</h2>
+          <p>Expresión para indicar que un lugar está enfrente y un poco hacia un costado.</p>
+          <p class="example"><strong>Ejemplo:</strong> “La farmacia queda haciendo cruz con la plaza.”</p>
+        </article><article class="word-card" data-letter="H"
+             data-search="hilacha se usa en “mostrar la hilacha”: dejar ver el verdadero carácter o la falta de educación. uso informal">
+          <div class="word-top">
+            <span class="letter-chip">H</span>
+            <span class="use-tag">Uso informal</span>
+          </div>
+          <h2>Hilacha</h2>
+          <p>Se usa en “mostrar la hilacha”: dejar ver el verdadero carácter o la falta de educación.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Ahí mostró la hilacha.”</p>
+        </article><article class="word-card" data-letter="H"
+             data-search="hurguete persona curiosa que revisa o averigua todo. uso regional">
+          <div class="word-top">
+            <span class="letter-chip">H</span>
+            <span class="use-tag">Uso regional</span>
+          </div>
+          <h2>Hurguete</h2>
+          <p>Persona curiosa que revisa o averigua todo.</p>
+          <p class="example"><strong>Ejemplo:</strong> “No seas hurguete.”</p>
+        </article><article class="word-card" data-letter="J"
+             data-search="julepe miedo o susto repentino. uso tradicional">
+          <div class="word-top">
+            <span class="letter-chip">J</span>
+            <span class="use-tag">Uso tradicional</span>
+          </div>
+          <h2>Julepe</h2>
+          <p>Miedo o susto repentino.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Qué julepe me pegué cuando ladró el perro.”</p>
+        </article><article class="word-card" data-letter="M"
+             data-search="mami forma afectuosa y habitual de llamar a la madre. uso familiar">
+          <div class="word-top">
+            <span class="letter-chip">M</span>
+            <span class="use-tag">Uso familiar</span>
+          </div>
+          <h2>Mami</h2>
+          <p>Forma afectuosa y habitual de llamar a la madre.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Mami, ¿dónde dejaste el mate?”</p>
+        </article><article class="word-card" data-letter="M"
+             data-search="mandale guacha nomás expresión para alentar a hacer algo de inmediato y con decisión. uso regional">
+          <div class="word-top">
+            <span class="letter-chip">M</span>
+            <span class="use-tag">Uso regional</span>
+          </div>
+          <h2>Mandale guacha nomás</h2>
+          <p>Expresión para alentar a hacer algo de inmediato y con decisión.</p>
+          <p class="example"><strong>Ejemplo:</strong> “¿Me anoto? Mandale guacha nomás.”</p>
+        </article><article class="word-card" data-letter="M"
+             data-search="mamado borracho o muy alcoholizado. uso informal">
+          <div class="word-top">
+            <span class="letter-chip">M</span>
+            <span class="use-tag">Uso informal</span>
+          </div>
+          <h2>Mamado</h2>
+          <p>Borracho o muy alcoholizado.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Volvió mamado de la fiesta.”</p>
+        </article><article class="word-card" data-letter="M"
+             data-search="mavále contracción enfática de “más vale”. pronunciación regional">
+          <div class="word-top">
+            <span class="letter-chip">M</span>
+            <span class="use-tag">Pronunciación regional</span>
+          </div>
+          <h2>Mavále</h2>
+          <p>Contracción enfática de “más vale”.</p>
+          <p class="example"><strong>Ejemplo:</strong> “¿Vamos? ¡Mavále!”</p>
+        </article><article class="word-card" data-letter="M"
+             data-search="mate de té infusión preparada en jarrito con té, hierbas, limón, azúcar y agua caliente. costumbre regional">
+          <div class="word-top">
+            <span class="letter-chip">M</span>
+            <span class="use-tag">Costumbre regional</span>
+          </div>
+          <h2>Mate de té</h2>
+          <p>Infusión preparada en jarrito con té, hierbas, limón, azúcar y agua caliente.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Prepararon un mate de té bien dulce.”</p>
+        </article><article class="word-card" data-letter="N"
+             data-search="no tiene goyete frase para indicar que algo no tiene sentido o lógica. uso regional">
+          <div class="word-top">
+            <span class="letter-chip">N</span>
+            <span class="use-tag">Uso regional</span>
+          </div>
+          <h2>No tiene goyete</h2>
+          <p>Frase para indicar que algo no tiene sentido o lógica.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Che, eso no tiene goyete.”</p>
+        </article><article class="word-card" data-letter="P"
+             data-search="pandorga barrilete o cometa. uso regional">
+          <div class="word-top">
+            <span class="letter-chip">P</span>
+            <span class="use-tag">Uso regional</span>
+          </div>
+          <h2>Pandorga</h2>
+          <p>Barrilete o cometa.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Los gurises remontaron una pandorga.”</p>
+        </article><article class="word-card sensitive" data-letter="P"
+             data-search="pajero insulto o llamado de atención muy frecuente en contextos informales. su sentido depende del tono. uso vulgar">
+          <div class="word-top">
+            <span class="letter-chip">P</span>
+            <span class="use-tag">Uso vulgar</span>
+          </div>
+          <h2>Pajero</h2>
+          <p>Insulto o llamado de atención muy frecuente en contextos informales. Su sentido depende del tono.</p>
+          <p class="example"><strong>Ejemplo:</strong> “¡Che, pajero, te olvidaste las llaves!”</p>
+        </article><article class="word-card" data-letter="P"
+             data-search="papi forma afectuosa y habitual de llamar al padre. uso familiar">
+          <div class="word-top">
+            <span class="letter-chip">P</span>
+            <span class="use-tag">Uso familiar</span>
+          </div>
+          <h2>Papi</h2>
+          <p>Forma afectuosa y habitual de llamar al padre.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Papi, ¿me llevás?”</p>
+        </article><article class="word-card" data-letter="P"
+             data-search="payanga juego tradicional realizado con cinco piedras pequeñas. juego tradicional">
+          <div class="word-top">
+            <span class="letter-chip">P</span>
+            <span class="use-tag">Juego tradicional</span>
+          </div>
+          <h2>Payanga</h2>
+          <p>Juego tradicional realizado con cinco piedras pequeñas.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Jugábamos a la payanga en la vereda.”</p>
+        </article><article class="word-card" data-letter="P"
+             data-search="pororó pochoclo o palomitas de maíz. gastronomía">
+          <div class="word-top">
+            <span class="letter-chip">P</span>
+            <span class="use-tag">Gastronomía</span>
+          </div>
+          <h2>Pororó</h2>
+          <p>Pochoclo o palomitas de maíz.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Hicimos pororó para mirar una película.”</p>
+        </article><article class="word-card" data-letter="P"
+             data-search="porrón botella pequeña de cerveza. bebida alcohólica">
+          <div class="word-top">
+            <span class="letter-chip">P</span>
+            <span class="use-tag">Bebida alcohólica</span>
+          </div>
+          <h2>Porrón</h2>
+          <p>Botella pequeña de cerveza.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Pidieron un porrón bien frío.”</p>
+        </article><article class="word-card" data-letter="P"
+             data-search="pijerto pieza, objeto o elemento pequeño cuya función no se conoce bien. uso humorístico">
+          <div class="word-top">
+            <span class="letter-chip">P</span>
+            <span class="use-tag">Uso humorístico</span>
+          </div>
+          <h2>Pijerto</h2>
+          <p>Pieza, objeto o elemento pequeño cuya función no se conoce bien.</p>
+          <p class="example"><strong>Ejemplo:</strong> “¿Para qué sirve este pijerto?”</p>
+        </article><article class="word-card" data-letter="P"
+             data-search="pitín persona joven encargada de hacer mandados. uso tradicional">
+          <div class="word-top">
+            <span class="letter-chip">P</span>
+            <span class="use-tag">Uso tradicional</span>
+          </div>
+          <h2>Pitín</h2>
+          <p>Persona joven encargada de hacer mandados.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Mandaron al pitín a comprar pan.”</p>
+        </article><article class="word-card" data-letter="P"
+             data-search="pulpa / pulpa especial corte de carne considerado tierno y de buena calidad. carnicería">
+          <div class="word-top">
+            <span class="letter-chip">P</span>
+            <span class="use-tag">Carnicería</span>
+          </div>
+          <h2>Pulpa / Pulpa especial</h2>
+          <p>Corte de carne considerado tierno y de buena calidad.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Compramos pulpa para hacer milanesas.”</p>
+        </article><article class="word-card" data-letter="R"
+             data-search="relajar hacer bromas o cargar a alguien. uso regional">
+          <div class="word-top">
+            <span class="letter-chip">R</span>
+            <span class="use-tag">Uso regional</span>
+          </div>
+          <h2>Relajar</h2>
+          <p>Hacer bromas o cargar a alguien.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Lo estaban relajando por el corte de pelo.”</p>
+        </article><article class="word-card" data-letter="R"
+             data-search="reparar copiar o imitar una acción. uso regional">
+          <div class="word-top">
+            <span class="letter-chip">R</span>
+            <span class="use-tag">Uso regional</span>
+          </div>
+          <h2>Reparar</h2>
+          <p>Copiar o imitar una acción.</p>
+          <p class="example"><strong>Ejemplo:</strong> “La maestra dijo que dejara de reparar al compañero.”</p>
+        </article><article class="word-card" data-letter="R"
+             data-search="refucilo relámpago. clima">
+          <div class="word-top">
+            <span class="letter-chip">R</span>
+            <span class="use-tag">Clima</span>
+          </div>
+          <h2>Refucilo</h2>
+          <p>Relámpago.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Se vio un refucilo antes de la tormenta.”</p>
+        </article><article class="word-card" data-letter="R"
+             data-search="repugnante persona soberbia, peleadora o desagradable. a veces se pronuncia “repunante”. uso informal">
+          <div class="word-top">
+            <span class="letter-chip">R</span>
+            <span class="use-tag">Uso informal</span>
+          </div>
+          <h2>Repugnante</h2>
+          <p>Persona soberbia, peleadora o desagradable. A veces se pronuncia “repunante”.</p>
+          <p class="example"><strong>Ejemplo:</strong> “No seas repugnante con la gente.”</p>
+        </article><article class="word-card" data-letter="S"
+             data-search="sancocho comida quemada o demasiado cocida. gastronomía">
+          <div class="word-top">
+            <span class="letter-chip">S</span>
+            <span class="use-tag">Gastronomía</span>
+          </div>
+          <h2>Sancocho</h2>
+          <p>Comida quemada o demasiado cocida.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Se me pasó la comida y quedó sancochada.”</p>
+        </article><article class="word-card" data-letter="S"
+             data-search="solapa personaje del folclore entrerriano que, según el mito, aparece durante la siesta. folclore">
+          <div class="word-top">
+            <span class="letter-chip">S</span>
+            <span class="use-tag">Folclore</span>
+          </div>
+          <h2>Solapa</h2>
+          <p>Personaje del folclore entrerriano que, según el mito, aparece durante la siesta.</p>
+          <p class="example"><strong>Ejemplo:</strong> “De chico le tenían miedo a la Solapa.”</p>
+        </article><article class="word-card" data-letter="S"
+             data-search="sereno rocío o humedad que cae durante la noche. clima">
+          <div class="word-top">
+            <span class="letter-chip">S</span>
+            <span class="use-tag">Clima</span>
+          </div>
+          <h2>Sereno</h2>
+          <p>Rocío o humedad que cae durante la noche.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Está cayendo sereno.”</p>
+        </article><article class="word-card sensitive" data-letter="S"
+             data-search="soplamoco juguete casero hecho con un globo y un tubo para disparar pequeñas bolitas. juego tradicional / advertencia">
+          <div class="word-top">
+            <span class="letter-chip">S</span>
+            <span class="use-tag">Juego tradicional / advertencia</span>
+          </div>
+          <h2>Soplamoco</h2>
+          <p>Juguete casero hecho con un globo y un tubo para disparar pequeñas bolitas.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Jugaban con un soplamoco.”</p>
+        </article><article class="word-card" data-letter="T"
+             data-search="tereré mate de yerba preparado con agua fría, jugo u otros líquidos. bebida">
+          <div class="word-top">
+            <span class="letter-chip">T</span>
+            <span class="use-tag">Bebida</span>
+          </div>
+          <h2>Tereré</h2>
+          <p>Mate de yerba preparado con agua fría, jugo u otros líquidos.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Tomamos tereré porque hacía mucho calor.”</p>
+        </article><article class="word-card" data-letter="V"
+             data-search="vaquero pantalón de jean. uso tradicional">
+          <div class="word-top">
+            <span class="letter-chip">V</span>
+            <span class="use-tag">Uso tradicional</span>
+          </div>
+          <h2>Vaquero</h2>
+          <p>Pantalón de jean.</p>
+          <p class="example"><strong>Ejemplo:</strong> “Me compré un vaquero nuevo.”</p>
+        </article><article class="word-card sensitive" data-letter="V"
+             data-search="verga palabra vulgar usada como exclamación, insulto o para expresar enojo, mala calidad o frustración. uso vulgar">
+          <div class="word-top">
+            <span class="letter-chip">V</span>
+            <span class="use-tag">Uso vulgar</span>
+          </div>
+          <h2>Verga</h2>
+          <p>Palabra vulgar usada como exclamación, insulto o para expresar enojo, mala calidad o frustración.</p>
+          <p class="example"><strong>Ejemplo:</strong> “¡Pero qué verga, se cortó la luz!”</p>
+        </article>
+  </section>
+  <div class="editorial-note">
+    <strong>Nota editorial:</strong> las expresiones marcadas como vulgares, despectivas o sensibles se conservan con una advertencia de uso. No representan recomendaciones para tratar a otras personas.
   </div>
 </main>
+
+<footer>Sálvame las Papas · Diccionario entrerriano
+  <div class="version">Versión V29</div>
+</footer>
+
 <script>
-function alternarPassword(id, boton){
-  const campo=document.getElementById(id);
-  if(!campo) return;
-  const mostrando=campo.type==='text';
-  campo.type=mostrando?'password':'text';
-  boton.textContent=mostrando?'👁️':'🙈';
-  boton.setAttribute('aria-label', mostrando?'Mostrar contraseña':'Ocultar contraseña');
-  boton.title=mostrando?'Mostrar contraseña':'Ocultar contraseña';
-}
+const cards=[...document.querySelectorAll('.word-card')];
+const search=document.getElementById('dictionary-search');
+const info=document.getElementById('result-info');
+let activeLetter='TODAS';
 
-function prepararCamposPassword(){
-  document.querySelectorAll('input[type="password"]').forEach((campo,indice)=>{
-    if(campo.closest('.password-contenedor')) return;
-    if(!campo.id) campo.id='password-campo-'+indice+'-'+Math.random().toString(36).slice(2,7);
-    const cont=document.createElement('div');
-    cont.className='password-contenedor';
-    campo.parentNode.insertBefore(cont,campo);
-    cont.appendChild(campo);
-    const boton=document.createElement('button');
-    boton.type='button';
-    boton.className='btn-ver-password';
-    boton.textContent='👁️';
-    boton.title='Mostrar contraseña';
-    boton.setAttribute('aria-label','Mostrar contraseña');
-    boton.addEventListener('click',()=>alternarPassword(campo.id,boton));
-    cont.appendChild(boton);
+function filterDictionary(){
+  const query=search.value.trim().toLowerCase();
+  let visible=0;
+  cards.forEach(card=>{
+    const byLetter=activeLetter==='TODAS'||card.dataset.letter===activeLetter;
+    const byText=!query||card.dataset.search.includes(query);
+    const show=byLetter&&byText;
+    card.hidden=!show;
+    if(show) visible++;
   });
+  info.textContent=visible+' vocablo'+(visible===1?'':'s')+' encontrado'+(visible===1?'':'s');
+  let empty=document.getElementById('dictionary-empty');
+  if(!visible){
+    if(!empty){
+      empty=document.createElement('div');
+      empty.id='dictionary-empty';
+      empty.className='empty';
+      empty.textContent='No encontramos una palabra con esa búsqueda.';
+      document.getElementById('dictionary-grid').appendChild(empty);
+    }
+  }else if(empty) empty.remove();
 }
-document.addEventListener('DOMContentLoaded',prepararCamposPassword);
+document.querySelectorAll('.letters button').forEach(button=>{
+  button.addEventListener('click',()=>{
+    activeLetter=button.dataset.letter;
+    document.querySelectorAll('.letters button').forEach(b=>b.classList.toggle('active',b===button));
+    filterDictionary();
+  });
+});
+search.addEventListener('input',filterDictionary);
 </script>
-
 </body>
 </html>

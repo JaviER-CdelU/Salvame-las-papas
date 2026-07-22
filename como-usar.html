@@ -1,144 +1,140 @@
 <!doctype html>
 <html lang="es">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#002A6A">
-<meta name="description" content="Guía para comprar y pedir con Sálvame las Papas.">
-<title>Cómo usar Sálvame las Papas</title>
-<link rel="manifest" href="./manifest.webmanifest"><link rel="apple-touch-icon" href="./icons/icon-180.png"><link rel="icon" href="./icons/favicon-32.png">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta name="description" content="Guía visual para comprar y pedir con Sálvame las Papas.">
+<meta name="app-version" content="V29">
+<title>Cómo funciona — Sálvame las Papas</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icons/icon-180.png">
+<link rel="icon" href="./icons/favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--azul:#002A6A;--rojo:#CC0000;--naranja:#F47521;--fondo:#F7F4EF;--texto:#1c2430;--suave:#667085}*{box-sizing:border-box}
-body{margin:0;background:var(--fondo);font-family:"DM Sans",sans-serif;color:var(--texto)}.top{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.95);border-bottom:1px solid #e6e8ec}
-.topin{max-width:1180px;margin:auto;padding:11px 20px;display:flex;align-items:center;justify-content:space-between;gap:14px}.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--azul);font-family:"Fraunces",serif;font-weight:900}
-.brand img{width:48px;height:48px;border-radius:14px}.back{text-decoration:none;background:var(--azul);color:#fff;padding:10px 16px;border-radius:999px;font-weight:700}
-.hero{background:linear-gradient(135deg,#002A6A,#07549b);color:#fff}.heroin{max-width:1180px;margin:auto;padding:56px 20px;display:grid;grid-template-columns:1.15fr .85fr;gap:30px;align-items:center}
-.hero h1{font-family:"Fraunces",serif;font-size:clamp(2.5rem,7vw,4.7rem);line-height:1;margin:5px 0 15px}.hero p{font-size:1.1rem;line-height:1.7;color:rgba(255,255,255,.84)}.hero img{width:100%;max-width:380px;justify-self:center}
-.wrap{max-width:1180px;margin:auto;padding:54px 20px}.intro{max-width:760px;text-align:center;margin:0 auto 36px}.intro h2{font-family:"Fraunces",serif;color:var(--azul);font-size:2.2rem;margin:0 0 8px}.intro p{color:var(--suave);line-height:1.7}
-.steps{display:grid;gap:26px}.step{display:grid;grid-template-columns:1fr 1fr;background:#fff;border-radius:24px;overflow:hidden;border:1px solid #e7e8eb;box-shadow:0 14px 38px rgba(0,42,106,.09)}.step:nth-child(even) .pic{order:2}
-.pic{min-height:330px;background:#edf3f9}.pic img{width:100%;height:100%;object-fit:cover;display:block}.copy{padding:36px;display:flex;flex-direction:column;justify-content:center}.num{display:grid;place-items:center;width:42px;height:42px;border-radius:50%;background:var(--naranja);color:#fff;font-weight:900;margin-bottom:14px}
-.copy h3{font-family:"Fraunces",serif;font-size:1.75rem;color:var(--azul);margin:0 0 9px}.copy p{line-height:1.75;color:#535d6b;margin:0}.tip{margin-top:38px;background:#fff4e8;border:2px solid #ffc68d;border-radius:20px;padding:22px;line-height:1.6}
-.cta{margin-top:38px;background:linear-gradient(135deg,#CC0000,#a30000);color:#fff;border-radius:24px;padding:32px;text-align:center}.cta h2{font-family:"Fraunces",serif;font-size:2rem;margin:0 0 8px}.cta p{color:rgba(255,255,255,.84)}.cta a{display:inline-block;background:#fff;color:var(--rojo);text-decoration:none;font-weight:800;padding:12px 20px;border-radius:999px}
-footer{background:#04162e;color:rgba(255,255,255,.65);text-align:center;padding:24px}
-@media(max-width:760px){.heroin,.step{grid-template-columns:1fr}.hero img{max-width:260px}.step:nth-child(even) .pic{order:0}.pic{min-height:230px}.copy{padding:24px}.brand{font-size:.9rem}}
-
-.password-contenedor{
-  position:relative;
-  width:100%;
+:root{--azul:#002A6A;--azul2:#07549b;--rojo:#CC0000;--naranja:#F47521;--fondo:#F7F4EF;--texto:#1c2430;--suave:#667085}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fondo);font-family:"DM Sans",sans-serif;color:var(--texto)}
+.top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.97);border-bottom:1px solid #e2e7ee;box-shadow:0 5px 18px rgba(0,42,106,.06)}
+.topin{max-width:1180px;margin:auto;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--azul);font-family:"Fraunces",serif;font-weight:900;font-size:1.08rem}
+.brand img{width:46px;height:46px;border-radius:13px}
+.back{text-decoration:none;background:var(--azul);color:#fff;padding:10px 16px;border-radius:999px;font-weight:800}
+.hero{background:linear-gradient(135deg,#002A6A,#07549b);color:#fff;overflow:hidden}
+.heroin{max-width:1180px;margin:auto;padding:58px 20px;display:grid;grid-template-columns:1.1fr .9fr;gap:32px;align-items:center}
+.hero-kicker{display:inline-flex;padding:7px 12px;border-radius:999px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.25);font-size:.78rem;font-weight:900;letter-spacing:.08em}
+.hero h1{font-family:"Fraunces",serif;font-size:clamp(2.7rem,7vw,4.8rem);line-height:1;margin:13px 0 15px}
+.hero p{font-size:1.08rem;line-height:1.7;color:rgba(255,255,255,.86);max-width:680px}
+.hero img{width:100%;max-width:360px;justify-self:center;filter:drop-shadow(0 20px 25px rgba(0,0,0,.22))}
+.wrap{max-width:1180px;margin:auto;padding:52px 20px}
+.intro{max-width:800px;text-align:center;margin:0 auto 35px}
+.intro h2{font-family:"Fraunces",serif;color:var(--azul);font-size:2.25rem;margin:0 0 9px}
+.intro p{color:var(--suave);line-height:1.7}
+.no-register{margin:0 auto 34px;max-width:900px;padding:16px 18px;border-radius:16px;background:#edf9f0;border:1px solid #8dcc9a;color:#245f35;line-height:1.55;text-align:center}
+.steps{display:grid;gap:26px}
+.step{display:grid;grid-template-columns:1fr 1fr;background:#fff;border-radius:24px;overflow:hidden;border:1px solid #e1e6ec;box-shadow:0 14px 38px rgba(0,42,106,.09)}
+.step:nth-child(even) .pic{order:2}
+.pic{min-height:330px;background:#eaf1f8}
+.pic img{width:100%;height:100%;object-fit:cover;display:block}
+.copy{padding:36px;display:flex;flex-direction:column;justify-content:center}
+.num{display:grid;place-items:center;width:43px;height:43px;border-radius:50%;background:var(--naranja);color:#fff;font-weight:900;margin-bottom:14px;box-shadow:0 6px 14px rgba(244,117,33,.25)}
+.copy h3{font-family:"Fraunces",serif;font-size:1.8rem;color:var(--azul);margin:0 0 9px}
+.copy p{line-height:1.75;color:#535d6b;margin:0}
+.copy ul{margin:13px 0 0;padding-left:19px;color:#535d6b;line-height:1.7}
+.tip{margin-top:38px;background:#fff4e8;border:2px solid #ffc68d;border-radius:20px;padding:22px;line-height:1.65}
+.cta{margin-top:38px;background:linear-gradient(135deg,#CC0000,#a30000);color:#fff;border-radius:24px;padding:32px;text-align:center}
+.cta h2{font-family:"Fraunces",serif;font-size:2rem;margin:0 0 8px}
+.cta p{color:rgba(255,255,255,.84)}
+.cta a{display:inline-block;background:#fff;color:var(--rojo);text-decoration:none;font-weight:900;padding:12px 20px;border-radius:999px}
+footer{background:#04162e;color:rgba(255,255,255,.68);text-align:center;padding:24px}
+.version{display:inline-block;margin-top:8px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.10);color:#ffd34e;font-size:.72rem;font-weight:800}
+@media(max-width:760px){
+ .heroin,.step{grid-template-columns:1fr}
+ .hero img{max-width:260px}
+ .step:nth-child(even) .pic{order:0}
+ .pic{min-height:230px}
+ .copy{padding:24px}
+ .brand{font-size:.9rem}
 }
-.password-contenedor input[type="password"],
-.password-contenedor input[type="text"]{
-  width:100%;
-  padding-right:54px !important;
-}
-.btn-ver-password{
-  position:absolute;
-  right:8px;
-  top:50%;
-  transform:translateY(-50%);
-  width:40px !important;
-  min-width:40px !important;
-  height:36px;
-  padding:0 !important;
-  border:0;
-  background:transparent;
-  border-radius:8px;
-  cursor:pointer;
-  font-size:1.1rem;
-  line-height:1;
-}
-.btn-ver-password:hover{background:rgba(0,0,0,.06)}
-
-
-/* IDENTIFICACIÓN DE VERSIÓN — V26 */
-.app-version-badge{
-  position:fixed;
-  right:12px;
-  bottom:12px;
-  z-index:9000;
-  padding:7px 10px;
-  border-radius:999px;
-  background:rgba(5,43,101,.92);
-  color:#fff;
-  border:1px solid rgba(255,255,255,.32);
-  box-shadow:0 5px 18px rgba(0,0,0,.18);
-  font:800 .72rem/1 "DM Sans",Arial,sans-serif;
-  letter-spacing:.03em;
-}
-.app-version-badge a{color:#ffd34e;text-decoration:none}
-@media(max-width:600px){
-  .app-version-badge{right:8px;bottom:8px;font-size:.66rem;padding:6px 8px}
-}
-
-
-.guia-cliente-destacada{max-width:1000px;margin:24px auto;padding:22px;border-radius:20px;background:linear-gradient(135deg,#eef5ff,#fff8ec);border:1px solid #d5e2f0}
-.guia-cliente-destacada h1{color:#073574;font-family:"Fraunces",serif}
-.pasos-cliente-v27{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px}
-.paso-cliente-v27{padding:16px;border-radius:14px;background:#fff;border:1px solid #d9e3ef}
-.paso-cliente-v27 b{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:#0a4d9d;color:#fff;margin-bottom:8px}
-.aviso-cliente-v27{margin-top:15px;padding:13px;border-radius:12px;background:#edf9f0;border:1px solid #8dcc9a;color:#245f35}
-@media(max-width:760px){.pasos-cliente-v27{grid-template-columns:1fr 1fr}}
-@media(max-width:450px){.pasos-cliente-v27{grid-template-columns:1fr}}
-
-</style><meta name="app-version" content="V28">
+</style>
 </head>
 <body>
-<section class="guia-cliente-destacada">
- <h1>Cómo se usa para clientes</h1>
- <p>Podés recorrer la página y comparar comercios sin crear una cuenta.</p>
- <div class="pasos-cliente-v27">
-  <article class="paso-cliente-v27"><b>1</b><strong>Buscá</strong><p>Elegí una categoría, oferta o comercio.</p></article>
-  <article class="paso-cliente-v27"><b>2</b><strong>Mirá</strong><p>Revisá fotos, precios, horarios, ubicación y entrega.</p></article>
-  <article class="paso-cliente-v27"><b>3</b><strong>Elegí</strong><p>Agregá productos y seleccioná retiro o envío.</p></article>
-  <article class="paso-cliente-v27"><b>4</b><strong>Confirmá</strong><p>Recién ahí se solicitan tus datos y se prepara el pedido.</p></article>
- </div>
- <div class="aviso-cliente-v27"><strong>No te pedimos registrarte para mirar.</strong> Los datos se solicitan únicamente cuando decidís confirmar una compra.</div>
-</section>
+<header class="top"><div class="topin">
+  <a class="brand" href="./index.html"><img src="./icons/icon-192.png" alt="">Sálvame las Papas</a>
+  <a class="back" href="./index.html">← Volver al inicio</a>
+</div></header>
 
-<header class="top"><div class="topin"><a class="brand" href="./index.html"><img src="./icons/icon-192.png" alt="">Sálvame las Papas</a><a class="back" href="./index.html">← Volver</a></div></header>
-<section class="hero"><div class="heroin"><div><span>GUÍA PARA CLIENTES</span><h1>¿Cómo se usa?</h1><p>Podés mirar comercios y armar el carrito sin registrarte. La cuenta se pide recién cuando confirmás una compra.</p></div><img src="./images/super-papa.webp" alt="Súper Papa"></div></section>
+<section class="hero"><div class="heroin">
+  <div>
+    <span class="hero-kicker">GUÍA VISUAL PARA CLIENTES</span>
+    <h1>¿Cómo funciona?</h1>
+    <p>Buscá, compará, armá tu pedido y coordiná directamente con el comercio. Podés recorrer toda la página antes de crear una cuenta.</p>
+  </div>
+  <img src="./images/super-papa.webp" alt="Súper Papa">
+</div></section>
+
 <main class="wrap">
-<div class="intro"><h2>Comprar es simple</h2><p>La historia que preparaste en Word se transformó en esta explicación web clara y fácil de abrir desde cualquier dispositivo.</p></div>
-<section class="steps">
-<article class="step"><div class="pic"><img src="./images/guia/paso-1.webp" alt="Persona que encuentra una solución en la plataforma"></div><div class="copy"><span class="num">1</span><h3>Buscá lo que necesitás</h3><p>Usá el buscador o las categorías para encontrar comercios, productos o servicios de la ciudad. No necesitás crear una cuenta para explorar.</p></div></article>
-<article class="step"><div class="pic"><img src="./images/guia/paso-2.webp" alt="Carrito de compra"></div><div class="copy"><span class="num">2</span><h3>Armá tu pedido</h3><p>Entrá al comercio, revisá la información y agregá productos al carrito. Podés cambiar cantidades o seguir mirando antes de confirmar.</p></div></article>
-<article class="step"><div class="pic"><img src="./images/guia/paso-3.webp" alt="Entrega de un pedido"></div><div class="copy"><span class="num">3</span><h3>Registrate al confirmar</h3><p>Cuando vas a comprar, ingresás o creás tu cuenta. Así el comercio recibe tu nombre, WhatsApp y los datos necesarios para respaldar el pedido.</p></div></article>
-<article class="step"><div class="pic"><img src="./images/guia/paso-4.webp" alt="Pedido recibido con éxito"></div><div class="copy"><span class="num">4</span><h3>Coordiná y recibí</h3><p>El pedido queda registrado con un número y luego continuás por WhatsApp para coordinar pago, retiro o envío.</p></div></article>
-</section>
-<div class="tip"><strong>💡 Importante:</strong> cada comercio confirma disponibilidad, precio final, forma de pago y entrega. Sálvame las Papas funciona como una red de conexión local.</div>
-<section class="cta"><h2>¿Listo para empezar?</h2><p>Volvé al inicio y explorá la red local.</p><a href="./index.html#comercios">Buscar ahora</a></section>
-</main><footer>© 2026 Sálvame las Papas · Proyecto local independiente</footer>
-<script>if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js").catch(console.warn));</script>
-<script>
-function alternarPassword(id, boton){
-  const campo=document.getElementById(id);
-  if(!campo) return;
-  const mostrando=campo.type==='text';
-  campo.type=mostrando?'password':'text';
-  boton.textContent=mostrando?'👁️':'🙈';
-  boton.setAttribute('aria-label', mostrando?'Mostrar contraseña':'Ocultar contraseña');
-  boton.title=mostrando?'Mostrar contraseña':'Ocultar contraseña';
-}
+  <div class="intro">
+    <h2>Comprar es simple</h2>
+    <p>La plataforma te ayuda a encontrar comercios y productos de Concepción del Uruguay sin perder tiempo.</p>
+  </div>
 
-function prepararCamposPassword(){
-  document.querySelectorAll('input[type="password"]').forEach((campo,indice)=>{
-    if(campo.closest('.password-contenedor')) return;
-    if(!campo.id) campo.id='password-campo-'+indice+'-'+Math.random().toString(36).slice(2,7);
-    const cont=document.createElement('div');
-    cont.className='password-contenedor';
-    campo.parentNode.insertBefore(cont,campo);
-    cont.appendChild(campo);
-    const boton=document.createElement('button');
-    boton.type='button';
-    boton.className='btn-ver-password';
-    boton.textContent='👁️';
-    boton.title='Mostrar contraseña';
-    boton.setAttribute('aria-label','Mostrar contraseña');
-    boton.addEventListener('click',()=>alternarPassword(campo.id,boton));
-    cont.appendChild(boton);
-  });
-}
-document.addEventListener('DOMContentLoaded',prepararCamposPassword);
-</script>
+  <div class="no-register"><strong>No necesitás registrarte para mirar.</strong> Tus datos se solicitan únicamente cuando decidís confirmar un pedido.</div>
 
-</body></html>
+  <section class="steps">
+    <article class="step">
+      <div class="pic"><img src="./images/guia/paso-1.webp" alt="Persona buscando una solución local"></div>
+      <div class="copy"><span class="num">1</span><h3>Buscá lo que necesitás</h3>
+        <p>Usá el buscador, las categorías o los filtros para encontrar comercios, productos y servicios.</p>
+        <ul><li>Buscá por producto, comercio o barrio.</li><li>Filtrá por entrega, retiro y disponibilidad.</li></ul>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="pic"><img src="./images/guia/paso-2.webp" alt="Comparación de comercios y productos"></div>
+      <div class="copy"><span class="num">2</span><h3>Compará y elegí</h3>
+        <p>Entrá a cada comercio para revisar fotos, precios, horarios, dirección y formas de entrega.</p>
+        <ul><li>Comprobá si está abierto.</li><li>Revisá ubicación y Google Maps.</li><li>Elegí la opción que mejor te sirva.</li></ul>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="pic"><img src="./images/guia/paso-3.webp" alt="Cliente armando su pedido"></div>
+      <div class="copy"><span class="num">3</span><h3>Armá tu pedido</h3>
+        <p>Agregá los productos, modificá cantidades y elegí retiro, envío y forma de pago.</p>
+        <ul><li>Podés seguir mirando antes de confirmar.</li><li>El total se calcula automáticamente.</li></ul>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="pic"><img src="./images/guia/paso-4.webp" alt="Confirmación de datos del cliente"></div>
+      <div class="copy"><span class="num">4</span><h3>Confirmá tus datos</h3>
+        <p>Recién en este momento ingresás o creás una cuenta. El comercio recibe únicamente los datos necesarios para preparar y entregar el pedido.</p>
+        <ul><li>Nombre y WhatsApp.</li><li>Entrega o retiro.</li><li>Forma de pago y observaciones.</li></ul>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="pic"><img src="./images/guia/paso-5.webp" alt="Pedido coordinado y entregado"></div>
+      <div class="copy"><span class="num">5</span><h3>Coordiná y recibí</h3>
+        <p>El pedido queda registrado y se abre WhatsApp con el detalle completo para coordinar con el comercio.</p>
+        <ul><li>Confirmá disponibilidad y tiempo.</li><li>Coordiná pago, envío o retiro.</li><li>Guardá el número de pedido.</li></ul>
+      </div>
+    </article>
+  </section>
+
+  <div class="tip"><strong>💡 Recordá:</strong> Sálvame las Papas conecta al cliente con el comercio. El negocio confirma la disponibilidad, el precio final y la entrega.</div>
+
+  <section class="cta">
+    <h2>¿Listo para buscar?</h2>
+    <p>Volvé al inicio y encontrá una solución cerca tuyo.</p>
+    <a href="./index.html">Ir a Sálvame las Papas</a>
+  </section>
+</main>
+
+<footer>Sálvame las Papas · Concepción del Uruguay
+  <div class="version">Versión V29</div>
+</footer>
+</body>
+</html>

@@ -1,12 +1,15 @@
 {
-  "version": "V28",
-  "nombre": "Ajustes visuales y fotos",
+  "version": "V29",
+  "nombre": "Navegación, guía y diccionario",
   "fecha": "2026-07-22",
   "cambios": [
-    "Formulario alineado desde arriba y sin espacio vacío",
-    "Encabezado responsive",
-    "Versión integrada al pie",
-    "Fotos visibles en panel y página pública",
-    "Galería de hasta cuatro fotos según plan"
+    "Encabezado definitivo en dos filas",
+    "Marca y bandera más grandes",
+    "Accesos de comercio y administración separados",
+    "Guía externa con cinco pasos e imágenes",
+    "Diccionario editorial completo con buscador y letras",
+    "Ofertas y destacados reubicados antes de los planes",
+    "Reconocimiento ampliado de planes Pro, Max, Destacado y Nivel 3",
+    "Prioridad corregida para comercios destacados"
   ]
 }
