@@ -1,0 +1,12 @@
+VERSIÓN V31 — CORRECCIÓN REAL
+
+La V30 tenía CSS nuevo, pero dos secciones no habían sido insertadas en el HTML.
+Además, el registro del service worker seguía usando v24.
+
+V31 corrige:
+- Categorías compactas visibles.
+- Todos los comercios visibles según plan.
+- Estadísticas reales.
+- Marca naranja arriba: V31 cargada.
+- Registro del service worker v31.
+- Caché V31.

@@ -1,14 +1,13 @@
 {
-  "version": "V30",
-  "nombre": "Portada compacta y todos los comercios",
+  "version": "V31",
+  "nombre": "Corrección real de portada",
   "fecha": "2026-07-22",
   "cambios": [
-    "Hero más compacto",
-    "Estadísticas reales de comercios, productos y visitas",
-    "Mensaje local de Concepción del Uruguay",
-    "Categorías pequeñas en dos filas",
-    "Instalación compacta",
+    "Bloques V30 insertados realmente en HTML",
+    "Categorías compactas visibles",
     "Todos los comercios visibles según plan",
-    "Max grandes, Pro medianos y Básicos compactos"
+    "Estadísticas actualizadas",
+    "Service worker registrado como v31",
+    "Marca visible de confirmación V31"
   ]
 }
