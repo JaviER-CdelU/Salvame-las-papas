@@ -1,13 +1,13 @@
 {
-  "version": "V31",
-  "nombre": "Corrección real de portada",
+  "version": "V32",
+  "nombre": "Orden real de portada",
   "fecha": "2026-07-22",
   "cambios": [
-    "Bloques V30 insertados realmente en HTML",
-    "Categorías compactas visibles",
-    "Todos los comercios visibles según plan",
-    "Estadísticas actualizadas",
-    "Service worker registrado como v31",
-    "Marca visible de confirmación V31"
+    "Versión eliminada de la parte superior",
+    "Versión visible solamente en el pie",
+    "Estadísticas compactas inmediatamente debajo de la portada",
+    "Eliminada la fila de categorías encima de Tenés un comercio",
+    "Eliminado Todos los comercios antes de Oferta de la semana",
+    "Imágenes nuevas guardadas en images/nuevas-v32"
   ]
 }

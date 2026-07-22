@@ -1,0 +1,10 @@
+VERSIÓN V32 — ORDEN REAL DE PORTADA
+
+- Se quitó la franja de versión de la parte superior.
+- La versión aparece únicamente en el pie de página.
+- Las estadísticas quedaron inmediatamente debajo de la portada.
+- Se compactaron comercios activos, productos publicados y visitas acumuladas.
+- Se quitó la fila de íconos que estaba encima de “¿Tenés un comercio?”.
+- Se quitó “Todos los comercios” que aparecía antes de “Oferta de la semana”.
+- La sección principal de todos los comercios con filtros se conserva.
+- Las imágenes nuevas están en images/nuevas-v32/.

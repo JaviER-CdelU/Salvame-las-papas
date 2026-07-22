@@ -2262,7 +2262,6 @@ nav .nav-btns,nav .nav-portals{display:none!important}
 
 
 /* V31 — CONFIRMACIÓN VISIBLE Y BLOQUES REALES */
-.v31-confirmation{position:relative;z-index:350;background:#ff7a1a;color:#fff;text-align:center;padding:7px 12px;font-weight:900;font-size:.78rem;letter-spacing:.03em}
 .categories-v31{width:min(1420px,calc(100% - 28px));margin:0 auto 22px;padding:14px;border-radius:17px;background:#fff;border:1px solid #e2e7ed}
 .categories-v31 h2{margin:0 0 10px;color:#073574;font-family:"Fraunces",serif;font-size:1.35rem}
 .categories-v31-grid{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:7px}
@@ -2280,6 +2279,105 @@ nav .nav-btns,nav .nav-portals{display:none!important}
 @media(max-width:1050px){.categories-v31-grid{grid-template-columns:repeat(6,1fr)}.plan-card-v31.max,.plan-card-v31.pro{grid-column:span 6}.plan-card-v31.basic{grid-column:span 4}}
 @media(max-width:700px){.categories-v31-grid{grid-template-columns:repeat(4,1fr)}.plan-card-v31.max,.plan-card-v31.pro,.plan-card-v31.basic{grid-column:span 12}}
 @media(max-width:450px){.categories-v31-grid{grid-template-columns:repeat(3,1fr)}}
+
+
+/* ==========================================================
+   V32 — ORDEN REAL DE PORTADA Y ESTADÍSTICAS
+   ========================================================== */
+.stats-local-v30{
+  width:min(1180px,calc(100% - 28px))!important;
+  margin:-18px auto 14px!important;
+  position:relative!important;
+  z-index:8!important;
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:0!important;
+  background:#fff!important;
+  border:1px solid #dce5ef!important;
+  border-radius:15px!important;
+  box-shadow:0 10px 24px rgba(0,42,106,.12)!important;
+  overflow:hidden!important;
+}
+.stats-local-v30 article{
+  min-height:78px!important;
+  padding:12px 14px!important;
+  display:grid!important;
+  grid-template-columns:42px minmax(0,1fr)!important;
+  gap:9px!important;
+  align-items:center!important;
+  border-right:1px solid #e5eaf0!important;
+}
+.stats-local-v30 article:last-child{border-right:0!important}
+.stats-local-v30 .stat-icon{
+  width:40px!important;
+  height:40px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:11px!important;
+  background:#eef5ff!important;
+  font-size:1.35rem!important;
+}
+.stats-local-v30 strong{
+  display:block!important;
+  color:#073574!important;
+  font-size:1.14rem!important;
+  line-height:1!important;
+}
+.stats-local-v30 span{
+  display:block!important;
+  margin-top:4px!important;
+  color:#66758a!important;
+  font-size:.7rem!important;
+  line-height:1.2!important;
+}
+.local-made-v30{
+  width:min(1180px,calc(100% - 28px))!important;
+  margin:0 auto 18px!important;
+  padding:13px 18px!important;
+  min-height:0!important;
+  grid-template-columns:auto minmax(0,1fr) auto!important;
+  border-radius:14px!important;
+}
+.local-made-v30 .local-icon{font-size:1.55rem!important}
+.local-made-v30 h2{font-size:1.25rem!important;margin-bottom:2px!important}
+.local-made-v30 p{font-size:.8rem!important}
+.local-made-v30 .local-chip{font-size:.72rem!important;padding:6px 9px!important}
+
+/* El bloque comercial queda limpio, sin ícono grande a la izquierda */
+.business-cta-home > div > span{
+  display:none!important;
+}
+.business-cta-home > div{
+  display:block!important;
+}
+
+/* La versión solo aparece dentro del pie */
+.app-version-badge{
+  position:static!important;
+  margin:12px auto 0!important;
+}
+
+/* Ocultar definitivamente cualquier bloque viejo de portada */
+.all-plans-v31,
+.plan-grid-v31,
+.home-categories{
+  display:none!important;
+}
+
+@media(max-width:760px){
+  .stats-local-v30{
+    grid-template-columns:1fr 1fr!important;
+    margin-top:10px!important;
+  }
+  .stats-local-v30 article:nth-child(2){border-right:0!important}
+  .stats-local-v30 article:nth-child(-n+2){border-bottom:1px solid #e5eaf0!important}
+  .local-made-v30{
+    grid-template-columns:1fr!important;
+    text-align:center!important;
+  }
+  .local-made-v30 .local-icon,
+  .local-made-v30 .local-chip{display:none!important}
+}
 
 </style>
 
@@ -2542,11 +2640,9 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
 }
 
 </style>
-<meta name="app-version" content="V31">
+<meta name="app-version" content="V32">
 </head>
 <body>
-<div class="v31-confirmation" role="status">✅ Sálvame las Papas · V31 cargada</div>
-
 <div class="cdu-stripe"></div>
 
 <!-- NAV -->
@@ -2613,14 +2709,12 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
     <button type="button" onclick="usarMiUbicacion()">Usar mi ubicación</button>
   </div>
 </section>
-
 <section class="stats-local-v30" aria-label="Estadísticas de la red local">
   <article><div class="stat-icon">🏬</div><div><strong id="stat-comercios-v30">0</strong><span>Comercios activos</span></div></article>
   <article><div class="stat-icon">📦</div><div><strong id="stat-productos-v30">0</strong><span>Productos publicados</span></div></article>
   <article><div class="stat-icon">👁️</div><div><strong id="stat-visitas-v30">0</strong><span>Visitas acumuladas</span></div></article>
   <article><div class="stat-icon">📍</div><div><strong>100%</strong><span>Hecho en C. del Uruguay</span></div></article>
 </section>
-
 <section class="local-made-v30">
   <div class="local-icon">🥔</div>
   <div>
@@ -2629,6 +2723,11 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
   </div>
   <div class="local-chip">Proyecto local</div>
 </section>
+
+
+
+
+
 <section class="categories-v31"><h2>Explorá por categoría</h2><div class="categories-v31-grid"><button type="button" onclick="filtrarCategoriaV31('Comida')"><span>🍔</span>Comidas</button><button type="button" onclick="filtrarCategoriaV31('Almacén')"><span>🛒</span>Almacenes</button><button type="button" onclick="filtrarCategoriaV31('Panadería')"><span>🥖</span>Panaderías</button><button type="button" onclick="filtrarCategoriaV31('Farmacia')"><span>💊</span>Farmacias</button><button type="button" onclick="filtrarCategoriaV31('Mecánico')"><span>🚗</span>Mecánicos</button><button type="button" onclick="filtrarCategoriaV31('Ferretería')"><span>🔧</span>Ferreterías</button><button type="button" onclick="filtrarCategoriaV31('Verdulería')"><span>🌳</span>Verdulerías</button><button type="button" onclick="filtrarCategoriaV31('Carnicería')"><span>🥩</span>Carnicerías</button><button type="button" onclick="filtrarCategoriaV31('Restaurante')"><span>🍽️</span>Restaurantes</button><button type="button" onclick="filtrarCategoriaV31('Pizzería')"><span>🍕</span>Pizzerías</button><button type="button" onclick="filtrarCategoriaV31('Peluquería')"><span>💇</span>Peluquerías</button><button type="button" onclick="filtrarCategoriaV31('Veterinaria')"><span>🐾</span>Veterinarias</button><button type="button" onclick="filtrarCategoriaV31('Electricista')"><span>⚡</span>Electricistas</button><button type="button" onclick="filtrarCategoriaV31('Cerrajero')"><span>🔑</span>Cerrajeros</button><button type="button" onclick="filtrarCategoriaV31('Alojamiento')"><span>🏠</span>Alojamientos</button><button type="button" onclick="filtrarCategoriaV31('Limpieza')"><span>🧹</span>Limpieza</button></div></section>
 
 
@@ -2656,17 +2755,6 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
 <section class="home-block" id="abiertos-home-section">
   <div class="home-section-title"><div><span class="open-dot"></span><h2>Abierto ahora cerca tuyo</h2></div><button onclick="goTo('comercios')">Ver todos</button></div>
   <div class="open-now-grid" id="abiertos-home"><div class="home-empty">Consultando horarios reales…</div></div>
-</section>
-
-<section class="home-categories" id="categorias">
-  <button onclick="filtrarCat('Restaurante')">🍔<span>Comidas</span></button>
-  <button onclick="filtrarCat('Almacén')">🛒<span>Almacenes</span></button>
-  <button onclick="filtrarCat('Ropa')">👕<span>Ropa</span></button>
-  <button onclick="filtrarCat('Hogar')">🏠<span>Hogar</span></button>
-  <button onclick="filtrarCat('Peluquería')">💄<span>Belleza</span></button>
-  <button onclick="filtrarCat('Servicios')">🔧<span>Servicios</span></button>
-  <button onclick="filtrarCat('Compraventa')">🏷️<span>Compra y venta</span></button>
-  <button onclick="goTo('comercios')">▦<span>Ver todas</span></button>
 </section>
 
 <section class="business-cta-home">
@@ -2794,7 +2882,6 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
 
 
 <!-- PROMOCIONES REUBICADAS: ANTES DE LOS PLANES -->
-<section class="all-plans-v31"><h2>Todos los comercios</h2><p>Todos aparecen en la portada. El tamaño cambia según el plan contratado.</p><div class="plan-grid-v31" id="plan-grid-v31"><div class="home-empty">Cargando comercios...</div></div></section>
 <div class="promociones-before-plans">
   <section class="home-block" id="ofertas-semana">
   <div class="home-section-title"><div><span class="title-icon">🔥</span><h2>Oferta de la semana</h2></div><button onclick="goTo('comercios')">Ver todos los productos</button></div>
@@ -3236,7 +3323,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
   </div>
   <div class="footer-bottom">© 2025 Sálvame las Papas · Concepción del Uruguay, La Histórica · Hecho con ❤️ y mate 🧉 para los vecinos del barrio</div>
 <div class="app-version-badge" title="Versión publicada de Sálvame las Papas">
-  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V31</a>
+  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V32</a>
 </div>
 </footer>
 

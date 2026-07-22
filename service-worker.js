@@ -1,4 +1,4 @@
-const CACHE_NAME = "salvame-papas-v31-correccion-real";
+const CACHE_NAME = "salvame-papas-v32-orden-real";
 const APP_SHELL = ["./","./index.html","./comercio.html","./admin.html","./seguimiento-comercios.html","./como-usar.html","./diccionario-entrerriano.html","./offline.html","./manifest.webmanifest","./version.json"];
 
 self.addEventListener("install",event=>{
