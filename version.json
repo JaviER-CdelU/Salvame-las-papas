@@ -1,13 +1,12 @@
 {
-  "version": "V35",
-  "nombre": "Datos públicos reales y proyecto compacto",
+  "version": "V36",
+  "nombre": "Firestore público seguro",
   "fecha": "2026-07-23",
   "cambios": [
-    "Eliminado bloque JavaScript incompleto heredado",
-    "Carga pública independiente de comercios activos",
-    "Estadísticas reales de comercios, productos y consultas",
-    "Categorías construidas con comercios reales",
-    "Mensajes de carga y error sin mostrar ceros falsos",
-    "Proyecto local compacto sin captura gigante"
+    "Consulta pública limitada a estado activo",
+    "Reglas seguras incluidas en firestore.rules",
+    "Productos públicos solo para comercios activos",
+    "Propietarios conservan acceso a sus propios comercios",
+    "Administración conserva acceso completo"
   ]
 }

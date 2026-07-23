@@ -1,0 +1,13 @@
+V36 — PUBLICACIÓN SEGURA DE FIRESTORE
+
+1. Subí todo el contenido del ZIP a GitHub.
+2. Abrí Firebase Console.
+3. Entrá en Firestore Database.
+4. Abrí la pestaña Reglas.
+5. Copiá todo el contenido del archivo firestore.rules.
+6. Reemplazá las reglas actuales.
+7. Presioná Publicar.
+8. Volvé a la página pública y actualizá.
+
+La portada consulta únicamente comercios con estado == activo.
+Pendientes y rechazados no se muestran públicamente.
