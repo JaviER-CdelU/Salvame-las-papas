@@ -1,12 +1,13 @@
 {
-  "version": "V36",
-  "nombre": "Firestore público seguro",
+  "version": "V37",
+  "nombre": "Sincronización de portada pública",
   "fecha": "2026-07-23",
   "cambios": [
-    "Consulta pública limitada a estado activo",
-    "Reglas seguras incluidas en firestore.rules",
-    "Productos públicos solo para comercios activos",
-    "Propietarios conservan acceso a sus propios comercios",
-    "Administración conserva acceso completo"
+    "Colección comerciosPublicos separada",
+    "Botón Sincronizar portada en Administración",
+    "Copia de comercios activos y productos",
+    "Eliminación pública de comercios no activos",
+    "Portada leyendo la colección pública",
+    "Reglas seguras para datos privados y públicos"
   ]
 }
