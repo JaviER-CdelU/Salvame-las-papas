@@ -1,4 +1,4 @@
-const CACHE_NAME = "salvame-papas-v37-portada-publica";
+const CACHE_NAME = "salvame-papas-v38-estable";
 const APP_SHELL = ["./","./index.html","./comercio.html","./admin.html","./seguimiento-comercios.html","./como-usar.html","./diccionario-entrerriano.html","./offline.html","./manifest.webmanifest","./version.json"];
 
 self.addEventListener("install",event=>{
@@ -14,7 +14,7 @@ self.addEventListener("activate",event=>{
 });
 
 self.addEventListener("message",event=>{
-  if(event.data&&event.data.type==="SKIP_WAITING") self.skipWaiting();
+  if(event.data&&event.data.type==="SKIP_WAITING") 
 });
 
 self.addEventListener("fetch",event=>{

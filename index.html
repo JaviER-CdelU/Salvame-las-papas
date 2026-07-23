@@ -1890,48 +1890,7 @@ nav .nav-btns,nav .nav-portals{display:none!important}
 }
 
 /* Estadísticas compactas */
-.stats-local-v30{
-  width:min(1420px,calc(100% - 28px));
-  margin:-22px auto 24px;
-  position:relative;
-  z-index:5;
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:0;
-  background:#fff;
-  border-radius:16px;
-  border:1px solid #dfe6ee;
-  box-shadow:0 12px 30px rgba(0,42,106,.12);
-  overflow:hidden;
-}
-.stats-local-v30 article{
-  display:grid;
-  grid-template-columns:44px 1fr;
-  gap:10px;
-  align-items:center;
-  padding:16px 18px;
-  border-right:1px solid #e6ebf1;
-}
-.stats-local-v30 article:last-child{border-right:0}
-.stats-local-v30 .stat-icon{
-  width:42px;height:42px;
-  display:grid;place-items:center;
-  border-radius:12px;
-  background:#eef5ff;
-  font-size:1.45rem;
-}
-.stats-local-v30 strong{
-  display:block;
-  color:#073574;
-  font-size:1.18rem;
-  line-height:1;
-}
-.stats-local-v30 span{
-  display:block;
-  margin-top:4px;
-  color:#68768a;
-  font-size:.72rem;
-}
+
 
 /* Mensaje local compacto */
 .local-made-v30{
@@ -2243,93 +2202,7 @@ nav .nav-btns,nav .nav-portals{display:none!important}
   .plan-card-v30.basic{grid-column:span 4}
 }
 @media(max-width:760px){
-  .stats-local-v30{grid-template-columns:1fr 1fr;margin-top:12px}
-  .stats-local-v30 article:nth-child(2){border-right:0}
-  .stats-local-v30 article:nth-child(-n+2){border-bottom:1px solid #e6ebf1}
-  .local-made-v30,.business-cta-v30,.install-section-v30{
-    grid-template-columns:1fr;
-    text-align:center;
-  }
-  .local-made-v30 .local-icon,.business-cta-v30 .icon{display:none}
-  .categories-v30-grid{grid-template-columns:repeat(4,1fr)}
-  .plan-card-v30.max,.plan-card-v30.pro,.plan-card-v30.basic{grid-column:span 12}
-  .install-section-v30 img{margin:auto}
-}
-@media(max-width:460px){
-  .categories-v30-grid{grid-template-columns:repeat(3,1fr)}
-  .stats-local-v30 article{padding:12px}
-}
-
-
-/* V31 — CONFIRMACIÓN VISIBLE Y BLOQUES REALES */
-.categories-v31{width:min(1420px,calc(100% - 28px));margin:0 auto 22px;padding:14px;border-radius:17px;background:#fff;border:1px solid #e2e7ed}
-.categories-v31 h2{margin:0 0 10px;color:#073574;font-family:"Fraunces",serif;font-size:1.35rem}
-.categories-v31-grid{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:7px}
-.categories-v31 button{min-height:60px;padding:7px 4px;border:1px solid #ddd8cc;border-radius:11px;background:#fff;color:#17314f;cursor:pointer;font-family:"DM Sans",sans-serif;font-weight:800;font-size:.7rem}
-.categories-v31 button span{display:block;margin-bottom:3px;font-size:1.25rem}.categories-v31 button:hover{border-color:#f47521;background:#fff8f2}
-.all-plans-v31{width:min(1420px,calc(100% - 28px));margin:28px auto;padding:22px;border-radius:20px;background:linear-gradient(180deg,#f6f9ff,#fffaf4);border:1px solid #dce6f1}
-.all-plans-v31 h2{margin:0;color:#073574;font-family:"Fraunces",serif;font-size:2rem}.all-plans-v31>p{margin:5px 0 17px;color:#68758a}
-.plan-grid-v31{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
-.plan-card-v31{position:relative;overflow:hidden;border-radius:16px;background:#fff;border:1px solid #dce3eb;box-shadow:0 8px 22px rgba(6,47,107,.08);cursor:pointer}
-.plan-card-v31.max{grid-column:span 6;background:linear-gradient(135deg,#052f6c,#0a4b98);color:#fff;border:2px solid #ff7a1a}.plan-card-v31.pro{grid-column:span 4;border:2px solid #6aa0d8}.plan-card-v31.basic{grid-column:span 3}
-.plan-cover-v31{height:105px;display:grid;place-items:center;background:linear-gradient(135deg,#eaf2ff,#fff7ef);font-size:2.8rem}.max .plan-cover-v31{background:rgba(255,255,255,.1)}.plan-cover-v31 img{width:100%;height:100%;object-fit:cover}
-.plan-body-v31{padding:13px}.plan-body-v31 h3{margin:0 0 5px;font-size:1.08rem}.max .plan-body-v31 h3{font-size:1.3rem}.plan-meta-v31{font-size:.75rem;line-height:1.5;color:#68758a}.max .plan-meta-v31{color:rgba(255,255,255,.82)}
-.plan-products-v31{display:flex;gap:5px;flex-wrap:wrap;margin-top:9px}.plan-products-v31 span{padding:5px 7px;border-radius:8px;background:#f1f5fa;font-size:.68rem;font-weight:800}.max .plan-products-v31 span{background:rgba(255,255,255,.13);color:#fff}
-.plan-tag-v31{position:absolute;top:8px;right:8px;padding:6px 9px;border-radius:999px;background:#ff7a1a;color:#fff;font-size:.64rem;font-weight:900}.basic .plan-tag-v31{background:#687789}
-@media(max-width:1050px){.categories-v31-grid{grid-template-columns:repeat(6,1fr)}.plan-card-v31.max,.plan-card-v31.pro{grid-column:span 6}.plan-card-v31.basic{grid-column:span 4}}
-@media(max-width:700px){.categories-v31-grid{grid-template-columns:repeat(4,1fr)}.plan-card-v31.max,.plan-card-v31.pro,.plan-card-v31.basic{grid-column:span 12}}
-@media(max-width:450px){.categories-v31-grid{grid-template-columns:repeat(3,1fr)}}
-
-
-/* ==========================================================
-   V32 — ORDEN REAL DE PORTADA Y ESTADÍSTICAS
-   ========================================================== */
-.stats-local-v30{
-  width:min(1180px,calc(100% - 28px))!important;
-  margin:-18px auto 14px!important;
-  position:relative!important;
-  z-index:8!important;
-  display:grid!important;
-  grid-template-columns:repeat(4,minmax(0,1fr))!important;
-  gap:0!important;
-  background:#fff!important;
-  border:1px solid #dce5ef!important;
-  border-radius:15px!important;
-  box-shadow:0 10px 24px rgba(0,42,106,.12)!important;
-  overflow:hidden!important;
-}
-.stats-local-v30 article{
-  min-height:78px!important;
-  padding:12px 14px!important;
-  display:grid!important;
-  grid-template-columns:42px minmax(0,1fr)!important;
-  gap:9px!important;
-  align-items:center!important;
-  border-right:1px solid #e5eaf0!important;
-}
-.stats-local-v30 article:last-child{border-right:0!important}
-.stats-local-v30 .stat-icon{
-  width:40px!important;
-  height:40px!important;
-  display:grid!important;
-  place-items:center!important;
-  border-radius:11px!important;
-  background:#eef5ff!important;
-  font-size:1.35rem!important;
-}
-.stats-local-v30 strong{
-  display:block!important;
-  color:#073574!important;
-  font-size:1.14rem!important;
-  line-height:1!important;
-}
-.stats-local-v30 span{
-  display:block!important;
-  margin-top:4px!important;
-  color:#66758a!important;
-  font-size:.7rem!important;
-  line-height:1.2!important;
-}
+  
 .local-made-v30{
   width:min(1180px,calc(100% - 28px))!important;
   margin:0 auto 18px!important;
@@ -2364,13 +2237,9 @@ nav .nav-btns,nav .nav-portals{display:none!important}
   display:none!important;
 }
 
-@media(max-width:760px){
-  .stats-local-v30{
-    grid-template-columns:1fr 1fr!important;
-    margin-top:10px!important;
-  }
-  .stats-local-v30 article:nth-child(2){border-right:0!important}
-  .stats-local-v30 article:nth-child(-n+2){border-bottom:1px solid #e5eaf0!important}
+
+  
+  
   .local-made-v30{
     grid-template-columns:1fr!important;
     text-align:center!important;
@@ -2400,12 +2269,8 @@ nav .nav-btns,nav .nav-portals{display:none!important}
 }
 
 /* Estadísticas honestas inmediatamente después de portada */
-.stats-local-v30{
-  margin:-12px auto 16px!important;
-}
-.stats-local-v30 article{
-  min-height:72px!important;
-}
+
+
 
 /* Categorías: dos filas en computadora, desplazables en celular */
 .categories-v33{
@@ -2688,23 +2553,7 @@ nav .nav-btns,nav .nav-portals{display:none!important}
   font-size:.86rem!important;
 }
 
-/* Nunca mostrar cero mientras Firebase todavía está cargando */
-.stats-local-v30 strong[data-loading="true"]{
-  color:#8794a5!important;
-  font-size:.82rem!important;
-}
-.public-data-error-v35{
-  width:min(1180px,calc(100% - 28px));
-  margin:-8px auto 14px;
-  padding:9px 13px;
-  border-radius:10px;
-  background:#fff4e5;
-  border:1px solid #f0c88d;
-  color:#815016;
-  font-size:.78rem;
-  display:none;
-}
-.public-data-error-v35.show{display:block}
+
 
 @media(max-width:700px){
   .slp-project-v35{padding:12px 8px!important}
@@ -2722,6 +2571,42 @@ nav .nav-btns,nav .nav-portals{display:none!important}
   .slp-project-v35 .slp-project-copy{padding:15px 13px!important}
   .slp-project-v35 .slp-project-copy h2{font-size:1.3rem!important}
   .slp-project-v35 .slp-project-copy p{font-size:.78rem!important}
+}
+
+
+/* ==========================================================
+   V38 — VUELTA ESTABLE, SIN CONTADORES NI SINCRONIZACIÓN
+   ========================================================== */
+.local-summary-v38{
+  width:min(1180px,calc(100% - 28px));
+  margin:-12px auto 16px;
+  padding:12px 18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:wrap;
+  text-align:center;
+  background:#fff;
+  border:1px solid #dfe6ee;
+  border-radius:14px;
+  box-shadow:0 8px 20px rgba(7,47,107,.08);
+  color:#073574;
+}
+.local-summary-v38 strong{font-size:.95rem}
+.local-summary-v38 span{font-size:.8rem;color:#6b788b}
+
+#actualizacion-app,
+.update-banner,
+.app-update-banner{
+  display:none!important;
+}
+
+@media(max-width:700px){
+  .local-summary-v38{
+    margin-top:8px;
+    padding:10px 12px;
+  }
 }
 
 </style>
@@ -2985,7 +2870,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
 }
 
 </style>
-<meta name="app-version" content="V37">
+<meta name="app-version" content="V38">
 </head>
 <body>
 <div class="cdu-stripe"></div>
@@ -3054,19 +2939,11 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
     <button type="button" onclick="usarMiUbicacion()">Usar mi ubicación</button>
   </div>
 </section>
-<section class="stats-local-v30" aria-label="Estadísticas de la red local">
-  <article><div class="stat-icon">🏬</div><div><strong id="stat-comercios-v30">0</strong><span>Comercios activos</span></div></article>
-  <article><div class="stat-icon">📦</div><div><strong id="stat-productos-v30">0</strong><span>Productos publicados</span></div></article>
-  <article><div class="stat-icon">💬</div><div><strong id="stat-consultas-v33">0</strong><span>Consultas realizadas</span></div></article>
-  <article><div class="stat-icon">📍</div><div><strong>100%</strong><span>Hecho en C. del Uruguay</span></div></article>
+
+<section class="local-summary-v38">
+  <strong>🥔 Proyecto local de Concepción del Uruguay</strong>
+  <span>Buscá comercios, productos y servicios reales de la ciudad.</span>
 </section>
-<div id="public-data-error-v35" class="public-data-error-v35"></div>
-
-
-
-
-
-
 
 <section class="categories-v33" id="categorias">
       <div class="categories-v33-head">
@@ -3648,7 +3525,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
   </div>
   <div class="footer-bottom">© 2025 Sálvame las Papas · Concepción del Uruguay, La Histórica · Hecho con ❤️ y mate 🧉 para los vecinos del barrio</div>
 <div class="app-version-badge" title="Versión publicada de Sálvame las Papas">
-  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V37</a>
+  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V38</a>
 </div>
 </footer>
 
@@ -4364,8 +4241,8 @@ async function cargarComercios(){
   // Intentar cargar desde Firebase
   try {
     if(window._fb && window._fbReady && window._fbReady()){
-      const {db, collection, getDocs, query, where} = window._fb
-      const snap = await getDocs(collection(db,'comerciosPublicos'))
+      const {db, collection, getDocs} = window._fb
+      const snap = await getDocs(collection(db,'comercios'))
       if(!snap.empty){
         const fbComercics = []
         snap.forEach(registro => {
@@ -4393,20 +4270,7 @@ async function cargarComercios(){
               tel: d.telefono?.replace(/\D/g,'') || '',
               emoji: d.emoji || '🏪',
               bg: d.bg || '#F0F4FF',
-              productos: (Array.isArray(d.productos) ? d.productos : []).filter(p=>p.disponible!==false).map(p=>({
-                id:p.id||'',
-                n:p.nombre||'Producto',
-                nombre:p.nombre||'Producto',
-                e:p.emoji||'',
-                emoji:p.emoji||'',
-                foto:p.foto||p.fotos?.[0]||'',
-                fotos:Array.isArray(p.fotos)?p.fotos:(p.foto?[p.foto]:[]),
-                p:'$'+Number(p.precio||0).toLocaleString('es-AR'),
-                precio:Number(p.precio||0),
-                d:p.descripcion||'',
-                descripcion:p.descripcion||'',
-                stock:p.stock||''
-              })),
+              productos: Array.isArray(d.productos) ? d.productos : [],
               visitas: Number(d.visitas||0),
               clicsWhatsApp: Number(d.clicsWhatsApp||d.whatsappClicks||0),
               pedidosConfirmados: Number(d.pedidosConfirmados||0),
@@ -4417,6 +4281,33 @@ async function cargarComercios(){
         })
         // Si Firebase tiene comercios, se usan solo los reales y vigentes.
         // Si todos vencieron, la página queda sin comercios: no reaparecen los ejemplos.
+        // Los productos cargados desde “Mi comercio” viven en una subcolección.
+        // Se cargan aquí para que aparezcan en la página pública.
+        for(const comercio of fbComercics){
+          try{
+            const ps=await getDocs(collection(db,'comercios',comercio.id,'productos'))
+            comercio.productos=[]
+            ps.forEach(pr=>{
+              const p=pr.data()
+              if(p.disponible!==false){
+                comercio.productos.push({
+                  id:pr.id,
+                  n:p.nombre||'Producto',
+                  nombre:p.nombre||'Producto',
+                  e:p.emoji||'',
+                  emoji:p.emoji||'',
+                  foto:p.foto||p.fotos?.[0]||'',
+                  fotos:Array.isArray(p.fotos)?p.fotos:(p.foto?[p.foto]:[]),
+                  p:'$'+Number(p.precio||0).toLocaleString('es-AR'),
+                  precio:Number(p.precio||0),
+                  d:p.descripcion||'',
+                  descripcion:p.descripcion||'',
+                  stock:p.stock||''
+                })
+              }
+            })
+          }catch(error){console.warn('Productos de '+comercio.nombre,error)}
+        }
         comerciosTodos = ordenarPorPlan(fbComercics)
       }
     }
@@ -5174,12 +5065,7 @@ window.addEventListener("appinstalled",()=>{
 actualizarEstadoInstalacion();
 </script>
 
-<div id="actualizacion-app" role="status" aria-live="polite">
-  <div class="update-copy">
-    <strong>🔄 Hay una versión nueva disponible</strong>
-    <span>No se cerrará solo. Tocá “Actualizar ahora” para instalarla.</span>
-  </div>
-  <div class="update-actions">
+<div class="update-actions">
     <button id="btn-buscar-actualizacion" type="button" class="update-secondary">Buscar otra vez</button>
     <button id="btn-actualizar-app" type="button">Actualizar ahora</button>
     <button id="btn-cerrar-actualizacion" type="button" class="update-close" disabled title="Podrás cerrarlo después de 30 segundos">✕</button>
@@ -5466,164 +5352,6 @@ window.addEventListener('load',()=>setTimeout(()=>{
   renderCategoriasV33();
   actualizarStatsV33();
 },1900));
-</script>
-
-<script id="public-data-loader-v36">
-(function(){
-  const $=id=>document.getElementById(id);
-
-  function setLoading(){
-    [
-      ['stat-comercios-v30','Cargando…'],
-      ['stat-productos-v30','Cargando…'],
-      ['stat-consultas-v33','Cargando…']
-    ].forEach(([id,label])=>{
-      const el=$(id);
-      if(el){el.textContent=label;el.dataset.loading='true';}
-    });
-  }
-
-  function fecha(valor){
-    if(!valor) return null;
-    if(typeof valor.toDate==='function') return valor.toDate();
-    if(typeof valor.seconds==='number') return new Date(valor.seconds*1000);
-    const d=new Date(valor);
-    return isNaN(d)?null:d;
-  }
-
-  function publicable(d){
-    if(!d || String(d.estado||'').toLowerCase()!=='activo') return false;
-    if(String(d.estadoSuscripcion||'').toLowerCase()==='vencido') return false;
-    if(String(d.estadoRenovacion||'').toLowerCase()==='vencido') return false;
-    const v=fecha(d.proximaRenovacion);
-    if(!v) return true;
-    v.setHours(23,59,59,999);
-    return v>=new Date();
-  }
-
-  function planNumero(d){
-    const p=String(d.plan||'').toLowerCase();
-    if(Number(d.plan)===3||p.includes('45.000')||p.includes('45000')||p.includes('max')) return 3;
-    if(Number(d.plan)===2||p.includes('30.000')||p.includes('30000')||p.includes('pro')||
-       p.includes('destacado')||p.includes('intermedio')) return 2;
-    return 1;
-  }
-
-  function iconoCategoria(nombre){
-    const n=String(nombre||'').toLowerCase();
-    if(n.includes('aloj')||n.includes('cabañ')||n.includes('hotel')) return '🏡';
-    if(n.includes('construc')||n.includes('albañ')||n.includes('material')) return '🧱';
-    if(n.includes('servicio')||n.includes('repar')) return '🛠️';
-    if(n.includes('venta')||n.includes('ropa')||n.includes('tienda')) return '🛍️';
-    if(n.includes('alimento')||n.includes('almac')||n.includes('comida')||n.includes('panad')) return '🛒';
-    if(n.includes('verdul')) return '🥬';
-    return '🥔';
-  }
-
-  async function cargar(){
-    setLoading();
-    const error=$('public-data-error-v35');
-    try{
-      if(!window._fb?.db) throw new Error('Firebase todavía no está disponible.');
-
-      const {db,collection,getDocs,query,where}=window._fb;
-      const snap=await getDocs(collection(db,'comerciosPublicos'));
-      const comercios=[];
-
-      snap.forEach(docSnap=>{
-        const d=docSnap.data();
-        if(publicable(d)){
-          comercios.push({
-            id:docSnap.id,
-            plan:planNumero(d),
-            nombre:d.nombre||'Comercio',
-            cat:d.categoria||'Otros',
-            barrio:d.barrio||'CDU',
-            desc:d.descripcion||'',
-            direccion:d.direccion||d.domicilio||d.ubicacion||'',
-            horarios:d.horarios||d.horario||d.horarioAtencion||'',
-            pagos:Array.isArray(d.pagos)?d.pagos:(d.pagos?[d.pagos]:[]),
-            envio:Array.isArray(d.envio)?d.envio:(d.envio?[d.envio]:[]),
-            tags:[
-              ...(Array.isArray(d.pagos)?d.pagos.slice(0,2):(d.pagos?[d.pagos]:[])),
-              ...(Array.isArray(d.envio)?d.envio.slice(0,1):(d.envio?[d.envio]:[]))
-            ],
-            tel:String(d.telefono||'').replace(/\D/g,''),
-            emoji:d.emoji||'🏪',
-            bg:d.bg||'#F0F4FF',
-            productos:(Array.isArray(d.productos)?d.productos:[]).filter(p=>p.disponible!==false).map(p=>({
-              id:p.id||'',
-              n:p.nombre||'Producto',
-              nombre:p.nombre||'Producto',
-              e:p.emoji||'',
-              emoji:p.emoji||'',
-              foto:p.foto||p.fotos?.[0]||'',
-              fotos:Array.isArray(p.fotos)?p.fotos:(p.foto?[p.foto]:[]),
-              p:'$'+Number(p.precio||0).toLocaleString('es-AR'),
-              precio:Number(p.precio||0),
-              d:p.descripcion||'',
-              descripcion:p.descripcion||'',
-              stock:p.stock||''
-            })),
-            visitas:Number(d.visitas||0),
-            clicsWhatsApp:Number(d.clicsWhatsApp||d.whatsappClicks||0),
-            pedidosConfirmados:Number(d.pedidosConfirmados||0),
-            actualizadoEn:d.actualizadoEn||d.updatedAt||d.fechaActualizacion||null,
-            direccionVerificada:d.direccionVerificada===true
-          });
-        }
-      });
-      comercios.sort((a,b)=>b.plan-a.plan||String(a.nombre).localeCompare(String(b.nombre),'es'));
-      window.comerciosTodos=comercios;
-
-      const productos=comercios.reduce((s,c)=>s+c.productos.length,0);
-      const consultas=comercios.reduce((s,c)=>s+c.clicsWhatsApp+c.pedidosConfirmados,0);
-      [
-        ['stat-comercios-v30',comercios.length],
-        ['stat-productos-v30',productos],
-        ['stat-consultas-v33',consultas]
-      ].forEach(([id,value])=>{
-        const el=$(id);
-        if(el){el.textContent=Number(value).toLocaleString('es-AR');delete el.dataset.loading;}
-      });
-
-      const catMap=new Map();
-      comercios.forEach(c=>catMap.set(c.cat,(catMap.get(c.cat)||0)+1));
-      const cat=$('categories-v33-grid');
-      if(cat){
-        const arr=[...catMap.entries()].sort((a,b)=>a[0].localeCompare(b[0],'es'));
-        cat.innerHTML=arr.length?arr.map(([nombre,cantidad])=>`
-          <button type="button" onclick="filtrarCategoriaV33('${String(nombre).replace(/'/g,"\\'")}')">
-            <span>${iconoCategoria(nombre)}</span>
-            <strong>${typeof textoSeguro==='function'?textoSeguro(nombre):nombre}</strong>
-            <small>${cantidad} comercio${cantidad===1?'':'s'}</small>
-          </button>`).join(''):'<div class="home-empty">No hay categorías activas para mostrar.</div>';
-      }
-
-      if(typeof renderPagina==='function') renderPagina(comercios,1);
-      if(typeof renderFiltrosCategoriasDinamicos==='function') renderFiltrosCategoriasDinamicos();
-      if(typeof renderHomeVisual==='function') renderHomeVisual();
-      if(typeof renderPlanesV31==='function') renderPlanesV31();
-
-      if(error){error.classList.remove('show');error.textContent='';}
-    }catch(e){
-      console.error('Carga pública V36:',e);
-      [
-        'stat-comercios-v30','stat-productos-v30','stat-consultas-v33'
-      ].forEach(id=>{
-        const el=$(id);
-        if(el){el.textContent='—';delete el.dataset.loading;}
-      });
-      if(error){
-        error.textContent='La portada todavía no fue sincronizada. Entrá en Administración y tocá “Sincronizar portada”.';
-        error.classList.add('show');
-      }
-    }
-  }
-
-  window.cargarDatosPublicosV36=cargar;
-  document.addEventListener('DOMContentLoaded',()=>setTimeout(cargar,700));
-})();
 </script>
 
 </body>

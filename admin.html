@@ -14,7 +14,7 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, setDoc,
+import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc,
          query, orderBy, where, serverTimestamp, Timestamp }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut }
@@ -95,117 +95,6 @@ window.loginConGoogle = async () => {
 window.cerrarSesion = async () => {
   await signOut(auth)
 }
-
-
-function fechaPublica(valor){
-  if(!valor) return null;
-  if(typeof valor.toDate==='function') return valor.toDate().toISOString();
-  if(typeof valor.seconds==='number') return new Date(valor.seconds*1000).toISOString();
-  if(valor instanceof Date) return valor.toISOString();
-  const d=new Date(valor);
-  return isNaN(d)?null:d.toISOString();
-}
-
-function comercioPublicoDesdeAdmin(c, productos){
-  return {
-    origenId:c.id,
-    estado:'activo',
-    nombre:c.nombre||'Comercio',
-    categoria:c.categoria||'Otros',
-    barrio:c.barrio||'Concepción del Uruguay',
-    descripcion:c.descripcion||'',
-    direccion:c.direccion||c.domicilio||c.ubicacion||'',
-    horarios:c.horarios||c.horario||c.horarioAtencion||'',
-    pagos:Array.isArray(c.pagos)?c.pagos:(c.pagos?[c.pagos]:[]),
-    envio:Array.isArray(c.envio)?c.envio:(c.envio?[c.envio]:[]),
-    telefono:String(c.telefono||''),
-    emoji:c.emoji||'🏪',
-    bg:c.bg||'#F0F4FF',
-    plan:c.plan||'Básico',
-    visitas:Number(c.visitas||0),
-    clicsWhatsApp:Number(c.clicsWhatsApp||c.whatsappClicks||0),
-    pedidosConfirmados:Number(c.pedidosConfirmados||0),
-    creadoEn:fechaPublica(c.creadoEn),
-    aprobadoEn:fechaPublica(c.aprobadoEn),
-    actualizadoEn:fechaPublica(c.actualizadoEn||c.updatedAt||c.fechaActualizacion),
-    direccionVerificada:c.direccionVerificada===true,
-    productos,
-    sincronizadoEn:new Date().toISOString()
-  };
-}
-
-window.sincronizarPortada = async () => {
-  const btn=document.getElementById('btn-sync-portada');
-  const estado=document.getElementById('sync-portada-estado');
-  if(btn){btn.disabled=true;btn.textContent='⏳ Sincronizando…';}
-  if(estado){estado.textContent='Leyendo comercios activos y productos…';estado.className='sync-status';}
-
-  try{
-    const usuario=auth.currentUser;
-    if(!usuario || (usuario.email||'').toLowerCase()!==ADMIN_EMAIL){
-      throw new Error('Ingresá con la cuenta administradora.');
-    }
-
-    const privados=await getDocs(collection(db,'comercios'));
-    const activos=[];
-    privados.forEach(registro=>{
-      const datos={id:registro.id,...registro.data()};
-      if(String(datos.estado||'').toLowerCase()==='activo') activos.push(datos);
-    });
-
-    const idsActivos=new Set();
-    let productosTotal=0;
-
-    for(const comercio of activos){
-      const productos=[];
-      const ps=await getDocs(collection(db,'comercios',comercio.id,'productos'));
-      ps.forEach(pr=>{
-        const p=pr.data();
-        if(p.disponible!==false){
-          productos.push({
-            id:pr.id,
-            nombre:p.nombre||'Producto',
-            emoji:p.emoji||'',
-            foto:p.foto||p.fotos?.[0]||'',
-            fotos:Array.isArray(p.fotos)?p.fotos:(p.foto?[p.foto]:[]),
-            precio:Number(p.precio||0),
-            descripcion:p.descripcion||'',
-            stock:p.stock||'',
-            disponible:p.disponible!==false
-          });
-        }
-      });
-      productosTotal+=productos.length;
-      idsActivos.add(comercio.id);
-      await setDoc(
-        doc(db,'comerciosPublicos',comercio.id),
-        comercioPublicoDesdeAdmin(comercio,productos),
-        {merge:false}
-      );
-    }
-
-    const publicados=await getDocs(collection(db,'comerciosPublicos'));
-    const eliminaciones=[];
-    publicados.forEach(pub=>{
-      if(!idsActivos.has(pub.id)) eliminaciones.push(deleteDoc(doc(db,'comerciosPublicos',pub.id)));
-    });
-    await Promise.all(eliminaciones);
-
-    if(estado){
-      estado.textContent=`✅ Portada sincronizada: ${activos.length} comercio${activos.length===1?'':'s'} y ${productosTotal} producto${productosTotal===1?'':'s'}.`;
-      estado.className='sync-status ok';
-    }
-    toast('✅ Portada sincronizada');
-  }catch(e){
-    console.error('Sincronización portada:',e);
-    if(estado){
-      estado.textContent='❌ No se pudo sincronizar: '+(e.message||e.code||'error desconocido');
-      estado.className='sync-status error';
-    }
-  }finally{
-    if(btn){btn.disabled=false;btn.textContent='☁️ Sincronizar portada';}
-  }
-};
 
 // ── Cargar comercios ──
 let todosComerciosAdmin = []
@@ -742,14 +631,6 @@ img{max-width:100%;height:auto}
   .app-version-badge{right:8px;bottom:8px;font-size:.66rem;padding:6px 8px}
 }
 
-
-.btn-sync{background:#08784d!important;color:#fff!important;border-color:#08784d!important}
-.btn-sync:hover{background:#05653f!important}
-.btn-sync:disabled{opacity:.65;cursor:wait}
-.sync-status{margin:-5px 0 16px;padding:10px 13px;border-radius:10px;background:#eef5ff;border:1px solid #c9dcf3;color:#264f7b;font-size:.82rem}
-.sync-status.ok{background:#eaf8ee;border-color:#b9dfc4;color:#24683a}
-.sync-status.error{background:#fff0f0;border-color:#efbcbc;color:#9a2020}
-
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -760,7 +641,7 @@ img{max-width:100%;height:auto}
 <meta name="apple-mobile-web-app-title" content="Sálvame">
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
-<meta name="app-version" content="V37">
+<meta name="app-version" content="V38">
 </head>
 <body>
 
@@ -838,7 +719,7 @@ img{max-width:100%;height:auto}
         <input class="buscar-input" id="buscar-input"
           placeholder="Buscar por nombre, rubro, barrio..."
           oninput="buscarAdmin()"/>
-        <button class="btn-reload btn-sync" id="btn-sync-portada" onclick="sincronizarPortada()">☁️ Sincronizar portada</button><button class="btn-reload" onclick="exportarCSV()">⬇ CSV</button><button class="btn-reload" onclick="cargarComerciosAdmin()">↺ Actualizar</button>
+        <button class="btn-reload" onclick="exportarCSV()">⬇ CSV</button><button class="btn-reload" onclick="cargarComerciosAdmin()">↺ Actualizar</button>
       </div>
     </div>
 

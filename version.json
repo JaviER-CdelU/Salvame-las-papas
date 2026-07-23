@@ -1,13 +1,13 @@
 {
-  "version": "V37",
-  "nombre": "Sincronización de portada pública",
+  "version": "V38",
+  "nombre": "Vuelta estable sin contadores",
   "fecha": "2026-07-23",
   "cambios": [
-    "Colección comerciosPublicos separada",
-    "Botón Sincronizar portada en Administración",
-    "Copia de comercios activos y productos",
-    "Eliminación pública de comercios no activos",
-    "Portada leyendo la colección pública",
-    "Reglas seguras para datos privados y públicos"
+    "Eliminados contadores de comercios, productos y consultas",
+    "Eliminada sincronización manual desde Administración",
+    "Eliminados avisos repetidos de actualización",
+    "Restaurada base visual estable",
+    "Proyecto local compacto",
+    "Caché simplificada"
   ]
 }
