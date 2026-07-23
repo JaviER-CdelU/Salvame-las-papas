@@ -1,0 +1,11 @@
+VERSIÓN V35 — DATOS PÚBLICOS REALES
+
+- Se eliminó un bloque JavaScript roto heredado de V30.
+- La portada vuelve a leer directamente los comercios activos de Firestore.
+- Estadísticas:
+  comercios activos, productos publicados y consultas realizadas.
+- Las categorías se construyen con los comercios reales.
+- Mientras carga dice “Cargando…”, no muestra ceros falsos.
+- Si Firebase bloquea la lectura pública, aparece una advertencia clara.
+- Proyecto local reducido a una tarjeta compacta con una imagen pequeña.
+- Versión visible únicamente en el pie.

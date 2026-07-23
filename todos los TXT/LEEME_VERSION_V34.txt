@@ -1,0 +1,7 @@
+VERSIÓN V34
+
+- Se corrigió Cómo funciona.
+- Las cuatro tarjetas quedan parejas.
+- Los iconos y tarjetas son más pequeños.
+- En tablet: dos columnas.
+- En celular angosto: una columna.

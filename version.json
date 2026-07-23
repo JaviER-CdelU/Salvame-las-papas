@@ -1,11 +1,13 @@
 {
-  "version": "V34",
-  "nombre": "Cómo funciona ordenado",
-  "fecha": "2026-07-22",
+  "version": "V35",
+  "nombre": "Datos públicos reales y proyecto compacto",
+  "fecha": "2026-07-23",
   "cambios": [
-    "Cuatro pasos alineados en una fila",
-    "Tarjetas e iconos más pequeños",
-    "Dos columnas en tablet y una en celular",
-    "Versión solamente en el pie"
+    "Eliminado bloque JavaScript incompleto heredado",
+    "Carga pública independiente de comercios activos",
+    "Estadísticas reales de comercios, productos y consultas",
+    "Categorías construidas con comercios reales",
+    "Mensajes de carga y error sin mostrar ceros falsos",
+    "Proyecto local compacto sin captura gigante"
   ]
 }

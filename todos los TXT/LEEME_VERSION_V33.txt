@@ -1,0 +1,16 @@
+VERSIÓN V33 — PORTADA COMERCIAL Y DATOS HONESTOS
+
+- Mensaje de compra:
+  Mirá productos, armá el pedido, elegí entrega y pago.
+  Al confirmar, coordinás los detalles con el comercio por WhatsApp.
+- Estadísticas reales:
+  comercios activos, productos publicados y consultas realizadas.
+- Categorías creadas automáticamente según los comercios activos.
+- Categorías sin icono reconocido reciben 🥔.
+- Dos filas en computadora y desplazamiento horizontal en celular.
+- Estados de calidad en cada ficha:
+  información actualizada, horarios, dirección y fotos.
+- Portada más corta y menos contenido institucional repetido.
+- Orden principal:
+  portada, estadísticas, categorías, abiertos, comercios,
+  ofertas, destacados, cómo funciona, planes, registro y proyecto local.

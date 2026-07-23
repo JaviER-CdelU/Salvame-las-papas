@@ -2634,6 +2634,96 @@ nav .nav-btns,nav .nav-portals{display:none!important}
   .how-home-grid article{min-height:0!important}
 }
 
+
+/* ==========================================================
+   V35 — DATOS PÚBLICOS REALES Y PROYECTO LOCAL COMPACTO
+   ========================================================== */
+.slp-project-v35{
+  padding:18px 24px!important;
+  background:linear-gradient(180deg,#f7fbff,#eef7ff)!important;
+}
+.slp-project-v35 .slp-project-card{
+  max-width:1180px!important;
+  min-height:0!important;
+  margin:auto!important;
+  display:grid!important;
+  grid-template-columns:170px minmax(0,1fr)!important;
+  align-items:center!important;
+  border-radius:18px!important;
+  overflow:hidden!important;
+  background:#fff!important;
+  box-shadow:0 10px 28px rgba(8,39,82,.10)!important;
+}
+.slp-project-v35 .slp-project-thumb{
+  height:170px!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:16px!important;
+  background:linear-gradient(135deg,#eaf4ff,#fff8ec)!important;
+}
+.slp-project-v35 .slp-project-thumb img{
+  width:138px!important;
+  height:138px!important;
+  min-height:0!important;
+  max-height:138px!important;
+  object-fit:cover!important;
+  border-radius:24px!important;
+}
+.slp-project-v35 .slp-project-copy{
+  padding:22px 28px!important;
+}
+.slp-project-v35 .slp-project-copy h2{
+  margin:4px 0 7px!important;
+  font-size:clamp(1.55rem,2.5vw,2.15rem)!important;
+  line-height:1.05!important;
+}
+.slp-project-v35 .slp-project-copy p{
+  margin:0 0 13px!important;
+  max-width:760px!important;
+  line-height:1.55!important;
+}
+.slp-project-v35 .slp-guide-btn{
+  display:inline-flex!important;
+  padding:10px 16px!important;
+  font-size:.86rem!important;
+}
+
+/* Nunca mostrar cero mientras Firebase todavía está cargando */
+.stats-local-v30 strong[data-loading="true"]{
+  color:#8794a5!important;
+  font-size:.82rem!important;
+}
+.public-data-error-v35{
+  width:min(1180px,calc(100% - 28px));
+  margin:-8px auto 14px;
+  padding:9px 13px;
+  border-radius:10px;
+  background:#fff4e5;
+  border:1px solid #f0c88d;
+  color:#815016;
+  font-size:.78rem;
+  display:none;
+}
+.public-data-error-v35.show{display:block}
+
+@media(max-width:700px){
+  .slp-project-v35{padding:12px 8px!important}
+  .slp-project-v35 .slp-project-card{
+    grid-template-columns:90px minmax(0,1fr)!important;
+  }
+  .slp-project-v35 .slp-project-thumb{
+    height:125px!important;
+    padding:8px!important;
+  }
+  .slp-project-v35 .slp-project-thumb img{
+    width:78px!important;height:78px!important;max-height:78px!important;
+    border-radius:18px!important;
+  }
+  .slp-project-v35 .slp-project-copy{padding:15px 13px!important}
+  .slp-project-v35 .slp-project-copy h2{font-size:1.3rem!important}
+  .slp-project-v35 .slp-project-copy p{font-size:.78rem!important}
+}
+
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -2895,7 +2985,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
 }
 
 </style>
-<meta name="app-version" content="V34">
+<meta name="app-version" content="V35">
 </head>
 <body>
 <div class="cdu-stripe"></div>
@@ -2970,6 +3060,8 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
   <article><div class="stat-icon">💬</div><div><strong id="stat-consultas-v33">0</strong><span>Consultas realizadas</span></div></article>
   <article><div class="stat-icon">📍</div><div><strong>100%</strong><span>Hecho en C. del Uruguay</span></div></article>
 </section>
+<div id="public-data-error-v35" class="public-data-error-v35"></div>
+
 
 
 
@@ -3479,7 +3571,23 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
     <div><strong>📄 Reglas claras</strong><span><a href="#registro-comercio">Política de publicación</a></span></div>
   </div>
 </section>
-<section class="slp-project"><div class="slp-project-card"><img src="./images/proyecto-local.webp" alt="Proyecto local de Concepción del Uruguay" loading="lazy"><div class="slp-project-copy"><span>PROYECTO LOCAL</span><h2>Hecho acá, para nuestra comunidad</h2><p>Una red para acercar vecinos, comercios, emprendedores y prestadores de servicios de Concepción del Uruguay.</p><p><a class="slp-guide-btn" href="./como-usar.html">Conocer cómo funciona</a></p></div></div></section>
+
+<section class="slp-project slp-project-v35">
+  <div class="slp-project-card">
+    <div class="slp-project-thumb">
+      <img src="./images/nuevas-v32/mascota-clara-01.png"
+           alt="Súper Papa, proyecto local de Concepción del Uruguay"
+           loading="lazy">
+    </div>
+    <div class="slp-project-copy">
+      <span>PROYECTO LOCAL</span>
+      <h2>Hecho acá, para nuestra comunidad</h2>
+      <p>Una red creada en Concepción del Uruguay para acercar vecinos, comercios, emprendedores y prestadores de servicios.</p>
+      <a class="slp-guide-btn" href="./como-usar.html">Conocer cómo funciona</a>
+    </div>
+  </div>
+</section>
+
 
 <div class="boton-diccionario-wrap">
   <a class="boton-diccionario" href="diccionario-entrerriano.html">
@@ -3540,7 +3648,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
   </div>
   <div class="footer-bottom">© 2025 Sálvame las Papas · Concepción del Uruguay, La Histórica · Hecho con ❤️ y mate 🧉 para los vecinos del barrio</div>
 <div class="app-version-badge" title="Versión publicada de Sálvame las Papas">
-  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V34</a>
+  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V35</a>
 </div>
 </footer>
 
@@ -5268,82 +5376,7 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)clearInterv
 </script>
 
 <a class="mi-comercio-fijo" href="./comercio.html" aria-label="Entrar a Mi comercio">🏪 Mi comercio</a>
-<script>
-function filtrarCategoriaV30(categoria){
-  goTo('comercios');
-  setTimeout(()=>{
-    const texto=document.getElementById('filtro-texto');
-    if(texto){
-      texto.value=categoria;
-      aplicarFiltrosAvanzados();
-    }
-  },250);
-}
 
-function fotoComercioV30(c){
-  return c?.productos?.find(p=>p?.foto)?.foto || '';
-}
-function miniProductosV30(c,limite){
-  return (c?.productos||[]).slice(0,limite).map(p=>
-    `<span>${textoSeguro(p.emoji||'📦')} ${textoSeguro(p.nombre||p.n||'Producto')}</span>`
-  ).join('');
-}
-function datosComercioV30(c){
-  const horario=textoSeguro(horarioTexto(c.horarios));
-  const direccion=textoSeguro(c.direccion||'Dirección por confirmar');
-  const whatsapp=c.tel?'WhatsApp disponible':'Sin WhatsApp';
-  return `${horario}<br>${direccion}<br>${whatsapp}`;
-}
-function renderTodosPlanesV30(){
-  const cont=document.getElementById('plan-groups-v30');
-  if(!cont) return;
-
-  const ordenados=ordenarPorPlan(comerciosTodos);
-  if(!ordenados.length){
-    cont.innerHTML='<div class="home-empty">Todavía no hay comercios activos para mostrar.</div>';
-    return;
-  }
-
-  cont.innerHTML=`<div class="plan-row-v30">${
-    ordenados.map(c=>{
-      const idx=comerciosTodos.indexOf(c);
-      const clase=c.plan===3?'max':c.plan===2?'pro':'basic';
-      const etiqueta=c.plan===3?'PLAN PRO / MAX':c.plan===2?'PLAN DESTACADO':'PLAN BÁSICO';
-      const limite=c.plan===3?3:c.plan===2?2:2;
-      const foto=fotoComercioV30(c);
-      return `<article class="plan-card-v30 ${clase}" onclick="abrirHomeComercio(${idx})">
-        <span class="plan-label">${etiqueta}</span>
-        <div class="card-cover">${foto?`<img src="${foto}" alt="${textoSeguro(c.nombre)}" loading="lazy">`:textoSeguro(c.emoji||'🏪')}</div>
-        <div class="card-body">
-          <h3>${textoSeguro(c.nombre||'Comercio')}</h3>
-          <div class="meta">${textoSeguro(c.cat||'Comercio')} · ${textoSeguro(c.barrio||'CDU')}<br>${datosComercioV30(c)}</div>
-          <div class="product-mini">${miniProductosV30(c,limite)||'<span>Ver productos</span>'}</div>
-          <div class="card-actions"><span>Ver comercio</span><span>${c.tel?'WhatsApp':'Ubicación'}</span></div>
-        </div>
-      </article>`;
-    }).join('')
-  }</div>`;
-}
-
-function actualizarEstadisticasV30(){
-  const comercios=comerciosTodos.length;
-  const productos=comerciosTodos.reduce((s,c)=>s+(c.productos||[]).length,0);
-  const visitas=comerciosTodos.reduce((s,c)=>s+Number(c.visitas||0),0);
-  const c=document.getElementById('stat-comercios-v30');
-  const p=document.getElementById('stat-productos-v30');
-  const v=document.getElementById('stat-visitas-v30');
-  if(c)c.textContent=comercios.toLocaleString('es-AR');
-  if(p)p.textContent=productos.toLocaleString('es-AR');
-  if(v)v.textContent=visitas.toLocaleString('es-AR');
-}
-
-const renderHomeVisualV29=renderHomeVisual;
-renderHomeVisual=function(){
-  renderHomeVisualV29();
-  renderTodosPlanesV30();
-  actualizarEstadisticasV30();
-};
-</script>
 <script>
 function filtrarCategoriaV31(categoria){
   goTo('comercios');
@@ -5448,5 +5481,177 @@ window.addEventListener('load',()=>setTimeout(()=>{
   actualizarStatsV33();
 },1900));
 </script>
+
+<script id="public-data-loader-v35">
+(function(){
+  const $=id=>document.getElementById(id);
+
+  function setLoading(){
+    [
+      ['stat-comercios-v30','Cargando…'],
+      ['stat-productos-v30','Cargando…'],
+      ['stat-consultas-v33','Cargando…']
+    ].forEach(([id,label])=>{
+      const el=$(id);
+      if(el){el.textContent=label;el.dataset.loading='true';}
+    });
+  }
+
+  function fecha(valor){
+    if(!valor) return null;
+    if(typeof valor.toDate==='function') return valor.toDate();
+    if(typeof valor.seconds==='number') return new Date(valor.seconds*1000);
+    const d=new Date(valor);
+    return isNaN(d)?null:d;
+  }
+
+  function publicable(d){
+    if(!d || String(d.estado||'').toLowerCase()!=='activo') return false;
+    if(String(d.estadoSuscripcion||'').toLowerCase()==='vencido') return false;
+    if(String(d.estadoRenovacion||'').toLowerCase()==='vencido') return false;
+    const v=fecha(d.proximaRenovacion);
+    if(!v) return true;
+    v.setHours(23,59,59,999);
+    return v>=new Date();
+  }
+
+  function planNumero(d){
+    const p=String(d.plan||'').toLowerCase();
+    if(Number(d.plan)===3||p.includes('45.000')||p.includes('45000')||p.includes('max')) return 3;
+    if(Number(d.plan)===2||p.includes('30.000')||p.includes('30000')||p.includes('pro')||
+       p.includes('destacado')||p.includes('intermedio')) return 2;
+    return 1;
+  }
+
+  function iconoCategoria(nombre){
+    const n=String(nombre||'').toLowerCase();
+    if(n.includes('aloj')||n.includes('cabañ')||n.includes('hotel')) return '🏡';
+    if(n.includes('construc')||n.includes('albañ')||n.includes('material')) return '🧱';
+    if(n.includes('servicio')||n.includes('repar')) return '🛠️';
+    if(n.includes('venta')||n.includes('ropa')||n.includes('tienda')) return '🛍️';
+    if(n.includes('alimento')||n.includes('almac')||n.includes('comida')||n.includes('panad')) return '🛒';
+    if(n.includes('verdul')) return '🥬';
+    return '🥔';
+  }
+
+  async function cargar(){
+    setLoading();
+    const error=$('public-data-error-v35');
+    try{
+      if(!window._fb?.db) throw new Error('Firebase todavía no está disponible.');
+
+      const {db,collection,getDocs}=window._fb;
+      const snap=await getDocs(collection(db,'comercios'));
+      const comercios=[];
+
+      snap.forEach(docSnap=>{
+        const d=docSnap.data();
+        if(publicable(d)){
+          comercios.push({
+            id:docSnap.id,
+            plan:planNumero(d),
+            nombre:d.nombre||'Comercio',
+            cat:d.categoria||'Otros',
+            barrio:d.barrio||'CDU',
+            desc:d.descripcion||'',
+            direccion:d.direccion||d.domicilio||d.ubicacion||'',
+            horarios:d.horarios||d.horario||d.horarioAtencion||'',
+            pagos:Array.isArray(d.pagos)?d.pagos:(d.pagos?[d.pagos]:[]),
+            envio:Array.isArray(d.envio)?d.envio:(d.envio?[d.envio]:[]),
+            tags:[
+              ...(Array.isArray(d.pagos)?d.pagos.slice(0,2):(d.pagos?[d.pagos]:[])),
+              ...(Array.isArray(d.envio)?d.envio.slice(0,1):(d.envio?[d.envio]:[]))
+            ],
+            tel:String(d.telefono||'').replace(/\D/g,''),
+            emoji:d.emoji||'🏪',
+            bg:d.bg||'#F0F4FF',
+            productos:[],
+            visitas:Number(d.visitas||0),
+            clicsWhatsApp:Number(d.clicsWhatsApp||d.whatsappClicks||0),
+            pedidosConfirmados:Number(d.pedidosConfirmados||0),
+            actualizadoEn:d.actualizadoEn||d.updatedAt||d.fechaActualizacion||null,
+            direccionVerificada:d.direccionVerificada===true
+          });
+        }
+      });
+
+      for(const c of comercios){
+        try{
+          const ps=await getDocs(collection(db,'comercios',c.id,'productos'));
+          ps.forEach(pr=>{
+            const p=pr.data();
+            if(p.disponible!==false){
+              c.productos.push({
+                id:pr.id,
+                n:p.nombre||'Producto',
+                nombre:p.nombre||'Producto',
+                e:p.emoji||'',
+                emoji:p.emoji||'',
+                foto:p.foto||p.fotos?.[0]||'',
+                fotos:Array.isArray(p.fotos)?p.fotos:(p.foto?[p.foto]:[]),
+                p:'$'+Number(p.precio||0).toLocaleString('es-AR'),
+                precio:Number(p.precio||0),
+                d:p.descripcion||'',
+                descripcion:p.descripcion||'',
+                stock:p.stock||''
+              });
+            }
+          });
+        }catch(e){console.warn('Productos públicos:',c.nombre,e);}
+      }
+
+      comercios.sort((a,b)=>b.plan-a.plan||String(a.nombre).localeCompare(String(b.nombre),'es'));
+      window.comerciosTodos=comercios;
+
+      const productos=comercios.reduce((s,c)=>s+c.productos.length,0);
+      const consultas=comercios.reduce((s,c)=>s+c.clicsWhatsApp+c.pedidosConfirmados,0);
+      [
+        ['stat-comercios-v30',comercios.length],
+        ['stat-productos-v30',productos],
+        ['stat-consultas-v33',consultas]
+      ].forEach(([id,value])=>{
+        const el=$(id);
+        if(el){el.textContent=Number(value).toLocaleString('es-AR');delete el.dataset.loading;}
+      });
+
+      const catMap=new Map();
+      comercios.forEach(c=>catMap.set(c.cat,(catMap.get(c.cat)||0)+1));
+      const cat=$('categories-v33-grid');
+      if(cat){
+        const arr=[...catMap.entries()].sort((a,b)=>a[0].localeCompare(b[0],'es'));
+        cat.innerHTML=arr.length?arr.map(([nombre,cantidad])=>`
+          <button type="button" onclick="filtrarCategoriaV33('${String(nombre).replace(/'/g,"\\'")}')">
+            <span>${iconoCategoria(nombre)}</span>
+            <strong>${typeof textoSeguro==='function'?textoSeguro(nombre):nombre}</strong>
+            <small>${cantidad} comercio${cantidad===1?'':'s'}</small>
+          </button>`).join(''):'<div class="home-empty">No hay categorías activas para mostrar.</div>';
+      }
+
+      if(typeof renderPagina==='function') renderPagina(comercios,1);
+      if(typeof renderFiltrosCategoriasDinamicos==='function') renderFiltrosCategoriasDinamicos();
+      if(typeof renderHomeVisual==='function') renderHomeVisual();
+      if(typeof renderPlanesV31==='function') renderPlanesV31();
+
+      if(error){error.classList.remove('show');error.textContent='';}
+    }catch(e){
+      console.error('Carga pública V35:',e);
+      [
+        'stat-comercios-v30','stat-productos-v30','stat-consultas-v33'
+      ].forEach(id=>{
+        const el=$(id);
+        if(el){el.textContent='—';delete el.dataset.loading;}
+      });
+      if(error){
+        error.textContent='No se pudieron actualizar los datos públicos. Los comercios siguen registrados en Administración; hay que revisar los permisos públicos de Firestore.';
+        error.classList.add('show');
+      }
+    }
+  }
+
+  window.cargarDatosPublicosV35=cargar;
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(cargar,700));
+})();
+</script>
+
 </body>
 </html>
