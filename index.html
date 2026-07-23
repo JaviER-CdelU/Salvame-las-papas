@@ -2379,6 +2379,261 @@ nav .nav-btns,nav .nav-portals{display:none!important}
   .local-made-v30 .local-chip{display:none!important}
 }
 
+
+/* ==========================================================
+   V33 — PORTADA COMERCIAL Y FICHAS DE CALIDAD
+   ========================================================== */
+.home-hero-inner{
+  min-height:330px!important;
+  padding:32px 54px 24px!important;
+}
+.home-hero h1{
+  font-size:clamp(2.25rem,4vw,4.2rem)!important;
+}
+.home-hero-papa img{
+  max-height:300px!important;
+}
+.home-location-row{
+  min-height:48px!important;
+  padding-top:8px!important;
+  padding-bottom:8px!important;
+}
+
+/* Estadísticas honestas inmediatamente después de portada */
+.stats-local-v30{
+  margin:-12px auto 16px!important;
+}
+.stats-local-v30 article{
+  min-height:72px!important;
+}
+
+/* Categorías: dos filas en computadora, desplazables en celular */
+.categories-v33{
+  width:min(1420px,calc(100% - 28px));
+  margin:0 auto 18px;
+  padding:14px;
+  border-radius:17px;
+  background:#fff;
+  border:1px solid #dfe6ee;
+  box-shadow:0 7px 20px rgba(7,47,107,.05);
+}
+.categories-v33-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  gap:12px;
+  margin-bottom:10px;
+}
+.categories-v33 h2{
+  margin:0;
+  color:#073574;
+  font-family:"Fraunces",serif;
+  font-size:1.35rem;
+}
+.categories-v33 p{
+  margin:2px 0 0;
+  color:#69778a;
+  font-size:.76rem;
+}
+.categories-v33-head>button{
+  border:1px solid #cbd8e7;
+  border-radius:999px;
+  padding:8px 12px;
+  background:#fff;
+  color:#0750a0;
+  font-weight:900;
+  cursor:pointer;
+}
+.categories-v33-grid{
+  display:grid;
+  grid-template-rows:repeat(2,66px);
+  grid-auto-flow:column;
+  grid-auto-columns:minmax(125px,1fr);
+  gap:8px;
+  overflow-x:auto;
+  overscroll-behavior-inline:contain;
+  scrollbar-width:thin;
+  padding-bottom:3px;
+}
+.categories-v33-grid button{
+  min-width:125px;
+  padding:7px 6px;
+  display:grid;
+  grid-template-columns:30px 1fr;
+  grid-template-rows:auto auto;
+  column-gap:7px;
+  align-items:center;
+  text-align:left;
+  border:1px solid #dddfe4;
+  border-radius:11px;
+  background:#fff;
+  color:#17314f;
+  cursor:pointer;
+}
+.categories-v33-grid button>span{
+  grid-row:1/3;
+  font-size:1.35rem;
+  text-align:center;
+}
+.categories-v33-grid strong{
+  font-size:.73rem;
+}
+.categories-v33-grid small{
+  color:#7a8798;
+  font-size:.62rem;
+}
+.categories-v33-grid button:hover{
+  border-color:#f47521;
+  background:#fff8f1;
+}
+
+/* Quitar duplicados visuales */
+#filtro-bar{
+  display:none!important;
+}
+.legacy-home-section,
+.guia-cliente-v27,
+.business-cta-home,
+.home-install-compact{
+  display:none!important;
+}
+
+/* Calidad de la información */
+.quality-badges-v33{
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px;
+  margin:8px 0 2px;
+}
+.quality-badges-v33 span{
+  padding:5px 7px;
+  border-radius:999px;
+  font-size:.62rem;
+  line-height:1;
+  font-weight:800;
+  border:1px solid transparent;
+}
+.quality-badges-v33 .ok{
+  background:#eaf8ee;
+  color:#24683a;
+  border-color:#b8dfc2;
+}
+.quality-badges-v33 .pending{
+  background:#f2f4f7;
+  color:#778294;
+  border-color:#dfe4ea;
+  opacity:.78;
+}
+.quality-badges-v33.dark .ok{
+  background:rgba(57,190,101,.18);
+  color:#caffd8;
+  border-color:rgba(117,231,151,.38);
+}
+.quality-badges-v33.dark .pending{
+  background:rgba(255,255,255,.09);
+  color:rgba(255,255,255,.65);
+  border-color:rgba(255,255,255,.16);
+}
+
+/* Secciones más juntas */
+.home-block,.how-home{
+  margin-top:18px!important;
+  margin-bottom:18px!important;
+}
+.promociones-before-plans{
+  padding-top:22px!important;
+}
+.local-made-v30{
+  margin-top:24px!important;
+  margin-bottom:0!important;
+  border-radius:16px 16px 0 0!important;
+}
+
+/* Cómo funciona reducido en portada */
+.how-home-grid{
+  grid-template-columns:repeat(3,1fr)!important;
+}
+.how-home-grid article:nth-child(4){
+  grid-column:3;
+}
+.how-home-grid article{
+  min-height:165px!important;
+  padding:17px!important;
+}
+.how-home-grid article>span{
+  font-size:2.2rem!important;
+}
+
+@media(max-width:790px){
+  .home-hero-inner{
+    min-height:0!important;
+    padding:25px 18px 12px!important;
+  }
+  .home-hero-papa img{
+    max-height:220px!important;
+  }
+  .categories-v33{
+    width:calc(100% - 16px);
+    padding:11px;
+  }
+  .categories-v33-grid{
+    grid-auto-columns:130px;
+  }
+  .categories-v33-head{
+    align-items:flex-start;
+  }
+  .categories-v33-head p{
+    max-width:220px;
+  }
+  .how-home-grid{
+    grid-template-columns:1fr!important;
+  }
+  .how-home-grid article:nth-child(4){
+    grid-column:auto;
+  }
+}
+
+
+/* V34 — CÓMO FUNCIONA ORDENADO */
+.how-home-grid{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:12px!important;
+}
+.how-home-grid article,
+.how-home-grid article:nth-child(4){
+  grid-column:auto!important;
+  min-height:150px!important;
+  padding:14px 12px!important;
+}
+.how-home-grid article>span{
+  margin:10px 0 5px!important;
+  font-size:1.85rem!important;
+}
+.how-home-grid article>b{
+  width:28px!important;
+  height:28px!important;
+  top:9px!important;
+  left:9px!important;
+  font-size:.76rem!important;
+}
+.how-home-grid h3{
+  margin:4px 0 5px!important;
+  font-size:.98rem!important;
+}
+.how-home-grid p{
+  margin:0!important;
+  font-size:.75rem!important;
+  line-height:1.35!important;
+}
+@media(max-width:850px){
+  .how-home-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:480px){
+  .how-home-grid{grid-template-columns:1fr!important}
+  .how-home-grid article{min-height:0!important}
+}
+
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -2640,7 +2895,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
 }
 
 </style>
-<meta name="app-version" content="V32">
+<meta name="app-version" content="V34">
 </head>
 <body>
 <div class="cdu-stripe"></div>
@@ -2687,7 +2942,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
     <div class="home-hero-copy">
       <span class="home-kicker">🥔 Hecho en Concepción del Uruguay</span>
       <h1>Tu ciudad, tus comercios, <em>siempre cerca.</em></h1>
-      <p>Buscá productos, ofertas y comercios locales. Elegí, armá tu pedido y coordiná directamente con el negocio.</p>
+      <p>Mirá productos, armá el pedido, elegí entrega y pago. Al confirmar, coordinás los detalles con el comercio por WhatsApp.</p>
       <div class="home-search">
         <span>🔎</span>
         <input type="search" id="busqueda" placeholder="Buscar pizza, ropa, ferretería, almacén..." onkeydown="if(event.key==='Enter')buscar()">
@@ -2712,72 +2967,31 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
 <section class="stats-local-v30" aria-label="Estadísticas de la red local">
   <article><div class="stat-icon">🏬</div><div><strong id="stat-comercios-v30">0</strong><span>Comercios activos</span></div></article>
   <article><div class="stat-icon">📦</div><div><strong id="stat-productos-v30">0</strong><span>Productos publicados</span></div></article>
-  <article><div class="stat-icon">👁️</div><div><strong id="stat-visitas-v30">0</strong><span>Visitas acumuladas</span></div></article>
+  <article><div class="stat-icon">💬</div><div><strong id="stat-consultas-v33">0</strong><span>Consultas realizadas</span></div></article>
   <article><div class="stat-icon">📍</div><div><strong>100%</strong><span>Hecho en C. del Uruguay</span></div></article>
 </section>
-<section class="local-made-v30">
-  <div class="local-icon">🥔</div>
-  <div>
-    <h2>Hecho en Concepción del Uruguay para Concepción del Uruguay</h2>
-    <p>Una red local para conectar vecinos, comercios, emprendedores y prestadores de servicios. Más adelante podrá crecer hacia otras localidades.</p>
-  </div>
-  <div class="local-chip">Proyecto local</div>
-</section>
 
 
 
 
 
-<section class="categories-v31"><h2>Explorá por categoría</h2><div class="categories-v31-grid"><button type="button" onclick="filtrarCategoriaV31('Comida')"><span>🍔</span>Comidas</button><button type="button" onclick="filtrarCategoriaV31('Almacén')"><span>🛒</span>Almacenes</button><button type="button" onclick="filtrarCategoriaV31('Panadería')"><span>🥖</span>Panaderías</button><button type="button" onclick="filtrarCategoriaV31('Farmacia')"><span>💊</span>Farmacias</button><button type="button" onclick="filtrarCategoriaV31('Mecánico')"><span>🚗</span>Mecánicos</button><button type="button" onclick="filtrarCategoriaV31('Ferretería')"><span>🔧</span>Ferreterías</button><button type="button" onclick="filtrarCategoriaV31('Verdulería')"><span>🌳</span>Verdulerías</button><button type="button" onclick="filtrarCategoriaV31('Carnicería')"><span>🥩</span>Carnicerías</button><button type="button" onclick="filtrarCategoriaV31('Restaurante')"><span>🍽️</span>Restaurantes</button><button type="button" onclick="filtrarCategoriaV31('Pizzería')"><span>🍕</span>Pizzerías</button><button type="button" onclick="filtrarCategoriaV31('Peluquería')"><span>💇</span>Peluquerías</button><button type="button" onclick="filtrarCategoriaV31('Veterinaria')"><span>🐾</span>Veterinarias</button><button type="button" onclick="filtrarCategoriaV31('Electricista')"><span>⚡</span>Electricistas</button><button type="button" onclick="filtrarCategoriaV31('Cerrajero')"><span>🔑</span>Cerrajeros</button><button type="button" onclick="filtrarCategoriaV31('Alojamiento')"><span>🏠</span>Alojamientos</button><button type="button" onclick="filtrarCategoriaV31('Limpieza')"><span>🧹</span>Limpieza</button></div></section>
+
+<section class="categories-v33" id="categorias">
+      <div class="categories-v33-head">
+        <div><h2>Explorá por categoría</h2><p>Se actualizan automáticamente con los comercios publicados.</p></div>
+        <button type="button" onclick="limpiarFiltros();goTo('comercios')">Ver todas</button>
+      </div>
+      <div class="categories-v33-grid" id="categories-v33-grid"></div>
+    </section>
 
 
 <!-- OFERTAS, DESTACADOS Y ABIERTOS: se completan con comercios reales -->
 
-<section class="guia-cliente-v27">
- <div><h2>👤 Cómo se usa para clientes</h2><p>Podés mirar comercios, fotos, precios y ofertas <strong>sin registrarte</strong>. Recién al confirmar una compra se solicitan los datos necesarios para entrega, retiro y contacto.</p></div>
- <a href="./como-usar.html">Ver la guía completa →</a>
-</section>
 
-
-
-
-
-<section class="how-home" id="como-funciona-home">
-  <div class="home-section-title"><div><span class="title-icon">🥔</span><h2>¿Cómo funciona?</h2></div><a href="./como-usar.html">Ver guía completa</a></div>
-  <div class="how-home-grid">
-    <article><b>1</b><span>🔎</span><h3>Buscá</h3><p>Encontrá lo que necesitás cerca tuyo.</p></article>
-    <article><b>2</b><span>🏪</span><h3>Elegí</h3><p>Compará comercios, productos y precios.</p></article>
-    <article><b>3</b><span>🛒</span><h3>Armá el pedido</h3><p>Seleccioná entrega, retiro y forma de pago.</p></article>
-    <article><b>4</b><span>💬</span><h3>Coordiná</h3><p>Enviá el pedido completo por WhatsApp.</p></article>
-  </div>
-</section>
 
 <section class="home-block" id="abiertos-home-section">
   <div class="home-section-title"><div><span class="open-dot"></span><h2>Abierto ahora cerca tuyo</h2></div><button onclick="goTo('comercios')">Ver todos</button></div>
   <div class="open-now-grid" id="abiertos-home"><div class="home-empty">Consultando horarios reales…</div></div>
-</section>
-
-<section class="business-cta-home">
-  <div><span>🏪</span><div><h2>¿Tenés un comercio?</h2><p>Mostrá productos, recibí pedidos y hacete conocer en toda la ciudad.</p></div></div>
-  <button onclick="goTo('registro-comercio')">Publicar mi comercio</button>
-</section>
-
-<section class="install-app-section home-install-compact" id="instalar-app" aria-labelledby="install-title">
-  <div class="install-app-card">
-    <div class="install-app-visual">
-      <img src="./icons/icon-512.png" alt="Súper Papa, ícono de Sálvame las Papas" width="150" height="150">
-    </div>
-    <div class="install-app-copy">
-      <span class="install-kicker">📲 Llevá la red de CDU con vos</span>
-      <h2 id="install-title">Instalá Sálvame las Papas</h2>
-      <p>Guardala como una aplicación en tu celular o computadora. Se abre desde un ícono de la <strong>Súper Papa</strong>, ocupa poco espacio y no necesita Play Store.</p>
-      <div class="install-app-actions">
-        <button class="install-primary" id="install-main-btn" type="button">📲 Instalar la aplicación</button>
-        <button class="install-secondary" type="button" onclick="abrirAyudaInstalacion()">¿Cómo se instala?</button>
-      </div>
-      <p class="install-status" id="install-status" role="status">Disponible en Android, iPhone y computadoras compatibles.</p>
-    </div>
-  </div>
 </section>
 
 <div class="install-help-overlay" id="install-help" role="dialog" aria-modal="true" aria-labelledby="install-help-title" onclick="cerrarAyudaInstalacion(event)">
@@ -2790,7 +3004,6 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
   </div>
 </div>
 
-<section class="slp-visual-banner legacy-home-section"><div class="slp-visual-inner"><img src="./images/portada-red-local.webp" alt="Red local Sálvame las Papas" loading="lazy"><div class="slp-visual-overlay"><h2>¿Es tu primera vez?</h2><p>Abrí una explicación sencilla, paso a paso, sin recargar la portada.</p><a class="slp-guide-btn" href="./como-usar.html">Ver cómo se usa →</a></div></div></section>
 <!-- BARRA DE FILTROS -->
 <div class="filtro-bar" id="filtro-bar">
   <button class="filtro-btn active" onclick="filtrarCat('todas')" id="fb-todas">🏪 Todas</button>
@@ -2868,19 +3081,6 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
 </section>
 
 <!-- CÓMO FUNCIONA -->
-<section class="page-section legacy-home-section" id="como-funciona">
-  <div class="pw">
-    <div class="section-header"><h2 class="section-title">¿Cómo <span>funciona</span>?</h2></div>
-    <div class="pasos-grid">
-      <div class="paso"><div class="paso-num">1</div><h3>Describís tu drama</h3><p>Escribís qué necesitás o elegís la categoría. <em>¡No te quedés en el horno!</em> La papa te conecta al toque.</p></div>
-      <div class="paso"><div class="paso-num">2</div><h3>Elegís el comercio</h3><p>Ves los locales con horarios, precios y formas de pago. <em>Sin andar dando vueltas</em> por toda la ciudad.</p></div>
-      <div class="paso"><div class="paso-num">3</div><h3>Hablás directo</h3><p>Le mandás un WhatsApp al comercio. <em>Te hacen la gauchada</em> y coordinan la entrega.</p></div>
-      <div class="paso"><div class="paso-num">4</div><h3>Recibís y listo</h3><p>Te lo mandan con cadete o retirás cuando querés. <em>¡Pa' las casas!</em> Problema resuelto.</p></div>
-    </div>
-  </div>
-</section>
-
-
 <!-- PROMOCIONES REUBICADAS: ANTES DE LOS PLANES -->
 <div class="promociones-before-plans">
   <section class="home-block" id="ofertas-semana">
@@ -2892,6 +3092,15 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
     <div class="slider-controls"><button onclick="moverDestacados(-1)" aria-label="Anterior">‹</button><button onclick="moverDestacados(1)" aria-label="Siguiente">›</button></div>
   </div>
   <div class="featured-slider" id="destacados-home"><div class="home-empty">Cargando comercios reales…</div></div>
+</section>
+<section class="how-home" id="como-funciona-home">
+  <div class="home-section-title"><div><span class="title-icon">🥔</span><h2>¿Cómo funciona?</h2></div><a href="./como-usar.html">Ver guía completa</a></div>
+  <div class="how-home-grid">
+    <article><b>1</b><span>🔎</span><h3>Buscá</h3><p>Encontrá lo que necesitás cerca tuyo.</p></article>
+    <article><b>2</b><span>🏪</span><h3>Elegí</h3><p>Compará comercios, productos y precios.</p></article>
+    <article><b>3</b><span>🛒</span><h3>Armá el pedido</h3><p>Seleccioná entrega, retiro y forma de pago.</p></article>
+    <article><b>4</b><span>💬</span><h3>Confirmá y coordiná</h3><p>Confirmá el pedido y después coordiná los detalles con el comercio por WhatsApp.</p></article>
+  </div>
 </section>
 </div>
 
@@ -3278,6 +3487,14 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
   </a>
 </div>
 
+<section class="local-made-v30">
+  <div class="local-icon">🥔</div>
+  <div>
+    <h2>Hecho en Concepción del Uruguay para Concepción del Uruguay</h2>
+    <p>Una red local para conectar vecinos, comercios, emprendedores y prestadores de servicios. Más adelante podrá crecer hacia otras localidades.</p>
+  </div>
+  <div class="local-chip">Proyecto local</div>
+</section>
 <footer>
   <div class="footer-grid">
     <div>
@@ -3323,7 +3540,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
   </div>
   <div class="footer-bottom">© 2025 Sálvame las Papas · Concepción del Uruguay, La Histórica · Hecho con ❤️ y mate 🧉 para los vecinos del barrio</div>
 <div class="app-version-badge" title="Versión publicada de Sálvame las Papas">
-  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V32</a>
+  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V34</a>
 </div>
 </footer>
 
@@ -3865,6 +4082,29 @@ function infoPublicaComercio(c, modoOscuro=false){
     </div>`;
 }
 
+
+function tieneHorarioCargadoV33(c){
+  if(!c?.horarios) return false;
+  if(typeof c.horarios==='string') return c.horarios.trim().length>3;
+  if(typeof c.horarios==='object') return Object.keys(c.horarios).length>0;
+  return false;
+}
+function estadoCalidadComercioV33(c,oscuro=false){
+  const actualizado=Boolean(c?.actualizadoEn);
+  const horarios=tieneHorarioCargadoV33(c);
+  const direccion=Boolean(String(c?.direccion||'').trim());
+  const fotos=(c?.productos||[]).some(p=>Boolean(p?.foto || p?.fotos?.[0]));
+  const items=[
+    [actualizado,'✅','Información actualizada'],
+    [horarios,'🕐','Horarios cargados'],
+    [direccion,'📍',c?.direccionVerificada?'Dirección verificada':'Dirección informada'],
+    [fotos,'📷','Productos con fotos']
+  ];
+  return `<div class="quality-badges-v33 ${oscuro?'dark':''}">${
+    items.map(([ok,icon,text])=>`<span class="${ok?'ok':'pending'}">${icon} ${text}</span>`).join('')
+  }</div>`;
+}
+
 function renderComercio(c, globalIdx){
   // Store reference for carrito
   if(globalIdx !== undefined) window._comercioRefs = window._comercioRefs || {}
@@ -3888,6 +4128,7 @@ function renderComercio(c, globalIdx){
         </div>
         <div class="cmax-cat">${c.cat} · ${c.barrio||"CDU"}</div>
         ${infoPublicaComercio(c,true)}
+        ${estadoCalidadComercioV33(c,true)}
         <p class="cmax-desc">${c.desc||""}</p>
         <div class="tienda-tags">${tags}</div>
         <button class="cmax-wa" type="button" onclick="${refCall}">
@@ -3916,6 +4157,7 @@ function renderComercio(c, globalIdx){
           </div>
           <div class="cpro-cat">${c.cat} · ${c.barrio||"CDU"}</div>
           ${infoPublicaComercio(c,true)}
+          ${estadoCalidadComercioV33(c,true)}
         </div>
       </div>
       <div class="tienda-tags">${tags}</div>
@@ -3941,6 +4183,7 @@ function renderComercio(c, globalIdx){
         </div>
         <div class="cbasico-cat">${c.cat} · ${c.barrio||"CDU"}</div>
         ${infoPublicaComercio(c,false)}
+        ${estadoCalidadComercioV33(c,false)}
       </div>
     </div>
     <div class="tienda-tags">${tags}</div>
@@ -4042,7 +4285,12 @@ async function cargarComercios(){
               tel: d.telefono?.replace(/\D/g,'') || '',
               emoji: d.emoji || '🏪',
               bg: d.bg || '#F0F4FF',
-              productos: Array.isArray(d.productos) ? d.productos : []
+              productos: Array.isArray(d.productos) ? d.productos : [],
+              visitas: Number(d.visitas||0),
+              clicsWhatsApp: Number(d.clicsWhatsApp||d.whatsappClicks||0),
+              pedidosConfirmados: Number(d.pedidosConfirmados||0),
+              actualizadoEn: d.actualizadoEn || d.updatedAt || d.fechaActualizacion || null,
+              direccionVerificada: d.direccionVerificada === true
             })
           }
         })
@@ -4174,7 +4422,7 @@ function abrirComercio(c){
   const productos = c.productos || []
 
   if(productos.length === 0){
-    grid.innerHTML = '<p style="color:var(--suave);font-size:.9rem;grid-column:1/-1;padding:1rem 0">Este comercio todavía no cargó sus productos. Contactalo por WhatsApp para consultar.</p>'
+    grid.innerHTML = '<p style="color:var(--suave);font-size:.9rem;grid-column:1/-1;padding:1rem 0">Este comercio todavía no cargó productos para comprar en línea. Podés consultar disponibilidad desde su ficha.</p>'
   } else {
     grid.innerHTML = productos.map((p,i) => `
       <div class="prod-card" id="prod-card-${i}">
@@ -5126,5 +5374,79 @@ function actualizarStatsV31(){
 }
 
 window.addEventListener("load",()=>setTimeout(()=>{renderPlanesV31();actualizarStatsV31();},1800));</script>
+<script>
+function iconoCategoriaV33(nombre){
+  const n=String(nombre||'').toLowerCase();
+  if(n.includes('aloj')||n.includes('cabañ')||n.includes('hotel')||n.includes('vivienda')) return '🏡';
+  if(n.includes('construc')||n.includes('albañ')||n.includes('material')) return '🧱';
+  if(n.includes('servicio')||n.includes('repar')||n.includes('manten')) return '🛠️';
+  if(n.includes('venta')||n.includes('compraventa')||n.includes('tienda')||n.includes('ropa')) return '🛍️';
+  if(n.includes('alimento')||n.includes('almac')||n.includes('comida')||n.includes('panad')) return '🛒';
+  if(n.includes('farm')||n.includes('salud')) return '💊';
+  if(n.includes('mecán')||n.includes('auto')) return '🚗';
+  if(n.includes('ferret')) return '🔧';
+  if(n.includes('verdul')) return '🥬';
+  if(n.includes('carni')) return '🥩';
+  if(n.includes('restaurant')) return '🍽️';
+  if(n.includes('pizza')) return '🍕';
+  if(n.includes('pelu')||n.includes('belleza')) return '💇';
+  if(n.includes('veter')||n.includes('mascota')) return '🐾';
+  if(n.includes('electric')) return '⚡';
+  if(n.includes('cerraj')) return '🔑';
+  if(n.includes('limpieza')) return '🧹';
+  return '🥔';
+}
+function renderCategoriasV33(){
+  const cont=document.getElementById('categories-v33-grid');
+  if(!cont) return;
+  const conteo=new Map();
+  (comerciosTodos||[]).forEach(c=>{
+    const categoria=String(c?.cat||'Otros').trim()||'Otros';
+    conteo.set(categoria,(conteo.get(categoria)||0)+1);
+  });
+  let categorias=[...conteo.entries()].sort((a,b)=>a[0].localeCompare(b[0],'es'));
+  if(!categorias.length){
+    categorias=[
+      ['Alimentos',0],['Alojamiento',0],['Construcción',0],
+      ['Servicios',0],['Ventas',0],['Otros',0]
+    ];
+  }
+  cont.innerHTML=categorias.map(([categoria,cantidad])=>`
+    <button type="button" onclick="filtrarCategoriaV33('${String(categoria).replace(/'/g,"\\'")}')">
+      <span>${iconoCategoriaV33(categoria)}</span>
+      <strong>${textoSeguro(categoria)}</strong>
+      <small>${cantidad} comercio${cantidad===1?'':'s'}</small>
+    </button>`).join('');
+}
+function filtrarCategoriaV33(categoria){
+  goTo('comercios');
+  setTimeout(()=>{
+    const campo=document.getElementById('filtro-texto');
+    if(campo){campo.value=categoria;aplicarFiltrosAvanzados();}
+  },220);
+}
+function actualizarStatsV33(){
+  const comercios=(comerciosTodos||[]).length;
+  const productos=(comerciosTodos||[]).reduce((total,c)=>total+(c.productos||[]).length,0);
+  const consultas=(comerciosTodos||[]).reduce((total,c)=>
+    total+Number(c.clicsWhatsApp||0)+Number(c.pedidosConfirmados||0),0);
+  const ec=document.getElementById('stat-comercios-v30');
+  const ep=document.getElementById('stat-productos-v30');
+  const eq=document.getElementById('stat-consultas-v33');
+  if(ec) ec.textContent=comercios.toLocaleString('es-AR');
+  if(ep) ep.textContent=productos.toLocaleString('es-AR');
+  if(eq) eq.textContent=consultas.toLocaleString('es-AR');
+}
+const renderHomeVisualAntesV33=renderHomeVisual;
+renderHomeVisual=function(){
+  renderHomeVisualAntesV33();
+  renderCategoriasV33();
+  actualizarStatsV33();
+};
+window.addEventListener('load',()=>setTimeout(()=>{
+  renderCategoriasV33();
+  actualizarStatsV33();
+},1900));
+</script>
 </body>
 </html>
