@@ -2804,6 +2804,21 @@ nav .nav-btns,nav .nav-portals{display:none!important}
 .plan-particular-v41 .plan-periodo{color:#fff!important}
 @media(max-width:800px){.schedule-compact-v48{grid-template-columns:1fr}.schedule-toggle-v48{width:100%}}
 
+
+/* V49 — CARGA REAL Y JERARQUÍA DE PLANES */
+.featured-slider{align-items:stretch!important}
+.featured-home-card{flex:0 0 245px!important;min-width:245px!important;transition:transform .2s ease,box-shadow .2s ease}
+.featured-home-card.plan-card-1{flex-basis:225px!important;min-width:225px!important;opacity:.96}
+.featured-home-card.plan-card-2{flex-basis:285px!important;min-width:285px!important;border:2px solid #8fb9e7!important;box-shadow:0 12px 28px rgba(40,99,165,.15)!important}
+.featured-home-card.plan-card-3{flex-basis:345px!important;min-width:345px!important;border:3px solid #f0bd2f!important;box-shadow:0 16px 36px rgba(163,112,0,.22)!important;transform:translateY(-3px)}
+.featured-home-card.plan-card-2 .featured-home-cover{height:165px!important}
+.featured-home-card.plan-card-3 .featured-home-cover{height:205px!important}
+.featured-home-card.plan-card-3 .featured-home-info h3{font-size:1.35rem!important}
+.offer-intro-v49{grid-column:1/-1;padding:12px 16px;border-radius:12px;background:#f6f9fc;color:#526174;display:flex;flex-direction:column;gap:3px}
+.newcomer-v49 .offer-home-badge{background:#16834c!important}
+#schedule-details-v48:not([hidden]){display:block!important}
+@media(max-width:700px){.featured-home-card.plan-card-1,.featured-home-card.plan-card-2,.featured-home-card.plan-card-3{flex-basis:82vw!important;min-width:82vw!important;transform:none}}
+
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -3065,7 +3080,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
 }
 
 </style>
-<meta name="app-version" content="V48">
+<meta name="app-version" content="V49">
 </head>
 <body>
 <div class="cdu-stripe"></div>
@@ -3716,12 +3731,6 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
 </section>
 
 
-<div class="boton-diccionario-wrap">
-  <a class="boton-diccionario" href="diccionario-entrerriano.html">
-    🧉 Diccionario entrerriano
-  </a>
-</div>
-
 <section class="local-made-v30">
   <div class="local-icon">🥔</div>
   <div>
@@ -3787,7 +3796,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
   </div>
   <div class="footer-bottom">© 2025 Sálvame las Papas · Concepción del Uruguay, La Histórica · Hecho con ❤️ y mate 🧉 para los vecinos del barrio</div>
 <div class="app-version-badge" title="Versión publicada de Sálvame las Papas">
-  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V48</a>
+  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V49</a>
 </div>
 </footer>
 
@@ -4137,6 +4146,7 @@ function reiniciarRegistro(){
 
 const DIAS_V39=[['lunes','Lunes'],['martes','Martes'],['miercoles','Miércoles'],['jueves','Jueves'],['viernes','Viernes'],['sabado','Sábado'],['domingo','Domingo']];
 function toggleHorarioDetalleV48(forzar){
+ if(typeof crearEditorHorariosV39==='function')crearEditorHorariosV39();
  const box=document.getElementById('schedule-details-v48');if(!box)return;
  const mostrar=typeof forzar==='boolean'?forzar:box.hidden;
  box.hidden=!mostrar;
@@ -4151,12 +4161,17 @@ function setDiaHorarioV48(dia,turnos,cerrado=false){
  alternarDiaV39(r.querySelector('.hc'));
 }
 function aplicarPresetHorarioV48(tipo){
+ if(typeof crearEditorHorariosV39==='function')crearEditorHorariosV39();
  if(tipo==='personalizado'){toggleHorarioDetalleV48(true);return}
  if(tipo==='consultar'){const h=document.getElementById('f-horarios');if(h)h.value='Horario a consultar por WhatsApp';toggleHorarioDetalleV48(false);return}
  const dias=['lunes','martes','miercoles','jueves','viernes','sabado','domingo'];
  dias.forEach((d,i)=>{if(i===6){setDiaHorarioV48(d,[],true);return}if(tipo==='corrido')setDiaHorarioV48(d,[['08:00','20:00']],false);else if(tipo==='tarde')setDiaHorarioV48(d,[['16:00','21:00']],false);else setDiaHorarioV48(d,[['08:00','12:00'],['16:00','20:00']],false)});
  actualizarHorarioOcultoV39();toggleHorarioDetalleV48(false);
 }
+window.toggleHorarioDetalleV48=toggleHorarioDetalleV48;
+window.aplicarPresetHorarioV48=aplicarPresetHorarioV48;
+window.copiarLunesV39=copiarLunesV39;
+window.limpiarSegundoTurnoV39=limpiarSegundoTurnoV39;
 function crearEditorHorariosV39(){const b=document.getElementById('schedule-editor-v39');if(!b||b.dataset.ready)return;b.dataset.ready='1';b.innerHTML=DIAS_V39.map(([k,n],i)=>`<div class="schedule-day-v39" data-dia="${k}"><b>${n}</b><label>Desde<input type="time" class="h1d" value="${i<6?'08:00':''}"></label><label>Hasta<input type="time" class="h1h" value="${i<6?'12:00':''}"></label><label>Desde<input type="time" class="h2d" value="${i<6?'16:00':''}"></label><label>Hasta<input type="time" class="h2h" value="${i<6?'20:00':''}"></label><label class="closed-v39"><input type="checkbox" class="hc" ${i===6?'checked':''} onchange="alternarDiaV39(this)">Cerrado</label></div>`).join('');b.querySelectorAll('input').forEach(x=>x.addEventListener('change',actualizarHorarioOcultoV39));b.querySelectorAll('.hc:checked').forEach(alternarDiaV39);actualizarHorarioOcultoV39()}
 function alternarDiaV39(el){const r=el.closest('.schedule-day-v39');r.querySelectorAll('input[type=time]').forEach(x=>x.disabled=el.checked);actualizarHorarioOcultoV39()}
 function leerHorariosV39(){const o={};document.querySelectorAll('.schedule-day-v39').forEach(r=>{const c=r.querySelector('.hc').checked;o[r.dataset.dia]={cerrado:c,turnos:c?[]:[[r.querySelector('.h1d').value,r.querySelector('.h1h').value],[r.querySelector('.h2d').value,r.querySelector('.h2h').value]].filter(x=>x[0]&&x[1])}});return o}
@@ -4489,7 +4504,7 @@ async function cargarComercios(){
   try {
     if(window._fb && window._fbReady && window._fbReady()){
       const {db, collection, getDocs, query, where} = window._fb
-      const snap = await getDocs(query(collection(db,'comercios'), where('estado','==','activo'))
+      const snap = await getDocs(query(collection(db,'comercios'), where('estado','==','activo')))
       if(!snap.empty){
         const fbComercics = []
         snap.forEach(registro => {
@@ -4558,7 +4573,11 @@ async function cargarComercios(){
         comerciosTodos = ordenarPorPlan(fbComercics)
       }
     }
-  } catch(e){ console.warn('Firebase comercios:', e.message) }
+  } catch(e){
+    console.error('Firebase comercios:', e);
+    const lista=document.getElementById('lista-comercios');
+    if(lista)lista.innerHTML='<div class="empty-state"><strong>No se pudieron cargar los comercios.</strong><br>Actualizá la página. Si continúa, revisá las reglas de Firebase.</div>';
+  }
 
   renderPagina(comerciosTodos, 1)
   renderFiltrosCategoriasDinamicos()
@@ -4570,7 +4589,8 @@ async function cargarComercios(){
 
 // Cargar al iniciar
 document.addEventListener('DOMContentLoaded', () => {
-  setTimeout(cargarComercios, 500)
+  setTimeout(cargarComercios, 350)
+  setTimeout(()=>{if(!comerciosTodos.length)cargarComercios()},2200)
 })
 
 
@@ -5491,7 +5511,7 @@ function renderHomeVisual(){
     const i=comerciosTodos.indexOf(c);
     const e=estadoHorarioV39(c.horarios);
     const foto=c.productos?.find(p=>p?.foto)?.foto||'';
-    return `<article class="featured-home-card" onclick="abrirHomeComercio(${i})">
+    return `<article class="featured-home-card plan-card-${c.plan}" onclick="abrirHomeComercio(${i})">
       <span class="rotation-label-v39">${etiquetaComercioV39(c)}</span>
       <span class="plan-pill p${c.plan}">${planNombreHome(c.plan)}</span>
       <div class="featured-home-cover">${foto?`<img src="${foto}" alt="${textoSeguro(c.nombre)}" loading="lazy">`:textoSeguro(c.emoji||'🏪')}</div>
@@ -5549,14 +5569,15 @@ function renderHomeVisual(){
       </article>`;
     }).join('');
   }else{
-    const nombres=arr.slice(0,3).map(c=>`<button type="button" class="offer-fallback-v46" onclick="abrirHomeComercio(${comerciosTodos.indexOf(c)})">${textoSeguro(c.emoji||'🏪')} ${textoSeguro(c.nombre)}</button>`).join('');
-    o.innerHTML=`<div class="home-empty offer-empty-v46"><strong>No hay ofertas con precio publicadas esta semana.</strong><br><span>Mientras tanto, podés conocer estos comercios:</span><div class="offer-fallback-list-v46">${nombres}</div></div>`;
+    const nuevos=[...arr].sort((a,b)=>(fechaComercioV39(b)?.getTime()||0)-(fechaComercioV39(a)?.getTime()||0)).slice(0,4);
+    const tarjetas=nuevos.map(c=>{const i=comerciosTodos.indexOf(c);const foto=c.productos?.find(p=>p?.foto)?.foto||'';return `<article class="offer-home-card newcomer-v49" onclick="abrirHomeComercio(${i})"><div class="offer-home-media">${foto?`<img src="${foto}" alt="${textoSeguro(c.nombre)}" loading="lazy">`:textoSeguro(c.emoji||'🏪')}</div><div class="offer-home-info"><span class="offer-home-badge">NUEVO</span><b>${textoSeguro(c.nombre)}</b><span class="offer-home-store">${textoSeguro(c.cat||'Comercio local')}</span><span class="offer-home-price">Conocelo</span></div></article>`}).join('');
+    o.innerHTML=`<div class="offer-intro-v49"><strong>Esta semana todavía no hay productos marcados como oferta.</strong><span>Te presentamos los comercios ingresados más recientemente:</span></div>${tarjetas}`;
   }
 
   iniciarDestacadosAuto();
 }
 function moverDestacados(dir){const el=document.getElementById('destacados-home');if(el)el.scrollBy({left:dir*290,behavior:'smooth'})}
-function iniciarDestacadosAuto(){clearInterval(homeSliderTimer);homeSliderTimer=setInterval(()=>{const el=document.getElementById('destacados-home');if(!el||el.scrollWidth<=el.clientWidth)return;const fin=el.scrollLeft+el.clientWidth>=el.scrollWidth-20;el.scrollTo({left:fin?0:el.scrollLeft+284,behavior:'smooth'})},4500)}
+function iniciarDestacadosAuto(){clearInterval(homeSliderTimer);homeSliderTimer=setInterval(()=>{const el=document.getElementById('destacados-home');if(!el||el.scrollWidth<=el.clientWidth)return;const fin=el.scrollLeft+el.clientWidth>=el.scrollWidth-20;el.scrollTo({left:fin?0:el.scrollLeft+284,behavior:'smooth'})},6000)}
 const cargarComerciosHomeOriginal=cargarComercios;cargarComercios=async function(){await cargarComerciosHomeOriginal();renderHomeVisual();if(typeof renderPlanesV31==='function')renderPlanesV31();if(typeof actualizarStatsV31==='function')actualizarStatsV31()}
 document.addEventListener('visibilitychange',()=>{if(document.hidden)clearInterval(homeSliderTimer);else iniciarDestacadosAuto()})
 </script>

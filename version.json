@@ -1,14 +1,15 @@
 {
-  "version": "V48",
-  "nombre": "Horarios compactos, recuperación y planes",
+  "version": "V49",
+  "nombre": "Carga real y destacados por plan",
   "fecha": "2026-07-24",
   "cambios": [
-    "Horarios rápidos y editor diario plegable",
-    "Dedicatorias ocultas hasta autorización",
-    "Plan Básico: menos de un alfajor por día",
-    "Plan Destacado: menos de un café por día",
-    "Plan Pro: menos de una Coca-Cola chica por día",
-    "Recuperación de contraseña mejorada para comercios y particulares",
-    "Correo de recuperación en español"
+    "Corregido error de sintaxis que detenía Firebase",
+    "Comercios activos vuelven a mostrarse",
+    "Botón de horarios funcional",
+    "Botón duplicado de Diccionario eliminado",
+    "Destacados rotan cada 6 segundos",
+    "Plan 45.000 más grande, 30.000 mediano y 15.000 compacto",
+    "Oferta de la semana muestra comercios nuevos cuando no hay ofertas",
+    "Reintento automático de carga"
   ]
 }
