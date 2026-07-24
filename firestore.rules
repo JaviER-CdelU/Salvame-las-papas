@@ -12,30 +12,50 @@ service cloud.firestore {
         && request.auth.token.email == "salvamelaspapascdelu@gmail.com";
     }
 
+    // Comercios: el administrador ve todos; cada dueño ve y modifica el suyo.
+    // La portada puede leer únicamente comercios activos.
     match /comercios/{comercioId} {
       allow read: if isAdmin()
-                  || (signedIn() && resource.data.ownerUid == request.auth.uid);
+                  || (signedIn() && resource.data.ownerUid == request.auth.uid)
+                  || resource.data.estado == "activo";
 
-      allow create: if signedIn()
-                    && request.resource.data.ownerUid == request.auth.uid;
+      allow create: if signedIn();
 
       allow update, delete: if isAdmin()
                             || (signedIn() && resource.data.ownerUid == request.auth.uid);
 
       match /productos/{productoId} {
-        allow read, create, update, delete: if isAdmin()
-          || (
-            signedIn()
-            && get(
-              /databases/$(database)/documents/comercios/$(comercioId)
-            ).data.ownerUid == request.auth.uid
-          );
+        allow read: if isAdmin()
+                    || get(/databases/$(database)/documents/comercios/$(comercioId)).data.estado == "activo"
+                    || (signedIn()
+                        && get(/databases/$(database)/documents/comercios/$(comercioId)).data.ownerUid == request.auth.uid);
+
+        allow create, update, delete: if isAdmin()
+          || (signedIn()
+              && get(/databases/$(database)/documents/comercios/$(comercioId)).data.ownerUid == request.auth.uid);
       }
     }
 
-    match /comerciosPublicos/{comercioId} {
-      allow read: if true;
-      allow create, update, delete: if isAdmin();
+    // Vendedores particulares:
+    // cualquier visitante puede ENVIAR una solicitud, pero solo como pendiente.
+    // No puede aprobarla, modificarla ni borrarla.
+    match /vendedoresParticulares/{publicacionId} {
+      allow create: if request.resource.data.tipo == "vendedor_particular"
+                    && request.resource.data.estado == "pendiente"
+                    && request.resource.data.estadoPago == "pendiente"
+                    && request.resource.data.nombre is string
+                    && request.resource.data.nombre.size() >= 2
+                    && request.resource.data.whatsapp is string
+                    && request.resource.data.whatsapp.size() >= 8
+                    && request.resource.data.articulos is list
+                    && request.resource.data.articulos.size() >= 1
+                    && request.resource.data.articulos.size() <= 2;
+
+      // Visitantes solo pueden consultar publicaciones ya aprobadas.
+      allow read: if resource.data.estado == "activo" || isAdmin();
+
+      // Solo Administración aprueba, renueva, suspende o elimina.
+      allow update, delete: if isAdmin();
     }
 
     match /pedidos/{pedidoId} {
@@ -44,8 +64,7 @@ service cloud.firestore {
     }
 
     match /usuarios/{usuarioId} {
-      allow read, write: if signedIn()
-                         && request.auth.uid == usuarioId;
+      allow read, write: if signedIn() && request.auth.uid == usuarioId;
     }
 
     match /{document=**} {

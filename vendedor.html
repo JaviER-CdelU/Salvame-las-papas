@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#073574">
-<meta name="app-version" content="V42">
+<meta name="app-version" content="V43">
 <title>Vendedor particular — Sálvame las Papas</title>
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#172338}
@@ -119,7 +119,7 @@ document.getElementById('seller-form').addEventListener('submit',async e=>{
   });
   status.className='status show ok';status.innerHTML='✅ Solicitud enviada. Quedó pendiente hasta que se confirme el pago. Te contactaremos por WhatsApp.';
   e.target.reset();
- }catch(err){status.className='status show error';status.textContent='No se pudo guardar: '+(err.message||err.code);}
+ }catch(err){status.className='status show error';const codigo=err.code||'';status.textContent=codigo.includes('permission-denied')?'Firebase todavía no tiene habilitado el permiso para recibir vendedores particulares. Publicá el archivo firestore.rules incluido en la V43.':'No se pudo guardar: '+(err.message||codigo);}
 });
 </script>
 </body></html>

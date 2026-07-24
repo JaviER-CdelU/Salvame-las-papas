@@ -1,18 +1,12 @@
 {
-  "version": "V42",
-  "nombre": "Personas individuales y comercios",
+  "version": "V43",
+  "nombre": "Permisos para vendedor particular",
   "fecha": "2026-07-24",
   "cambios": [
-    "Plan Vendedor particular $10.000 por 30 días",
-    "Hasta 2 artículos y 4 fotos por artículo",
-    "Registro sin correo obligatorio",
-    "Contacto público únicamente por WhatsApp",
-    "Aprobación administrativa después del pago",
-    "Vencimiento y renovación de 30 días",
-    "Aviso por correo cuando se vende",
-    "Textos de publicación gratuita corregidos",
-    "La caja de Particular ahora usa fondo azul suave y letras blancas",
-    "El plan dice Personas individuales",
-    "Los tres planes comerciales ahora muestran la etiqueta Para comercios"
+    "Permite enviar una solicitud particular sin iniciar sesión",
+    "La solicitud solo puede crearse como pendiente y pago pendiente",
+    "Solo Administración puede aprobar, modificar o eliminar",
+    "La portada consulta únicamente vendedores activos",
+    "Se incluye firestore.rules listo para publicar"
   ]
 }
