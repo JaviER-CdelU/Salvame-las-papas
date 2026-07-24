@@ -1,15 +1,16 @@
 {
-  "version": "V45",
-  "nombre": "Acceso privado para vendedores",
+  "version": "V46",
+  "nombre": "Portada estable y avisos reales",
   "fecha": "2026-07-24",
   "cambios": [
-    "Cuenta privada con correo y contraseña",
-    "Correo no visible públicamente",
-    "Cada publicación vinculada mediante ownerUid",
-    "Nueva página Mis publicaciones",
-    "Edición independiente de precio, descripción, fotos y disponibilidad",
-    "Venta o alquiler dentro del mismo plan",
-    "Administración conserva pago, aprobación y vencimiento",
-    "Reglas de Firestore limitadas por propietario"
+    "Consulta pública únicamente comercios activos",
+    "Destacados siempre muestra comercios activos aunque no tengan productos",
+    "Ofertas nunca queda cargando",
+    "Mensaje real cuando no hay ofertas",
+    "Sugerencia de comercios cuando no hay ofertas",
+    "Abiertos muestra horarios confirmados o comercios con horario a consultar",
+    "Watchdog de carga para evitar textos eternos",
+    "Aviso de versión nueva restaurado y menos invasivo",
+    "Búsqueda de actualización cada 30 minutos"
   ]
 }
