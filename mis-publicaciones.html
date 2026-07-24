@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#073574">
-<meta name="app-version" content="V47">
+<meta name="app-version" content="V48">
 <title>Mis publicaciones — Sálvame las Papas</title>
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#172338}header{background:#082440;color:#fff;padding:16px}header>div{max-width:1050px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}header a,header button{color:#fff;background:transparent;border:0;text-decoration:none;font-weight:800;cursor:pointer;font:inherit}
@@ -23,7 +23,7 @@
 <p>Usá el correo privado y la contraseña con los que creaste tu publicación.</p>
 <label>Correo</label><input id="email" type="email" autocomplete="email">
 <label>Contraseña</label><input id="pass" type="password" autocomplete="current-password">
-<div class="actions"><button id="login" class="primary">Ingresar</button><a class="btn light" href="./vendedor.html">Crear publicación</a></div>
+<div class="actions"><button id="login" class="primary">Ingresar</button><button id="reset-pass" class="light" type="button">Olvidé mi contraseña</button><a class="btn light" href="./vendedor.html">Crear publicación</a></div>
 <div id="login-status" class="status"></div>
 </section>
 <section id="account-view" class="hidden">
@@ -33,7 +33,7 @@
 </main>
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getAuth,signInWithEmailAndPassword,sendPasswordResetEmail,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {getFirestore,collection,query,where,getDocs,doc,updateDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const app=initializeApp({
   apiKey:"AIzaSyAE8kEBAzDbPvCCD1KCyjq67iFl3dvthLM",
@@ -42,7 +42,7 @@ const app=initializeApp({
   storageBucket:"salvame-las-papas-cdelu.firebasestorage.app",
   messagingSenderId:"401048945476",
   appId:"1:401048945476:web:58695553aa93928b36cd11"
-});const auth=getAuth(app),db=getFirestore(app);
+});const auth=getAuth(app),db=getFirestore(app);auth.languageCode="es";
 const loginView=document.getElementById('login-view'),accountView=document.getElementById('account-view'),pubs=document.getElementById('publications'),logout=document.getElementById('logout');
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 async function comprimir(file){
@@ -50,6 +50,7 @@ async function comprimir(file){
  const img=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=data});const max=700,scale=Math.min(1,max/Math.max(img.width,img.height));
  const c=document.createElement('canvas');c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);c.getContext('2d').drawImage(img,0,0,c.width,c.height);return c.toDataURL('image/jpeg',.58)
 }
+document.getElementById('reset-pass').onclick=async()=>{const st=document.getElementById('login-status'),email=document.getElementById('email').value.trim();if(!email){st.className='status show error';st.textContent='Escribí primero tu correo.';return}try{await sendPasswordResetEmail(auth,email,{url:window.location.origin+window.location.pathname,handleCodeInApp:false});st.className='status show ok';st.textContent='Te enviamos un enlace para crear una contraseña nueva. Revisá también Spam.'}catch(e){st.className='status show error';st.textContent='No se pudo enviar el enlace: '+(e.message||e.code)}};
 document.getElementById('login').onclick=async()=>{const st=document.getElementById('login-status');st.className='status show';st.textContent='Ingresando…';try{await signInWithEmailAndPassword(auth,document.getElementById('email').value.trim(),document.getElementById('pass').value);st.className='status'}catch(e){st.className='status show error';st.textContent='No se pudo ingresar. Revisá correo y contraseña.'}};
 logout.onclick=()=>signOut(auth);
 onAuthStateChanged(auth,user=>{if(user){loginView.classList.add('hidden');accountView.classList.remove('hidden');logout.classList.remove('hidden');cargar(user.uid)}else{loginView.classList.remove('hidden');accountView.classList.add('hidden');logout.classList.add('hidden')}});

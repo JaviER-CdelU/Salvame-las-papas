@@ -2777,7 +2777,7 @@ nav .nav-btns,nav .nav-portals{display:none!important}
   text-wrap:balance;
 }
 .local-highlight-v47 p{font-size:1.05rem!important;line-height:1.6!important;max-width:860px!important}
-.dedicatorias-v47{background:#f3f8ff;padding:28px 14px 34px;border-top:1px solid #d8e5f3}
+.dedicatorias-v47{display:none!important;background:#f3f8ff;padding:28px 14px 34px;border-top:1px solid #d8e5f3}
 .dedicatorias-inner-v47{width:min(1280px,100%);margin:auto}
 .dedicatorias-inner-v47>span{font-size:.75rem;font-weight:900;letter-spacing:.09em;color:#ff7200}
 .dedicatorias-inner-v47 h2{margin:5px 0 16px;color:#073574;font-size:clamp(1.5rem,3vw,2.3rem)}
@@ -2792,6 +2792,17 @@ nav .nav-btns,nav .nav-portals{display:none!important}
 #forzar-actualizacion-v47{position:fixed;right:16px;bottom:78px;z-index:9998;border:0;border-radius:999px;background:#073574;color:#fff;padding:11px 15px;font-weight:900;box-shadow:0 10px 28px rgba(7,53,116,.28);cursor:pointer}
 #forzar-actualizacion-v47:disabled{opacity:.75;cursor:wait}
 @media(max-width:700px){#forzar-actualizacion-v47{right:10px;bottom:72px;font-size:.78rem;padding:10px 12px}}
+
+
+/* V48 — HORARIOS COMPACTOS */
+.schedule-compact-v48{display:grid;grid-template-columns:minmax(220px,1fr) minmax(260px,1fr) auto;gap:10px;align-items:center;padding:14px;border:1px solid #ccd9e7;border-radius:14px;background:#f7fbff;margin-top:8px}
+.schedule-compact-v48>div{display:grid;gap:3px}.schedule-compact-v48 strong{color:#073574}.schedule-compact-v48 span{font-size:.75rem;color:#687588}
+.schedule-compact-v48 select{width:100%;padding:11px;border:1px solid #bfd0e1;border-radius:10px;background:#fff;font:inherit}
+.schedule-toggle-v48{border:0;background:#073574;color:#fff;border-radius:10px;padding:11px 13px;font-weight:800;cursor:pointer}
+.schedule-details-v48{margin-top:10px;padding:10px;border:1px dashed #bfd0e1;border-radius:12px;background:#fbfdff}
+.plan-periodo{font-weight:800!important;color:#e86815!important}
+.plan-particular-v41 .plan-periodo{color:#fff!important}
+@media(max-width:800px){.schedule-compact-v48{grid-template-columns:1fr}.schedule-toggle-v48{width:100%}}
 
 </style>
 
@@ -3054,7 +3065,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
 }
 
 </style>
-<meta name="app-version" content="V47">
+<meta name="app-version" content="V48">
 </head>
 <body>
 <div class="cdu-stripe"></div>
@@ -3282,8 +3293,8 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
 <div class="planes-bg" id="planes">
   <div style="width:100%;max-width:1600px;margin:0 auto">
     <div class="planes-header">
-      <h2>Elegí cómo querés publicar</h2>
-      <p>Elegí el nivel de publicación y promoción que mejor acompañe a tu comercio. Sin permanencia.</p>
+      <h2>¿Tu negocio ya salva las papas?</h2>
+      <p>Elegí el plan que mejor acompañe a tu comercio. Una inversión chica para estar visible todos los días.</p>
     </div>
     <div class="planes-grid">
 
@@ -3308,7 +3319,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
         <div class="plan-badge">🏪 Para comercios</div>
         <div class="plan-nivel">Nivel 1</div><div class="plan-nombre">Básico</div>
         <div class="plan-precio">$15.000<small>/mes</small></div>
-        <div class="plan-periodo">Para comenzar</div>
+        <div class="plan-periodo">Menos de un alfajor por día</div>
         <ul class="plan-feats">
           <li>Hasta <strong>10 productos</strong></li>
           <li><strong>1 foto por producto</strong></li>
@@ -3324,7 +3335,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
         <div class="plan-badge">🏪 Para comercios</div>
         <div class="plan-nivel">Nivel 2</div><div class="plan-nombre">Destacado</div>
         <div class="plan-precio">$30.000<small>/mes</small></div>
-        <div class="plan-periodo">Para vender más</div>
+        <div class="plan-periodo">Menos de un café por día</div>
         <ul class="plan-feats">
           <li>Hasta <strong>30 productos</strong></li>
           <li><strong>2 fotos por producto</strong></li>
@@ -3341,7 +3352,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
         <div class="plan-badge">🏪 Para comercios</div>
         <div class="plan-nivel">Nivel 3</div><div class="plan-nombre">Pro</div>
         <div class="plan-precio">$45.000<small>/mes</small></div>
-        <div class="plan-periodo">Para máxima difusión</div>
+        <div class="plan-periodo">Menos de una Coca-Cola chica por día</div>
         <ul class="plan-feats">
           <li>Hasta <strong>60 productos</strong></li>
           <li><strong>4 fotos por producto</strong></li>
@@ -3444,7 +3455,24 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
         <div class="fgroup"><label>Repetir contraseña *</label><input class="fi" id="f-pass2" type="password" autocomplete="new-password" minlength="6" placeholder="Repetí la contraseña"/></div>
       </div>
       <div class="frow full"><div class="fgroup"><label>Descripción del comercio</label><textarea class="fta" id="f-desc" placeholder="Contá qué vendés, cuánto hace que estás en CDU, qué te hace especial..."></textarea></div></div>
-      <div class="frow full"><div class="fgroup"><label>Horarios de atención *</label><span class="hint">Cargá uno o dos turnos por día. Marcá Cerrado cuando no atiendas.</span><div class="schedule-editor-v39" id="schedule-editor-v39"></div><div class="schedule-actions-v39"><button type="button" onclick="copiarLunesV39()">Copiar lunes a todos</button><button type="button" onclick="limpiarSegundoTurnoV39()">Usar horario corrido</button></div><input type="hidden" id="f-horarios"></div></div><div class="frow full"><div class="fgroup"><label>Info adicional</label><textarea class="fta" id="f-info" placeholder="Pedidos especiales, servicio a domicilio, especialidades..."></textarea></div></div>
+      <div class="frow full"><div class="fgroup"><label>Horarios de atención *</label>
+<div class="schedule-compact-v48">
+  <div><strong>Elegí una opción rápida</strong><span>Personalizala solamente cuando tus horarios sean diferentes.</span></div>
+  <select id="horario-preset-v48" onchange="aplicarPresetHorarioV48(this.value)">
+    <option value="comercial">Lunes a sábado · 8 a 12 y 16 a 20</option>
+    <option value="corrido">Lunes a sábado · horario corrido de 8 a 20</option>
+    <option value="tarde">Lunes a sábado · 16 a 21</option>
+    <option value="consultar">Horario a consultar por WhatsApp</option>
+    <option value="personalizado">Personalizar día por día</option>
+  </select>
+  <button type="button" class="schedule-toggle-v48" onclick="toggleHorarioDetalleV48()">⚙️ Ver o modificar día por día</button>
+</div>
+<div class="schedule-details-v48" id="schedule-details-v48" hidden>
+  <span class="hint">Marcá Cerrado cuando no atiendas. Podés usar uno o dos turnos.</span>
+  <div class="schedule-editor-v39" id="schedule-editor-v39"></div>
+  <div class="schedule-actions-v39"><button type="button" onclick="copiarLunesV39()">Copiar lunes a todos</button><button type="button" onclick="limpiarSegundoTurnoV39()">Usar horario corrido</button></div>
+</div>
+<input type="hidden" id="f-horarios"></div></div><div class="frow full"><div class="fgroup"><label>Info adicional</label><textarea class="fta" id="f-info" placeholder="Pedidos especiales, servicio a domicilio, especialidades..."></textarea></div></div>
       <div class="form-nav"><button class="btn btn-azul btn-lg" onclick="validarPaso1()">Siguiente: Pagos y envíos →</button></div>
     </div>
 
@@ -3759,7 +3787,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
   </div>
   <div class="footer-bottom">© 2025 Sálvame las Papas · Concepción del Uruguay, La Histórica · Hecho con ❤️ y mate 🧉 para los vecinos del barrio</div>
 <div class="app-version-badge" title="Versión publicada de Sálvame las Papas">
-  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V47</a>
+  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V48</a>
 </div>
 </footer>
 
@@ -4108,13 +4136,34 @@ function reiniciarRegistro(){
 }
 
 const DIAS_V39=[['lunes','Lunes'],['martes','Martes'],['miercoles','Miércoles'],['jueves','Jueves'],['viernes','Viernes'],['sabado','Sábado'],['domingo','Domingo']];
+function toggleHorarioDetalleV48(forzar){
+ const box=document.getElementById('schedule-details-v48');if(!box)return;
+ const mostrar=typeof forzar==='boolean'?forzar:box.hidden;
+ box.hidden=!mostrar;
+ const b=document.querySelector('.schedule-toggle-v48');if(b)b.textContent=mostrar?'▲ Ocultar detalle':'⚙️ Ver o modificar día por día';
+}
+function setDiaHorarioV48(dia,turnos,cerrado=false){
+ const r=document.querySelector(`.schedule-day-v39[data-dia="${dia}"]`);if(!r)return;
+ r.querySelector('.hc').checked=cerrado;
+ const vals=[...(turnos||[]),['',''],['','']].slice(0,2);
+ r.querySelector('.h1d').value=vals[0][0]||'';r.querySelector('.h1h').value=vals[0][1]||'';
+ r.querySelector('.h2d').value=vals[1][0]||'';r.querySelector('.h2h').value=vals[1][1]||'';
+ alternarDiaV39(r.querySelector('.hc'));
+}
+function aplicarPresetHorarioV48(tipo){
+ if(tipo==='personalizado'){toggleHorarioDetalleV48(true);return}
+ if(tipo==='consultar'){const h=document.getElementById('f-horarios');if(h)h.value='Horario a consultar por WhatsApp';toggleHorarioDetalleV48(false);return}
+ const dias=['lunes','martes','miercoles','jueves','viernes','sabado','domingo'];
+ dias.forEach((d,i)=>{if(i===6){setDiaHorarioV48(d,[],true);return}if(tipo==='corrido')setDiaHorarioV48(d,[['08:00','20:00']],false);else if(tipo==='tarde')setDiaHorarioV48(d,[['16:00','21:00']],false);else setDiaHorarioV48(d,[['08:00','12:00'],['16:00','20:00']],false)});
+ actualizarHorarioOcultoV39();toggleHorarioDetalleV48(false);
+}
 function crearEditorHorariosV39(){const b=document.getElementById('schedule-editor-v39');if(!b||b.dataset.ready)return;b.dataset.ready='1';b.innerHTML=DIAS_V39.map(([k,n],i)=>`<div class="schedule-day-v39" data-dia="${k}"><b>${n}</b><label>Desde<input type="time" class="h1d" value="${i<6?'08:00':''}"></label><label>Hasta<input type="time" class="h1h" value="${i<6?'12:00':''}"></label><label>Desde<input type="time" class="h2d" value="${i<6?'16:00':''}"></label><label>Hasta<input type="time" class="h2h" value="${i<6?'20:00':''}"></label><label class="closed-v39"><input type="checkbox" class="hc" ${i===6?'checked':''} onchange="alternarDiaV39(this)">Cerrado</label></div>`).join('');b.querySelectorAll('input').forEach(x=>x.addEventListener('change',actualizarHorarioOcultoV39));b.querySelectorAll('.hc:checked').forEach(alternarDiaV39);actualizarHorarioOcultoV39()}
 function alternarDiaV39(el){const r=el.closest('.schedule-day-v39');r.querySelectorAll('input[type=time]').forEach(x=>x.disabled=el.checked);actualizarHorarioOcultoV39()}
 function leerHorariosV39(){const o={};document.querySelectorAll('.schedule-day-v39').forEach(r=>{const c=r.querySelector('.hc').checked;o[r.dataset.dia]={cerrado:c,turnos:c?[]:[[r.querySelector('.h1d').value,r.querySelector('.h1h').value],[r.querySelector('.h2d').value,r.querySelector('.h2h').value]].filter(x=>x[0]&&x[1])}});return o}
 function actualizarHorarioOcultoV39(){const h=document.getElementById('f-horarios');if(h)h.value=JSON.stringify(leerHorariosV39())}
 function copiarLunesV39(){const rs=[...document.querySelectorAll('.schedule-day-v39')],s=rs[0];rs.slice(1).forEach(r=>{['h1d','h1h','h2d','h2h'].forEach(c=>r.querySelector('.'+c).value=s.querySelector('.'+c).value);r.querySelector('.hc').checked=s.querySelector('.hc').checked;alternarDiaV39(r.querySelector('.hc'))});toast('✅ Horario copiado')}
 function limpiarSegundoTurnoV39(){document.querySelectorAll('.schedule-day-v39').forEach(r=>{r.querySelector('.h2d').value='';r.querySelector('.h2h').value=''});actualizarHorarioOcultoV39();toast('✅ Horario corrido listo')}
-document.addEventListener('DOMContentLoaded',crearEditorHorariosV39);
+document.addEventListener('DOMContentLoaded',()=>{crearEditorHorariosV39();aplicarPresetHorarioV48('comercial')});
 // ════════════════════════════════════
 //  ESTADO ABIERTO / CERRADO
 // ════════════════════════════════════

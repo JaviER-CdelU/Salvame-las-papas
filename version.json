@@ -1,16 +1,14 @@
 {
-  "version": "V47",
-  "nombre": "Identidad local y actualización inmediata",
+  "version": "V48",
+  "nombre": "Horarios compactos, recuperación y planes",
   "fecha": "2026-07-24",
   "cambios": [
-    "Mensaje local destacado con mayor tamaño y presencia",
-    "Bloques inferiores más unidos",
-    "Botón del Diccionario entrerriano retirado de esa zona",
-    "Nueva sección de dedicatorias",
-    "Agradecimiento a Cristina",
-    "Agradecimiento a Javier Rigada de la librería",
-    "Espacio reservado para una dedicatoria pendiente",
-    "Búsqueda automática de actualización cada 2 minutos",
-    "Botón manual Buscar actualización"
+    "Horarios rápidos y editor diario plegable",
+    "Dedicatorias ocultas hasta autorización",
+    "Plan Básico: menos de un alfajor por día",
+    "Plan Destacado: menos de un café por día",
+    "Plan Pro: menos de una Coca-Cola chica por día",
+    "Recuperación de contraseña mejorada para comercios y particulares",
+    "Correo de recuperación en español"
   ]
 }

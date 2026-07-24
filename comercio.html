@@ -30,6 +30,7 @@ const firebaseConfig = {
 const app  = initializeApp(firebaseConfig);
 const db   = getFirestore(app);
 const auth = getAuth(app);
+auth.languageCode = "es";
 const gProvider = new GoogleAuthProvider();
 
 let miComercioId = null;
@@ -656,11 +657,11 @@ window.recuperarClave = async () => {
     err.style.display='block'; return
   }
   try{
-    await sendPasswordResetEmail(auth,email)
-    err.textContent='✅ Te enviamos un correo para crear una nueva contraseña. Revisá también Spam.'
+    await sendPasswordResetEmail(auth,email,{url:window.location.origin+window.location.pathname,handleCodeInApp:false})
+    err.textContent='✅ Firebase envió un enlace para crear una contraseña nueva. Revisá Entrada, Spam y Correo no deseado. La contraseña anterior no puede recuperarse ni mostrarse.'
     err.style.display='block'
   }catch(e){
-    err.textContent=e.code==='auth/invalid-email'?'El email no es válido.':'No se pudo enviar el correo: '+e.message
+    err.textContent=e.code==='auth/invalid-email'?'El email no es válido.':e.code==='auth/user-not-found'?'No encontramos una cuenta con ese correo.':'No se pudo enviar el enlace: '+e.message
     err.style.display='block'
   }
 }
@@ -1163,7 +1164,7 @@ img{max-width:100%;height:auto}
 <meta name="apple-mobile-web-app-title" content="Sálvame">
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
-<meta name="app-version" content="V47">
+<meta name="app-version" content="V48">
 </head>
 <body>
 
