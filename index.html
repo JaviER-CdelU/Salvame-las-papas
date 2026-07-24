@@ -2762,6 +2762,37 @@ nav .nav-btns,nav .nav-portals{display:none!important}
 #actualizacion-app{max-width:760px;margin:auto;left:14px;right:14px}
 #actualizacion-app.visible{display:flex!important}
 
+
+/* V47 — IDENTIDAD LOCAL Y AGRADECIMIENTOS */
+.local-highlight-v47{
+  border:2px solid #9fc4ea!important;
+  background:linear-gradient(135deg,#eef7ff 0%,#fff9ef 100%)!important;
+  box-shadow:0 18px 42px rgba(7,53,116,.12)!important;
+}
+.local-highlight-v47 h2,
+.local-highlight-v47 h1{
+  font-size:clamp(2rem,4.5vw,3.4rem)!important;
+  line-height:1.02!important;
+  color:#073574!important;
+  text-wrap:balance;
+}
+.local-highlight-v47 p{font-size:1.05rem!important;line-height:1.6!important;max-width:860px!important}
+.dedicatorias-v47{background:#f3f8ff;padding:28px 14px 34px;border-top:1px solid #d8e5f3}
+.dedicatorias-inner-v47{width:min(1280px,100%);margin:auto}
+.dedicatorias-inner-v47>span{font-size:.75rem;font-weight:900;letter-spacing:.09em;color:#ff7200}
+.dedicatorias-inner-v47 h2{margin:5px 0 16px;color:#073574;font-size:clamp(1.5rem,3vw,2.3rem)}
+.dedicatorias-grid-v47{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.dedicatorias-grid-v47 article{background:#fff;border:1px solid #dbe6f1;border-radius:16px;padding:18px;box-shadow:0 8px 22px rgba(7,53,116,.06)}
+.dedicatorias-grid-v47 strong{display:block;color:#073574;font-size:1.05rem;margin-bottom:6px}
+.dedicatorias-grid-v47 p{margin:0;color:#5f6d7c;line-height:1.5}
+.dedicatorias-grid-v47 .pendiente-v47{border-style:dashed;background:#fbfdff}
+@media(max-width:800px){.dedicatorias-grid-v47{grid-template-columns:1fr}}
+
+
+#forzar-actualizacion-v47{position:fixed;right:16px;bottom:78px;z-index:9998;border:0;border-radius:999px;background:#073574;color:#fff;padding:11px 15px;font-weight:900;box-shadow:0 10px 28px rgba(7,53,116,.28);cursor:pointer}
+#forzar-actualizacion-v47:disabled{opacity:.75;cursor:wait}
+@media(max-width:700px){#forzar-actualizacion-v47{right:10px;bottom:72px;font-size:.78rem;padding:10px 12px}}
+
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -3023,7 +3054,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
 }
 
 </style>
-<meta name="app-version" content="V46">
+<meta name="app-version" content="V47">
 </head>
 <body>
 <div class="cdu-stripe"></div>
@@ -3093,7 +3124,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
   </div>
 </section>
 
-<section class="local-summary-v38">
+<section class="local-highlight-v47 local-summary-v38">
   <strong>🥔 Proyecto local de Concepción del Uruguay</strong>
   <span>Buscá comercios, productos y servicios reales de la ciudad.</span>
 </section>
@@ -3666,10 +3697,22 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
 <section class="local-made-v30">
   <div class="local-icon">🥔</div>
   <div>
-    <h2>Hecho en Concepción del Uruguay para Concepción del Uruguay</h2>
+    <h2>Hecho en Concepción del Uruguay, para Concepción del Uruguay</h2>
     <p>Una red local para conectar vecinos, comercios, emprendedores y prestadores de servicios. Más adelante podrá crecer hacia otras localidades.</p>
   </div>
   <div class="local-chip">Proyecto local</div>
+</section>
+
+<section class="dedicatorias-v47">
+  <div class="dedicatorias-inner-v47">
+    <span>💙 AGRADECIMIENTOS</span>
+    <h2>Este proyecto también se construye con quienes están siempre</h2>
+    <div class="dedicatorias-grid-v47">
+      <article><strong>Para Cristina</strong><p>Por acompañar, bancar y estar en cada paso de este proyecto.</p></article>
+      <article><strong>Para Javier Rigada</strong><p>De la librería, por creer desde el principio y decir que esto podía ser un golazo.</p></article>
+      <article class="pendiente-v47"><strong>Dedicatoria pendiente</strong><p>Espacio reservado para la persona cuyo nombre falta recordar.</p></article>
+    </div>
+  </div>
 </section>
 <footer>
   <div class="footer-grid">
@@ -3716,7 +3759,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
   </div>
   <div class="footer-bottom">© 2025 Sálvame las Papas · Concepción del Uruguay, La Histórica · Hecho con ❤️ y mate 🧉 para los vecinos del barrio</div>
 <div class="app-version-badge" title="Versión publicada de Sálvame las Papas">
-  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V46</a>
+  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V47</a>
 </div>
 </footer>
 
@@ -5290,7 +5333,9 @@ actualizarEstadoInstalacion();
       });
 
       buscarActualizacion();
-      setInterval(buscarActualizacion,30*60*1000);
+    setTimeout(buscarActualizacion,1200);
+    setTimeout(buscarActualizacion,5000);
+      setInterval(buscarActualizacion,2*60*1000);
       setTimeout(()=>{['abiertos-home','ofertas-home','destacados-home'].forEach(id=>{const e=document.getElementById(id);if(e&&/Cargando|Consultando/.test(e.textContent))e.innerHTML='<div class="home-empty">No hay información disponible para mostrar en esta sección.</div>'})},6500);
 
     })
@@ -5637,6 +5682,34 @@ document.addEventListener('DOMContentLoaded',cargarVendedoresV41);
     setTimeout(resolver,8000);
   });
   window.addEventListener('load',()=>setTimeout(resolver,1200));
+})();
+</script>
+
+
+<button id="forzar-actualizacion-v47" type="button" title="Buscar una versión nueva">🔄 Buscar actualización</button>
+<script id="forzar-update-v47">
+(function(){
+ const b=document.getElementById('forzar-actualizacion-v47');
+ if(!b)return;
+ b.addEventListener('click',async()=>{
+   b.disabled=true;b.textContent='Buscando…';
+   try{
+     if('serviceWorker' in navigator){
+       const regs=await navigator.serviceWorker.getRegistrations();
+       await Promise.all(regs.map(r=>r.update()));
+     }
+     const r=await fetch('./version.json?ts='+Date.now(),{cache:'no-store'});
+     const v=await r.json();
+     const actual=document.querySelector('meta[name="app-version"]')?.content||'';
+     if(v.version&&v.version!==actual){
+       location.reload();
+     }else{
+       b.textContent='✅ Está actualizada';
+       setTimeout(()=>b.textContent='🔄 Buscar actualización',1800);
+     }
+   }catch(e){b.textContent='Reintentar actualización';}
+   finally{b.disabled=false}
+ });
 })();
 </script>
 

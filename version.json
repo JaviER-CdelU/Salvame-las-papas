@@ -1,16 +1,16 @@
 {
-  "version": "V46",
-  "nombre": "Portada estable y avisos reales",
+  "version": "V47",
+  "nombre": "Identidad local y actualización inmediata",
   "fecha": "2026-07-24",
   "cambios": [
-    "Consulta pública únicamente comercios activos",
-    "Destacados siempre muestra comercios activos aunque no tengan productos",
-    "Ofertas nunca queda cargando",
-    "Mensaje real cuando no hay ofertas",
-    "Sugerencia de comercios cuando no hay ofertas",
-    "Abiertos muestra horarios confirmados o comercios con horario a consultar",
-    "Watchdog de carga para evitar textos eternos",
-    "Aviso de versión nueva restaurado y menos invasivo",
-    "Búsqueda de actualización cada 30 minutos"
+    "Mensaje local destacado con mayor tamaño y presencia",
+    "Bloques inferiores más unidos",
+    "Botón del Diccionario entrerriano retirado de esa zona",
+    "Nueva sección de dedicatorias",
+    "Agradecimiento a Cristina",
+    "Agradecimiento a Javier Rigada de la librería",
+    "Espacio reservado para una dedicatoria pendiente",
+    "Búsqueda automática de actualización cada 2 minutos",
+    "Botón manual Buscar actualización"
   ]
 }
