@@ -1,12 +1,12 @@
 {
-  "version": "V43",
-  "nombre": "Permisos para vendedor particular",
+  "version": "V44",
+  "nombre": "Admin de vendedores particulares corregido",
   "fecha": "2026-07-24",
   "cambios": [
-    "Permite enviar una solicitud particular sin iniciar sesión",
-    "La solicitud solo puede crearse como pendiente y pago pendiente",
-    "Solo Administración puede aprobar, modificar o eliminar",
-    "La portada consulta únicamente vendedores activos",
-    "Se incluye firestore.rules listo para publicar"
+    "Agregado el contenedor que faltaba en Vendedores particulares",
+    "La pestaña ahora muestra solicitudes pendientes y activas",
+    "Botón Actualizar particulares",
+    "Mensajes de error técnicos visibles",
+    "Conservados formularios, permisos y publicaciones de V43"
   ]
 }

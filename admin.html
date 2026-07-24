@@ -111,7 +111,7 @@ window.cargarVendedoresAdmin=async()=>{
     const ax=a.creadoEn?.seconds||0,bx=b.creadoEn?.seconds||0;return bx-ax;
   });
   renderVendedoresV41(vendedoresParticularesAdmin);
- }catch(e){el.innerHTML='<p class="cargando" style="color:#a00">No se pudieron cargar los vendedores particulares.</p>'}
+ }catch(e){el.innerHTML='<p class="cargando" style="color:#a00">No se pudieron cargar los vendedores particulares: '+(e.message||e.code||'error desconocido')+'</p>'}
 };
 
 function renderVendedoresV41(lista){
@@ -683,6 +683,51 @@ img{max-width:100%;height:auto}
 
 .main-tabs-v41{display:flex;gap:10px;margin:0 0 18px;flex-wrap:wrap}.main-tab-v41{border:1px solid #c9d6e5;background:#fff;color:#073574;padding:11px 16px;border-radius:999px;font-weight:900;cursor:pointer}.main-tab-v41.active{background:#073574;color:#fff}.plan-part-v41{background:#7a4b18;color:#fff}.vp-arts-v41{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:12px}.vp-art-v41{border:1px solid #dfe6ee;border-radius:10px;padding:10px;display:grid;gap:3px}.vp-art-v41 span{color:#0a6b3f;font-weight:900}.vp-art-v41 small{color:#6b788b}@media(max-width:650px){.vp-arts-v41{grid-template-columns:1fr}}
 
+
+/* V44 — PANEL DE VENDEDORES PARTICULARES CORREGIDO */
+#panel-comercios-v41,
+#panel-vendedores-v41{
+  width:100%;
+}
+.vendedores-toolbar-v44{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  margin:0 0 16px;
+  padding:18px 20px;
+  border-radius:16px;
+  background:#fff;
+  border:1px solid #d8e2ee;
+  box-shadow:0 8px 22px rgba(7,47,107,.06);
+}
+.vendedores-toolbar-v44 h2{
+  margin:0 0 4px;
+  color:#073574;
+  font-size:1.35rem;
+}
+.vendedores-toolbar-v44 p{
+  margin:0;
+  color:#6a7788;
+  font-size:.82rem;
+}
+#vendedores-lista-v41{
+  display:grid;
+  gap:16px;
+}
+#panel-vendedores-v41 .comercio-card{
+  display:block!important;
+}
+@media(max-width:700px){
+  .vendedores-toolbar-v44{
+    align-items:stretch;
+    flex-direction:column;
+  }
+  .vendedores-toolbar-v44 button{
+    width:100%;
+  }
+}
+
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -693,7 +738,7 @@ img{max-width:100%;height:auto}
 <meta name="apple-mobile-web-app-title" content="Sálvame">
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
-<meta name="app-version" content="V43">
+<meta name="app-version" content="V44">
 </head>
 <body>
 
@@ -779,6 +824,20 @@ img{max-width:100%;height:auto}
     <div id="admin-lista">
       <p class="cargando">Iniciá sesión para ver los comercios</p>
     </div>
+  </div>
+
+  <div id="panel-vendedores-v41" style="display:none">
+    <div class="vendedores-toolbar-v44">
+      <div>
+        <h2>🚲 Vendedores particulares</h2>
+        <p>Publicaciones pendientes, activas, suspendidas y vencidas.</p>
+      </div>
+      <button class="btn-reload" type="button" onclick="cargarVendedoresAdmin()">↺ Actualizar particulares</button>
+    </div>
+    <div id="vendedores-lista-v41">
+      <p class="cargando">Abrí esta pestaña para cargar los vendedores particulares.</p>
+    </div>
+  </div>
 
   </div>
 </div>
@@ -823,5 +882,15 @@ function prepararCamposPassword(){
 document.addEventListener('DOMContentLoaded',prepararCamposPassword);
 </script>
 
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+  const boton=document.querySelector('.main-tab-v41[data-panel="vendedores"]');
+  if(boton){
+    boton.addEventListener('click',()=>setTimeout(()=>{
+      if(typeof window.cargarVendedoresAdmin==='function') window.cargarVendedoresAdmin();
+    },80));
+  }
+});
+</script>
 </body>
 </html>
