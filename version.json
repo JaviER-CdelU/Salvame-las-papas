@@ -1,5 +1,13 @@
 {
-  "version": "V39",
-  "nombre": "Categorías, horarios y carrusel",
-  "fecha": "2026-07-23"
+  "version": "V40",
+  "nombre": "24 categorías visibles sin desplazamiento",
+  "fecha": "2026-07-24",
+  "cambios": [
+    "Las 24 categorías aparecen completas",
+    "Sin desplazamiento horizontal",
+    "12 columnas en computadora",
+    "8 columnas en tablet",
+    "4 columnas en celular",
+    "Iconos y textos compactos"
+  ]
 }

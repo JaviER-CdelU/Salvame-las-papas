@@ -2610,6 +2610,102 @@ nav .nav-btns,nav .nav-portals{display:none!important}
 }
 
 /* V39 */.categories-v33-grid{grid-template-columns:repeat(12,minmax(0,1fr))!important;gap:7px!important}.categories-v33-grid button{min-height:76px!important;padding:8px 4px!important;border-radius:12px!important}.categories-v33-grid button>span{font-size:1.45rem!important;margin:0 0 3px!important}.categories-v33-grid strong{font-size:.67rem!important;line-height:1.1!important}.categories-v33-grid small{font-size:.6rem!important}.schedule-editor-v39{display:grid;gap:8px;margin-top:10px}.schedule-day-v39{display:grid;grid-template-columns:90px repeat(4,minmax(105px,1fr)) 100px;gap:8px;align-items:center;padding:9px;border:1px solid #dbe4ee;border-radius:12px;background:#f8fbff}.schedule-day-v39 label{font-size:.72rem;color:#5f6d7e}.schedule-day-v39 input[type=time]{display:block;width:100%;padding:7px;border:1px solid #cbd7e4;border-radius:8px;background:#fff}.closed-v39{display:flex!important;align-items:center;gap:5px;color:#8d2525!important}.schedule-actions-v39{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}.schedule-actions-v39 button{border:1px solid #c6d5e6;background:#fff;border-radius:9px;padding:8px 11px;cursor:pointer;font-weight:700}.badge-consultar{display:inline-flex;padding:4px 8px;border-radius:999px;background:#fff5d9;color:#765410;font-size:.72rem}.rotation-label-v39{position:absolute;left:10px;top:10px;z-index:3;background:#fff;color:#073574;border-radius:999px;padding:5px 8px;font-size:.66rem;font-weight:800;box-shadow:0 4px 12px rgba(0,0,0,.12)}.featured-home-card{position:relative}@media(max-width:1100px){.categories-v33-grid{grid-template-columns:repeat(8,minmax(0,1fr))!important}.schedule-day-v39{grid-template-columns:75px repeat(2,1fr)}}@media(max-width:700px){.categories-v33-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}.schedule-day-v39{grid-template-columns:1fr 1fr!important}.schedule-day-v39 b,.schedule-day-v39 .closed-v39{grid-column:1/-1}}
+
+/* ==========================================================
+   V40 — 24 CATEGORÍAS COMPLETAS, SIN DESPLAZAMIENTO
+   ========================================================== */
+.categories-v33{
+  overflow:visible!important;
+}
+.categories-v33-grid{
+  display:grid!important;
+  grid-template-columns:repeat(12,minmax(0,1fr))!important;
+  grid-template-rows:auto!important;
+  grid-auto-flow:row!important;
+  grid-auto-columns:auto!important;
+  gap:7px!important;
+  overflow:visible!important;
+  overscroll-behavior:auto!important;
+  scrollbar-width:none!important;
+  padding-bottom:0!important;
+}
+.categories-v33-grid button{
+  min-width:0!important;
+  width:100%!important;
+  min-height:72px!important;
+  padding:7px 3px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:2px!important;
+  text-align:center!important;
+  border-radius:11px!important;
+}
+.categories-v33-grid button>span{
+  display:block!important;
+  grid-row:auto!important;
+  font-size:1.35rem!important;
+  line-height:1!important;
+}
+.categories-v33-grid strong{
+  display:block!important;
+  font-size:.64rem!important;
+  line-height:1.08!important;
+  overflow-wrap:anywhere!important;
+}
+.categories-v33-grid small{
+  display:block!important;
+  font-size:.56rem!important;
+  line-height:1!important;
+}
+
+@media(max-width:1100px){
+  .categories-v33-grid{
+    grid-template-columns:repeat(8,minmax(0,1fr))!important;
+  }
+}
+
+@media(max-width:700px){
+  .categories-v33{
+    width:calc(100% - 12px)!important;
+    padding:9px 7px!important;
+  }
+  .categories-v33-head{
+    margin-bottom:8px!important;
+  }
+  .categories-v33-grid{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:5px!important;
+  }
+  .categories-v33-grid button{
+    min-height:62px!important;
+    padding:5px 2px!important;
+  }
+  .categories-v33-grid button>span{
+    font-size:1.18rem!important;
+  }
+  .categories-v33-grid strong{
+    font-size:.57rem!important;
+  }
+  .categories-v33-grid small{
+    font-size:.5rem!important;
+  }
+}
+
+@media(max-width:370px){
+  .categories-v33-grid{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:4px!important;
+  }
+  .categories-v33-grid button{
+    min-height:58px!important;
+  }
+  .categories-v33-grid strong{
+    font-size:.52rem!important;
+  }
+}
+
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -2871,7 +2967,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
 }
 
 </style>
-<meta name="app-version" content="V39">
+<meta name="app-version" content="V40">
 </head>
 <body>
 <div class="cdu-stripe"></div>
@@ -3523,7 +3619,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
   </div>
   <div class="footer-bottom">© 2025 Sálvame las Papas · Concepción del Uruguay, La Histórica · Hecho con ❤️ y mate 🧉 para los vecinos del barrio</div>
 <div class="app-version-badge" title="Versión publicada de Sálvame las Papas">
-  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V39</a>
+  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V40</a>
 </div>
 </footer>
 
