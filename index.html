@@ -2706,6 +2706,47 @@ nav .nav-btns,nav .nav-portals{display:none!important}
   }
 }
 
+
+/* V41 — VENDEDOR PARTICULAR */
+.planes-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;max-width:1450px!important}
+.plan-particular-v41{border:2px solid #7a4b18!important;background:linear-gradient(180deg,#fffaf0,#fff)!important}
+.plan-particular-v41 .plan-badge{background:#7a4b18!important}
+.particular-link-v41{display:block;text-align:center;text-decoration:none}
+.seller-cta-v41{
+  width:min(1180px,calc(100% - 28px));margin:22px auto;padding:20px 24px;
+  border-radius:18px;background:linear-gradient(135deg,#fff5e6,#eef6ff);
+  border:1px solid #ead1ac;display:flex;align-items:center;justify-content:space-between;gap:20px;
+}
+.seller-cta-v41 span,.seller-public-head span{font-size:.72rem;font-weight:900;letter-spacing:.08em;color:#9b5208}
+.seller-cta-v41 h2{margin:4px 0 6px;color:#073574}
+.seller-cta-v41 p{margin:0;max-width:760px;color:#5d6878}
+.seller-cta-v41 a,.seller-public-head a{
+  flex:0 0 auto;text-decoration:none;background:#ff7200;color:#fff;padding:12px 18px;
+  border-radius:999px;font-weight:800;box-shadow:0 8px 18px rgba(255,114,0,.2)
+}
+.seller-public-v41{width:min(1420px,calc(100% - 28px));margin:26px auto}
+.seller-public-head{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:14px}
+.seller-public-head h2{margin:3px 0 0;color:#073574;font-size:clamp(1.5rem,3vw,2.2rem)}
+.seller-public-grid-v41{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.seller-card-v41{background:#fff;border:1px solid #dfe6ee;border-radius:16px;overflow:hidden;box-shadow:0 9px 24px rgba(7,47,107,.08)}
+.seller-card-v41 img{width:100%;aspect-ratio:4/3;object-fit:cover;background:#eef3f8}
+.seller-card-body-v41{padding:13px}
+.seller-card-body-v41 h3{margin:0 0 5px;color:#073574}
+.seller-price-v41{font-size:1.25rem;font-weight:900;color:#0a6b3f;margin:5px 0}
+.seller-meta-v41{font-size:.75rem;color:#697689;margin-bottom:8px}
+.seller-desc-v41{font-size:.82rem;line-height:1.4;color:#465164;min-height:36px}
+.seller-actions-v41{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.seller-actions-v41 a{flex:1;min-width:125px;text-align:center;text-decoration:none;padding:10px;border-radius:10px;font-weight:800;font-size:.8rem}
+.seller-wa-v41{background:#0a9b58;color:#fff}
+.seller-sold-v41{background:#edf3fa;color:#073574}
+.seller-empty-v41{grid-column:1/-1;padding:22px;text-align:center;border:1px dashed #cdd8e4;border-radius:14px;color:#687588;background:#fafcff}
+@media(max-width:1000px){.planes-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.seller-public-grid-v41{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){
+  .planes-grid,.seller-public-grid-v41{grid-template-columns:1fr!important}
+  .seller-cta-v41,.seller-public-head{align-items:stretch;flex-direction:column}
+  .seller-cta-v41 a,.seller-public-head a{text-align:center}
+}
+
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -2967,7 +3008,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
 }
 
 </style>
-<meta name="app-version" content="V40">
+<meta name="app-version" content="V41">
 </head>
 <body>
 <div class="cdu-stripe"></div>
@@ -3170,14 +3211,53 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
 </section>
 </div>
 
+
+<section class="seller-cta-v41">
+  <div>
+    <span>🚲 VENDEDOR PARTICULAR</span>
+    <h2>¿Querés vender algo usado?</h2>
+    <p>Publicá hasta dos artículos durante 30 días. Cargá fotos, precio y descripción; los interesados se comunican con vos por WhatsApp.</p>
+  </div>
+  <a href="./vendedor.html">Publicar como vendedor particular</a>
+</section>
+
+
+<section class="seller-public-v41" id="vendedores-particulares">
+  <div class="seller-public-head">
+    <div><span>🚲 CLASIFICADOS LOCALES</span><h2>Vendedores particulares</h2></div>
+    <a href="./vendedor.html">Publicar un artículo</a>
+  </div>
+  <div id="seller-public-grid-v41" class="seller-public-grid-v41">
+    <div class="seller-empty-v41">Cargando publicaciones particulares…</div>
+  </div>
+</section>
+
 <!-- PLANES -->
 <div class="planes-bg" id="planes">
   <div style="width:100%;max-width:1600px;margin:0 auto">
     <div class="planes-header">
-      <h2>Planes para comercios</h2>
+      <h2>Elegí cómo querés publicar</h2>
       <p>Elegí el nivel de publicación y promoción que mejor acompañe a tu comercio. Sin permanencia.</p>
     </div>
     <div class="planes-grid">
+
+      <div class="plan plan-particular-v41">
+        <div class="plan-badge">🚲 Para personas</div>
+        <div class="plan-nivel">Publicación particular</div>
+        <div class="plan-nombre">Vendedor particular</div>
+        <div class="plan-precio">$10.000<small>/30 días</small></div>
+        <div class="plan-periodo">Para vender artículos propios</div>
+        <ul class="plan-feats">
+          <li>Hasta 2 artículos</li>
+          <li>Hasta 4 fotos por artículo</li>
+          <li>Precio, descripción y estado</li>
+          <li>Retiro o entrega a coordinar</li>
+          <li class="wa">Contacto directo por WhatsApp</li>
+          <li>Se publica al acreditarse el pago</li>
+        </ul>
+        <a class="btn-plan particular-link-v41" href="./vendedor.html">Publicar como particular</a>
+      </div>
+
       <div class="plan" onclick="elegirPlan(1)">
         <div class="plan-nivel">Nivel 1</div><div class="plan-nombre">Básico</div>
         <div class="plan-precio">$15.000<small>/mes</small></div>
@@ -3249,7 +3329,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
       <p>Publicá tus productos, recibí pedidos y conectá con vecinos de Concepción del Uruguay.</p>
 
       <div class="form-side-benefits">
-        <div><span>✓</span><strong>Inscripción sin costo</strong><small>Completás los datos y elegís el plan.</small></div>
+        <div><span>✓</span><strong>Elegí tu modalidad</strong><small>Completás los datos y elegís el plan que mejor se adapte a lo que querés publicar.</small></div>
         <div><span>✓</span><strong>Alta revisada</strong><small>Verificamos la información antes de publicar.</small></div>
         <div><span>✓</span><strong>Pedidos directos</strong><small>El cliente arma el pedido y te contacta.</small></div>
         <div><span>✓</span><strong>Tu comercio ubicado</strong><small>Dirección, horarios y enlace a Google Maps.</small></div>
@@ -3619,7 +3699,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
   </div>
   <div class="footer-bottom">© 2025 Sálvame las Papas · Concepción del Uruguay, La Histórica · Hecho con ❤️ y mate 🧉 para los vecinos del barrio</div>
 <div class="app-version-badge" title="Versión publicada de Sálvame las Papas">
-  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V40</a>
+  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V41</a>
 </div>
 </footer>
 
@@ -5374,6 +5454,67 @@ window.addEventListener('load',()=>setTimeout(()=>{
   renderCategoriasV33();
   actualizarStatsV33();
 },1900));
+</script>
+
+
+<script type="module" id="seller-public-loader-v41">
+import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const cfgV41={
+  apiKey:"AIzaSyAE8kEBAzDbPvCCD1KCyjq67iFl3dvthLM",
+  authDomain:"salvame-las-papas-cdelu.firebaseapp.com",
+  projectId:"salvame-las-papas-cdelu",
+  storageBucket:"salvame-las-papas-cdelu.firebasestorage.app",
+  messagingSenderId:"401048945476",
+  appId:"1:401048945476:web:58695553aa93928b36cd11"
+};
+const appV41=getApps().length?getApps()[0]:initializeApp(cfgV41);
+const dbV41=getFirestore(appV41);
+const escV41=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function vigenteV41(v){
+  if(String(v.estado||'').toLowerCase()!=='activo') return false;
+  const f=v.vencimiento?.toDate?v.vencimiento.toDate():new Date(v.vencimiento||0);
+  return !isNaN(f)&&f>=new Date();
+}
+async function cargarVendedoresV41(){
+  const grid=document.getElementById('seller-public-grid-v41');
+  if(!grid)return;
+  try{
+    const snap=await getDocs(collection(dbV41,'vendedoresParticulares'));
+    const cards=[];
+    snap.forEach(d=>{
+      const v={id:d.id,...d.data()};
+      if(!vigenteV41(v))return;
+      (Array.isArray(v.articulos)?v.articulos:[]).forEach((a,i)=>{
+        if(a.vendido===true)return;
+        const foto=(Array.isArray(a.fotos)&&a.fotos[0])||'';
+        const tel=String(v.whatsapp||'').replace(/\D/g,'');
+        const titulo=escV41(a.titulo||'Artículo');
+        const precio=Number(a.precio||0);
+        const msg=encodeURIComponent(`Hola ${v.nombre||''}. Vi "${a.titulo||'el artículo'}" en Sálvame las Papas y quiero consultarte.`);
+        const mail=encodeURIComponent(`Artículo vendido: ${a.titulo||'sin título'}`);
+        const body=encodeURIComponent(`Hola Sálvame las Papas.\nInformo que se vendió el artículo "${a.titulo||''}" publicado por ${v.nombre||''}.\nWhatsApp: ${v.whatsapp||''}\nCódigo de publicación: ${v.id}`);
+        cards.push(`<article class="seller-card-v41">
+          ${foto?`<img src="${foto}" alt="${titulo}" loading="lazy">`:`<div style="aspect-ratio:4/3;display:grid;place-items:center;font-size:3rem;background:#eef3f8">🚲</div>`}
+          <div class="seller-card-body-v41">
+            <h3>${titulo}</h3>
+            <div class="seller-price-v41">$${precio.toLocaleString('es-AR')}</div>
+            <div class="seller-meta-v41">${escV41(a.estadoArticulo||'Usado')} · ${escV41(v.localidad||'Concepción del Uruguay')}</div>
+            <div class="seller-desc-v41">${escV41(a.descripcion||'')}</div>
+            <div class="seller-actions-v41">
+              <a class="seller-wa-v41" target="_blank" rel="noopener" href="https://wa.me/${tel}?text=${msg}">WhatsApp</a>
+              <a class="seller-sold-v41" href="mailto:salvamelaspapascdelu@gmail.com?subject=${mail}&body=${body}">Avisar vendido</a>
+            </div>
+          </div>
+        </article>`);
+      });
+    });
+    grid.innerHTML=cards.length?cards.join(''):'<div class="seller-empty-v41">Todavía no hay artículos particulares publicados.</div>';
+  }catch(e){
+    grid.innerHTML='<div class="seller-empty-v41">Las publicaciones particulares todavía no están disponibles.</div>';
+  }
+}
+document.addEventListener('DOMContentLoaded',cargarVendedoresV41);
 </script>
 
 </body>

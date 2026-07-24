@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#073574">
+<meta name="app-version" content="V41">
+<title>Vendedor particular — Sálvame las Papas</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#172338}
+header{background:linear-gradient(135deg,#073574,#0868b5);color:#fff;padding:18px}
+header>div{max-width:980px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:15px}
+header a{color:#fff;text-decoration:none;font-weight:700}.wrap{max-width:980px;margin:22px auto;padding:0 14px}
+.hero{background:#fff6e8;border:1px solid #ebce9d;border-radius:18px;padding:20px;margin-bottom:18px}
+.hero h1{margin:0 0 8px;color:#073574}.hero p{margin:0;line-height:1.5}
+.price{font-size:1.4rem;font-weight:900;color:#a55400;margin-top:10px}
+form{background:#fff;border-radius:18px;padding:20px;box-shadow:0 10px 30px rgba(7,47,107,.08)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.full{grid-column:1/-1}
+label{display:block;font-size:.8rem;font-weight:800;margin-bottom:5px;color:#34435a}
+input,select,textarea{width:100%;padding:11px 12px;border:1.5px solid #ccd7e3;border-radius:10px;font:inherit}
+textarea{min-height:90px;resize:vertical}.article{border:1px solid #dde5ee;border-radius:14px;padding:15px;margin-top:15px;background:#fbfdff}
+.article h2{margin:0 0 12px;color:#073574;font-size:1.15rem}.photos{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.photos label{border:1px dashed #9db0c6;border-radius:10px;padding:8px;text-align:center;cursor:pointer;background:#fff}
+.photos input{font-size:.65rem;padding:4px;border:0}.note{font-size:.75rem;color:#687588;line-height:1.45}
+.actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}.actions button,.actions a{flex:1;min-width:180px;border:0;border-radius:12px;padding:13px;text-align:center;text-decoration:none;font-weight:900;cursor:pointer}
+.submit{background:#ff7200;color:#fff}.back{background:#edf3fa;color:#073574}.status{display:none;margin-top:14px;padding:12px;border-radius:10px}.status.show{display:block}.ok{background:#e8f7ed;color:#23673a}.error{background:#fff0f0;color:#9b2424}
+@media(max-width:650px){.grid{grid-template-columns:1fr}.full{grid-column:auto}.photos{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<header><div><strong>🥔 Sálvame las Papas</strong><a href="./index.html">Volver al inicio</a></div></header>
+<main class="wrap">
+<section class="hero">
+<h1>Vendedor particular</h1>
+<p>Publicá hasta dos artículos propios durante 30 días. La publicación se habilita cuando se confirma el pago. Los interesados se comunicarán directamente con vos por WhatsApp.</p>
+<div class="price">$10.000 por 30 días</div>
+</section>
+<form id="seller-form">
+<div class="grid">
+<div><label>Nombre y apellido *</label><input id="s-name" required></div>
+<div><label>WhatsApp *</label><input id="s-wa" type="tel" placeholder="+54 9 3442..." required></div>
+<div><label>Localidad *</label><input id="s-city" value="Concepción del Uruguay" required></div>
+<div><label>Forma de entrega</label><select id="s-delivery"><option>Retiro a coordinar</option><option>Entrega a coordinar</option><option>Retiro o entrega</option></select></div>
+</div>
+
+<section class="article">
+<h2>Artículo 1 — obligatorio</h2>
+<div class="grid">
+<div><label>Título *</label><input id="a1-title" placeholder="Bicicleta rodado 29" required></div>
+<div><label>Precio *</label><input id="a1-price" type="number" min="1" required></div>
+<div><label>Estado</label><select id="a1-state"><option>Usado</option><option>Como nuevo</option><option>Nuevo</option></select></div>
+<div><label>Categoría</label><input id="a1-cat" placeholder="Bicicletas, muebles, tecnología..."></div>
+<div class="full"><label>Descripción *</label><textarea id="a1-desc" required></textarea></div>
+<div class="full"><label>Hasta 4 fotos</label><div class="photos">
+<label>Foto 1<input class="a1-photo" type="file" accept="image/*"></label>
+<label>Foto 2<input class="a1-photo" type="file" accept="image/*"></label>
+<label>Foto 3<input class="a1-photo" type="file" accept="image/*"></label>
+<label>Foto 4<input class="a1-photo" type="file" accept="image/*"></label>
+</div></div>
+</div>
+</section>
+
+<section class="article">
+<h2>Artículo 2 — opcional</h2>
+<div class="grid">
+<div><label>Título</label><input id="a2-title"></div>
+<div><label>Precio</label><input id="a2-price" type="number" min="1"></div>
+<div><label>Estado</label><select id="a2-state"><option>Usado</option><option>Como nuevo</option><option>Nuevo</option></select></div>
+<div><label>Categoría</label><input id="a2-cat"></div>
+<div class="full"><label>Descripción</label><textarea id="a2-desc"></textarea></div>
+<div class="full"><label>Hasta 4 fotos</label><div class="photos">
+<label>Foto 1<input class="a2-photo" type="file" accept="image/*"></label>
+<label>Foto 2<input class="a2-photo" type="file" accept="image/*"></label>
+<label>Foto 3<input class="a2-photo" type="file" accept="image/*"></label>
+<label>Foto 4<input class="a2-photo" type="file" accept="image/*"></label>
+</div></div>
+</div>
+</section>
+
+<p class="note">Al enviar, la publicación queda pendiente. Después de confirmar el pago se habilita por 30 días. No se publica correo personal: solamente tu WhatsApp. Cuando vendas un artículo podés usar “Avisar vendido” desde la publicación.</p>
+<div class="actions"><a class="back" href="./index.html">Cancelar</a><button class="submit" type="submit">Enviar para aprobación</button></div>
+<div id="seller-status" class="status"></div>
+</form>
+</main>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getFirestore,collection,addDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const app=initializeApp({apiKey:"AIzaSyAE8kEBAzDbPvCCD1KCyjq67iFl3dvthLM",authDomain:"salvame-las-papas-cdelu.firebaseapp.com",projectId:"salvame-las-papas-cdelu",storageBucket:"salvame-las-papas-cdelu.firebasestorage.app",messagingSenderId:"401048945476",appId:"1:401048945476:web:58695553aa93928b36cd11"});
+const db=getFirestore(app);
+async function comprimir(file){
+ if(!file)return null;
+ const data=await new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(r.result);r.onerror=no;r.readAsDataURL(file)});
+ const img=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=data});
+ const max=900,scale=Math.min(1,max/Math.max(img.width,img.height));
+ const c=document.createElement('canvas');c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);
+ c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+ return c.toDataURL('image/jpeg',.7);
+}
+async function fotos(selector){
+ const files=[...document.querySelectorAll(selector)].map(i=>i.files[0]).filter(Boolean).slice(0,4);
+ const out=[];for(const f of files)out.push(await comprimir(f));return out;
+}
+const status=document.getElementById('seller-status');
+document.getElementById('seller-form').addEventListener('submit',async e=>{
+ e.preventDefault();status.className='status show';status.textContent='Guardando publicación…';
+ try{
+  const articulos=[{
+   titulo:document.getElementById('a1-title').value.trim(),precio:Number(document.getElementById('a1-price').value),
+   estadoArticulo:document.getElementById('a1-state').value,categoria:document.getElementById('a1-cat').value.trim(),
+   descripcion:document.getElementById('a1-desc').value.trim(),fotos:await fotos('.a1-photo'),vendido:false
+  }];
+  const t2=document.getElementById('a2-title').value.trim();
+  if(t2)articulos.push({titulo:t2,precio:Number(document.getElementById('a2-price').value||0),estadoArticulo:document.getElementById('a2-state').value,categoria:document.getElementById('a2-cat').value.trim(),descripcion:document.getElementById('a2-desc').value.trim(),fotos:await fotos('.a2-photo'),vendido:false});
+  await addDoc(collection(db,'vendedoresParticulares'),{
+   tipo:'vendedor_particular',nombre:document.getElementById('s-name').value.trim(),
+   whatsapp:document.getElementById('s-wa').value.trim(),localidad:document.getElementById('s-city').value.trim(),
+   entrega:document.getElementById('s-delivery').value,plan:'Vendedor particular $10.000 / 30 días',
+   estado:'pendiente',estadoPago:'pendiente',articulos,creadoEn:serverTimestamp()
+  });
+  status.className='status show ok';status.innerHTML='✅ Solicitud enviada. Quedó pendiente hasta que se confirme el pago. Te contactaremos por WhatsApp.';
+  e.target.reset();
+ }catch(err){status.className='status show error';status.textContent='No se pudo guardar: '+(err.message||err.code);}
+});
+</script>
+</body></html>

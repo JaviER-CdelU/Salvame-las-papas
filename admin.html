@@ -96,6 +96,55 @@ window.cerrarSesion = async () => {
   await signOut(auth)
 }
 
+
+let vendedoresParticularesAdmin=[];
+
+window.cargarVendedoresAdmin=async()=>{
+ const el=document.getElementById('vendedores-lista-v41');
+ if(!el)return;
+ el.innerHTML='<p class="cargando">Cargando vendedores particulares…</p>';
+ try{
+  const snap=await getDocs(collection(db,'vendedoresParticulares'));
+  vendedoresParticularesAdmin=[];
+  snap.forEach(d=>vendedoresParticularesAdmin.push({id:d.id,...d.data()}));
+  vendedoresParticularesAdmin.sort((a,b)=>{
+    const ax=a.creadoEn?.seconds||0,bx=b.creadoEn?.seconds||0;return bx-ax;
+  });
+  renderVendedoresV41(vendedoresParticularesAdmin);
+ }catch(e){el.innerHTML='<p class="cargando" style="color:#a00">No se pudieron cargar los vendedores particulares.</p>'}
+};
+
+function renderVendedoresV41(lista){
+ const el=document.getElementById('vendedores-lista-v41');
+ if(!lista.length){el.innerHTML='<p class="cargando">No hay vendedores particulares registrados.</p>';return}
+ el.innerHTML=lista.map(v=>{
+  const arts=(Array.isArray(v.articulos)?v.articulos:[]).map((a,i)=>`<div class="vp-art-v41"><b>${esc(a.titulo||'Artículo')}</b><span>$${Number(a.precio||0).toLocaleString('es-AR')}</span><small>${esc(a.estadoArticulo||'')} · ${esc(a.categoria||'')}</small></div>`).join('');
+  const badge=v.estado==='activo'?'<span class="badge badge-activo">✅ Activo</span>':v.estado==='rechazado'?'<span class="badge badge-rechazado">❌ Rechazado</span>':'<span class="badge badge-pendiente">⏳ Pendiente</span>';
+  let acciones='';
+  if(v.estado==='pendiente')acciones=`<button class="btn-accion btn-aprobar" onclick="aprobarVendedorV41('${v.id}')">✅ Aprobar pago</button><button class="btn-accion btn-rechazar" onclick="estadoVendedorV41('${v.id}','rechazado')">❌ Rechazar</button>`;
+  else if(v.estado==='activo')acciones=`<button class="btn-accion btn-rechazar" onclick="estadoVendedorV41('${v.id}','suspendido')">⏸ Suspender</button><button class="btn-accion btn-aprobar" onclick="renovarVendedorV41('${v.id}')">🔄 Renovar 30 días</button>`;
+  else acciones=`<button class="btn-accion btn-aprobar" onclick="aprobarVendedorV41('${v.id}')">♻️ Reactivar</button>`;
+  return `<div class="comercio-card"><div class="cc-header"><div class="cc-title-row"><h3 class="cc-nombre">${esc(v.nombre||'Vendedor particular')}</h3>${badge}<span class="plan-badge plan-part-v41">PARTICULAR</span></div><div class="cc-meta">${esc(v.localidad||'CDU')} · $10.000 / 30 días</div></div>
+  <div class="cc-body"><div class="cc-grid"><div class="cc-field"><span class="cc-label">📱 WhatsApp</span><a class="wa-link" target="_blank" href="https://wa.me/${String(v.whatsapp||'').replace(/\D/g,'')}">${esc(v.whatsapp||'—')}</a></div><div class="cc-field"><span class="cc-label">🚚 Entrega</span><span>${esc(v.entrega||'—')}</span></div><div class="cc-field"><span class="cc-label">💳 Pago</span><span>${esc(v.estadoPago||'pendiente')}</span></div><div class="cc-field"><span class="cc-label">📅 Vencimiento</span><span>${v.vencimiento?.toDate?v.vencimiento.toDate().toLocaleDateString('es-AR'):'—'}</span></div></div><div class="vp-arts-v41">${arts}</div></div>
+  <div class="cc-footer">${acciones}<button class="btn-accion btn-wa" onclick="notificarVendedorV41('${String(v.whatsapp||'').replace(/\D/g,'')}','${safeArg(v.nombre||'')}')">💬 WhatsApp</button><button class="btn-accion btn-borrar" onclick="borrarVendedorV41('${v.id}')">🗑️ Eliminar</button></div></div>`;
+ }).join('');
+}
+window.aprobarVendedorV41=async id=>{
+ const ahora=new Date(),vence=new Date();vence.setDate(vence.getDate()+30);
+ await updateDoc(doc(db,'vendedoresParticulares',id),{estado:'activo',estadoPago:'acreditado',aprobadoEn:serverTimestamp(),vencimiento:Timestamp.fromDate(vence),actualizadoEn:serverTimestamp()});
+ toast('✅ Vendedor particular aprobado por 30 días');cargarVendedoresAdmin();
+};
+window.renovarVendedorV41=async id=>{const vence=new Date();vence.setDate(vence.getDate()+30);await updateDoc(doc(db,'vendedoresParticulares',id),{estado:'activo',estadoPago:'acreditado',vencimiento:Timestamp.fromDate(vence),actualizadoEn:serverTimestamp()});toast('✅ Renovado por 30 días');cargarVendedoresAdmin()};
+window.estadoVendedorV41=async(id,estado)=>{await updateDoc(doc(db,'vendedoresParticulares',id),{estado,actualizadoEn:serverTimestamp()});cargarVendedoresAdmin()};
+window.borrarVendedorV41=async id=>{if(!confirm('¿Eliminar esta publicación particular?'))return;await deleteDoc(doc(db,'vendedoresParticulares',id));cargarVendedoresAdmin()};
+window.notificarVendedorV41=(tel,nombre)=>window.open('https://wa.me/'+tel+'?text='+encodeURIComponent('Hola '+decodeURIComponent(nombre||'')+'. Te contactamos desde Sálvame las Papas por tu publicación particular.'),'_blank');
+window.verPanelV41=panel=>{
+ document.getElementById('panel-comercios-v41').style.display=panel==='comercios'?'block':'none';
+ document.getElementById('panel-vendedores-v41').style.display=panel==='vendedores'?'block':'none';
+ document.querySelectorAll('.main-tab-v41').forEach(b=>b.classList.toggle('active',b.dataset.panel===panel));
+ if(panel==='vendedores')cargarVendedoresAdmin();
+};
+
 // ── Cargar comercios ──
 let todosComerciosAdmin = []
 
@@ -631,6 +680,9 @@ img{max-width:100%;height:auto}
   .app-version-badge{right:8px;bottom:8px;font-size:.66rem;padding:6px 8px}
 }
 
+
+.main-tabs-v41{display:flex;gap:10px;margin:0 0 18px;flex-wrap:wrap}.main-tab-v41{border:1px solid #c9d6e5;background:#fff;color:#073574;padding:11px 16px;border-radius:999px;font-weight:900;cursor:pointer}.main-tab-v41.active{background:#073574;color:#fff}.plan-part-v41{background:#7a4b18;color:#fff}.vp-arts-v41{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:12px}.vp-art-v41{border:1px solid #dfe6ee;border-radius:10px;padding:10px;display:grid;gap:3px}.vp-art-v41 span{color:#0a6b3f;font-weight:900}.vp-art-v41 small{color:#6b788b}@media(max-width:650px){.vp-arts-v41{grid-template-columns:1fr}}
+
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -641,7 +693,7 @@ img{max-width:100%;height:auto}
 <meta name="apple-mobile-web-app-title" content="Sálvame">
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
-<meta name="app-version" content="V40">
+<meta name="app-version" content="V41">
 </head>
 <body>
 
@@ -690,7 +742,7 @@ img{max-width:100%;height:auto}
   <div class="admin-body">
 
     <!-- STATS -->
-    <div class="stats-grid">
+    <div class="main-tabs-v41"><button class="main-tab-v41 active" data-panel="comercios" onclick="verPanelV41('comercios')">🏪 Comercios</button><button class="main-tab-v41" data-panel="vendedores" onclick="verPanelV41('vendedores')">🚲 Vendedores particulares</button></div><div id="panel-comercios-v41"><div class="stats-grid">
       <div class="stat-card">
         <div class="stat-num" id="cnt-total">—</div>
         <div class="stat-lab">Total registrados</div>
