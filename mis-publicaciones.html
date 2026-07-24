@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#073574">
+<meta name="app-version" content="V45">
+<title>Mis publicaciones — Sálvame las Papas</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#172338}header{background:#082440;color:#fff;padding:16px}header>div{max-width:1050px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}header a,header button{color:#fff;background:transparent;border:0;text-decoration:none;font-weight:800;cursor:pointer;font:inherit}
+.wrap{max-width:1050px;margin:24px auto;padding:0 14px}.box{background:#fff;border-radius:18px;padding:20px;box-shadow:0 10px 28px rgba(7,47,107,.08)}h1,h2,h3{color:#073574}.login{max-width:520px;margin:auto}label{display:block;font-size:.8rem;font-weight:800;margin:10px 0 5px}input,select,textarea{width:100%;padding:11px;border:1.5px solid #ccd7e3;border-radius:10px;font:inherit}textarea{min-height:85px}button,.btn{border:0;border-radius:11px;padding:11px 14px;font-weight:900;cursor:pointer;text-decoration:none;display:inline-block;text-align:center}.primary{background:#ff7200;color:#fff}.blue{background:#073574;color:#fff}.light{background:#edf3fa;color:#073574}.danger{background:#a82a2a;color:#fff}.green{background:#16834c;color:#fff}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.status{padding:11px;border-radius:10px;margin-top:12px;display:none}.status.show{display:block}.ok{background:#e8f7ed;color:#23673a}.error{background:#fff0f0;color:#9b2424}.hidden{display:none!important}
+.pub-card{background:#fff;border:1px solid #dbe4ee;border-radius:17px;overflow:hidden;margin-bottom:18px;box-shadow:0 8px 22px rgba(7,47,107,.07)}.pub-head{padding:15px 18px;background:#f6f9fd;display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}.badge{padding:5px 9px;border-radius:999px;font-size:.72rem;font-weight:900}.pending{background:#fff1c9;color:#775300}.active{background:#dff5e7;color:#176436}.other{background:#edf1f5;color:#556273}
+.pub-body{padding:16px}.article{border:1px solid #dce5ee;border-radius:13px;padding:14px;margin-top:12px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.full{grid-column:1/-1}.photos{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.photos img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;background:#edf3f8}.photo-inputs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.photo-inputs input{font-size:.65rem;padding:5px}.note{font-size:.78rem;color:#687588;line-height:1.45}.empty{text-align:center;padding:28px;color:#687588}
+@media(max-width:650px){.grid{grid-template-columns:1fr}.full{grid-column:auto}.photos,.photo-inputs{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<header><div><strong>🥔 Mis publicaciones</strong><div><a href="./vendedor.html">Nueva publicación</a> · <a href="./index.html">Inicio</a> <button id="logout" class="hidden">· Salir</button></div></div></header>
+<main class="wrap">
+<section id="login-view" class="box login">
+<h1>Ingresar</h1>
+<p>Usá el correo privado y la contraseña con los que creaste tu publicación.</p>
+<label>Correo</label><input id="email" type="email" autocomplete="email">
+<label>Contraseña</label><input id="pass" type="password" autocomplete="current-password">
+<div class="actions"><button id="login" class="primary">Ingresar</button><a class="btn light" href="./vendedor.html">Crear publicación</a></div>
+<div id="login-status" class="status"></div>
+</section>
+<section id="account-view" class="hidden">
+<div class="box"><h1>Mis publicaciones</h1><p class="note">Podés modificar precio, descripción, modalidad, fotos y disponibilidad. Administración conserva el control del pago, aprobación y vencimiento.</p></div>
+<div id="publications" style="margin-top:16px"><div class="empty">Cargando…</div></div>
+</section>
+</main>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getFirestore,collection,query,where,getDocs,doc,updateDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const app=initializeApp({
+  apiKey:"AIzaSyAE8kEBAzDbPvCCD1KCyjq67iFl3dvthLM",
+  authDomain:"salvame-las-papas-cdelu.firebaseapp.com",
+  projectId:"salvame-las-papas-cdelu",
+  storageBucket:"salvame-las-papas-cdelu.firebasestorage.app",
+  messagingSenderId:"401048945476",
+  appId:"1:401048945476:web:58695553aa93928b36cd11"
+});const auth=getAuth(app),db=getFirestore(app);
+const loginView=document.getElementById('login-view'),accountView=document.getElementById('account-view'),pubs=document.getElementById('publications'),logout=document.getElementById('logout');
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+async function comprimir(file){
+ if(!file)return null;const data=await new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(r.result);r.onerror=no;r.readAsDataURL(file)});
+ const img=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=data});const max=700,scale=Math.min(1,max/Math.max(img.width,img.height));
+ const c=document.createElement('canvas');c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);c.getContext('2d').drawImage(img,0,0,c.width,c.height);return c.toDataURL('image/jpeg',.58)
+}
+document.getElementById('login').onclick=async()=>{const st=document.getElementById('login-status');st.className='status show';st.textContent='Ingresando…';try{await signInWithEmailAndPassword(auth,document.getElementById('email').value.trim(),document.getElementById('pass').value);st.className='status'}catch(e){st.className='status show error';st.textContent='No se pudo ingresar. Revisá correo y contraseña.'}};
+logout.onclick=()=>signOut(auth);
+onAuthStateChanged(auth,user=>{if(user){loginView.classList.add('hidden');accountView.classList.remove('hidden');logout.classList.remove('hidden');cargar(user.uid)}else{loginView.classList.remove('hidden');accountView.classList.add('hidden');logout.classList.add('hidden')}});
+function estadoBadge(e){return e==='activo'?'<span class="badge active">✅ Activa</span>':e==='pendiente'?'<span class="badge pending">⏳ Pendiente</span>':`<span class="badge other">${esc(e||'Sin estado')}</span>`}
+function artEditor(a,i,id){
+ const fotos=Array.isArray(a.fotos)?a.fotos:[];
+ return `<section class="article" data-doc="${id}" data-index="${i}">
+ <h3>${i+1}. ${esc(a.titulo||'Aviso')}</h3>
+ <div class="grid">
+ <div><label>Venta o alquiler</label><select class="tipo"><option value="venta" ${a.tipoOperacion==='venta'?'selected':''}>Venta</option><option value="alquiler" ${a.tipoOperacion==='alquiler'?'selected':''}>Alquiler</option></select></div>
+ <div><label>Título</label><input class="titulo" value="${esc(a.titulo||'')}"></div>
+ <div><label>Precio</label><input class="precio" type="number" min="0" value="${Number(a.precio||0)}"></div>
+ <div><label>Precio por</label><select class="periodo">${['total','día','semana','mes','consultar'].map(x=>`<option value="${x}" ${a.periodoPrecio===x?'selected':''}>${x}</option>`).join('')}</select></div>
+ <div><label>Estado del artículo</label><select class="estadoArticulo">${['Usado','Como nuevo','Nuevo','No corresponde'].map(x=>`<option ${a.estadoArticulo===x?'selected':''}>${x}</option>`).join('')}</select></div>
+ <div><label>Categoría</label><input class="categoria" value="${esc(a.categoria||'')}"></div>
+ <div><label>Zona</label><input class="zona" value="${esc(a.zona||'')}"></div>
+ <div><label>Disponibilidad</label><select class="disponible"><option value="true" ${a.disponible!==false?'selected':''}>Disponible</option><option value="false" ${a.disponible===false?'selected':''}>Vendido / alquilado</option></select></div>
+ <div class="full"><label>Descripción</label><textarea class="descripcion">${esc(a.descripcion||'')}</textarea></div>
+ </div>
+ ${fotos.length?`<div class="photos">${fotos.map(f=>`<img src="${f}" alt="Foto">`).join('')}</div>`:''}
+ <label>Reemplazar fotos (opcional, hasta 4)</label><div class="photo-inputs">${[1,2,3,4].map(()=>'<input type="file" accept="image/*">').join('')}</div>
+ </section>`
+}
+async function cargar(uid){
+ pubs.innerHTML='<div class="empty">Cargando publicaciones…</div>';
+ try{const snap=await getDocs(query(collection(db,'vendedoresParticulares'),where('ownerUid','==',uid)));const arr=[];snap.forEach(d=>arr.push({id:d.id,...d.data()}));
+ if(!arr.length){pubs.innerHTML='<div class="box empty">No hay publicaciones vinculadas a esta cuenta.</div>';return}
+ pubs.innerHTML=arr.map(v=>`<article class="pub-card" data-id="${v.id}"><div class="pub-head"><div><strong>${esc(v.nombre||'Vendedor particular')}</strong><div class="note">${esc(v.plan||'')}</div></div>${estadoBadge(v.estado)}</div><div class="pub-body">${(v.articulos||[]).map((a,i)=>artEditor(a,i,v.id)).join('')}<div class="actions"><button class="green save" data-id="${v.id}">Guardar cambios</button></div><div class="status save-status"></div></div></article>`).join('');
+ document.querySelectorAll('.save').forEach(b=>b.onclick=()=>guardar(b.dataset.id));
+ }catch(e){pubs.innerHTML='<div class="box empty">No se pudieron cargar tus publicaciones: '+esc(e.message||e.code)+'</div>'}
+}
+async function guardar(id){
+ const card=document.querySelector(`.pub-card[data-id="${id}"]`),st=card.querySelector('.save-status');st.className='status show';st.textContent='Guardando…';
+ try{const articulos=[];for(const sec of card.querySelectorAll('.article')){const files=[...sec.querySelectorAll('input[type=file]')].map(x=>x.files[0]).filter(Boolean).slice(0,4);let nuevas=[];for(const f of files)nuevas.push(await comprimir(f));
+ const disponible=sec.querySelector('.disponible').value==='true';articulos.push({
+ tipoOperacion:sec.querySelector('.tipo').value,titulo:sec.querySelector('.titulo').value.trim(),precio:Number(sec.querySelector('.precio').value||0),periodoPrecio:sec.querySelector('.periodo').value,
+ estadoArticulo:sec.querySelector('.estadoArticulo').value,categoria:sec.querySelector('.categoria').value.trim(),zona:sec.querySelector('.zona').value.trim(),descripcion:sec.querySelector('.descripcion').value.trim(),
+ fotos:nuevas.length?nuevas:[],disponible,vendido:!disponible&&sec.querySelector('.tipo').value==='venta',alquilado:!disponible&&sec.querySelector('.tipo').value==='alquiler'
+ });}
+ // Preserve old photos when no replacements were selected.
+ const snap=await getDocs(query(collection(db,'vendedoresParticulares'),where('ownerUid','==',auth.currentUser.uid)));let current=null;snap.forEach(d=>{if(d.id===id)current=d.data()});
+ articulos.forEach((a,i)=>{if(!a.fotos.length)a.fotos=current?.articulos?.[i]?.fotos||[]});
+ await updateDoc(doc(db,'vendedoresParticulares',id),{articulos,actualizadoEn:serverTimestamp()});
+ st.className='status show ok';st.textContent='✅ Cambios guardados.';setTimeout(()=>cargar(auth.currentUser.uid),700)
+ }catch(e){st.className='status show error';st.textContent='No se pudo guardar: '+(e.message||e.code)}
+}
+</script>
+</body></html>

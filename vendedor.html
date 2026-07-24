@@ -4,16 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#073574">
-<meta name="app-version" content="V44">
-<title>Vendedor particular — Sálvame las Papas</title>
+<meta name="app-version" content="V45">
+<title>Publicar venta o alquiler — Sálvame las Papas</title>
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#172338}
 header{background:linear-gradient(135deg,#073574,#0868b5);color:#fff;padding:18px}
-header>div{max-width:980px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:15px}
-header a{color:#fff;text-decoration:none;font-weight:700}.wrap{max-width:980px;margin:22px auto;padding:0 14px}
-.hero{background:#fff6e8;border:1px solid #ebce9d;border-radius:18px;padding:20px;margin-bottom:18px}
+header>div{max-width:980px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+header a{color:#fff;text-decoration:none;font-weight:800}.header-links{display:flex;gap:14px;flex-wrap:wrap}
+.wrap{max-width:980px;margin:22px auto;padding:0 14px}
+.hero{background:#eef6ff;border:1px solid #bfd4eb;border-radius:18px;padding:20px;margin-bottom:18px}
 .hero h1{margin:0 0 8px;color:#073574}.hero p{margin:0;line-height:1.5}
-.price{font-size:1.4rem;font-weight:900;color:#a55400;margin-top:10px}
+.price{font-size:1.4rem;font-weight:900;color:#245d96;margin-top:10px}
+.account-note{background:#fff8e8;border:1px solid #e8cc93;border-radius:12px;padding:12px;margin:14px 0;font-size:.82rem;line-height:1.45}
 form{background:#fff;border-radius:18px;padding:20px;box-shadow:0 10px 30px rgba(7,47,107,.08)}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.full{grid-column:1/-1}
 label{display:block;font-size:.8rem;font-weight:800;margin-bottom:5px;color:#34435a}
@@ -24,32 +26,42 @@ textarea{min-height:90px;resize:vertical}.article{border:1px solid #dde5ee;borde
 .photos input{font-size:.65rem;padding:4px;border:0}.note{font-size:.75rem;color:#687588;line-height:1.45}
 .actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}.actions button,.actions a{flex:1;min-width:180px;border:0;border-radius:12px;padding:13px;text-align:center;text-decoration:none;font-weight:900;cursor:pointer}
 .submit{background:#ff7200;color:#fff}.back{background:#edf3fa;color:#073574}.status{display:none;margin-top:14px;padding:12px;border-radius:10px}.status.show{display:block}.ok{background:#e8f7ed;color:#23673a}.error{background:#fff0f0;color:#9b2424}
-@media(max-width:650px){.grid{grid-template-columns:1fr}.full{grid-column:auto}.photos{grid-template-columns:repeat(2,1fr)}}
+.login-box{display:flex;gap:10px;align-items:center;justify-content:space-between;background:#edf5ff;border:1px solid #c8dcf2;border-radius:12px;padding:12px;margin-bottom:14px;flex-wrap:wrap}
+.login-box a{color:#073574;font-weight:900;text-decoration:none}
+.mode-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mode-option{display:flex;align-items:center;gap:8px;padding:10px;border:1px solid #d2dce7;border-radius:10px;background:#fff}.mode-option input{width:auto}
+@media(max-width:650px){.grid{grid-template-columns:1fr}.full{grid-column:auto}.photos{grid-template-columns:repeat(2,1fr)}.mode-row{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<header><div><strong>🥔 Sálvame las Papas</strong><a href="./index.html">Volver al inicio</a></div></header>
+<header><div><strong>🥔 Sálvame las Papas</strong><div class="header-links"><a href="./mis-publicaciones.html">Mis publicaciones</a><a href="./index.html">Volver al inicio</a></div></div></header>
 <main class="wrap">
 <section class="hero">
-<h1>Vendedor particular</h1>
-<p>Publicá hasta dos artículos propios durante 30 días. La publicación se habilita cuando se confirma el pago. Los interesados se comunicarán directamente con vos por WhatsApp.</p>
+<h1>Personas individuales: venta o alquiler</h1>
+<p>Publicá hasta dos avisos durante 30 días. Se habilitan cuando Administración confirma el pago. El contacto visible será únicamente tu WhatsApp.</p>
 <div class="price">$10.000 por 30 días</div>
 </section>
+<div class="login-box"><span>¿Ya tenés una cuenta?</span><a href="./mis-publicaciones.html">Ingresar a Mis publicaciones</a></div>
 <form id="seller-form">
+<div class="account-note"><strong>Acceso privado:</strong> el correo y la contraseña sirven únicamente para entrar y modificar tus avisos. El correo no se publica.</div>
 <div class="grid">
+<div><label>Correo privado *</label><input id="s-email" type="email" autocomplete="email" required></div>
+<div><label>Contraseña *</label><input id="s-pass" type="password" minlength="6" autocomplete="new-password" required></div>
 <div><label>Nombre y apellido *</label><input id="s-name" required></div>
-<div><label>WhatsApp *</label><input id="s-wa" type="tel" placeholder="+54 9 3442..." required></div>
+<div><label>WhatsApp público *</label><input id="s-wa" type="tel" placeholder="+54 9 3442..." required></div>
 <div><label>Localidad *</label><input id="s-city" value="Concepción del Uruguay" required></div>
-<div><label>Forma de entrega</label><select id="s-delivery"><option>Retiro a coordinar</option><option>Entrega a coordinar</option><option>Retiro o entrega</option></select></div>
+<div><label>Forma de entrega o acuerdo</label><select id="s-delivery"><option>Retiro a coordinar</option><option>Entrega a coordinar</option><option>Retiro o entrega</option><option>Condiciones a coordinar</option></select></div>
 </div>
 
-<section class="article">
-<h2>Artículo 1 — obligatorio</h2>
+<section class="article" data-art="1">
+<h2>Aviso 1 — obligatorio</h2>
 <div class="grid">
+<div class="full"><label>¿Qué querés publicar?</label><div class="mode-row"><label class="mode-option"><input type="radio" name="a1-mode" value="venta" checked> 🏷️ Venta</label><label class="mode-option"><input type="radio" name="a1-mode" value="alquiler"> 🔑 Alquiler</label></div></div>
 <div><label>Título *</label><input id="a1-title" placeholder="Bicicleta rodado 29" required></div>
 <div><label>Precio *</label><input id="a1-price" type="number" min="1" required></div>
-<div><label>Estado</label><select id="a1-state"><option>Usado</option><option>Como nuevo</option><option>Nuevo</option></select></div>
-<div><label>Categoría</label><input id="a1-cat" placeholder="Bicicletas, muebles, tecnología..."></div>
+<div><label>Precio por</label><select id="a1-period"><option value="total">Precio total</option><option value="día">Por día</option><option value="semana">Por semana</option><option value="mes">Por mes</option><option value="consultar">A consultar</option></select></div>
+<div><label>Estado</label><select id="a1-state"><option>Usado</option><option>Como nuevo</option><option>Nuevo</option><option>No corresponde</option></select></div>
+<div><label>Categoría</label><input id="a1-cat" placeholder="Bicicletas, viviendas, herramientas..."></div>
+<div><label>Zona o ubicación</label><input id="a1-zone" placeholder="Centro, Puerto, barrio..."></div>
 <div class="full"><label>Descripción *</label><textarea id="a1-desc" required></textarea></div>
 <div class="full"><label>Hasta 4 fotos</label><div class="photos">
 <label>Foto 1<input class="a1-photo" type="file" accept="image/*"></label>
@@ -60,13 +72,16 @@ textarea{min-height:90px;resize:vertical}.article{border:1px solid #dde5ee;borde
 </div>
 </section>
 
-<section class="article">
-<h2>Artículo 2 — opcional</h2>
+<section class="article" data-art="2">
+<h2>Aviso 2 — opcional</h2>
 <div class="grid">
+<div class="full"><label>¿Qué querés publicar?</label><div class="mode-row"><label class="mode-option"><input type="radio" name="a2-mode" value="venta" checked> 🏷️ Venta</label><label class="mode-option"><input type="radio" name="a2-mode" value="alquiler"> 🔑 Alquiler</label></div></div>
 <div><label>Título</label><input id="a2-title"></div>
 <div><label>Precio</label><input id="a2-price" type="number" min="1"></div>
-<div><label>Estado</label><select id="a2-state"><option>Usado</option><option>Como nuevo</option><option>Nuevo</option></select></div>
+<div><label>Precio por</label><select id="a2-period"><option value="total">Precio total</option><option value="día">Por día</option><option value="semana">Por semana</option><option value="mes">Por mes</option><option value="consultar">A consultar</option></select></div>
+<div><label>Estado</label><select id="a2-state"><option>Usado</option><option>Como nuevo</option><option>Nuevo</option><option>No corresponde</option></select></div>
 <div><label>Categoría</label><input id="a2-cat"></div>
+<div><label>Zona o ubicación</label><input id="a2-zone"></div>
 <div class="full"><label>Descripción</label><textarea id="a2-desc"></textarea></div>
 <div class="full"><label>Hasta 4 fotos</label><div class="photos">
 <label>Foto 1<input class="a2-photo" type="file" accept="image/*"></label>
@@ -77,49 +92,86 @@ textarea{min-height:90px;resize:vertical}.article{border:1px solid #dde5ee;borde
 </div>
 </section>
 
-<p class="note">Al enviar, la publicación queda pendiente. Después de confirmar el pago se habilita por 30 días. No se publica correo personal: solamente tu WhatsApp. Cuando vendas un artículo podés usar “Avisar vendido” desde la publicación.</p>
-<div class="actions"><a class="back" href="./index.html">Cancelar</a><button class="submit" type="submit">Enviar para aprobación</button></div>
+<p class="note">Al enviar, el aviso queda pendiente hasta que se confirme el pago. Después podrás ingresar a <strong>Mis publicaciones</strong> y modificar precio, descripción, fotos y disponibilidad. La aprobación, el pago y el vencimiento dependen de Administración.</p>
+<div class="actions"><a class="back" href="./index.html">Cancelar</a><button class="submit" type="submit">Crear cuenta y enviar</button></div>
 <div id="seller-status" class="status"></div>
 </form>
 </main>
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {getFirestore,collection,addDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-const app=initializeApp({apiKey:"AIzaSyAE8kEBAzDbPvCCD1KCyjq67iFl3dvthLM",authDomain:"salvame-las-papas-cdelu.firebaseapp.com",projectId:"salvame-las-papas-cdelu",storageBucket:"salvame-las-papas-cdelu.firebasestorage.app",messagingSenderId:"401048945476",appId:"1:401048945476:web:58695553aa93928b36cd11"});
-const db=getFirestore(app);
+import {getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,updateProfile} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getFirestore,collection,addDoc,serverTimestamp,query,where,getDocs} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const app=initializeApp({
+  apiKey:"AIzaSyAE8kEBAzDbPvCCD1KCyjq67iFl3dvthLM",
+  authDomain:"salvame-las-papas-cdelu.firebaseapp.com",
+  projectId:"salvame-las-papas-cdelu",
+  storageBucket:"salvame-las-papas-cdelu.firebasestorage.app",
+  messagingSenderId:"401048945476",
+  appId:"1:401048945476:web:58695553aa93928b36cd11"
+});
+const auth=getAuth(app),db=getFirestore(app);
 async function comprimir(file){
  if(!file)return null;
  const data=await new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(r.result);r.onerror=no;r.readAsDataURL(file)});
  const img=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=data});
- const max=900,scale=Math.min(1,max/Math.max(img.width,img.height));
+ const max=700,scale=Math.min(1,max/Math.max(img.width,img.height));
  const c=document.createElement('canvas');c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);
  c.getContext('2d').drawImage(img,0,0,c.width,c.height);
- return c.toDataURL('image/jpeg',.7);
+ return c.toDataURL('image/jpeg',.58);
 }
-async function fotos(selector){
- const files=[...document.querySelectorAll(selector)].map(i=>i.files[0]).filter(Boolean).slice(0,4);
- const out=[];for(const f of files)out.push(await comprimir(f));return out;
+async function fotos(selector){const files=[...document.querySelectorAll(selector)].map(i=>i.files[0]).filter(Boolean).slice(0,4);const out=[];for(const f of files)out.push(await comprimir(f));return out}
+function valorRadio(name){return document.querySelector(`input[name="${name}"]:checked`)?.value||'venta'}
+async function articulo(n,obligatorio){
+ const titulo=document.getElementById(`a${n}-title`).value.trim();
+ if(!titulo&&!obligatorio)return null;
+ return {
+   tipoOperacion:valorRadio(`a${n}-mode`),
+   titulo,
+   precio:Number(document.getElementById(`a${n}-price`).value||0),
+   periodoPrecio:document.getElementById(`a${n}-period`).value,
+   estadoArticulo:document.getElementById(`a${n}-state`).value,
+   categoria:document.getElementById(`a${n}-cat`).value.trim(),
+   zona:document.getElementById(`a${n}-zone`).value.trim(),
+   descripcion:document.getElementById(`a${n}-desc`).value.trim(),
+   fotos:await fotos(`.a${n}-photo`),
+   vendido:false,alquilado:false,disponible:true
+ }
 }
 const status=document.getElementById('seller-status');
 document.getElementById('seller-form').addEventListener('submit',async e=>{
- e.preventDefault();status.className='status show';status.textContent='Guardando publicación…';
+ e.preventDefault();status.className='status show';status.textContent='Creando acceso y guardando publicación…';
+ const email=document.getElementById('s-email').value.trim().toLowerCase();
+ const pass=document.getElementById('s-pass').value;
+ const nombre=document.getElementById('s-name').value.trim();
  try{
-  const articulos=[{
-   titulo:document.getElementById('a1-title').value.trim(),precio:Number(document.getElementById('a1-price').value),
-   estadoArticulo:document.getElementById('a1-state').value,categoria:document.getElementById('a1-cat').value.trim(),
-   descripcion:document.getElementById('a1-desc').value.trim(),fotos:await fotos('.a1-photo'),vendido:false
-  }];
-  const t2=document.getElementById('a2-title').value.trim();
-  if(t2)articulos.push({titulo:t2,precio:Number(document.getElementById('a2-price').value||0),estadoArticulo:document.getElementById('a2-state').value,categoria:document.getElementById('a2-cat').value.trim(),descripcion:document.getElementById('a2-desc').value.trim(),fotos:await fotos('.a2-photo'),vendido:false});
+  let cred;
+  try{cred=await createUserWithEmailAndPassword(auth,email,pass);await updateProfile(cred.user,{displayName:nombre}).catch(()=>{})}
+  catch(err){
+    if(err.code==='auth/email-already-in-use') cred=await signInWithEmailAndPassword(auth,email,pass);
+    else throw err;
+  }
+  const repetidos=await getDocs(query(collection(db,'vendedoresParticulares'),where('ownerUid','==',cred.user.uid)));
+  if(!repetidos.empty) throw new Error('Esta cuenta ya tiene una publicación. Ingresá a Mis publicaciones para modificarla.');
+  const a1=await articulo(1,true),a2=await articulo(2,false);
+  const articulos=[a1,...(a2?[a2]:[])];
   await addDoc(collection(db,'vendedoresParticulares'),{
-   tipo:'vendedor_particular',nombre:document.getElementById('s-name').value.trim(),
+   tipo:'vendedor_particular',ownerUid:cred.user.uid,emailPrivado:email,nombre,
    whatsapp:document.getElementById('s-wa').value.trim(),localidad:document.getElementById('s-city').value.trim(),
-   entrega:document.getElementById('s-delivery').value,plan:'Vendedor particular $10.000 / 30 días',
-   estado:'pendiente',estadoPago:'pendiente',articulos,creadoEn:serverTimestamp()
+   entrega:document.getElementById('s-delivery').value,plan:'Personas individuales $10.000 / 30 días',
+   estado:'pendiente',estadoPago:'pendiente',articulos,creadoEn:serverTimestamp(),actualizadoEn:serverTimestamp()
   });
-  status.className='status show ok';status.innerHTML='✅ Solicitud enviada. Quedó pendiente hasta que se confirme el pago. Te contactaremos por WhatsApp.';
+  status.className='status show ok';status.innerHTML='✅ Cuenta y publicación creadas. Quedó pendiente hasta que se confirme el pago. Ya podés ingresar a <a href="./mis-publicaciones.html">Mis publicaciones</a>.';
   e.target.reset();
- }catch(err){status.className='status show error';const codigo=err.code||'';status.textContent=codigo.includes('permission-denied')?'Firebase todavía no tiene habilitado el permiso para recibir vendedores particulares. Publicá el archivo firestore.rules incluido en la V43.':'No se pudo guardar: '+(err.message||codigo);}
+ }catch(err){
+  status.className='status show error';
+  const mensajes={
+   'auth/weak-password':'La contraseña debe tener al menos 6 caracteres.',
+   'auth/invalid-email':'El correo no es válido.',
+   'auth/invalid-credential':'El correo ya existe, pero la contraseña no coincide.',
+   'permission-denied':'Firestore rechazó el guardado. Publicá el archivo firestore.rules de la V45.'
+  };
+  status.textContent=mensajes[err.code]||err.message||'No se pudo guardar la publicación.';
+ }
 });
 </script>
 </body></html>

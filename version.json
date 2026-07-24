@@ -1,12 +1,15 @@
 {
-  "version": "V44",
-  "nombre": "Admin de vendedores particulares corregido",
+  "version": "V45",
+  "nombre": "Acceso privado para vendedores",
   "fecha": "2026-07-24",
   "cambios": [
-    "Agregado el contenedor que faltaba en Vendedores particulares",
-    "La pestaña ahora muestra solicitudes pendientes y activas",
-    "Botón Actualizar particulares",
-    "Mensajes de error técnicos visibles",
-    "Conservados formularios, permisos y publicaciones de V43"
+    "Cuenta privada con correo y contraseña",
+    "Correo no visible públicamente",
+    "Cada publicación vinculada mediante ownerUid",
+    "Nueva página Mis publicaciones",
+    "Edición independiente de precio, descripción, fotos y disponibilidad",
+    "Venta o alquiler dentro del mismo plan",
+    "Administración conserva pago, aprobación y vencimiento",
+    "Reglas de Firestore limitadas por propietario"
   ]
 }
