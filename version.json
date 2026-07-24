@@ -1,13 +1,5 @@
 {
-  "version": "V38",
-  "nombre": "Vuelta estable sin contadores",
-  "fecha": "2026-07-23",
-  "cambios": [
-    "Eliminados contadores de comercios, productos y consultas",
-    "Eliminada sincronización manual desde Administración",
-    "Eliminados avisos repetidos de actualización",
-    "Restaurada base visual estable",
-    "Proyecto local compacto",
-    "Caché simplificada"
-  ]
+  "version": "V39",
+  "nombre": "Categorías, horarios y carrusel",
+  "fecha": "2026-07-23"
 }

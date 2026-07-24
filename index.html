@@ -2609,6 +2609,7 @@ nav .nav-btns,nav .nav-portals{display:none!important}
   }
 }
 
+/* V39 */.categories-v33-grid{grid-template-columns:repeat(12,minmax(0,1fr))!important;gap:7px!important}.categories-v33-grid button{min-height:76px!important;padding:8px 4px!important;border-radius:12px!important}.categories-v33-grid button>span{font-size:1.45rem!important;margin:0 0 3px!important}.categories-v33-grid strong{font-size:.67rem!important;line-height:1.1!important}.categories-v33-grid small{font-size:.6rem!important}.schedule-editor-v39{display:grid;gap:8px;margin-top:10px}.schedule-day-v39{display:grid;grid-template-columns:90px repeat(4,minmax(105px,1fr)) 100px;gap:8px;align-items:center;padding:9px;border:1px solid #dbe4ee;border-radius:12px;background:#f8fbff}.schedule-day-v39 label{font-size:.72rem;color:#5f6d7e}.schedule-day-v39 input[type=time]{display:block;width:100%;padding:7px;border:1px solid #cbd7e4;border-radius:8px;background:#fff}.closed-v39{display:flex!important;align-items:center;gap:5px;color:#8d2525!important}.schedule-actions-v39{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}.schedule-actions-v39 button{border:1px solid #c6d5e6;background:#fff;border-radius:9px;padding:8px 11px;cursor:pointer;font-weight:700}.badge-consultar{display:inline-flex;padding:4px 8px;border-radius:999px;background:#fff5d9;color:#765410;font-size:.72rem}.rotation-label-v39{position:absolute;left:10px;top:10px;z-index:3;background:#fff;color:#073574;border-radius:999px;padding:5px 8px;font-size:.66rem;font-weight:800;box-shadow:0 4px 12px rgba(0,0,0,.12)}.featured-home-card{position:relative}@media(max-width:1100px){.categories-v33-grid{grid-template-columns:repeat(8,minmax(0,1fr))!important}.schedule-day-v39{grid-template-columns:75px repeat(2,1fr)}}@media(max-width:700px){.categories-v33-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}.schedule-day-v39{grid-template-columns:1fr 1fr!important}.schedule-day-v39 b,.schedule-day-v39 .closed-v39{grid-column:1/-1}}
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -2870,7 +2871,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
 }
 
 </style>
-<meta name="app-version" content="V38">
+<meta name="app-version" content="V39">
 </head>
 <body>
 <div class="cdu-stripe"></div>
@@ -3219,10 +3220,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
         <div class="fgroup"><label>Repetir contraseña *</label><input class="fi" id="f-pass2" type="password" autocomplete="new-password" minlength="6" placeholder="Repetí la contraseña"/></div>
       </div>
       <div class="frow full"><div class="fgroup"><label>Descripción del comercio</label><textarea class="fta" id="f-desc" placeholder="Contá qué vendés, cuánto hace que estás en CDU, qué te hace especial..."></textarea></div></div>
-      <div class="frow">
-        <div class="fgroup"><label>Días y horarios de atención *</label><textarea class="fta" id="f-horarios" placeholder="Lun a Vie: 9-13 y 17-21&#10;Sábados: 9-13&#10;Domingos: cerrado"></textarea></div>
-        <div class="fgroup"><label>Info adicional</label><textarea class="fta" id="f-info" placeholder="Pedidos especiales, servicio a domicilio, especialidades..."></textarea></div>
-      </div>
+      <div class="frow full"><div class="fgroup"><label>Horarios de atención *</label><span class="hint">Cargá uno o dos turnos por día. Marcá Cerrado cuando no atiendas.</span><div class="schedule-editor-v39" id="schedule-editor-v39"></div><div class="schedule-actions-v39"><button type="button" onclick="copiarLunesV39()">Copiar lunes a todos</button><button type="button" onclick="limpiarSegundoTurnoV39()">Usar horario corrido</button></div><input type="hidden" id="f-horarios"></div></div><div class="frow full"><div class="fgroup"><label>Info adicional</label><textarea class="fta" id="f-info" placeholder="Pedidos especiales, servicio a domicilio, especialidades..."></textarea></div></div>
       <div class="form-nav"><button class="btn btn-azul btn-lg" onclick="validarPaso1()">Siguiente: Pagos y envíos →</button></div>
     </div>
 
@@ -3525,7 +3523,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
   </div>
   <div class="footer-bottom">© 2025 Sálvame las Papas · Concepción del Uruguay, La Histórica · Hecho con ❤️ y mate 🧉 para los vecinos del barrio</div>
 <div class="app-version-badge" title="Versión publicada de Sálvame las Papas">
-  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V38</a>
+  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V39</a>
 </div>
 </footer>
 
@@ -3817,7 +3815,7 @@ async function enviarForm(){
       ownerUid:user.uid,
       instagram:document.getElementById('f-ig').value.trim(),
       descripcion:document.getElementById('f-desc').value.trim(),
-      horarios:document.getElementById('f-horarios').value.trim(),
+      horarios:leerHorariosV39(),
       infoAdicional:document.getElementById('f-info').value.trim(),
       pagos:getChecked('chk-pagos'),envio:getChecked('chk-envio'),
       zonaEnvio:document.getElementById('f-zona').value.trim(),
@@ -3873,47 +3871,22 @@ function reiniciarRegistro(){
   irPaso(1)
 }
 
+const DIAS_V39=[['lunes','Lunes'],['martes','Martes'],['miercoles','Miércoles'],['jueves','Jueves'],['viernes','Viernes'],['sabado','Sábado'],['domingo','Domingo']];
+function crearEditorHorariosV39(){const b=document.getElementById('schedule-editor-v39');if(!b||b.dataset.ready)return;b.dataset.ready='1';b.innerHTML=DIAS_V39.map(([k,n],i)=>`<div class="schedule-day-v39" data-dia="${k}"><b>${n}</b><label>Desde<input type="time" class="h1d" value="${i<6?'08:00':''}"></label><label>Hasta<input type="time" class="h1h" value="${i<6?'12:00':''}"></label><label>Desde<input type="time" class="h2d" value="${i<6?'16:00':''}"></label><label>Hasta<input type="time" class="h2h" value="${i<6?'20:00':''}"></label><label class="closed-v39"><input type="checkbox" class="hc" ${i===6?'checked':''} onchange="alternarDiaV39(this)">Cerrado</label></div>`).join('');b.querySelectorAll('input').forEach(x=>x.addEventListener('change',actualizarHorarioOcultoV39));b.querySelectorAll('.hc:checked').forEach(alternarDiaV39);actualizarHorarioOcultoV39()}
+function alternarDiaV39(el){const r=el.closest('.schedule-day-v39');r.querySelectorAll('input[type=time]').forEach(x=>x.disabled=el.checked);actualizarHorarioOcultoV39()}
+function leerHorariosV39(){const o={};document.querySelectorAll('.schedule-day-v39').forEach(r=>{const c=r.querySelector('.hc').checked;o[r.dataset.dia]={cerrado:c,turnos:c?[]:[[r.querySelector('.h1d').value,r.querySelector('.h1h').value],[r.querySelector('.h2d').value,r.querySelector('.h2h').value]].filter(x=>x[0]&&x[1])}});return o}
+function actualizarHorarioOcultoV39(){const h=document.getElementById('f-horarios');if(h)h.value=JSON.stringify(leerHorariosV39())}
+function copiarLunesV39(){const rs=[...document.querySelectorAll('.schedule-day-v39')],s=rs[0];rs.slice(1).forEach(r=>{['h1d','h1h','h2d','h2h'].forEach(c=>r.querySelector('.'+c).value=s.querySelector('.'+c).value);r.querySelector('.hc').checked=s.querySelector('.hc').checked;alternarDiaV39(r.querySelector('.hc'))});toast('✅ Horario copiado')}
+function limpiarSegundoTurnoV39(){document.querySelectorAll('.schedule-day-v39').forEach(r=>{r.querySelector('.h2d').value='';r.querySelector('.h2h').value=''});actualizarHorarioOcultoV39();toast('✅ Horario corrido listo')}
+document.addEventListener('DOMContentLoaded',crearEditorHorariosV39);
 // ════════════════════════════════════
 //  ESTADO ABIERTO / CERRADO
 // ════════════════════════════════════
-function estaAbierto(horarios){
-  if(!horarios) return null  // sin datos = no mostrar
-  const ahora = new Date()
-  const dia = ahora.getDay()   // 0=dom,1=lun...6=sab
-  const hora = ahora.getHours() + ahora.getMinutes()/60
-
-  // Parsear horario simple "HH:MM a HH:MM" o "9-13 y 17-21"
-  const h = horarios.toLowerCase()
-
-  // Detectar si hoy está cerrado
-  if(dia===0 && (h.includes('dom: cerrado') || h.includes('domingos: cerrado') || !h.includes('dom'))) {
-    // domingo sin mención = posiblemente cerrado, mostramos sin badge
-    return null
-  }
-
-  // Extraer rangos horarios del texto
-  const rangos = []
-  const matches = [...h.matchAll(/(\d{1,2})(?:[:h](\d{2})?)?\s*(?:a|-)\s*(\d{1,2})(?:[:h](\d{2})?)?/g)]
-  for(const m of matches){
-    const abre = parseInt(m[1]) + (parseInt(m[2]||0))/60
-    const cierra = parseInt(m[3]) + (parseInt(m[4]||0))/60
-    rangos.push([abre, cierra])
-  }
-
-  if(rangos.length === 0) return null
-
-  for(const [abre, cierra] of rangos){
-    if(hora >= abre && hora < cierra) return true
-  }
-  return false
-}
-
-function badgeEstado(horarios){
-  const abierto = estaAbierto(horarios)
-  if(abierto === true)  return '<span class="badge-abierto"><span class="badge-dot-green"></span>Abierto ahora</span>'
-  if(abierto === false) return '<span class="badge-cerrado"><span class="badge-dot-red"></span>Cerrado</span>'
-  return ''  // sin datos suficientes
-}
+function horarioDiaV39(h,f=new Date()){if(!h)return null;if(typeof h==='string'){try{const o=JSON.parse(h);if(o&&typeof o==='object')h=o}catch(e){}}if(typeof h!=='object')return null;return h[['domingo','lunes','martes','miercoles','jueves','viernes','sabado'][f.getDay()]]||null}
+function minutosV39(s){if(!s||!/^\d{1,2}:\d{2}$/.test(s))return null;const [h,m]=s.split(':').map(Number);return h*60+m}
+function estadoHorarioV39(h,f=new Date()){const d=horarioDiaV39(h,f);if(d){if(d.cerrado)return {estado:'cerrado',texto:'Cerrado hoy'};const a=f.getHours()*60+f.getMinutes();for(const [x,y] of (d.turnos||[])){const i=minutosV39(x),z=minutosV39(y);if(i==null||z==null)continue;if(a>=i&&a<z)return {estado:'abierto',texto:`Abierto hasta ${y}`};if(a<i)return {estado:'cerrado',texto:`Abre a las ${x}`}}return {estado:'cerrado',texto:'Cerrado ahora'}}if(typeof h==='string'){const q=h.toLowerCase(),a=f.getHours()+f.getMinutes()/60,r=[...q.matchAll(/(\d{1,2})(?:[:h](\d{2})?)?\s*(?:a|-)\s*(\d{1,2})(?:[:h](\d{2})?)?/g)].map(m=>[+m[1]+(+(m[2]||0))/60,+m[3]+(+(m[4]||0))/60]);if(!r.length)return {estado:'consultar',texto:'Consultar horario'};return r.some(([i,z])=>a>=i&&a<z)?{estado:'abierto',texto:'Abierto ahora'}:{estado:'cerrado',texto:'Cerrado ahora'}}return {estado:'consultar',texto:'Consultar horario'}}
+function estaAbierto(h){const e=estadoHorarioV39(h);return e.estado==='abierto'?true:e.estado==='cerrado'?false:null}
+function badgeEstado(h){const e=estadoHorarioV39(h);if(e.estado==='abierto')return `<span class="badge-abierto"><span class="badge-dot-green"></span>${e.texto}</span>`;if(e.estado==='cerrado')return `<span class="badge-cerrado"><span class="badge-dot-red"></span>${e.texto}</span>`;return '<span class="badge-consultar">🕐 Consultar horario</span>'}
 
 // ════════════════════════════════════
 //  FILTRO POR CATEGORÍA
@@ -4011,18 +3984,7 @@ function textoSeguro(valor){
   })[ch]);
 }
 
-function horarioTexto(horarios){
-  if(!horarios) return 'Horario no informado';
-  if(typeof horarios === 'string') return horarios;
-  if(Array.isArray(horarios)) return horarios.filter(Boolean).join(' · ');
-  if(typeof horarios === 'object'){
-    return Object.entries(horarios)
-      .filter(([,v]) => v)
-      .map(([dia,v]) => `${dia}: ${v}`)
-      .join(' · ') || 'Horario no informado';
-  }
-  return 'Horario no informado';
-}
+function horarioTexto(h){if(!h)return 'Horario no informado';if(typeof h==='string'){try{const x=JSON.parse(h);if(x&&typeof x==='object')h=x}catch(e){return h}}if(Array.isArray(h))return h.filter(Boolean).join(' · ');if(typeof h==='object'){const n={lunes:'Lun',martes:'Mar',miercoles:'Mié',jueves:'Jue',viernes:'Vie',sabado:'Sáb',domingo:'Dom'};return Object.entries(h).map(([d,v])=>v?.cerrado?`${n[d]||d}: cerrado`:(v?.turnos||[]).length?`${n[d]||d}: ${(v.turnos||[]).map(x=>x.join('–')).join(' y ')}`:'').filter(Boolean).join(' · ')}return 'Consultar horario'}
 
 function direccionCompleta(c){
   const partes = [
@@ -5141,7 +5103,8 @@ actualizarEstadoInstalacion();
 
       buscarActualizacion();
       setInterval(buscarActualizacion,5*60*1000);
-      document.addEventListener('visibilitychange',()=>{
+      setTimeout(()=>{['abiertos-home','ofertas-home','destacados-home'].forEach(id=>{const e=document.getElementById(id);if(e&&/Cargando|Consultando/.test(e.textContent))e.innerHTML='<div class="home-empty">No hay información disponible para mostrar en esta sección.</div>'})},6500);
+document.addEventListener('visibilitychange',()=>{
         if(document.visibilityState==='visible') buscarActualizacion();
       });
     })
@@ -5224,23 +5187,11 @@ function precioNumero(valor){return Number(String(valor??'').replace(/[^0-9,.-]/
 function monedaHome(n){return '$'+Number(n||0).toLocaleString('es-AR')}
 function planNombreHome(p){return p===3?'PRO':p===2?'DESTACADO':'BÁSICO'}
 function productoNormalizadoHome(p){return {nombre:p?.n||p?.nombre||'Producto',emoji:p?.e||p?.emoji||'📦',foto:p?.foto||p?.fotos?.[0]||'',fotos:Array.isArray(p?.fotos)?p.fotos:(p?.foto?[p.foto]:[]),precio:precioNumero(p?.precio??p?.p),antes:precioNumero(p?.precioAntes??p?.antes??p?.precio_antes),tipo:String(p?.tipo||'').toLowerCase()}}
-function comercioAbiertoHome(c){const b=badgeEstado(c?.horarios||'');return !String(b).includes('Cerrado')}
-function mostrarAbiertosInicio(){goTo('comercios');setTimeout(()=>{const q=document.getElementById('filtro-texto');if(q){q.value='Abierto';aplicarFiltrosAvanzados()}},350)}
-function filtrarEntregaInicio(tipo){goTo('comercios');setTimeout(()=>{const s=document.getElementById('filtro-envio');if(s){s.value=tipo;aplicarFiltrosAvanzados()}},350)}
-function usarMiUbicacion(){if(!navigator.geolocation){showToast('Tu dispositivo no permite obtener la ubicación.');return}navigator.geolocation.getCurrentPosition(()=>showToast('Ubicación habilitada. Te mostramos comercios de Concepción del Uruguay.'),()=>showToast('No se pudo acceder a tu ubicación.'))}
-function abrirHomeComercio(idx){const c=comerciosTodos[idx];if(c)abrirComercio(c)}
-function renderHomeVisual(){
- const destacados=document.getElementById('destacados-home'), abiertos=document.getElementById('abiertos-home'), ofertas=document.getElementById('ofertas-home');
- if(!destacados||!abiertos||!ofertas)return;
- const ordenados=ordenarPorPlan(comerciosTodos);
- if(!ordenados.length){const vacio='<div class="home-empty">Todavía no hay comercios reales activos para mostrar.</div>';destacados.innerHTML=vacio;abiertos.innerHTML=vacio;ofertas.innerHTML=vacio;return}
- destacados.innerHTML=ordenados.map(c=>{const idx=comerciosTodos.indexOf(c);return `<article class="featured-home-card" onclick="abrirHomeComercio(${idx})"><span class="plan-pill p${c.plan}">${planNombreHome(c.plan)}</span><div class="featured-home-cover">${c.productos?.[0]?.foto?`<img src="${c.productos[0].foto}" alt="${textoSeguro(c.nombre||'Comercio')}" loading="lazy">`:textoSeguro(c.emoji||'🏪')}</div><div class="featured-home-info"><h3>${textoSeguro(c.nombre||'Comercio')}</h3><p>${textoSeguro(c.cat||'Comercio')} · ${textoSeguro(c.barrio||'CDU')}</p><div class="featured-home-meta">${comercioAbiertoHome(c)?'🟢 Abierto ahora':'🔴 Cerrado'}<br>🥔 ${textoSeguro(c.direccion||'Dirección por confirmar')}<br>🚚 ${textoSeguro((c.envio||[]).join(' · ')||'Entrega a coordinar')}</div></div></article>`}).join('');
- const abiertosLista=ordenados.filter(comercioAbiertoHome).slice(0,8);
- abiertos.innerHTML=(abiertosLista.length?abiertosLista:ordenados.slice(0,4)).map(c=>{const idx=comerciosTodos.indexOf(c);return `<article class="open-home-card" onclick="abrirHomeComercio(${idx})"><div class="open-home-cover"><span class="open-label">${comercioAbiertoHome(c)?'Abierto':'Consultar'}</span>${c.productos?.[0]?.foto?`<img src="${c.productos[0].foto}" alt="${textoSeguro(c.nombre||'Comercio')}" loading="lazy">`:textoSeguro(c.emoji||'🏪')}</div><div class="open-home-info"><h3>${textoSeguro(c.nombre||'Comercio')}</h3><p>${textoSeguro(c.cat||'')} · ${textoSeguro(c.barrio||'CDU')}</p><p>🕒 ${textoSeguro(horarioTexto(c.horarios))}</p><p>🥔 ${textoSeguro(c.direccion||'Dirección por confirmar')}</p><button type="button">Ver productos</button></div></article>`}).join('');
- let lista=[];ordenados.forEach(c=>(c.productos||[]).forEach(p=>{const pr=productoNormalizadoHome(p);if(pr.precio>0)lista.push({c,p:pr,oferta:pr.antes>pr.precio||pr.tipo.includes('oferta')})}));lista.sort((a,b)=>Number(b.oferta)-Number(a.oferta)||b.c.plan-a.c.plan);lista=lista.slice(0,6);
- ofertas.innerHTML=lista.length?lista.map((x,i)=>{const idx=comerciosTodos.indexOf(x.c);return `<article class="offer-home-card ${i===0?'featured':''}" onclick="abrirHomeComercio(${idx})"><div class="offer-home-media">${x.p.foto?`<img src="${x.p.foto}" alt="${textoSeguro(x.p.nombre)}" loading="lazy">`:textoSeguro(x.p.emoji)}</div><div class="offer-home-info">${x.oferta?'<span class="offer-home-badge">OFERTA DESTACADA</span>':''}<b>${textoSeguro(x.p.nombre)}</b><span class="offer-home-store">${textoSeguro(x.c.nombre)}</span><span class="offer-home-price">${monedaHome(x.p.precio)}${x.p.antes>x.p.precio?`<small class="offer-home-old">${monedaHome(x.p.antes)}</small>`:''}</span></div></article>`}).join(''):'<div class="home-empty">Los comercios todavía no cargaron productos con precio. Cuando lo hagan aparecerán acá automáticamente.</div>';
- iniciarDestacadosAuto();
-}
+function comercioAbiertoHome(c){return estadoHorarioV39(c?.horarios).estado==='abierto'}
+function fechaComercioV39(c){const v=c?.aprobadoEn||c?.creadoEn||c?.actualizadoEn;if(!v)return null;if(typeof v.toDate==='function')return v.toDate();if(v.seconds)return new Date(v.seconds*1000);const d=new Date(v);return isNaN(d)?null:d}
+function etiquetaComercioV39(c){const f=fechaComercioV39(c);if(f){const d=(Date.now()-f.getTime())/86400000;if(d<=30)return '🆕 Nuevo comercio';if(d>=180)return '🏆 Con trayectoria'}return c.plan>=3?'⭐ Plan destacado':c.plan===2?'✨ Comercio destacado':'🥔 Comercio local'}
+function ordenarCarruselV39(l){return [...l].sort((a,b)=>{const fa=fechaComercioV39(a),fb=fechaComercioV39(b),na=fa&&(Date.now()-fa)/86400000<=30?1:0,nb=fb&&(Date.now()-fb)/86400000<=30?1:0;return nb-na||b.plan-a.plan||((fa?.getTime()||0)-(fb?.getTime()||0))})}
+function renderHomeVisual(){const d=document.getElementById('destacados-home'),a=document.getElementById('abiertos-home'),o=document.getElementById('ofertas-home');if(!d||!a||!o)return;const arr=ordenarCarruselV39(ordenarPorPlan(comerciosTodos||[]));if(!arr.length){d.innerHTML=a.innerHTML='<div class="home-empty">Todavía no hay comercios activos para mostrar.</div>';o.innerHTML='<div class="home-empty">Todavía no hay ofertas publicadas.</div>';return}d.innerHTML=arr.map(c=>{const i=comerciosTodos.indexOf(c),e=estadoHorarioV39(c.horarios);return `<article class="featured-home-card" onclick="abrirHomeComercio(${i})"><span class="rotation-label-v39">${etiquetaComercioV39(c)}</span><span class="plan-pill p${c.plan}">${planNombreHome(c.plan)}</span><div class="featured-home-cover">${c.productos?.[0]?.foto?`<img src="${c.productos[0].foto}" alt="${textoSeguro(c.nombre)}" loading="lazy">`:textoSeguro(c.emoji||'🏪')}</div><div class="featured-home-info"><h3>${textoSeguro(c.nombre)}</h3><p>${textoSeguro(c.cat||'Comercio')} · ${textoSeguro(c.barrio||'CDU')}</p><div class="featured-home-meta">${e.estado==='abierto'?'🟢':e.estado==='cerrado'?'🔴':'🕐'} ${textoSeguro(e.texto)}<br>🥔 ${textoSeguro(c.direccion||'Dirección por confirmar')}</div></div></article>`}).join('');const abiertos=arr.filter(comercioAbiertoHome);a.innerHTML=abiertos.length?abiertos.slice(0,8).map(c=>{const i=comerciosTodos.indexOf(c),e=estadoHorarioV39(c.horarios);return `<article class="open-home-card" onclick="abrirHomeComercio(${i})"><div class="open-home-cover"><span class="open-label">${textoSeguro(e.texto)}</span>${c.productos?.[0]?.foto?`<img src="${c.productos[0].foto}" alt="${textoSeguro(c.nombre)}" loading="lazy">`:textoSeguro(c.emoji||'🏪')}</div><div class="open-home-info"><h3>${textoSeguro(c.nombre)}</h3><p>${textoSeguro(c.cat||'')} · ${textoSeguro(c.barrio||'CDU')}</p><p>🕒 ${textoSeguro(horarioTexto(c.horarios))}</p><button type="button">Ver productos</button></div></article>`}).join(''):'<div class="home-empty">En este momento no encontramos comercios con horario confirmado como abierto.</div>';let l=[];arr.forEach(c=>(c.productos||[]).forEach(p=>{const q=productoNormalizadoHome(p);if(q.precio>0)l.push({c,p:q,oferta:q.antes>q.precio||q.tipo.includes('oferta')})}));l.sort((x,y)=>Number(y.oferta)-Number(x.oferta)||y.c.plan-x.c.plan);l=l.slice(0,8);o.innerHTML=l.length?l.map((x,j)=>{const i=comerciosTodos.indexOf(x.c);return `<article class="offer-home-card ${j===0?'featured':''}" onclick="abrirHomeComercio(${i})"><div class="offer-home-media">${x.p.foto?`<img src="${x.p.foto}" alt="${textoSeguro(x.p.nombre)}" loading="lazy">`:textoSeguro(x.p.emoji)}</div><div class="offer-home-info">${x.oferta?'<span class="offer-home-badge">OFERTA</span>':''}<b>${textoSeguro(x.p.nombre)}</b><span class="offer-home-store">${textoSeguro(x.c.nombre)}</span><span class="offer-home-price">${monedaHome(x.p.precio)}</span></div></article>`}).join(''):'<div class="home-empty">Los comercios todavía no publicaron ofertas con precio. Cuando las carguen aparecerán acá automáticamente.</div>';iniciarDestacadosAuto()}
 function moverDestacados(dir){const el=document.getElementById('destacados-home');if(el)el.scrollBy({left:dir*290,behavior:'smooth'})}
 function iniciarDestacadosAuto(){clearInterval(homeSliderTimer);homeSliderTimer=setInterval(()=>{const el=document.getElementById('destacados-home');if(!el||el.scrollWidth<=el.clientWidth)return;const fin=el.scrollLeft+el.clientWidth>=el.scrollWidth-20;el.scrollTo({left:fin?0:el.scrollLeft+284,behavior:'smooth'})},4500)}
 const cargarComerciosHomeOriginal=cargarComercios;cargarComercios=async function(){await cargarComerciosHomeOriginal();renderHomeVisual();if(typeof renderPlanesV31==='function')renderPlanesV31();if(typeof actualizarStatsV31==='function')actualizarStatsV31()}
@@ -5301,35 +5252,10 @@ function iconoCategoriaV33(nombre){
   if(n.includes('limpieza')) return '🧹';
   return '🥔';
 }
-function renderCategoriasV33(){
-  const cont=document.getElementById('categories-v33-grid');
-  if(!cont) return;
-  const conteo=new Map();
-  (comerciosTodos||[]).forEach(c=>{
-    const categoria=String(c?.cat||'Otros').trim()||'Otros';
-    conteo.set(categoria,(conteo.get(categoria)||0)+1);
-  });
-  let categorias=[...conteo.entries()].sort((a,b)=>a[0].localeCompare(b[0],'es'));
-  if(!categorias.length){
-    categorias=[
-      ['Alimentos',0],['Alojamiento',0],['Construcción',0],
-      ['Servicios',0],['Ventas',0],['Otros',0]
-    ];
-  }
-  cont.innerHTML=categorias.map(([categoria,cantidad])=>`
-    <button type="button" onclick="filtrarCategoriaV33('${String(categoria).replace(/'/g,"\\'")}')">
-      <span>${iconoCategoriaV33(categoria)}</span>
-      <strong>${textoSeguro(categoria)}</strong>
-      <small>${cantidad} comercio${cantidad===1?'':'s'}</small>
-    </button>`).join('');
-}
-function filtrarCategoriaV33(categoria){
-  goTo('comercios');
-  setTimeout(()=>{
-    const campo=document.getElementById('filtro-texto');
-    if(campo){campo.value=categoria;aplicarFiltrosAvanzados();}
-  },220);
-}
+const CATEGORIAS_V39=[['Comidas','🍔'],['Almacenes','🛒'],['Panaderías','🥖'],['Carnicerías','🥩'],['Verdulerías','🥬'],['Pizzerías','🍕'],['Restaurantes','🍽️'],['Ropa y calzado','👕'],['Ventas','🛍️'],['Compraventa','🔄'],['Alojamientos','🏡'],['Construcción','🧱'],['Ferreterías','🔧'],['Mecánica','🚗'],['Electricistas','⚡'],['Cerrajeros','🔑'],['Peluquerías','💇'],['Veterinarias','🐾'],['Farmacias','💊'],['Limpieza','🧹'],['Tecnología','📱'],['Regalos','🎁'],['Servicios','🛠️'],['Otros','🥔']];
+function categoriaCoincideV39(base,real){const a=normalizar(base),b=normalizar(real),g={'comidas':['comida','rotiseria','delivery','heladeria','confiteria'],'almacenes':['almacen','despensa','kiosco'],'panaderias':['panaderia'],'carnicerias':['carniceria','fiambreria'],'verdulerias':['verduleria','fruteria'],'pizzerias':['pizzeria','empanada'],'restaurantes':['restaurante','rotiseria'],'ropa y calzado':['ropa','indumentaria','calzado','feria americana'],'ventas':['venta','tienda','bazar','libreria'],'compraventa':['compraventa','usado'],'alojamientos':['alojamiento','hotel','cabana'],'construccion':['construccion','pintor','albanil','material'],'ferreterias':['ferreteria'],'mecanica':['mecanico','taller','automotriz'],'electricistas':['electricista'],'cerrajeros':['cerrajero'],'peluquerias':['peluqueria','estetica','belleza'],'veterinarias':['veterinaria','mascota'],'farmacias':['farmacia','perfumeria','optica'],'limpieza':['limpieza','lavanderia','tintoreria'],'tecnologia':['informatica','celular','reparacion'],'regalos':['regalo','floristeria'],'servicios':['servicio','plomero','gas','sanitario','mudanza','flete','clases','contabilidad','seguro','inmobiliaria']};return (g[a]||[a]).some(x=>b.includes(x))}
+function renderCategoriasV33(){const cont=document.getElementById('categories-v33-grid');if(!cont)return;const reales=(comerciosTodos||[]).map(c=>String(c?.cat||'Otros'));cont.innerHTML=CATEGORIAS_V39.map(([n,i])=>{const q=reales.filter(r=>categoriaCoincideV39(n,r)).length;return `<button type="button" onclick="filtrarCategoriaV39('${n.replace(/'/g,"\'")}' )"><span>${i}</span><strong>${textoSeguro(n)}</strong>${q?`<small>${q}</small>`:''}</button>`}).join('')}
+function filtrarCategoriaV39(nombre){goTo('comercios');setTimeout(()=>{const campo=document.getElementById('filtro-texto');if(campo)campo.value=nombre;const lista=(comerciosTodos||[]).filter(c=>categoriaCoincideV39(nombre,c.cat||''));listaFiltradaActual=lista;pagActual=1;renderPagina(lista,1);const r=document.getElementById('resultados-resumen');if(r)r.textContent=`${lista.length} resultado${lista.length===1?'':'s'} en ${nombre}`},220)}
 function actualizarStatsV33(){
   const comercios=(comerciosTodos||[]).length;
   const productos=(comerciosTodos||[]).reduce((total,c)=>total+(c.productos||[]).length,0);
