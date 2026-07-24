@@ -1,6 +1,6 @@
 {
-  "version": "V41",
-  "nombre": "Vendedor particular",
+  "version": "V42",
+  "nombre": "Personas individuales y comercios",
   "fecha": "2026-07-24",
   "cambios": [
     "Plan Vendedor particular $10.000 por 30 días",
@@ -10,6 +10,9 @@
     "Aprobación administrativa después del pago",
     "Vencimiento y renovación de 30 días",
     "Aviso por correo cuando se vende",
-    "Textos de publicación gratuita corregidos"
+    "Textos de publicación gratuita corregidos",
+    "La caja de Particular ahora usa fondo azul suave y letras blancas",
+    "El plan dice Personas individuales",
+    "Los tres planes comerciales ahora muestran la etiqueta Para comercios"
   ]
 }

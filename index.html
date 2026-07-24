@@ -2709,8 +2709,13 @@ nav .nav-btns,nav .nav-portals{display:none!important}
 
 /* V41 — VENDEDOR PARTICULAR */
 .planes-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;max-width:1450px!important}
-.plan-particular-v41{border:2px solid #7a4b18!important;background:linear-gradient(180deg,#fffaf0,#fff)!important}
-.plan-particular-v41 .plan-badge{background:#7a4b18!important}
+.plan-particular-v41{border:2px solid #6ea6d7!important;background:linear-gradient(180deg,#7eb1df 0%, #6aa1d5 100%)!important;color:#fff!important;box-shadow:0 16px 34px rgba(55,110,171,.22)!important}
+.plan-particular-v41 .plan-badge{background:#4d7eaf!important;color:#fff!important}
+.plan-particular-v41 .plan-nivel,.plan-particular-v41 .plan-nombre,.plan-particular-v41 .plan-precio,.plan-particular-v41 .plan-periodo,.plan-particular-v41 .plan-feats li,.plan-particular-v41 .plan-feats li strong{color:#fff!important}
+.plan-particular-v41 .plan-feats li{border-color:rgba(255,255,255,.22)!important}
+.plan-particular-v41 .btn-plan{background:#fff!important;color:#2d5f96!important;border:0!important;font-weight:900!important}
+.plan-particular-v41 .btn-plan:hover{filter:brightness(.98)}
+.plan .plan-badge{background:#f47521;color:#fff}
 .particular-link-v41{display:block;text-align:center;text-decoration:none}
 .seller-cta-v41{
   width:min(1180px,calc(100% - 28px));margin:22px auto;padding:20px 24px;
@@ -3008,7 +3013,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
 }
 
 </style>
-<meta name="app-version" content="V41">
+<meta name="app-version" content="V42">
 </head>
 <body>
 <div class="cdu-stripe"></div>
@@ -3242,11 +3247,11 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
     <div class="planes-grid">
 
       <div class="plan plan-particular-v41">
-        <div class="plan-badge">🚲 Para personas</div>
-        <div class="plan-nivel">Publicación particular</div>
-        <div class="plan-nombre">Vendedor particular</div>
+        <div class="plan-badge">🚲 Personas individuales</div>
+        <div class="plan-nivel">Plan individual</div>
+        <div class="plan-nombre">Particular</div>
         <div class="plan-precio">$10.000<small>/30 días</small></div>
-        <div class="plan-periodo">Para vender artículos propios</div>
+        <div class="plan-periodo">Para personas que quieren vender usado</div>
         <ul class="plan-feats">
           <li>Hasta 2 artículos</li>
           <li>Hasta 4 fotos por artículo</li>
@@ -3259,6 +3264,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
       </div>
 
       <div class="plan" onclick="elegirPlan(1)">
+        <div class="plan-badge">🏪 Para comercios</div>
         <div class="plan-nivel">Nivel 1</div><div class="plan-nombre">Básico</div>
         <div class="plan-precio">$15.000<small>/mes</small></div>
         <div class="plan-periodo">Para comenzar</div>
@@ -3274,7 +3280,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
       </div>
 
       <div class="plan destacado" onclick="elegirPlan(2)">
-        <div class="plan-badge">⭐ Más elegido</div>
+        <div class="plan-badge">🏪 Para comercios</div>
         <div class="plan-nivel">Nivel 2</div><div class="plan-nombre">Destacado</div>
         <div class="plan-precio">$30.000<small>/mes</small></div>
         <div class="plan-periodo">Para vender más</div>
@@ -3291,6 +3297,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
       </div>
 
       <div class="plan" onclick="elegirPlan(3)">
+        <div class="plan-badge">🏪 Para comercios</div>
         <div class="plan-nivel">Nivel 3</div><div class="plan-nombre">Pro</div>
         <div class="plan-precio">$45.000<small>/mes</small></div>
         <div class="plan-periodo">Para máxima difusión</div>
@@ -3699,7 +3706,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
   </div>
   <div class="footer-bottom">© 2025 Sálvame las Papas · Concepción del Uruguay, La Histórica · Hecho con ❤️ y mate 🧉 para los vecinos del barrio</div>
 <div class="app-version-badge" title="Versión publicada de Sálvame las Papas">
-  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V41</a>
+  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V42</a>
 </div>
 </footer>
 
