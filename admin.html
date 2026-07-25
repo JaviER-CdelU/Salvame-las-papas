@@ -283,8 +283,8 @@ window.enviarRecuperacionV50=async(emailCodificado,nombreCodificado)=>{
   const intento=new Date().toLocaleString('es-AR');
   if(!email){toast('Este registro no tiene correo de acceso.');return}
   try{
-    await sendPasswordResetEmail(auth,email);
-    alert('Firebase aceptó la solicitud de recuperación.\n\nComercio: '+nombre+'\nCorreo: '+email+'\nHora: '+intento+'\nDominio: '+window.location.hostname+'\nCódigo: OK\n\nPedile que revise Entrada, Spam, Promociones y Todos.');
+    await sendPasswordResetEmail(auth,email,{url:new URL('./restablecer-clave.html?tipo=comercio',window.location.href).href,handleCodeInApp:false});
+    alert('Solicitud enviada.\n\nComercio: '+nombre+'\nCorreo: '+email+'\n\nEl comercio debe revisar Entrada, Correo no deseado, Spam y Promociones. El enlace le permitirá crear una contraseña nueva y volver a Sálvame las Papas.');
   }catch(e){
     alert('Firebase rechazó la solicitud.\n\nCódigo: '+(e.code||'sin código')+'\nMensaje: '+(e.message||'sin mensaje')+'\nCorreo: '+email+'\nDominio: '+window.location.hostname+'\nHora: '+intento);
     console.error('RECUPERACION_ADMIN',e);
@@ -755,7 +755,7 @@ img{max-width:100%;height:auto}
 <meta name="apple-mobile-web-app-title" content="Sálvame">
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
-<meta name="app-version" content="V50">
+<meta name="app-version" content="V51">
 </head>
 <body>
 

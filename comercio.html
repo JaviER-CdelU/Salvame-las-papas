@@ -658,8 +658,8 @@ window.recuperarClave = async () => {
   }
   const intento=new Date().toLocaleString('es-AR')
   try{
-    await sendPasswordResetEmail(auth,email)
-    err.innerHTML='✅ Firebase aceptó la solicitud.<br><small>Correo: '+email+'<br>Hora: '+intento+'<br>Dominio: '+window.location.hostname+'<br>Código: OK / solicitud aceptada</small><br><br>Revisá Entrada, Spam, Promociones y Todos. Firebase puede aceptar la solicitud aunque el correo tarde o sea filtrado.'
+    await sendPasswordResetEmail(auth,email,{url:new URL('./restablecer-clave.html?tipo=comercio',window.location.href).href,handleCodeInApp:false})
+    err.innerHTML='✅ Solicitud enviada.<br><br>Revisá Entrada, Correo no deseado, Spam y Promociones. Abrí el enlace para crear una contraseña nueva y regresar a Sálvame las Papas.'
     err.style.display='block'
   }catch(e){
     const detalle='Código: '+(e.code||'sin código')+' | Mensaje: '+(e.message||'sin mensaje')+' | Dominio: '+window.location.hostname+' | Hora: '+intento
@@ -1167,14 +1167,14 @@ img{max-width:100%;height:auto}
 <meta name="apple-mobile-web-app-title" content="Sálvame">
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
-<meta name="app-version" content="V50">
+<meta name="app-version" content="V51">
 </head>
 <body>
 
 <!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
-    <span class="owner-login-kicker">PANEL DEL COMERCIO · V26</span>
+    <span class="owner-login-kicker">PANEL DEL COMERCIO · V51</span>
     <div class="login-logo">Sálvame <em>las Papas 🥔</em></div>
     <h1 class="owner-login-title">Administrá tu comercio</h1>
     <p class="owner-login-help">

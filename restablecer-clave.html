@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#073574">
+<meta name="app-version" content="V51">
+<title>Restablecer contraseña — Sálvame las Papas</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:Arial,sans-serif;background:linear-gradient(150deg,#eaf4ff,#fff8ed);color:#172338;display:flex;flex-direction:column}
+header{background:#082440;color:#fff;padding:16px}
+header>div{width:min(880px,calc(100% - 28px));margin:auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+header a{color:#fff;text-decoration:none;font-weight:800}
+main{width:min(620px,calc(100% - 28px));margin:auto;padding:28px 0}
+.card{background:#fff;border:1px solid #d6e1ee;border-radius:22px;padding:25px;box-shadow:0 18px 45px rgba(7,47,107,.13)}
+.logo{font-family:Georgia,serif;font-size:1.25rem;font-weight:900;color:#073574}
+h1{margin:12px 0 8px;color:#073574;font-family:Georgia,serif;font-size:clamp(1.8rem,5vw,2.6rem)}
+p{line-height:1.5;color:#627087}
+.account{background:#edf5ff;border:1px solid #c8dcef;border-radius:11px;padding:11px 13px;margin:14px 0;color:#073574;font-weight:800}
+label{display:block;margin:13px 0 6px;font-size:.82rem;font-weight:900;color:#33435a}
+.password-wrap{position:relative}
+input{width:100%;padding:12px 44px 12px 12px;border:1.5px solid #cbd7e4;border-radius:11px;font:inherit}
+.eye{position:absolute;right:7px;top:50%;transform:translateY(-50%);border:0;background:transparent;font-size:1.15rem;cursor:pointer}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}
+button,.btn{flex:1;min-width:180px;border:0;border-radius:12px;padding:13px;text-align:center;text-decoration:none;font-weight:900;cursor:pointer}
+.primary{background:#ff7200;color:#fff}.secondary{background:#edf3fa;color:#073574}
+.status{padding:13px;border-radius:11px;margin-top:15px;line-height:1.45}
+.loading{background:#edf5ff;color:#073574}.ok{background:#e5f7eb;color:#1f673b}.error{background:#fff0f0;color:#922828}
+.hidden{display:none!important}.small{font-size:.76rem;color:#6d7888}
+footer{text-align:center;padding:17px;color:#6a7788;font-size:.76rem}
+</style>
+</head>
+<body>
+<header><div><strong>🥔 Sálvame las Papas</strong><a href="./index.html">Volver al inicio</a></div></header>
+<main>
+<section class="card">
+<div class="logo">Acceso seguro</div>
+<h1>Restablecer contraseña</h1>
+<p id="intro">Estamos comprobando el enlace de recuperación.</p>
+
+<div id="status" class="status loading">Comprobando el enlace…</div>
+
+<div id="form-view" class="hidden">
+  <div id="account" class="account"></div>
+  <label>Nueva contraseña</label>
+  <div class="password-wrap">
+    <input id="new-pass" type="password" minlength="6" autocomplete="new-password">
+    <button class="eye" type="button" data-target="new-pass">👁️</button>
+  </div>
+  <label>Repetir contraseña</label>
+  <div class="password-wrap">
+    <input id="repeat-pass" type="password" minlength="6" autocomplete="new-password">
+    <button class="eye" type="button" data-target="repeat-pass">👁️</button>
+  </div>
+  <p class="small">Usá al menos 6 caracteres. No compartas tu contraseña con nadie.</p>
+  <div class="actions"><button id="save" class="primary">Guardar nueva contraseña</button></div>
+</div>
+
+<div id="return-view" class="hidden">
+  <div class="actions">
+    <a id="commerce-link" class="btn primary" href="./comercio.html">Ingresar a Mi comercio</a>
+    <a id="seller-link" class="btn secondary" href="./mis-publicaciones.html">Ingresar a Mis publicaciones</a>
+  </div>
+</div>
+
+<div id="retry-view" class="hidden">
+  <div class="actions">
+    <a class="btn primary" href="./comercio.html">Pedir otro correo</a>
+    <a class="btn secondary" href="./index.html">Volver al inicio</a>
+  </div>
+</div>
+</section>
+</main>
+<footer>La contraseña se cambia directamente en Firebase. Sálvame las Papas no puede verla.</footer>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,verifyPasswordResetCode,confirmPasswordReset,signInWithEmailAndPassword} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const app=initializeApp({
+  apiKey:"AIzaSyAE8kEBAzDbPvCCD1KCyjq67iFl3dvthLM",
+  authDomain:"salvame-las-papas-cdelu.firebaseapp.com",
+  projectId:"salvame-las-papas-cdelu",
+  storageBucket:"salvame-las-papas-cdelu.firebasestorage.app",
+  messagingSenderId:"401048945476",
+  appId:"1:401048945476:web:58695553aa93928b36cd11"
+});
+const auth=getAuth(app);
+auth.languageCode='es';
+
+const params=new URLSearchParams(location.search);
+const mode=params.get('mode');
+const code=params.get('oobCode');
+let tipo=params.get('tipo')||'comercio';
+const continueUrl=params.get('continueUrl');
+if(continueUrl){
+  try{tipo=new URL(continueUrl).searchParams.get('tipo')||tipo}catch(_e){}
+}
+
+const status=document.getElementById('status');
+const formView=document.getElementById('form-view');
+const returnView=document.getElementById('return-view');
+const retryView=document.getElementById('retry-view');
+const intro=document.getElementById('intro');
+const account=document.getElementById('account');
+const commerceLink=document.getElementById('commerce-link');
+const sellerLink=document.getElementById('seller-link');
+
+if(tipo==='particular') commerceLink.classList.add('hidden');
+else sellerLink.classList.add('hidden');
+
+document.querySelectorAll('.eye').forEach(btn=>{
+  btn.onclick=()=>{
+    const el=document.getElementById(btn.dataset.target);
+    el.type=el.type==='password'?'text':'password';
+  };
+});
+
+function errorLink(message){
+  status.className='status error';
+  status.innerHTML='❌ '+message;
+  intro.textContent='El enlace no se pudo utilizar.';
+  retryView.classList.remove('hidden');
+}
+
+async function iniciar(){
+  if(mode==='resetPassword' && code){
+    try{
+      const email=await verifyPasswordResetCode(auth,code);
+      status.classList.add('hidden');
+      intro.textContent='Escribí una contraseña nueva para tu cuenta.';
+      account.textContent='Cuenta: '+email;
+      formView.classList.remove('hidden');
+
+      document.getElementById('save').onclick=async()=>{
+        const p1=document.getElementById('new-pass').value;
+        const p2=document.getElementById('repeat-pass').value;
+        if(p1.length<6){
+          status.className='status error';
+          status.textContent='❌ La contraseña debe tener al menos 6 caracteres.';
+          status.classList.remove('hidden');
+          return;
+        }
+        if(p1!==p2){
+          status.className='status error';
+          status.textContent='❌ Las contraseñas no coinciden.';
+          status.classList.remove('hidden');
+          return;
+        }
+        const btn=document.getElementById('save');
+        btn.disabled=true;
+        btn.textContent='Guardando…';
+        try{
+          await confirmPasswordReset(auth,code,p1);
+          try{await signInWithEmailAndPassword(auth,email,p1)}catch(_e){}
+          formView.classList.add('hidden');
+          retryView.classList.add('hidden');
+          status.className='status ok';
+          status.innerHTML='✅ Tu contraseña fue cambiada correctamente.';
+          intro.textContent='Ya podés volver a ingresar.';
+          returnView.classList.remove('hidden');
+        }catch(e){
+          btn.disabled=false;
+          btn.textContent='Guardar nueva contraseña';
+          errorLink(e.code==='auth/expired-action-code'?'El enlace venció. Pedí un correo nuevo.':'No se pudo cambiar la contraseña. El enlace puede haber vencido o ya fue utilizado.');
+        }
+      };
+    }catch(e){
+      errorLink(e.code==='auth/expired-action-code'?'El enlace venció. Pedí un correo nuevo.':'El enlace no es válido o ya fue utilizado.');
+    }
+    return;
+  }
+
+  status.className='status ok';
+  status.innerHTML='✅ Volviste a Sálvame las Papas.';
+  intro.textContent='Si ya guardaste la contraseña nueva en la pantalla anterior, ingresá nuevamente a tu cuenta.';
+  returnView.classList.remove('hidden');
+}
+
+iniciar();
+</script>
+</body>
+</html>

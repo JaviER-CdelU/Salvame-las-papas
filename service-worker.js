@@ -1,5 +1,5 @@
-const CACHE_NAME = "salvame-papas-v50-diagnostico-correo";
-const APP_SHELL = ["./","./index.html","./comercio.html","./admin.html","./seguimiento-comercios.html","./como-usar.html","./diccionario-entrerriano.html","./offline.html","./manifest.webmanifest","./version.json"];
+const CACHE_NAME = "salvame-papas-v51-restablecer-clave";
+const APP_SHELL = ["./","./index.html","./comercio.html","./admin.html","./seguimiento-comercios.html","./como-usar.html","./diccionario-entrerriano.html","./offline.html","./restablecer-clave.html","./manifest.webmanifest","./version.json"];
 
 self.addEventListener("install",event=>{
   // La nueva versión queda esperando. Solo se activa cuando el usuario
