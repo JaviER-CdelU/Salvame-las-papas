@@ -1,15 +1,12 @@
 {
-  "version": "V60",
-  "nombre": "Entregas, pagos y métricas",
+  "version": "V61",
+  "nombre": "Plan correcto y particulares reubicados",
   "fecha": "2026-07-25",
   "cambios": [
-    "Edición de entregas desde Mi Comercio",
-    "Edición de medios de pago desde Mi Comercio",
-    "El carrito muestra solo las opciones habilitadas",
-    "Métricas mensuales separadas del documento público",
-    "Visitas y clics en WhatsApp por mes",
-    "Pedidos, confirmados, entregados y total mensual",
-    "Botón para copiar informe mensual",
-    "Permisos para que el dueño lea y actualice sus pedidos"
+    "Eliminado el texto Sin costo de inscripción",
+    "Nuevo texto Elegí tu plan actual para comenzar",
+    "Aclaración de publicación posterior al pago",
+    "Bloque Vendedor particular ubicado antes de Oferta de la semana",
+    "Sin duplicar la sección de particulares"
   ]
 }
