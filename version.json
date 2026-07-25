@@ -1,12 +1,13 @@
 {
-  "version": "V53",
-  "nombre": "Acceso de comercios por correo",
+  "version": "V54",
+  "nombre": "Ofertas directas al carrito",
   "fecha": "2026-07-25",
   "cambios": [
-    "El correo autenticado busca todos sus comercios",
-    "Eliminada la consulta general bloqueada",
-    "Vinculación segura de comercios antiguos con ownerUid",
-    "Selector por nombre de fantasía cuando hay varios comercios",
-    "Mensajes de acceso más claros"
+    "Cada oferta abre directamente el comercio correspondiente",
+    "Botón Agregar suma el producto al carrito",
+    "Botón Ver comercio abre la ficha del negocio",
+    "El producto elegido queda resaltado dentro del comercio",
+    "Función de apertura de comercios de portada corregida",
+    "Carrito separado y guardado por comercio"
   ]
 }
