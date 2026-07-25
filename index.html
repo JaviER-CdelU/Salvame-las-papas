@@ -2848,6 +2848,17 @@ nav .nav-btns,nav .nav-portals{display:none!important}
   .offer-home-actions-v54 button{flex:1}
 }
 
+
+/* V56 — SUSCRIPCIONES MERCADO PAGO */
+.planes-payment-v56{
+  width:min(940px,calc(100% - 24px));margin:22px auto 0;padding:15px 18px;
+  border-radius:15px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.22);
+  display:grid;gap:6px;text-align:center
+}
+.planes-payment-v56 strong{font-size:1.05rem;color:#fff}
+.planes-payment-v56 span{color:rgba(255,255,255,.88);font-size:.86rem}
+.planes-payment-v56 small{color:rgba(255,255,255,.65)}
+
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -3109,7 +3120,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
 }
 
 </style>
-<meta name="app-version" content="V55">
+<meta name="app-version" content="V56">
 </head>
 <body>
 <div class="cdu-stripe"></div>
@@ -3356,7 +3367,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
           <li class="wa">Contacto directo por WhatsApp</li>
           <li>Se publica al acreditarse el pago</li>
         </ul>
-        <a class="btn-plan particular-link-v41" href="./vendedor.html">Publicar como particular</a>
+        <a class="btn-plan particular-link-v41" href="./vendedor.html">Registrarme y continuar al pago</a>
       </div>
 
       <div class="plan" onclick="elegirPlan(1)">
@@ -3372,7 +3383,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
           <li class="wa">Botón de WhatsApp directo</li>
           <li>Aparición normal en categorías y búsquedas</li>
         </ul>
-        <button class="btn-plan">Elegir Básico — Anotarme</button>
+        <button class="btn-plan">Elegir Básico — Registrarme</button>
       </div>
 
       <div class="plan destacado" onclick="elegirPlan(2)">
@@ -3389,7 +3400,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
           <li class="wa">WhatsApp + pedidos online</li>
           <li>Estadísticas básicas de visitas y contactos</li>
         </ul>
-        <button class="btn-plan">Elegir Destacado — Anotarme</button>
+        <button class="btn-plan">Elegir Destacado — Registrarme</button>
       </div>
 
       <div class="plan" onclick="elegirPlan(3)">
@@ -3406,10 +3417,15 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
           <li class="redes">Solicitud de difusión en Facebook de Sálvame las Papas</li>
           <li>Estadísticas completas y sello <strong>Comercio Pro</strong></li>
         </ul>
-        <button class="btn-plan">Elegir Pro — Anotarme</button>
+        <button class="btn-plan">Elegir Pro — Registrarme</button>
       </div>
     </div>
-    <p class="planes-pago">💳 <strong>MercadoPago (transferencia)</strong> · Efectivo en oficina · Coordiná por WhatsApp</p>
+    <div class="planes-payment-v56">
+      <strong>💳 Dos formas de pago</strong>
+      <span><b>Mercado Pago:</b> suscripción mensual con renovación automática hasta que la canceles.</span>
+      <span><b>Oficina:</b> efectivo, débito, crédito o QR; renovación manual cada mes.</span>
+      <small>El enlace del plan se muestra después del registro, dentro de tu cuenta.</small>
+    </div>
   </div>
 </div>
 
@@ -3707,8 +3723,9 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
           <div><b>2.</b> Confirmamos la acreditación del plan elegido.</div>
           <div><b>3.</b> Aprobamos el comercio y aparece en la página principal.</div>
         </div>
-        <p class="registro-final-ayuda">Podés coordinar o enviar el comprobante por WhatsApp. También recibirás la confirmación cuando el comercio sea aprobado.</p>
+        <p class="registro-final-ayuda">Podés suscribirte con Mercado Pago para la renovación automática o coordinar un pago presencial. Recibirás la confirmación cuando el comercio sea aprobado.</p>
         <div class="form-nav registro-final-botones">
+          <a class="btn btn-azul btn-lg" href="./pago-plan.html">💳 Continuar al pago</a>
           <a class="btn btn-rojo btn-lg" id="btn-final-whatsapp" href="https://wa.me/5493442490585" target="_blank" rel="noopener noreferrer">💬 Enviar comprobante por WhatsApp</a>
           <a class="btn btn-azul btn-lg" href="comercio.html">🏪 Ir a Mi comercio</a>
           <button class="btn btn-ghost btn-lg" onclick="reiniciarRegistro()">Registrar otro comercio</button>
@@ -3825,7 +3842,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
   </div>
   <div class="footer-bottom">© 2025 Sálvame las Papas · Concepción del Uruguay, La Histórica · Hecho con ❤️ y mate 🧉 para los vecinos del barrio</div>
 <div class="app-version-badge" title="Versión publicada de Sálvame las Papas">
-  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V55</a>
+  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V56</a>
 </div>
 </footer>
 

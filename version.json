@@ -1,15 +1,14 @@
 {
-  "version": "V55",
-  "nombre": "Un clic para preparar y compartir",
+  "version": "V56",
+  "nombre": "Suscripciones de Mercado Pago",
   "fecha": "2026-07-25",
   "cambios": [
-    "Botón Preparar y compartir para comercios activos",
-    "Imagen cuadrada de bienvenida generada automáticamente",
-    "Texto listo para redes sociales",
-    "Compartir desde el teléfono hacia Instagram, Facebook o WhatsApp",
-    "Botón directo de Facebook",
-    "Botón directo de WhatsApp",
-    "Copiar texto y guardar imagen",
-    "Estado Marcado como compartido en Administración"
+    "Cuatro enlaces de suscripción de Mercado Pago integrados",
+    "Pantalla privada pago-plan.html",
+    "Plan visible únicamente después de iniciar sesión",
+    "Renovación automática mensual con Mercado Pago",
+    "Alternativa de pago presencial en oficina",
+    "Pago presencial aclarado como renovación manual",
+    "Acceso al pago desde el alta, Mi comercio y Mis publicaciones"
   ]
 }
