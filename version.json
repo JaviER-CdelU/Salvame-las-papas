@@ -1,13 +1,15 @@
 {
-  "version": "V54",
-  "nombre": "Ofertas directas al carrito",
+  "version": "V55",
+  "nombre": "Un clic para preparar y compartir",
   "fecha": "2026-07-25",
   "cambios": [
-    "Cada oferta abre directamente el comercio correspondiente",
-    "Botón Agregar suma el producto al carrito",
-    "Botón Ver comercio abre la ficha del negocio",
-    "El producto elegido queda resaltado dentro del comercio",
-    "Función de apertura de comercios de portada corregida",
-    "Carrito separado y guardado por comercio"
+    "Botón Preparar y compartir para comercios activos",
+    "Imagen cuadrada de bienvenida generada automáticamente",
+    "Texto listo para redes sociales",
+    "Compartir desde el teléfono hacia Instagram, Facebook o WhatsApp",
+    "Botón directo de Facebook",
+    "Botón directo de WhatsApp",
+    "Copiar texto y guardar imagen",
+    "Estado Marcado como compartido en Administración"
   ]
 }

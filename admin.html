@@ -145,6 +145,163 @@ window.verPanelV41=panel=>{
  if(panel==='vendedores')cargarVendedoresAdmin();
 };
 
+
+let comercioCompartirV55=null;
+let imagenCompartirV55=null;
+
+function claveComercioV55(c){
+  return String(c?.id||c?.nombre||'comercio')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+}
+function urlComercioV55(c){
+  return new URL('./index.html#comercio='+encodeURIComponent(claveComercioV55(c)),location.href).href;
+}
+function planCortoV55(plan){
+  const p=String(plan||'').toLowerCase();
+  if(p.includes('45')||p.includes('pro'))return 'COMERCIO PRO';
+  if(p.includes('30')||p.includes('destacado')||p.includes('max'))return 'COMERCIO DESTACADO';
+  return 'NUEVO COMERCIO';
+}
+function textoBienvenidaV55(c){
+  const categoria=c.categoria||c.cat||'comercio local';
+  const barrio=c.barrio||'Concepción del Uruguay';
+  return `🥔 ¡Le damos la bienvenida a ${c.nombre||'un nuevo comercio'}!
+
+Ya forma parte de Sálvame las Papas.
+
+${categoria} · ${barrio}
+Encontralo en nuestra página, conocé sus productos o servicios y comunicate directamente con el comercio.
+
+🔎 ${urlComercioV55(c)}
+
+#SalvameLasPapas #ConcepcionDelUruguay #ComercioLocal`;
+}
+function redondearRectV55(ctx,x,y,w,h,r){
+  const rr=Math.min(r,w/2,h/2);
+  ctx.beginPath();ctx.moveTo(x+rr,y);ctx.arcTo(x+w,y,x+w,y+h,rr);
+  ctx.arcTo(x+w,y+h,x,y+h,rr);ctx.arcTo(x,y+h,x,y,rr);
+  ctx.arcTo(x,y,x+w,y,rr);ctx.closePath();
+}
+function partirTextoV55(ctx,text,maxWidth){
+  const words=String(text||'').split(/\s+/),lines=[];let line='';
+  words.forEach(word=>{
+    const test=line?line+' '+word:word;
+    if(ctx.measureText(test).width>maxWidth&&line){lines.push(line);line=word}else line=test;
+  });
+  if(line)lines.push(line);return lines;
+}
+async function dibujarBienvenidaV55(c){
+  const canvas=document.getElementById('share-canvas-v55');
+  const ctx=canvas.getContext('2d');
+  const grad=ctx.createLinearGradient(0,0,1080,1080);
+  grad.addColorStop(0,'#eaf4ff');grad.addColorStop(.52,'#ffffff');grad.addColorStop(1,'#fff1df');
+  ctx.fillStyle=grad;ctx.fillRect(0,0,1080,1080);
+
+  ctx.fillStyle='#082440';ctx.fillRect(0,0,1080,175);
+  ctx.fillStyle='#fff';ctx.font='900 48px Georgia';ctx.fillText('Sálvame las Papas 🥔',65,105);
+  ctx.font='800 25px Arial';ctx.fillStyle='#b9d9f4';ctx.fillText('HECHO EN CONCEPCIÓN DEL URUGUAY',67,143);
+
+  ctx.fillStyle='#ff7200';redondearRectV55(ctx,65,230,390,70,35);ctx.fill();
+  ctx.fillStyle='#fff';ctx.font='900 27px Arial';ctx.textAlign='center';
+  ctx.fillText(planCortoV55(c),260,275);ctx.textAlign='left';
+
+  ctx.fillStyle='#073574';ctx.font='900 72px Georgia';
+  const lines=partirTextoV55(ctx,c.nombre||'Nuevo comercio',930).slice(0,3);
+  lines.forEach((line,i)=>ctx.fillText(line,65,405+i*82));
+
+  const cat=c.categoria||c.cat||'Comercio local';
+  ctx.font='800 34px Arial';ctx.fillStyle='#435a74';
+  ctx.fillText(cat,67,690);
+  ctx.font='700 29px Arial';ctx.fillStyle='#6a7889';
+  ctx.fillText('📍 '+(c.barrio||'Concepción del Uruguay'),67,750);
+
+  ctx.fillStyle='#fff';redondearRectV55(ctx,65,820,950,150,25);ctx.fill();
+  ctx.strokeStyle='#d4e0ec';ctx.lineWidth=3;ctx.stroke();
+  ctx.fillStyle='#073574';ctx.font='900 36px Arial';ctx.fillText('Ya está en Sálvame las Papas',105,880);
+  ctx.font='700 26px Arial';ctx.fillStyle='#627087';ctx.fillText('Conocelo y contactalo desde nuestra página',105,930);
+
+  ctx.fillStyle='#ff7200';ctx.beginPath();ctx.arc(943,895,48,0,Math.PI*2);ctx.fill();
+  ctx.font='42px Arial';ctx.textAlign='center';ctx.fillText('🥔',943,910);ctx.textAlign='left';
+
+  imagenCompartirV55=await new Promise(resolve=>canvas.toBlob(resolve,'image/png',.95));
+}
+window.abrirCompartirV55=async id=>{
+  comercioCompartirV55=todosComerciosAdmin.find(c=>c.id===id);
+  if(!comercioCompartirV55){toast('No se encontró el comercio.');return}
+  document.getElementById('share-title-v55').textContent='Bienvenida a '+(comercioCompartirV55.nombre||'nuevo comercio');
+  document.getElementById('share-text-v55').value=textoBienvenidaV55(comercioCompartirV55);
+  document.getElementById('share-status-v55').textContent='Preparando imagen…';
+  document.getElementById('share-modal-v55').classList.add('open');
+  document.getElementById('share-modal-v55').setAttribute('aria-hidden','false');
+  await dibujarBienvenidaV55(comercioCompartirV55);
+  document.getElementById('share-status-v55').textContent='✓ Imagen y texto preparados.';
+};
+window.cerrarCompartirV55=()=>{
+  document.getElementById('share-modal-v55').classList.remove('open');
+  document.getElementById('share-modal-v55').setAttribute('aria-hidden','true');
+};
+window.copiarTextoV55=async()=>{
+  const texto=document.getElementById('share-text-v55').value;
+  try{await navigator.clipboard.writeText(texto);document.getElementById('share-status-v55').textContent='✓ Texto copiado.'}
+  catch(_e){document.getElementById('share-text-v55').select();document.execCommand('copy');}
+};
+window.compartirWhatsAppV55=()=>{
+  const texto=document.getElementById('share-text-v55').value;
+  window.open('https://wa.me/?text='+encodeURIComponent(texto),'_blank','noopener');
+};
+window.compartirFacebookV55=async()=>{
+  if(!comercioCompartirV55)return;
+  await copiarTextoV55();
+  const u=urlComercioV55(comercioCompartirV55);
+  window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(u),'_blank','noopener,width=720,height=650');
+  document.getElementById('share-status-v55').textContent='Facebook abierto. El texto quedó copiado para pegarlo.';
+};
+window.compartirNativoV55=async()=>{
+  if(!comercioCompartirV55)return;
+  const texto=document.getElementById('share-text-v55').value;
+  const archivo=imagenCompartirV55?new File([imagenCompartirV55],'bienvenida-'+claveComercioV55(comercioCompartirV55)+'.png',{type:'image/png'}):null;
+  try{
+    if(archivo&&navigator.canShare&&navigator.canShare({files:[archivo]})){
+      await navigator.share({title:'Nuevo en Sálvame las Papas',text:texto,url:urlComercioV55(comercioCompartirV55),files:[archivo]});
+    }else if(navigator.share){
+      await navigator.share({title:'Nuevo en Sálvame las Papas',text:texto,url:urlComercioV55(comercioCompartirV55)});
+    }else{
+      await copiarTextoV55();
+      guardarImagenV55();
+      document.getElementById('share-status-v55').textContent='Tu navegador no tiene menú de compartir. Guardé la imagen y copié el texto.';
+    }
+  }catch(e){
+    if(e.name!=='AbortError')document.getElementById('share-status-v55').textContent='No se pudo abrir el menú de compartir.';
+  }
+};
+window.guardarImagenV55=()=>{
+  if(!imagenCompartirV55)return;
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(imagenCompartirV55);
+  a.download='bienvenida-'+claveComercioV55(comercioCompartirV55)+'.png';
+  a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+};
+window.marcarCompartidoV55=async()=>{
+  if(!comercioCompartirV55)return;
+  try{
+    await updateDoc(doc(db,'comercios',comercioCompartirV55.id),{
+      redesPublicado:true,
+      redesPublicadoEn:serverTimestamp(),
+      actualizadoEn:serverTimestamp()
+    });
+    comercioCompartirV55.redesPublicado=true;
+    document.getElementById('share-status-v55').textContent='✅ Marcado como compartido.';
+    setTimeout(()=>{cerrarCompartirV55();cargarComerciosAdmin()},650);
+  }catch(e){
+    document.getElementById('share-status-v55').textContent='No se pudo guardar el estado: '+(e.message||e.code);
+  }
+};
+document.addEventListener('click',e=>{
+  const modal=document.getElementById('share-modal-v55');
+  if(e.target===modal)cerrarCompartirV55();
+});
+
 // ── Cargar comercios ──
 let todosComerciosAdmin = []
 
@@ -229,6 +386,9 @@ function renderListaAdmin(lista){
         ❌ Rechazar
       </button>` 
     : c.estado === 'activo' ? `
+      <button class="btn-accion btn-compartir-v55" onclick="abrirCompartirV55('${c.id}')">
+        📣 Preparar y compartir
+      </button>
       <button class="btn-accion btn-rechazar" onclick="cambiarEstado('${c.id}','pendiente')">
         ⏸ Suspender
       </button>`
@@ -259,6 +419,7 @@ function renderListaAdmin(lista){
           <div class="cc-field"><span class="cc-label">🚚 Envío</span><span>${esc(envio)}</span></div>
           <div class="cc-field"><span class="cc-label">💰 Plan</span><span>${esc(c.plan||'—')}</span></div>
           <div class="cc-field"><span class="cc-label">📷 Instagram</span><span>${esc(c.instagram||'—')}</span></div>
+          <div class="cc-field"><span class="cc-label">📣 Difusión</span><span>${c.redesPublicado?'✅ Compartido':'Pendiente de compartir'}</span></div>
         </div>
         ${c.descripcion ? `<div class="cc-desc">"${esc(c.descripcion)}"</div>` : ''}
       </div>
@@ -745,6 +906,43 @@ img{max-width:100%;height:auto}
 }
 
 .btn-reset-v50{background:#6f42c1!important;color:#fff!important}
+
+/* V55 — PREPARAR Y COMPARTIR */
+.btn-compartir-v55{background:#6f42c1!important;color:#fff!important}
+.share-modal-v55{
+  position:fixed;inset:0;background:rgba(5,20,38,.68);z-index:100000;
+  display:none;align-items:center;justify-content:center;padding:18px;overflow:auto
+}
+.share-modal-v55.open{display:flex}
+.share-dialog-v55{
+  position:relative;width:min(720px,100%);background:#fff;border-radius:22px;
+  padding:22px;box-shadow:0 25px 70px rgba(0,0,0,.28)
+}
+.share-close-v55{
+  position:absolute;right:13px;top:10px;border:0;background:transparent;
+  font-size:2rem;color:#687588;cursor:pointer
+}
+.share-kicker-v55{font-size:.72rem;font-weight:900;letter-spacing:.08em;color:#ff7200}
+.share-dialog-v55 h2{margin:5px 0;color:#073574}
+.share-sub-v55{margin:0 0 13px;color:#687588}
+#share-canvas-v55{
+  width:min(100%,430px);height:auto;display:block;margin:0 auto 15px;
+  border-radius:17px;border:1px solid #d5e0eb;background:#edf5ff
+}
+.share-label-v55{display:block;font-size:.78rem;font-weight:900;margin:8px 0 5px;color:#34435a}
+#share-text-v55{width:100%;resize:vertical;border:1.5px solid #cbd7e4;border-radius:11px;padding:11px;font:inherit;line-height:1.4}
+.share-buttons-v55{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:13px}
+.share-buttons-v55 button{border:0;border-radius:10px;padding:11px 8px;font-weight:900;cursor:pointer;background:#edf3fa;color:#073574}
+.share-buttons-v55 .share-main-v55{grid-column:span 2;background:#ff7200;color:#fff}
+.share-buttons-v55 .share-mark-v55{background:#198754;color:#fff}
+.share-help-v55{font-size:.74rem;color:#687588;line-height:1.4}
+.share-status-v55{font-size:.82rem;font-weight:800;margin-top:9px;color:#176436}
+@media(max-width:620px){
+  .share-dialog-v55{padding:18px 13px}
+  .share-buttons-v55{grid-template-columns:1fr 1fr}
+  .share-buttons-v55 .share-main-v55{grid-column:1/-1}
+}
+
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -755,7 +953,7 @@ img{max-width:100%;height:auto}
 <meta name="apple-mobile-web-app-title" content="Sálvame">
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
-<meta name="app-version" content="V54">
+<meta name="app-version" content="V55">
 </head>
 <body>
 
@@ -856,6 +1054,32 @@ img{max-width:100%;height:auto}
     </div>
   </div>
 
+  </div>
+</div>
+
+
+<div class="share-modal-v55" id="share-modal-v55" aria-hidden="true">
+  <div class="share-dialog-v55" role="dialog" aria-modal="true" aria-labelledby="share-title-v55">
+    <button class="share-close-v55" type="button" onclick="cerrarCompartirV55()" aria-label="Cerrar">×</button>
+    <div class="share-kicker-v55">📣 DIFUSIÓN EN REDES</div>
+    <h2 id="share-title-v55">Preparar bienvenida</h2>
+    <p class="share-sub-v55">Revisá la imagen y el texto antes de compartir.</p>
+
+    <canvas id="share-canvas-v55" width="1080" height="1080"></canvas>
+
+    <label class="share-label-v55" for="share-text-v55">Texto preparado</label>
+    <textarea id="share-text-v55" rows="9"></textarea>
+
+    <div class="share-buttons-v55">
+      <button type="button" class="share-main-v55" onclick="compartirNativoV55()">📲 Compartir en el teléfono</button>
+      <button type="button" onclick="compartirFacebookV55()">Facebook</button>
+      <button type="button" onclick="compartirWhatsAppV55()">WhatsApp</button>
+      <button type="button" onclick="copiarTextoV55()">Copiar texto</button>
+      <button type="button" onclick="guardarImagenV55()">Guardar imagen</button>
+      <button type="button" class="share-mark-v55" onclick="marcarCompartidoV55()">✅ Marcar como compartido</button>
+    </div>
+    <p class="share-help-v55">En Instagram, usá “Compartir en el teléfono”. En algunos equipos primero se abrirá el menú general para elegir la aplicación.</p>
+    <div id="share-status-v55" class="share-status-v55"></div>
   </div>
 </div>
 
