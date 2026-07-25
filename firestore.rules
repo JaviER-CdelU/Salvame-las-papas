@@ -46,6 +46,32 @@ service cloud.firestore {
       allow delete: if isAdmin()
                     || (signedIn() && resource.data.ownerUid == request.auth.uid);
 
+      match /metricas/{mesId} {
+        function metricKeysOk() {
+          return request.resource.data.keys().hasOnly(["visitas","clicsWhatsApp","actualizadoEn"]);
+        }
+        function validCreateMetric() {
+          return metricKeysOk()
+            && (!("visitas" in request.resource.data) || request.resource.data.visitas == 1)
+            && (!("clicsWhatsApp" in request.resource.data) || request.resource.data.clicsWhatsApp == 1);
+        }
+        function validUpdateMetric() {
+          return metricKeysOk()
+            && request.resource.data.visitas >= resource.data.visitas
+            && request.resource.data.visitas <= resource.data.visitas + 1
+            && request.resource.data.clicsWhatsApp >= resource.data.clicsWhatsApp
+            && request.resource.data.clicsWhatsApp <= resource.data.clicsWhatsApp + 1;
+        }
+        allow read: if isAdmin()
+                    || (signedIn() && (
+                      get(/databases/$(database)/documents/comercios/$(comercioId)).data.ownerUid == request.auth.uid
+                      || get(/databases/$(database)/documents/comercios/$(comercioId)).data.email == request.auth.token.email
+                    ));
+        allow create: if validCreateMetric();
+        allow update: if validUpdateMetric();
+        allow delete: if isAdmin();
+      }
+
       match /productos/{productoId} {
         function parentCommerce() {
           return get(/databases/$(database)/documents/comercios/$(comercioId)).data;
@@ -107,8 +133,17 @@ service cloud.firestore {
     }
 
     match /pedidos/{pedidoId} {
-      allow create: if signedIn();
-      allow read, update, delete: if isAdmin();
+      function pedidoOwner() {
+        return signedIn()
+          && (
+            get(/databases/$(database)/documents/comercios/$(resource.data.comercioId)).data.ownerUid == request.auth.uid
+            || get(/databases/$(database)/documents/comercios/$(resource.data.comercioId)).data.email == request.auth.token.email
+          );
+      }
+      allow create: if signedIn() && request.resource.data.clienteUid == request.auth.uid;
+      allow read: if isAdmin() || pedidoOwner() || (signedIn() && resource.data.clienteUid == request.auth.uid);
+      allow update: if isAdmin() || pedidoOwner();
+      allow delete: if isAdmin();
     }
 
     match /usuarios/{usuarioId} {

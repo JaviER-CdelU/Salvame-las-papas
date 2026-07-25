@@ -12,7 +12,7 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, addDoc, updateDoc, deleteDoc,
-         doc, getDocs, query, where, serverTimestamp }
+         doc, getDoc, getDocs, setDoc, query, where, serverTimestamp }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getAuth, signInWithPopup, signInWithRedirect, GoogleAuthProvider,
          signInWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged, signOut }
@@ -609,7 +609,7 @@ function renderPedidos(){
   }).join('')
 }
 window.cambiarEstadoPedido=async(id,estado)=>{
-  try{await updateDoc(doc(db,'pedidos',id),{estado,actualizadoEn:serverTimestamp()});toast('Pedido actualizado: '+estado);await cargarPedidos()}catch(e){toast('Error: '+e.message)}
+  try{await updateDoc(doc(db,'pedidos',id),{estado,actualizadoEn:serverTimestamp()});toast('Pedido actualizado: '+estado);await cargarPedidos();await cargarMetricasV60()}catch(e){toast('Error: '+e.message)}
 }
 
 function mostrarSeccion(id){
@@ -689,15 +689,86 @@ window.abrirModalPerfil = () => {
  if(!miComercio)return;
  const vals={nombre:'nombre',desc:'descripcion',direccion:'direccion',telefono:'telefono',horarios:'horarios',instagram:'instagram'};
  Object.entries(vals).forEach(([id,k])=>{const e=document.getElementById('pf-'+id);if(e)e.value=miComercio[k]||''});
+ const env=Array.isArray(miComercio.envio)?miComercio.envio:String(miComercio.envio||'').split(/[,;|]/).map(x=>x.trim());
+ const pay=Array.isArray(miComercio.pagos)?miComercio.pagos:String(miComercio.pagos||'').split(/[,;|]/).map(x=>x.trim());
+ const tiene=(lista,...partes)=>lista.some(v=>partes.some(p=>String(v).toLowerCase().includes(p)));
+ document.getElementById('pf-env-retiro').checked=tiene(env,'retiro','local','buscar');
+ document.getElementById('pf-env-cadete').checked=tiene(env,'cadete','domicilio','delivery');
+ document.getElementById('pf-env-propio').checked=tiene(env,'propio');
+ document.getElementById('pf-env-coordinar').checked=tiene(env,'coordinar');
+ document.getElementById('pf-pay-efectivo').checked=tiene(pay,'efectivo');
+ document.getElementById('pf-pay-transferencia').checked=tiene(pay,'transfer');
+ document.getElementById('pf-pay-mp').checked=tiene(pay,'mercado pago');
+ document.getElementById('pf-pay-debito').checked=tiene(pay,'débito','debito');
+ document.getElementById('pf-pay-credito').checked=tiene(pay,'crédito','credito');
+ document.getElementById('pf-pay-cuotas').checked=tiene(pay,'cuotas');
+ document.getElementById('pf-pay-coordinar').checked=tiene(pay,'coordinar');
  document.getElementById('modal-perfil').classList.add('open')
 }
 window.cerrarModalPerfil = e => {if(!e||e.target===document.getElementById('modal-perfil'))document.getElementById('modal-perfil').classList.remove('open')}
 window.guardarPerfil = async () => {
  if(!miComercioId)return; const btn=document.getElementById('btn-save-profile');btn.disabled=true;btn.textContent='Guardando...';
- const datos={nombre:document.getElementById('pf-nombre').value.trim(),descripcion:document.getElementById('pf-desc').value.trim(),direccion:document.getElementById('pf-direccion').value.trim(),telefono:document.getElementById('pf-telefono').value.trim(),horarios:document.getElementById('pf-horarios').value.trim(),instagram:document.getElementById('pf-instagram').value.trim(),actualizadoEn:serverTimestamp()};
+ const envio=[];
+ if(document.getElementById('pf-env-retiro').checked)envio.push('Retiro en el comercio');
+ if(document.getElementById('pf-env-cadete').checked)envio.push('Envío con cadete / domicilio');
+ if(document.getElementById('pf-env-propio').checked)envio.push('Envío propio');
+ if(document.getElementById('pf-env-coordinar').checked)envio.push('Entrega a coordinar');
+ const pagos=[];
+ if(document.getElementById('pf-pay-efectivo').checked)pagos.push('Efectivo');
+ if(document.getElementById('pf-pay-transferencia').checked)pagos.push('Transferencia');
+ if(document.getElementById('pf-pay-mp').checked)pagos.push('Mercado Pago');
+ if(document.getElementById('pf-pay-debito').checked)pagos.push('Débito');
+ if(document.getElementById('pf-pay-credito').checked)pagos.push('Crédito');
+ if(document.getElementById('pf-pay-cuotas').checked)pagos.push('Cuotas');
+ if(document.getElementById('pf-pay-coordinar').checked)pagos.push('A coordinar');
+ const datos={nombre:document.getElementById('pf-nombre').value.trim(),descripcion:document.getElementById('pf-desc').value.trim(),direccion:document.getElementById('pf-direccion').value.trim(),telefono:document.getElementById('pf-telefono').value.trim(),horarios:document.getElementById('pf-horarios').value.trim(),instagram:document.getElementById('pf-instagram').value.trim(),envio,pagos,actualizadoEn:serverTimestamp()};
  try{await updateDoc(doc(db,'comercios',miComercioId),datos);Object.assign(miComercio,datos);document.getElementById('comercio-nombre').textContent=datos.nombre||'Mi comercio';document.getElementById('modal-perfil').classList.remove('open');toast('✅ Perfil actualizado')}
  catch(e){toast('Error: '+e.message)}finally{btn.disabled=false;btn.textContent='Guardar cambios'}
 }
+
+
+function mesClaveV60(fecha=new Date()){
+  return fecha.getFullYear()+'-'+String(fecha.getMonth()+1).padStart(2,'0');
+}
+function inicioMesV60(){
+  const f=new Date(); return new Date(f.getFullYear(),f.getMonth(),1);
+}
+async function cargarMetricasV60(){
+  if(!miComercioId)return;
+  const mes=mesClaveV60();
+  document.getElementById('metrics-period-v60').textContent=new Date().toLocaleDateString('es-AR',{month:'long',year:'numeric'});
+  let visitas=0,whatsapp=0;
+  try{
+    const snap=await getDoc(doc(db,'comercios',miComercioId,'metricas',mes));
+    if(snap.exists()){const d=snap.data();visitas=Number(d.visitas||0);whatsapp=Number(d.clicsWhatsApp||0)}
+  }catch(e){console.warn('Métricas:',e.message)}
+  const desde=inicioMesV60();
+  const pedidosMes=misPedidos.filter(p=>{
+    const f=p.creadoEn?.toDate?p.creadoEn.toDate():new Date(p.creadoEn||0);
+    return !isNaN(f)&&f>=desde;
+  });
+  const confirmados=pedidosMes.filter(p=>['confirmado','en preparación','entregado'].includes(String(p.estado||'').toLowerCase())).length;
+  const entregados=pedidosMes.filter(p=>String(p.estado||'').toLowerCase()==='entregado').length;
+  const total=pedidosMes.filter(p=>String(p.estado||'').toLowerCase()!=='cancelado').reduce((s,p)=>s+Number(p.total||0),0);
+  document.getElementById('m-visitas-v60').textContent=visitas.toLocaleString('es-AR');
+  document.getElementById('m-whatsapp-v60').textContent=whatsapp.toLocaleString('es-AR');
+  document.getElementById('m-pedidos-v60').textContent=pedidosMes.length.toLocaleString('es-AR');
+  document.getElementById('m-confirmados-v60').textContent=confirmados.toLocaleString('es-AR');
+  document.getElementById('m-entregados-v60').textContent=entregados.toLocaleString('es-AR');
+  document.getElementById('m-total-v60').textContent='$'+total.toLocaleString('es-AR');
+}
+window.copiarInformeV60=async()=>{
+  if(!miComercio)return;
+  const texto=`Resultados de ${miComercio.nombre||'Mi comercio'} — ${document.getElementById('metrics-period-v60').textContent}
+Visitas: ${document.getElementById('m-visitas-v60').textContent}
+Clics en WhatsApp: ${document.getElementById('m-whatsapp-v60').textContent}
+Pedidos: ${document.getElementById('m-pedidos-v60').textContent}
+Confirmados: ${document.getElementById('m-confirmados-v60').textContent}
+Entregados: ${document.getElementById('m-entregados-v60').textContent}
+Total de pedidos: ${document.getElementById('m-total-v60').textContent}`;
+  try{await navigator.clipboard.writeText(texto);toast('✅ Informe copiado')}catch(e){toast('No se pudo copiar el informe')}
+};
+window.cargarMetricasV60=cargarMetricasV60;
 
 </script>
 
@@ -1166,6 +1237,27 @@ img{max-width:100%;height:auto}
  .prod-photo-panel{width:105px!important;min-height:145px!important}
 }
 
+
+/* V60 — ENTREGAS, PAGOS Y MÉTRICAS */
+.profile-options-v60{margin-top:18px;padding-top:14px;border-top:1px solid #dce4ed}
+.profile-options-v60 h3{margin:12px 0 5px;color:#073574;font-size:1rem}
+.profile-options-v60 p{font-size:.78rem;color:#687588;margin-bottom:8px}
+.profile-checks-v60{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.profile-checks-v60 label{display:flex;align-items:center;gap:8px;padding:9px;border:1px solid #d8e2ec;border-radius:9px;background:#f8fbff;font-size:.82rem}
+.profile-checks-v60 input{width:auto}
+.metrics-v60{margin-top:2rem;background:#fff;border:1px solid #dbe3ec;border-radius:16px;padding:16px;box-shadow:0 7px 22px rgba(0,42,106,.06)}
+.metrics-head-v60{display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap}
+.metrics-head-v60 h3{font-family:"Fraunces",serif;font-size:1.45rem}
+.metrics-head-v60 p{color:#687588;font-size:.82rem}
+.metrics-actions-v60{display:flex;gap:7px;flex-wrap:wrap}
+.metrics-actions-v60 button{border:0;border-radius:9px;padding:9px 12px;background:#073574;color:#fff;font-weight:800;cursor:pointer}
+.metrics-grid-v60{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px;margin-top:14px}
+.metrics-grid-v60 article{background:#f6f9fd;border:1px solid #dfe7f0;border-radius:12px;padding:12px;text-align:center}
+.metrics-grid-v60 span{display:block;font-size:1.25rem}.metrics-grid-v60 b{display:block;color:#073574;font-size:1.25rem;margin:4px 0}.metrics-grid-v60 small{color:#687588;font-size:.7rem}
+.metrics-note-v60{margin-top:10px;font-size:.72rem;color:#758194}
+@media(max-width:900px){.metrics-grid-v60{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:560px){.profile-checks-v60{grid-template-columns:1fr}.metrics-grid-v60{grid-template-columns:repeat(2,1fr)}}
+
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -1176,14 +1268,14 @@ img{max-width:100%;height:auto}
 <meta name="apple-mobile-web-app-title" content="Sálvame">
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
-<meta name="app-version" content="V59">
+<meta name="app-version" content="V60">
 </head>
 <body>
 
 <!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
-    <span class="owner-login-kicker">PANEL DEL COMERCIO · V59</span>
+    <span class="owner-login-kicker">PANEL DEL COMERCIO · V60</span>
     <div class="login-logo">Sálvame <em>las Papas 🥔</em></div>
     <h1 class="owner-login-title">Administrá tu comercio</h1>
     <p class="owner-login-help">
@@ -1229,7 +1321,7 @@ img{max-width:100%;height:auto}
 <!-- PANEL -->
 <div id="panel-screen">
   <nav class="panel-nav">
-    <div class="panel-logo">Sálvame <em>las Papas</em> — Mi Comercio <span class="panel-version">V59</span></div>
+    <div class="panel-logo">Sálvame <em>las Papas</em> — Mi Comercio <span class="panel-version">V60</span></div>
     <div class="site-switcher" aria-label="Navegación del sitio">
       <a href="index.html">🏠 Sitio público</a>
       <a class="active" href="comercio.html">🏪 Mi comercio</a>
@@ -1315,6 +1407,29 @@ img{max-width:100%;height:auto}
       <div class="productos-grid" id="productos-grid">
         <p style="color:#666;text-align:center;padding:2rem;grid-column:1/-1">Cargando...</p>
       </div>
+
+      <section class="metrics-v60">
+        <div class="metrics-head-v60">
+          <div>
+            <h3>📊 Resultados del mes</h3>
+            <p id="metrics-period-v60">Cargando período...</p>
+          </div>
+          <div class="metrics-actions-v60">
+            <button type="button" onclick="cargarMetricasV60()">Actualizar</button>
+            <button type="button" onclick="copiarInformeV60()">Copiar informe</button>
+          </div>
+        </div>
+        <div class="metrics-grid-v60">
+          <article><span>👀</span><b id="m-visitas-v60">0</b><small>Visitas a la ficha</small></article>
+          <article><span>💬</span><b id="m-whatsapp-v60">0</b><small>Clics en WhatsApp</small></article>
+          <article><span>🧾</span><b id="m-pedidos-v60">0</b><small>Pedidos recibidos</small></article>
+          <article><span>✅</span><b id="m-confirmados-v60">0</b><small>Confirmados</small></article>
+          <article><span>📦</span><b id="m-entregados-v60">0</b><small>Entregados</small></article>
+          <article><span>💰</span><b id="m-total-v60">$0</b><small>Total de pedidos</small></article>
+        </div>
+        <p class="metrics-note-v60">Las visitas y clics son aproximados por sesión/dispositivo. Los pedidos y estados se toman de los registros reales.</p>
+      </section>
+
       <section class="pedidos-section">
         <div class="pedidos-title"><div><h3>🧾 Pedidos recibidos</h3><p class="pedidos-count" id="pedidos-count">Cargando...</p></div><button class="btn-agregar-prod" onclick="cargarPedidos()">Actualizar</button></div>
         <div class="pedidos-lista" id="pedidos-lista"><div class="pedido-empty">Cargando pedidos...</div></div>
@@ -1449,6 +1564,28 @@ img{max-width:100%;height:auto}
     <div class="form-group"><label>WhatsApp</label><input class="form-input" id="pf-telefono"></div>
     <div class="form-group"><label>Horarios</label><input class="form-input" id="pf-horarios"></div>
     <div class="form-group"><label>Instagram</label><input class="form-input" id="pf-instagram"></div>
+
+    <div class="profile-options-v60">
+      <h3>🚚 Entregas disponibles</h3>
+      <p>El cliente solamente verá las opciones que marques.</p>
+      <div class="profile-checks-v60">
+        <label><input type="checkbox" id="pf-env-retiro"> Retiro en el comercio</label>
+        <label><input type="checkbox" id="pf-env-cadete"> Envío con cadete / domicilio</label>
+        <label><input type="checkbox" id="pf-env-propio"> Envío propio</label>
+        <label><input type="checkbox" id="pf-env-coordinar"> Entrega a coordinar</label>
+      </div>
+      <h3>💳 Medios de pago</h3>
+      <div class="profile-checks-v60">
+        <label><input type="checkbox" id="pf-pay-efectivo"> Efectivo</label>
+        <label><input type="checkbox" id="pf-pay-transferencia"> Transferencia</label>
+        <label><input type="checkbox" id="pf-pay-mp"> Mercado Pago</label>
+        <label><input type="checkbox" id="pf-pay-debito"> Débito</label>
+        <label><input type="checkbox" id="pf-pay-credito"> Crédito</label>
+        <label><input type="checkbox" id="pf-pay-cuotas"> Cuotas</label>
+        <label><input type="checkbox" id="pf-pay-coordinar"> A coordinar</label>
+      </div>
+    </div>
+
     <button class="btn-save-profile" id="btn-save-profile" onclick="guardarPerfil()">Guardar cambios</button>
   </div>
 </div>

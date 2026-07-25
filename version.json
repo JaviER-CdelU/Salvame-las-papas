@@ -1,11 +1,15 @@
 {
-  "version": "V59",
-  "nombre": "Permisos de productos corregidos",
+  "version": "V60",
+  "nombre": "Entregas, pagos y métricas",
   "fecha": "2026-07-25",
   "cambios": [
-    "Vinculación segura de comercios antiguos mediante ownerUid",
-    "Permisos de productos para propietario por UID o correo coincidente",
-    "Guardado de fotos y productos corregido",
-    "Mensaje claro si faltan reglas de Firestore"
+    "Edición de entregas desde Mi Comercio",
+    "Edición de medios de pago desde Mi Comercio",
+    "El carrito muestra solo las opciones habilitadas",
+    "Métricas mensuales separadas del documento público",
+    "Visitas y clics en WhatsApp por mes",
+    "Pedidos, confirmados, entregados y total mensual",
+    "Botón para copiar informe mensual",
+    "Permisos para que el dueño lea y actualice sus pedidos"
   ]
 }
