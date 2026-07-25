@@ -17,7 +17,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc,
          query, orderBy, where, serverTimestamp, Timestamp }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut }
+import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, sendPasswordResetEmail }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -126,7 +126,7 @@ function renderVendedoresV41(lista){
   else acciones=`<button class="btn-accion btn-aprobar" onclick="aprobarVendedorV41('${v.id}')">♻️ Reactivar</button>`;
   return `<div class="comercio-card"><div class="cc-header"><div class="cc-title-row"><h3 class="cc-nombre">${esc(v.nombre||'Vendedor particular')}</h3>${badge}<span class="plan-badge plan-part-v41">PARTICULAR</span></div><div class="cc-meta">${esc(v.localidad||'CDU')} · $10.000 / 30 días</div></div>
   <div class="cc-body"><div class="cc-grid"><div class="cc-field"><span class="cc-label">🔐 Cuenta privada</span><span>${esc(v.emailPrivado||'—')}</span></div><div class="cc-field"><span class="cc-label">📱 WhatsApp</span><a class="wa-link" target="_blank" href="https://wa.me/${String(v.whatsapp||'').replace(/\D/g,'')}">${esc(v.whatsapp||'—')}</a></div><div class="cc-field"><span class="cc-label">🚚 Entrega</span><span>${esc(v.entrega||'—')}</span></div><div class="cc-field"><span class="cc-label">💳 Pago</span><span>${esc(v.estadoPago||'pendiente')}</span></div><div class="cc-field"><span class="cc-label">📅 Vencimiento</span><span>${v.vencimiento?.toDate?v.vencimiento.toDate().toLocaleDateString('es-AR'):'—'}</span></div></div><div class="vp-arts-v41">${arts}</div></div>
-  <div class="cc-footer">${acciones}<button class="btn-accion btn-wa" onclick="notificarVendedorV41('${String(v.whatsapp||'').replace(/\D/g,'')}','${safeArg(v.nombre||'')}')">💬 WhatsApp</button><button class="btn-accion btn-borrar" onclick="borrarVendedorV41('${v.id}')">🗑️ Eliminar</button></div></div>`;
+  <div class="cc-footer">${acciones}<button class="btn-accion btn-reset-v50" onclick="enviarRecuperacionV50('${safeArg(v.emailPrivado||'')}','${safeArg(v.nombre||'')}')">🔑 Recuperar acceso</button><button class="btn-accion btn-wa" onclick="notificarVendedorV41('${String(v.whatsapp||'').replace(/\D/g,'')}','${safeArg(v.nombre||'')}')">💬 WhatsApp</button><button class="btn-accion btn-borrar" onclick="borrarVendedorV41('${v.id}')">🗑️ Eliminar</button></div></div>`;
  }).join('');
 }
 window.aprobarVendedorV41=async id=>{
@@ -264,6 +264,7 @@ function renderListaAdmin(lista){
       </div>
       <div class="cc-footer">
         ${acciones}
+        <button class="btn-accion btn-reset-v50" onclick="enviarRecuperacionV50('${safeArg(c.email||'')}','${safeArg(c.nombre||'')}')">🔑 Enviar recuperación</button>
         <button class="btn-accion btn-wa" onclick="notificarWA('${(c.telefono||'').replace(/\D/g,'')}','${safeArg(c.nombre||'')}')">
           💬 Notificar por WhatsApp
         </button>
@@ -274,6 +275,21 @@ function renderListaAdmin(lista){
     </div>`
   }).join('')
 }
+
+
+window.enviarRecuperacionV50=async(emailCodificado,nombreCodificado)=>{
+  const email=decodeURIComponent(emailCodificado||'').trim().toLowerCase();
+  const nombre=decodeURIComponent(nombreCodificado||'');
+  const intento=new Date().toLocaleString('es-AR');
+  if(!email){toast('Este registro no tiene correo de acceso.');return}
+  try{
+    await sendPasswordResetEmail(auth,email);
+    alert('Firebase aceptó la solicitud de recuperación.\n\nComercio: '+nombre+'\nCorreo: '+email+'\nHora: '+intento+'\nDominio: '+window.location.hostname+'\nCódigo: OK\n\nPedile que revise Entrada, Spam, Promociones y Todos.');
+  }catch(e){
+    alert('Firebase rechazó la solicitud.\n\nCódigo: '+(e.code||'sin código')+'\nMensaje: '+(e.message||'sin mensaje')+'\nCorreo: '+email+'\nDominio: '+window.location.hostname+'\nHora: '+intento);
+    console.error('RECUPERACION_ADMIN',e);
+  }
+};
 
 // ── Acciones ──
 window.aprobarComercio = async (id, nombre, tel) => {
@@ -728,6 +744,7 @@ img{max-width:100%;height:auto}
   }
 }
 
+.btn-reset-v50{background:#6f42c1!important;color:#fff!important}
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -738,7 +755,7 @@ img{max-width:100%;height:auto}
 <meta name="apple-mobile-web-app-title" content="Sálvame">
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
-<meta name="app-version" content="V49">
+<meta name="app-version" content="V50">
 </head>
 <body>
 

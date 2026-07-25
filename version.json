@@ -1,15 +1,13 @@
 {
-  "version": "V49",
-  "nombre": "Carga real y destacados por plan",
+  "version": "V50",
+  "nombre": "Diagnóstico de recuperación de contraseña",
   "fecha": "2026-07-24",
   "cambios": [
-    "Corregido error de sintaxis que detenía Firebase",
-    "Comercios activos vuelven a mostrarse",
-    "Botón de horarios funcional",
-    "Botón duplicado de Diccionario eliminado",
-    "Destacados rotan cada 6 segundos",
-    "Plan 45.000 más grande, 30.000 mediano y 15.000 compacto",
-    "Oferta de la semana muestra comercios nuevos cuando no hay ofertas",
-    "Reintento automático de carga"
+    "El envío usa el correo estándar de Firebase sin URL personalizada",
+    "Mi comercio muestra código técnico, hora y dominio",
+    "Mis publicaciones muestra código técnico, hora y dominio",
+    "Administración agrega Enviar recuperación en cada comercio",
+    "Administración agrega recuperación para vendedores particulares",
+    "No se muestran ni recuperan contraseñas anteriores"
   ]
 }

@@ -656,13 +656,16 @@ window.recuperarClave = async () => {
     err.textContent='Escribí primero tu email y después tocá “Olvidé mi contraseña”.'
     err.style.display='block'; return
   }
+  const intento=new Date().toLocaleString('es-AR')
   try{
-    await sendPasswordResetEmail(auth,email,{url:window.location.origin+window.location.pathname,handleCodeInApp:false})
-    err.textContent='✅ Firebase envió un enlace para crear una contraseña nueva. Revisá Entrada, Spam y Correo no deseado. La contraseña anterior no puede recuperarse ni mostrarse.'
+    await sendPasswordResetEmail(auth,email)
+    err.innerHTML='✅ Firebase aceptó la solicitud.<br><small>Correo: '+email+'<br>Hora: '+intento+'<br>Dominio: '+window.location.hostname+'<br>Código: OK / solicitud aceptada</small><br><br>Revisá Entrada, Spam, Promociones y Todos. Firebase puede aceptar la solicitud aunque el correo tarde o sea filtrado.'
     err.style.display='block'
   }catch(e){
-    err.textContent=e.code==='auth/invalid-email'?'El email no es válido.':e.code==='auth/user-not-found'?'No encontramos una cuenta con ese correo.':'No se pudo enviar el enlace: '+e.message
+    const detalle='Código: '+(e.code||'sin código')+' | Mensaje: '+(e.message||'sin mensaje')+' | Dominio: '+window.location.hostname+' | Hora: '+intento
+    err.innerHTML='❌ Firebase rechazó la solicitud.<br><small>'+detalle+'</small>'
     err.style.display='block'
+    console.error('RECUPERACION_COMERCIO',e)
   }
 }
 window.cerrarSesion = async () => { await signOut(auth) }
@@ -1164,7 +1167,7 @@ img{max-width:100%;height:auto}
 <meta name="apple-mobile-web-app-title" content="Sálvame">
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
-<meta name="app-version" content="V49">
+<meta name="app-version" content="V50">
 </head>
 <body>
 
