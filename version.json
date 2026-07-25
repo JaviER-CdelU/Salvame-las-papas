@@ -1,13 +1,11 @@
 {
-  "version": "V57",
-  "nombre": "Una sola cuenta para comprar y administrar",
+  "version": "V59",
+  "nombre": "Permisos de productos corregidos",
   "fecha": "2026-07-25",
   "cambios": [
-    "La cuenta de un comercio también puede comprar como cliente",
-    "No se crean cuentas duplicadas por rol",
-    "Correo existente cambia automáticamente a Ya tengo cuenta",
-    "Recuperación de contraseña dentro del carrito",
-    "Mensajes claros cuando la contraseña no coincide",
-    "Una sesión iniciada continúa directamente con el pedido"
+    "Vinculación segura de comercios antiguos mediante ownerUid",
+    "Permisos de productos para propietario por UID o correo coincidente",
+    "Guardado de fotos y productos corregido",
+    "Mensaje claro si faltan reglas de Firestore"
   ]
 }

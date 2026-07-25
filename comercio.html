@@ -97,7 +97,6 @@ async function cargarMiComercio(email){
           try{
             await updateDoc(doc(db,'comercios',comercio.id),{
               ownerUid:usuarioActual.uid,
-              email:String(comercio.data.email||normalizado).trim().toLowerCase(),
               vinculadoEn:serverTimestamp()
             })
             comercio.data.ownerUid=usuarioActual.uid
@@ -499,6 +498,20 @@ window.cerrarModalProd = (e) => {
     document.getElementById('modal-prod').classList.remove('open')
 }
 
+async function asegurarPermisoProductosV59(){
+  if(!usuarioActual?.uid || !miComercioId || !miComercio) return;
+  if(miComercio.ownerUid===usuarioActual.uid) return;
+  const correoCuenta=String(usuarioActual.email||'').trim().toLowerCase();
+  const correoComercio=String(miComercio.email||'').trim().toLowerCase();
+  if(correoCuenta && correoCuenta===correoComercio && !miComercio.ownerUid){
+    await updateDoc(doc(db,'comercios',miComercioId),{
+      ownerUid:usuarioActual.uid,
+      vinculadoEn:serverTimestamp()
+    });
+    miComercio.ownerUid=usuarioActual.uid;
+  }
+}
+
 window.guardarProducto = async () => {
   const id     = document.getElementById('mp-id').value
   const emoji  = document.getElementById('mp-emoji').value.trim()
@@ -527,6 +540,7 @@ window.guardarProducto = async () => {
   btn.disabled = true
 
   try {
+    await asegurarPermisoProductosV59()
     if(id){
       await updateDoc(doc(db,'comercios',miComercioId,'productos',id), datos)
       toast(miComercio?.estado === 'activo' ? '✅ Producto actualizado y publicado' : '✅ Producto actualizado. Quedará publicado cuando se apruebe el comercio')
@@ -537,7 +551,12 @@ window.guardarProducto = async () => {
     }
     document.getElementById('modal-prod').classList.remove('open')
     await cargarProductos()
-  } catch(e){ toast('Error: ' + e.message) }
+  } catch(e){
+    const mensaje=e?.code==='permission-denied'||String(e?.message||'').toLowerCase().includes('permission')
+      ? 'No se pudo guardar porque falta vincular este comercio con la cuenta. Subí la V59 y publicá sus reglas de Firestore.'
+      : 'Error: '+(e.message||e.code||'desconocido');
+    toast(mensaje)
+  }
   btn.textContent = 'Guardar producto'
   btn.disabled = false
 }
@@ -1157,14 +1176,14 @@ img{max-width:100%;height:auto}
 <meta name="apple-mobile-web-app-title" content="Sálvame">
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
-<meta name="app-version" content="V57">
+<meta name="app-version" content="V59">
 </head>
 <body>
 
 <!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
-    <span class="owner-login-kicker">PANEL DEL COMERCIO · V53</span>
+    <span class="owner-login-kicker">PANEL DEL COMERCIO · V59</span>
     <div class="login-logo">Sálvame <em>las Papas 🥔</em></div>
     <h1 class="owner-login-title">Administrá tu comercio</h1>
     <p class="owner-login-help">
@@ -1210,7 +1229,7 @@ img{max-width:100%;height:auto}
 <!-- PANEL -->
 <div id="panel-screen">
   <nav class="panel-nav">
-    <div class="panel-logo">Sálvame <em>las Papas</em> — Mi Comercio <span class="panel-version">V26</span></div>
+    <div class="panel-logo">Sálvame <em>las Papas</em> — Mi Comercio <span class="panel-version">V59</span></div>
     <div class="site-switcher" aria-label="Navegación del sitio">
       <a href="index.html">🏠 Sitio público</a>
       <a class="active" href="comercio.html">🏪 Mi comercio</a>

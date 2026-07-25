@@ -47,14 +47,26 @@ service cloud.firestore {
                     || (signedIn() && resource.data.ownerUid == request.auth.uid);
 
       match /productos/{productoId} {
-        allow read: if isAdmin()
-                    || get(/databases/$(database)/documents/comercios/$(comercioId)).data.estado == "activo"
-                    || (signedIn()
-                        && get(/databases/$(database)/documents/comercios/$(comercioId)).data.ownerUid == request.auth.uid);
+        function parentCommerce() {
+          return get(/databases/$(database)/documents/comercios/$(comercioId)).data;
+        }
 
-        allow create, update, delete: if isAdmin()
-          || (signedIn()
-              && get(/databases/$(database)/documents/comercios/$(comercioId)).data.ownerUid == request.auth.uid);
+        function parentOwner() {
+          return signedIn()
+            && (
+              parentCommerce().ownerUid == request.auth.uid
+              || (
+                parentCommerce().email is string
+                && parentCommerce().email == request.auth.token.email
+              )
+            );
+        }
+
+        allow read: if isAdmin()
+                    || parentCommerce().estado == "activo"
+                    || parentOwner();
+
+        allow create, update, delete: if isAdmin() || parentOwner();
       }
     }
 
