@@ -1,13 +1,12 @@
 {
-  "version": "V51",
-  "nombre": "Restablecimiento de contraseña",
+  "version": "V52",
+  "nombre": "Alta de comercio corregida",
   "fecha": "2026-07-24",
   "cambios": [
-    "Nueva página restablecer-clave.html",
-    "Regreso a Sálvame las Papas después del cambio",
-    "Preparada para recibir el código de Firebase",
-    "Botones para Mi comercio y Mis publicaciones",
-    "Aviso para revisar Correo no deseado",
-    "Proceso automático sin intervención del administrador"
+    "Corregida la consulta previa al alta de comercios",
+    "La verificación usa ownerUid del usuario autenticado",
+    "No requiere modificar las reglas de Firestore",
+    "Se mantiene la protección de datos de otros comercios",
+    "Mensaje de error de permisos más preciso"
   ]
 }
