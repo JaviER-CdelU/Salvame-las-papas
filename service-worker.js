@@ -1,4 +1,4 @@
-const CACHE_NAME = "salvame-papas-v52-alta-comercio";
+const CACHE_NAME = "salvame-papas-v53-acceso-correo";
 const APP_SHELL = ["./","./index.html","./comercio.html","./admin.html","./seguimiento-comercios.html","./como-usar.html","./diccionario-entrerriano.html","./offline.html","./restablecer-clave.html","./manifest.webmanifest","./version.json"];
 
 self.addEventListener("install",event=>{

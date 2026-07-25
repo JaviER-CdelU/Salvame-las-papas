@@ -65,7 +65,7 @@ onAuthStateChanged(auth, async user => {
 async function cargarMiComercio(email){
   const estado=document.getElementById('busqueda-comercios-estado'); const estadoVacio=document.getElementById('busqueda-comercios-estado-vacio')
   try {
-    if(estado) estado.textContent='Buscando comercios asociados...'; if(estadoVacio) estadoVacio.textContent='Buscando comercios asociados...'
+    if(estado) estado.textContent='Buscando comercios asociados al correo '+String(email||'')+'...'; if(estadoVacio) estadoVacio.textContent='Buscando comercios asociados al correo '+String(email||'')+'...'
 
     const normalizado=(email||'').trim().toLowerCase()
     const porId=new Map()
@@ -85,16 +85,6 @@ async function cargarMiComercio(email){
       )
       porEmail.forEach(d=>porId.set(d.id,{id:d.id,data:d.data()}))
     }
-
-    // Compatibilidad con comercios antiguos: correo con mayúsculas o espacios.
-    const todos=await getDocs(collection(db,'comercios'))
-    todos.forEach(d=>{
-      const dato=d.data()
-      const correoGuardado=String(dato.email||'').trim().toLowerCase()
-      if(correoGuardado && correoGuardado===normalizado){
-        porId.set(d.id,{id:d.id,data:dato})
-      }
-    })
 
     comerciosDeLaCuenta=[...porId.values()].sort((a,b)=>
       String(a.data.nombre||'').localeCompare(String(b.data.nombre||''),'es')
@@ -132,8 +122,8 @@ async function cargarMiComercio(email){
     const elegido=comerciosDeLaCuenta.find(c=>c.id===ultimo) || comerciosDeLaCuenta[0]
     await seleccionarComercio(elegido.id)
     if(estado) estado.textContent=comerciosDeLaCuenta.length===1
-      ? 'Encontramos 1 comercio asociado.'
-      : `Encontramos ${comerciosDeLaCuenta.length} comercios asociados.`
+      ? 'Encontramos 1 comercio asociado a este correo.'
+      : `Encontramos ${comerciosDeLaCuenta.length} comercios asociados a este correo. Elegí el nombre de fantasía que querés administrar.`
   } catch(e){
     console.error(e)
     if(estado) estado.textContent='No se pudo completar la búsqueda. Revisá la conexión o los permisos.'; if(estadoVacio) estadoVacio.textContent='No se pudo completar la búsqueda. Revisá la conexión o los permisos.'
@@ -1167,14 +1157,14 @@ img{max-width:100%;height:auto}
 <meta name="apple-mobile-web-app-title" content="Sálvame">
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
-<meta name="app-version" content="V52">
+<meta name="app-version" content="V53">
 </head>
 <body>
 
 <!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
-    <span class="owner-login-kicker">PANEL DEL COMERCIO · V51</span>
+    <span class="owner-login-kicker">PANEL DEL COMERCIO · V53</span>
     <div class="login-logo">Sálvame <em>las Papas 🥔</em></div>
     <h1 class="owner-login-title">Administrá tu comercio</h1>
     <p class="owner-login-help">

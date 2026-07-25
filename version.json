@@ -1,12 +1,12 @@
 {
-  "version": "V52",
-  "nombre": "Alta de comercio corregida",
-  "fecha": "2026-07-24",
+  "version": "V53",
+  "nombre": "Acceso de comercios por correo",
+  "fecha": "2026-07-25",
   "cambios": [
-    "Corregida la consulta previa al alta de comercios",
-    "La verificación usa ownerUid del usuario autenticado",
-    "No requiere modificar las reglas de Firestore",
-    "Se mantiene la protección de datos de otros comercios",
-    "Mensaje de error de permisos más preciso"
+    "El correo autenticado busca todos sus comercios",
+    "Eliminada la consulta general bloqueada",
+    "Vinculación segura de comercios antiguos con ownerUid",
+    "Selector por nombre de fantasía cuando hay varios comercios",
+    "Mensajes de acceso más claros"
   ]
 }

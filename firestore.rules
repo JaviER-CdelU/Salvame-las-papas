@@ -17,14 +17,34 @@ service cloud.firestore {
     }
 
     match /comercios/{comercioId} {
+      function legacyEmailOwner() {
+        return signedIn()
+          && resource.data.email is string
+          && resource.data.email == request.auth.token.email;
+      }
+
+      function safeLegacyClaim() {
+        return legacyEmailOwner()
+          && !('ownerUid' in resource.data)
+          && request.resource.data.ownerUid == request.auth.uid
+          && request.resource.data.email == resource.data.email
+          && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(["ownerUid", "vinculadoEn"]);
+      }
+
       allow read: if isAdmin()
                   || (signedIn() && resource.data.ownerUid == request.auth.uid)
+                  || legacyEmailOwner()
                   || resource.data.estado == "activo";
 
       allow create: if signedIn();
 
-      allow update, delete: if isAdmin()
-                            || (signedIn() && resource.data.ownerUid == request.auth.uid);
+      allow update: if isAdmin()
+                    || (signedIn() && resource.data.ownerUid == request.auth.uid)
+                    || safeLegacyClaim();
+
+      allow delete: if isAdmin()
+                    || (signedIn() && resource.data.ownerUid == request.auth.uid);
 
       match /productos/{productoId} {
         allow read: if isAdmin()
