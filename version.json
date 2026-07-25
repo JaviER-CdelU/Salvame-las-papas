@@ -1,14 +1,13 @@
 {
-  "version": "V56",
-  "nombre": "Suscripciones de Mercado Pago",
+  "version": "V57",
+  "nombre": "Una sola cuenta para comprar y administrar",
   "fecha": "2026-07-25",
   "cambios": [
-    "Cuatro enlaces de suscripción de Mercado Pago integrados",
-    "Pantalla privada pago-plan.html",
-    "Plan visible únicamente después de iniciar sesión",
-    "Renovación automática mensual con Mercado Pago",
-    "Alternativa de pago presencial en oficina",
-    "Pago presencial aclarado como renovación manual",
-    "Acceso al pago desde el alta, Mi comercio y Mis publicaciones"
+    "La cuenta de un comercio también puede comprar como cliente",
+    "No se crean cuentas duplicadas por rol",
+    "Correo existente cambia automáticamente a Ya tengo cuenta",
+    "Recuperación de contraseña dentro del carrito",
+    "Mensajes claros cuando la contraseña no coincide",
+    "Una sesión iniciada continúa directamente con el pedido"
   ]
 }

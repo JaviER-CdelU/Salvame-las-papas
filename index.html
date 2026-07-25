@@ -2859,6 +2859,25 @@ nav .nav-btns,nav .nav-portals{display:none!important}
 .planes-payment-v56 span{color:rgba(255,255,255,.88);font-size:.86rem}
 .planes-payment-v56 small{color:rgba(255,255,255,.65)}
 
+
+/* V57 — UNA SOLA CUENTA PARA COMERCIO Y CLIENTE */
+.checkout-account-help-v57{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  margin:10px 0 0;padding:10px 12px;border:1px solid #c9d9eb;
+  border-radius:11px;background:#f7fbff;color:#36516f;font-size:.78rem
+}
+.checkout-account-help-v57 button{
+  flex:0 0 auto;border:0;background:transparent;color:#073574;
+  font-weight:900;text-decoration:underline;cursor:pointer
+}
+.checkout-error.ok-v57{
+  background:#e7f7ed!important;border-color:#a7d8b7!important;color:#21663b!important
+}
+@media(max-width:560px){
+  .checkout-account-help-v57{align-items:stretch;flex-direction:column}
+  .checkout-account-help-v57 button{text-align:left;padding:0}
+}
+
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -3120,7 +3139,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
 }
 
 </style>
-<meta name="app-version" content="V56">
+<meta name="app-version" content="V57">
 </head>
 <body>
 <div class="cdu-stripe"></div>
@@ -3842,7 +3861,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
   </div>
   <div class="footer-bottom">© 2025 Sálvame las Papas · Concepción del Uruguay, La Histórica · Hecho con ❤️ y mate 🧉 para los vecinos del barrio</div>
 <div class="app-version-badge" title="Versión publicada de Sálvame las Papas">
-  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V56</a>
+  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V57</a>
 </div>
 </footer>
 
@@ -3878,7 +3897,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
     <button class="mclose" onclick="cerrarCheckout()">✕</button>
     <div id="checkout-auth">
       <h2>Identificate para confirmar</h2>
-      <p class="checkout-sub">Podés mirar y armar el carrito sin registrarte. Solo pedimos una cuenta cuando vas a enviar el pedido.</p>
+      <p class="checkout-sub">Usá la misma cuenta aunque también seas dueño de un comercio. Una cuenta puede comprar y administrar comercios.</p>
       <div class="checkout-tabs">
         <button id="co-tab-login" class="active" onclick="cambiarModoCliente('login')">Ya tengo cuenta</button>
         <button id="co-tab-reg" onclick="cambiarModoCliente('registro')">Crear cuenta</button>
@@ -3889,6 +3908,10 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
         <label class="checkout-label checkout-full" id="co-pass2-wrap" style="display:none">Repetí la contraseña<input id="co-pass2" type="password" autocomplete="new-password"></label>
       </div>
       <div class="checkout-note">🔒 El comercio recibirá tu nombre, teléfono y datos del pedido. No verá tu contraseña.</div>
+      <div class="checkout-account-help-v57">
+        <span>¿Tu correo ya pertenece a un comercio? Podés usarlo también como cliente.</span>
+        <button type="button" onclick="recuperarClaveClienteV57()">Olvidé mi contraseña</button>
+      </div>
       <div class="checkout-error" id="co-auth-error"></div>
       <div class="checkout-actions"><button class="btn btn-azul" id="co-auth-btn" onclick="autenticarClientePedido()">Ingresar y continuar</button></div>
     </div>
@@ -4898,7 +4921,11 @@ function abrirCheckout(){
   modal.classList.add('open')
   document.body.style.overflow='hidden'
   const user=window._fb?.auth?.currentUser
-  if(user) mostrarDatosCliente(user)
+  if(user){
+    mostrarDatosCliente(user);
+    const resumen=document.getElementById('co-resumen-cuenta');
+    if(resumen) resumen.textContent='Estás comprando con '+(user.email||'tu cuenta')+'. Esta misma cuenta puede administrar un comercio y realizar pedidos.';
+  }
   else{
     document.getElementById('checkout-auth').style.display='block'
     document.getElementById('checkout-datos').style.display='none'
@@ -4938,9 +4965,54 @@ async function autenticarClientePedido(){
     }else cred=await window._fb.signInWithEmailAndPassword(window._fb.auth,email,pass)
     mostrarDatosCliente(cred.user)
   }catch(e){
-    const map={'auth/email-already-in-use':'Ese email ya está registrado. Elegí “Ya tengo cuenta”.','auth/invalid-credential':'El correo o la contraseña no coinciden. Usá el botón del ojo para revisar la contraseña.','auth/weak-password':'La contraseña es demasiado débil.','auth/too-many-requests':'Demasiados intentos. Esperá unos minutos.'}
-    err.textContent=map[e.code]||'No se pudo iniciar Firebase. Actualizá la página y volvé a intentar.'||'No se pudo ingresar.';err.classList.add('show')
+    if(e.code==='auth/email-already-in-use'){
+      cambiarModoCliente('login');
+      document.getElementById('co-pass2').value='';
+      err.textContent='Esta cuenta ya existe y también puede comprar. Ingresá con su contraseña actual o tocá “Olvidé mi contraseña”.';
+      err.classList.add('show');
+    }else{
+      const map={
+        'auth/invalid-credential':'El correo existe, pero la contraseña no coincide. La cuenta puede ser de un comercio y también comprar. Revisá la clave o recuperala.',
+        'auth/wrong-password':'La contraseña no coincide. Revisala o tocá “Olvidé mi contraseña”.',
+        'auth/user-not-found':'No encontramos una cuenta con ese correo. Podés crearla.',
+        'auth/weak-password':'La contraseña es demasiado débil.',
+        'auth/too-many-requests':'Demasiados intentos. Esperá unos minutos y recuperá la contraseña.'
+      };
+      err.textContent=map[e.code]||('No se pudo ingresar: '+(e.code||e.message||'error desconocido'));
+      err.classList.add('show');
+    }
   }finally{btn.disabled=false;btn.textContent=modoClientePedido==='registro'?'Crear cuenta y continuar':'Ingresar y continuar'}
+}
+
+async function recuperarClaveClienteV57(){
+  const email=document.getElementById('co-email').value.trim().toLowerCase();
+  const err=document.getElementById('co-auth-error');
+  err.classList.remove('show');
+  if(!/^\S+@\S+\.\S+$/.test(email)){
+    err.textContent='Escribí primero el correo de la cuenta.';
+    err.classList.add('show');
+    return;
+  }
+  try{
+    await window._fb.sendPasswordResetEmail(
+      window._fb.auth,
+      email,
+      {url:new URL('./restablecer-clave.html?tipo=cliente',window.location.href).href,handleCodeInApp:false}
+    );
+    cambiarModoCliente('login');
+    err.textContent='✅ Enviamos el enlace para crear una contraseña nueva. Revisá Entrada, Correo no deseado, Spam y Promociones.';
+    err.classList.add('show');
+    err.classList.add('ok-v57');
+  }catch(e){
+    const map={
+      'auth/too-many-requests':'Se hicieron demasiados intentos. Esperá unos minutos.',
+      'auth/invalid-email':'El correo no es válido.',
+      'auth/unauthorized-continue-uri':'El dominio de regreso no está autorizado en Firebase.'
+    };
+    err.textContent=map[e.code]||('No se pudo enviar la recuperación: '+(e.code||e.message||'error'));
+    err.classList.add('show');
+    err.classList.remove('ok-v57');
+  }
 }
 function mostrarDatosCliente(user){
   document.getElementById('checkout-auth').style.display='none'
