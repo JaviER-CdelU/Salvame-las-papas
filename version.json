@@ -1,12 +1,13 @@
 {
-  "version": "V61",
-  "nombre": "Plan correcto y particulares reubicados",
+  "version": "V62",
+  "nombre": "Menú móvil con alto contraste",
   "fecha": "2026-07-25",
   "cambios": [
-    "Eliminado el texto Sin costo de inscripción",
-    "Nuevo texto Elegí tu plan actual para comenzar",
-    "Aclaración de publicación posterior al pago",
-    "Bloque Vendedor particular ubicado antes de Oferta de la semana",
-    "Sin duplicar la sección de particulares"
+    "Fondo azul oscuro uniforme en el menú móvil",
+    "Botones blancos con letras azul oscuro",
+    "Mejor separación y tamaño táctil",
+    "Mi Comercio y Administración diferenciados",
+    "Botón de menú blanco y claramente visible",
+    "Menú desplazable en teléfonos pequeños"
   ]
 }
