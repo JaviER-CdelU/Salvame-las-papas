@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#073574">
-<meta name="app-version" content="V65">
+<meta name="app-version" content="V67">
 <link rel="manifest" href="./manifest.webmanifest">
 <title>Sálvame las Papas — Inicio</title>
 <style>
@@ -87,11 +87,11 @@ main{width:100%}
   outline:5px solid rgba(255,114,0,.92);
   background:rgba(255,255,255,.08);
 }
-.zona-ingresar{left:75%;top:2.2%;width:10.5%;height:6.5%}
-.zona-registrarse{left:86.2%;top:2.2%;width:11%;height:6.5%}
-.zona-comprar{left:3.5%;top:54.5%;width:30%;height:23%}
-.zona-comercio{left:35%;top:54.5%;width:30%;height:23%}
-.zona-particular{left:67%;top:54.5%;width:29.5%;height:23%}
+.zona-ingresar{left:76.2%;top:2.2%;width:9.5%;height:6.3%}
+.zona-registrarse{left:86.2%;top:2.2%;width:10.7%;height:6.3%}
+.zona-comprar{left:3.5%;top:50.5%;width:34%;height:26.5%}
+.zona-comercio{left:38.5%;top:50.5%;width:25.5%;height:26.5%}
+.zona-particular{left:65%;top:50.5%;width:30.5%;height:26.5%}
 
 .mobile-actions{
   display:none;
@@ -194,6 +194,62 @@ footer{
   .mobile-actions{grid-template-columns:1fr}
   .quick{grid-template-columns:1fr}
 }
+
+/* V66 — ACCESO CLARO PARA VISITANTES Y COMPRADORES */
+.visitor-entry-v66{
+  width:min(1180px,calc(100% - 28px));
+  margin:16px auto 10px;
+  background:#ffffff;
+  border:2px solid #8fb9e6;
+  border-radius:18px;
+  padding:16px;
+  display:grid;
+  grid-template-columns:1fr auto;
+  align-items:center;
+  gap:16px;
+  box-shadow:0 10px 26px rgba(7,47,107,.10);
+}
+.visitor-entry-v66 h2{
+  margin:0 0 5px;
+  color:#073574;
+  font-family:Georgia,serif;
+  font-size:clamp(1.35rem,3vw,2rem);
+}
+.visitor-entry-v66 p{
+  margin:0;
+  color:#5f6e82;
+  line-height:1.45;
+}
+.visitor-entry-v66 a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:54px;
+  padding:14px 20px;
+  border-radius:13px;
+  background:#0d5aa7;
+  color:#fff;
+  text-decoration:none;
+  font-weight:900;
+  text-align:center;
+  white-space:nowrap;
+}
+.visitor-entry-v66 a:hover,
+.visitor-entry-v66 a:focus-visible{
+  background:#083d77;
+  outline:3px solid rgba(13,90,167,.25);
+}
+@media(max-width:720px){
+  .visitor-entry-v66{
+    grid-template-columns:1fr;
+    text-align:center;
+  }
+  .visitor-entry-v66 a{
+    width:100%;
+    white-space:normal;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -213,12 +269,11 @@ footer{
   <section class="hero-wrap" aria-label="Presentación de Sálvame las Papas">
     <div class="portada-principal">
       <picture>
-        <source srcset="./images/portada-salvame-papas.webp" type="image/webp">
+        <source srcset="./images/portada-salvame-papas-v67.webp" type="image/webp">
         <img
-          src="./images/portada-salvame-papas.png"
+          src="./images/portada-salvame-papas-v67.png"
           alt="Sálvame las Papas conecta compradores, comercios y personas que desean vender o alquilar en Concepción del Uruguay"
-          width="1536"
-          height="1024"
+          width="1672" height="941"
           fetchpriority="high"
         >
       </picture>
@@ -245,8 +300,18 @@ footer{
     </div>
   </section>
 
+  
+  <section class="visitor-entry-v66" aria-label="Entrada para visitantes y compradores">
+    <div>
+      <h2>👋 Entrar como visitante o comprador</h2>
+      <p>Accedé sin registrarte para ver comercios, publicaciones particulares, productos, servicios, ofertas y qué vende cada uno.</p>
+    </div>
+    <a href="./comprar.html">Ver negocios y publicaciones</a>
+  </section>
+
+
   <nav class="mobile-actions" aria-label="Opciones principales para celular">
-    <a class="buy" href="./comprar.html">🔎 Comprar o buscar</a>
+    <a class="buy" href="./comprar.html">👋 Entrar como visitante o comprador</a>
     <a class="commerce" href="./planes-comercios.html">🏪 Publicar mi comercio</a>
     <a class="seller" href="./publicar-particular.html">🏷️ Vender o alquilar</a>
     <a class="account" href="./comercio.html">🔑 Ingresar a Mi Comercio</a>
@@ -270,7 +335,7 @@ footer{
   </section>
 </main>
 
-<footer>Versión V65 · Sálvame las Papas</footer>
+<footer>Versión V67 · Sálvame las Papas</footer>
 
 <script>
 if("serviceWorker" in navigator){

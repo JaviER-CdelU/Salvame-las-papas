@@ -3018,6 +3018,36 @@ nav .nav-btns,nav .nav-portals{display:none!important}
   border:1px solid #bed2e8;font-weight:900;font-size:.78rem
 }
 
+
+/* V66 — ENCABEZADO DE VISITANTE / COMPRADOR */
+.v66-buyer-intro{
+  max-width:1180px;
+  margin:92px auto 18px;
+  padding:0 16px;
+}
+.v66-buyer-intro-inner{
+  background:#ffffff;
+  border:2px solid #9fc0e3;
+  border-radius:18px;
+  padding:17px;
+  box-shadow:0 9px 24px rgba(7,47,107,.08);
+}
+.v66-buyer-intro h1{
+  margin:0 0 6px;
+  color:#073574;
+  font-family:"Fraunces",Georgia,serif;
+  font-size:clamp(1.55rem,4vw,2.3rem);
+}
+.v66-buyer-intro p{
+  margin:0;
+  color:#627086;
+  line-height:1.45;
+}
+.v66-buyer-intro strong{color:#0b5aa7}
+@media(max-width:700px){
+  .v66-buyer-intro{margin-top:78px}
+}
+
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -3279,9 +3309,17 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
 }
 
 </style>
-<meta name="app-version" content="V65">
+<meta name="app-version" content="V67">
 </head>
 <body>
+
+<section class="v66-buyer-intro">
+  <div class="v66-buyer-intro-inner">
+    <h1>Entraste como visitante o comprador</h1>
+    <p>Podés mirar sin registrarte. Acá vas a encontrar <strong>comercios</strong>, <strong>productos</strong>, <strong>ofertas</strong> y <strong>publicaciones particulares</strong>. El registro recién se solicita cuando querés confirmar un pedido o publicar.</p>
+  </div>
+</section>
+
 <div class="cdu-stripe"></div>
 
 <!-- NAV -->
@@ -4003,7 +4041,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
   </div>
   <div class="footer-bottom">© 2025 Sálvame las Papas · Concepción del Uruguay, La Histórica · Hecho con ❤️ y mate 🧉 para los vecinos del barrio</div>
 <div class="app-version-badge" title="Versión publicada de Sálvame las Papas">
-  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V65</a>
+  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V67</a>
 </div>
 </footer>
 

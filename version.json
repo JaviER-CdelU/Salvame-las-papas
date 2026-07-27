@@ -1,15 +1,14 @@
 {
-  "version": "V65",
-  "nombre": "Portada gráfica interactiva",
+  "version": "V67",
+  "nombre": "Portada actualizada con acceso visitante",
   "fecha": "2026-07-27",
   "cambios": [
-    "Nueva imagen principal integrada al index",
-    "Comprar o buscar abre comprar.html",
-    "Publicar mi comercio abre planes-comercios.html",
-    "Vender o alquilar abre publicar-particular.html",
-    "Ingresar abre comercio.html",
-    "Registrarme abre planes-comercios.html",
-    "Botones grandes adicionales para celular",
+    "Nueva portada con la frase Capaz que alguien te salva las papas",
+    "Botón visual Explorar ahora enlazado a comprar.html",
+    "Publicá tu comercio enlazado a planes-comercios.html",
+    "Vender o alquilar enlazado a publicar-particular.html",
+    "Ingresar enlazado a comercio.html",
+    "Registrarme enlazado a planes-comercios.html",
     "Imagen optimizada en WebP con respaldo PNG"
   ]
 }
