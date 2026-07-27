@@ -1,14 +1,13 @@
 {
-  "version": "V67",
-  "nombre": "Portada actualizada con acceso visitante",
+  "version": "V68",
+  "nombre": "Explicación de cambios de plan",
   "fecha": "2026-07-27",
   "cambios": [
-    "Nueva portada con la frase Capaz que alguien te salva las papas",
-    "Botón visual Explorar ahora enlazado a comprar.html",
-    "Publicá tu comercio enlazado a planes-comercios.html",
-    "Vender o alquilar enlazado a publicar-particular.html",
-    "Ingresar enlazado a comercio.html",
-    "Registrarme enlazado a planes-comercios.html",
-    "Imagen optimizada en WebP con respaldo PNG"
+    "Nueva sección sobre subir y bajar de plan",
+    "Aclaración de que los productos no se borran",
+    "Selección de productos visibles al bajar de plan",
+    "Productos excedentes pausados y guardados",
+    "Fotos adicionales conservadas",
+    "Cambios aplicados tras confirmar el pago"
   ]
 }

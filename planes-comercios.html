@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#073574"><meta name="app-version" content="V67">
+<meta name="theme-color" content="#073574"><meta name="app-version" content="V68">
 <title>Planes para comercios — Sálvame las Papas</title>
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f3f7fb;color:#172338}
@@ -10,6 +10,75 @@ header{background:#061f46;color:#fff;padding:16px}header>div{width:min(1180px,ca
 main{width:min(1180px,calc(100% - 28px));margin:30px auto}.hero{text-align:center}.hero h1{font-family:Georgia,serif;color:#073574;font-size:clamp(2rem,5vw,3.5rem);margin:0}.hero p{color:#69768a;max-width:780px;margin:10px auto 24px;line-height:1.5}
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}.plan{background:#fff;border:1px solid #d7e1ec;border-radius:21px;padding:21px;box-shadow:0 12px 30px rgba(7,47,107,.08);display:flex;flex-direction:column}.plan.featured{border:3px solid #ff8b2f;transform:translateY(-7px)}.badge{display:inline-flex;align-self:start;padding:5px 9px;border-radius:999px;background:#e9f2fc;color:#073574;font-weight:900;font-size:.7rem}.plan h2{font-family:Georgia,serif;color:#073574;margin:12px 0 3px}.price{font-size:2rem;font-weight:900;color:#0b7848}.comparison{color:#a04b00;font-weight:850}.plan ul{padding-left:20px;line-height:1.55;color:#536176;flex:1}.plan a{display:block;text-decoration:none;text-align:center;padding:13px;border-radius:12px;background:#ff7200;color:#fff;font-weight:900}.payment{margin:25px 0;background:#061f46;color:#fff;border-radius:18px;padding:20px}.payment h2{font-family:Georgia,serif;margin-top:0}.payment p{color:#d7e7f6;line-height:1.5}.actions{display:flex;gap:10px;flex-wrap:wrap}.actions a{flex:1;min-width:210px;text-align:center;text-decoration:none;padding:12px;border-radius:11px;font-weight:900}.back{background:#e9f2fc;color:#073574}.login{background:#fff1e5;color:#8b3d00}
 @media(max-width:850px){.grid{grid-template-columns:1fr}.plan.featured{transform:none}}
+
+/* V68 — CAMBIOS DE PLAN */
+.plan-change-v68{
+  margin:28px 0 20px;
+  background:#ffffff;
+  border:2px solid #9fc0e3;
+  border-radius:20px;
+  padding:22px;
+  box-shadow:0 12px 30px rgba(7,47,107,.08);
+}
+.plan-change-v68 h2{
+  margin:0 0 8px;
+  color:#073574;
+  font-family:Georgia,serif;
+  font-size:clamp(1.55rem,4vw,2.3rem);
+}
+.plan-change-v68 .lead{
+  margin:0 0 18px;
+  color:#5f6e82;
+  line-height:1.5;
+}
+.plan-change-grid-v68{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+.plan-change-card-v68{
+  border:1px solid #d9e4ee;
+  border-radius:16px;
+  padding:17px;
+  background:#f8fbff;
+}
+.plan-change-card-v68 h3{
+  margin:0 0 7px;
+  color:#073574;
+  font-size:1.12rem;
+}
+.plan-change-card-v68 p,
+.plan-change-card-v68 li{
+  color:#536176;
+  line-height:1.5;
+}
+.plan-change-card-v68 ul{
+  margin:8px 0 0;
+  padding-left:20px;
+}
+.plan-change-rule-v68{
+  margin-top:15px;
+  padding:14px;
+  border-radius:14px;
+  background:#eaf7ef;
+  border:1px solid #9fd0b4;
+  color:#155d38;
+  font-weight:900;
+  text-align:center;
+}
+.plan-change-note-v68{
+  margin-top:13px;
+  padding:13px;
+  border-radius:12px;
+  background:#fff2df;
+  border:1px solid #e8c78f;
+  color:#6e4b00;
+  line-height:1.45;
+}
+@media(max-width:760px){
+  .plan-change-grid-v68{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 <body>
@@ -21,6 +90,64 @@ main{width:min(1180px,calc(100% - 28px));margin:30px auto}.hero{text-align:cente
 <article class="plan featured"><span class="badge">MÁS VISIBILIDAD</span><h2>Destacado</h2><div class="price">$30.000/mes</div><p class="comparison">Menos de un café por día</p><ul><li>Hasta 30 productos</li><li>2 fotos por producto</li><li>Ofertas de la semana</li><li>Mejor posición en categorías</li><li>Estadísticas básicas</li></ul><a href="./registrar-comercio.html?plan=2">Elegir Destacado y registrarme</a></article>
 <article class="plan"><span class="badge">MAYOR EXPOSICIÓN</span><h2>Pro</h2><div class="price">$45.000/mes</div><p class="comparison">Menos de una Coca-Cola chica por día</p><ul><li>Hasta 60 productos</li><li>4 fotos por producto</li><li>Prioridad en portada</li><li>Promociones y difusión</li><li>Estadísticas completas</li></ul><a href="./registrar-comercio.html?plan=3">Elegir Pro y registrarme</a></article>
 </section>
+
+<section class="plan-change-v68">
+  <h2>¿Qué pasa si subís o bajás de plan?</h2>
+  <p class="lead">Podés cambiar de plan sin perder el trabajo que ya hiciste. Los productos, fotos, precios y descripciones quedan guardados en tu cuenta.</p>
+
+  <div class="plan-change-grid-v68">
+    <article class="plan-change-card-v68">
+      <h3>⬆️ Si subís de plan</h3>
+      <p>Todo lo que ya tenías sigue publicado. El sistema simplemente aumenta tu límite.</p>
+      <ul>
+        <li>De Básico a Destacado: conservás tus 10 productos y podés agregar hasta 20 más.</li>
+        <li>De Destacado a Pro: conservás tus productos y podés sumar hasta llegar a 60.</li>
+        <li>También aumenta la cantidad de fotos permitidas por producto.</li>
+      </ul>
+    </article>
+
+    <article class="plan-change-card-v68">
+      <h3>⬇️ Si bajás de plan</h3>
+      <p>Ningún producto se elimina. Solo tenés que elegir cuáles querés mantener visibles.</p>
+      <ul>
+        <li>Ejemplo: si tenés 30 productos y bajás al plan de 10, elegís cuáles 10 quedan publicados.</li>
+        <li>Los demás quedan guardados y pausados por límite del plan.</li>
+        <li>Si más adelante volvés a un plan mayor, podés reactivarlos sin cargarlos otra vez.</li>
+      </ul>
+    </article>
+
+    <article class="plan-change-card-v68">
+      <h3>📷 ¿Qué pasa con las fotos?</h3>
+      <p>Las fotos adicionales también quedan guardadas.</p>
+      <ul>
+        <li>Si tu nuevo plan permite menos fotos, públicamente se muestran solo las permitidas.</li>
+        <li>Las demás permanecen dentro de Mi Comercio.</li>
+        <li>Al volver a un plan superior, se pueden mostrar otra vez.</li>
+      </ul>
+    </article>
+
+    <article class="plan-change-card-v68">
+      <h3>🗂️ Estados de los productos</h3>
+      <p>Cada producto puede quedar como:</p>
+      <ul>
+        <li>Publicado.</li>
+        <li>Pausado por el comercio.</li>
+        <li>Pausado por límite del plan.</li>
+        <li>Sin stock.</li>
+        <li>Archivado.</li>
+      </ul>
+    </article>
+  </div>
+
+  <div class="plan-change-rule-v68">
+    El plan limita lo que se publica, no lo que tenés guardado.
+  </div>
+
+  <div class="plan-change-note-v68">
+    <b>Importante:</b> los cambios de plan se aplican después de confirmar el nuevo pago. Si bajás de plan, el límite menor puede programarse para la próxima renovación para que no pierdas beneficios del período ya abonado.
+  </div>
+</section>
+
 <section class="payment"><h2>Formas de pago</h2><p><b>Mercado Pago:</b> suscripción mensual automática hasta que la canceles. <b>Pago presencial:</b> efectivo, débito, crédito o QR; debe renovarse manualmente cada mes.</p></section>
 <div class="actions"><a class="back" href="./index.html">Volver al inicio</a><a class="login" href="./comercio.html">Ya tengo un comercio</a></div>
 </main>
