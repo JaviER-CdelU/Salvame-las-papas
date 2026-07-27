@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#073574">
-<meta name="app-version" content="V62">
+<meta name="app-version" content="V64">
 <title>Publicar venta o alquiler — Sálvame las Papas</title>
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#172338}
@@ -160,7 +160,7 @@ document.getElementById('seller-form').addEventListener('submit',async e=>{
    entrega:document.getElementById('s-delivery').value,plan:'Personas individuales $10.000 / 30 días',
    estado:'pendiente',estadoPago:'pendiente',articulos,creadoEn:serverTimestamp(),actualizadoEn:serverTimestamp()
   });
-  status.className='status show ok';status.innerHTML='✅ Cuenta y publicación creadas. Quedó pendiente hasta que se confirme el primer pago.<div class="actions" style="margin-top:12px"><a class="submit" href="./pago-plan.html">💳 Continuar al pago</a><a class="back" href="./mis-publicaciones.html">Mis publicaciones</a></div>';
+  status.className='status show ok';status.innerHTML='✅ Cuenta y publicación creadas. Quedó pendiente hasta que se confirme el primer pago.<div class="actions" style="margin-top:12px"><a class="submit" href="./pago-particular.html">💳 Continuar al pago</a><a class="back" href="./mis-publicaciones.html">Mis publicaciones</a></div>';
   e.target.reset();
  }catch(err){
   status.className='status show error';

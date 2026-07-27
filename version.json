@@ -1,13 +1,15 @@
 {
-  "version": "V62",
-  "nombre": "Menú móvil con alto contraste",
-  "fecha": "2026-07-25",
+  "version": "V64",
+  "nombre": "Inicio general y páginas separadas",
+  "fecha": "2026-07-27",
   "cambios": [
-    "Fondo azul oscuro uniforme en el menú móvil",
-    "Botones blancos con letras azul oscuro",
-    "Mejor separación y tamaño táctil",
-    "Mi Comercio y Administración diferenciados",
-    "Botón de menú blanco y claramente visible",
-    "Menú desplazable en teléfonos pequeños"
+    "Nueva página de inicio con tres caminos",
+    "comprar.html para clientes",
+    "planes-comercios.html para precios y beneficios",
+    "registrar-comercio.html exclusivamente para el alta",
+    "publicar-particular.html para ventas y alquileres",
+    "Cuatro páginas independientes de pago",
+    "Accesos privados conservados",
+    "V63 conservable como respaldo"
   ]
 }
