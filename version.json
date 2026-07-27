@@ -1,15 +1,15 @@
 {
-  "version": "V64",
-  "nombre": "Inicio general y páginas separadas",
+  "version": "V65",
+  "nombre": "Portada gráfica interactiva",
   "fecha": "2026-07-27",
   "cambios": [
-    "Nueva página de inicio con tres caminos",
-    "comprar.html para clientes",
-    "planes-comercios.html para precios y beneficios",
-    "registrar-comercio.html exclusivamente para el alta",
-    "publicar-particular.html para ventas y alquileres",
-    "Cuatro páginas independientes de pago",
-    "Accesos privados conservados",
-    "V63 conservable como respaldo"
+    "Nueva imagen principal integrada al index",
+    "Comprar o buscar abre comprar.html",
+    "Publicar mi comercio abre planes-comercios.html",
+    "Vender o alquilar abre publicar-particular.html",
+    "Ingresar abre comercio.html",
+    "Registrarme abre planes-comercios.html",
+    "Botones grandes adicionales para celular",
+    "Imagen optimizada en WebP con respaldo PNG"
   ]
 }

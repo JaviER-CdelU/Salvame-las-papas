@@ -1,5 +1,5 @@
-const CACHE_NAME = "salvame-papas-v64-paginas-separadas";
-const APP_SHELL = ["./","./index.html","./pago-pro.html","./pago-destacado.html","./pago-basico.html","./pago-particular.html","./publicar-particular.html","./registrar-comercio.html","./planes-comercios.html","./comprar.html","./comercio.html","./admin.html","./seguimiento-comercios.html","./como-usar.html","./diccionario-entrerriano.html","./offline.html","./pago-plan.html","./restablecer-clave.html","./manifest.webmanifest","./version.json"];
+const CACHE_NAME = "salvame-papas-v65-portada-interactiva";
+const APP_SHELL = ["./","./index.html","./images/portada-salvame-papas.png","./images/portada-salvame-papas.webp","./pago-pro.html","./pago-destacado.html","./pago-basico.html","./pago-particular.html","./publicar-particular.html","./registrar-comercio.html","./planes-comercios.html","./comprar.html","./comercio.html","./admin.html","./seguimiento-comercios.html","./como-usar.html","./diccionario-entrerriano.html","./offline.html","./pago-plan.html","./restablecer-clave.html","./manifest.webmanifest","./version.json"];
 
 self.addEventListener("install",event=>{
   // La nueva versión queda esperando. Solo se activa cuando el usuario
