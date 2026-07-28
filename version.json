@@ -1,13 +1,12 @@
 {
-  "version": "V68",
-  "nombre": "Explicación de cambios de plan",
+  "version": "V69",
+  "nombre": "Cabecera gráfica para planes de comercios",
   "fecha": "2026-07-27",
   "cambios": [
-    "Nueva sección sobre subir y bajar de plan",
-    "Aclaración de que los productos no se borran",
-    "Selección de productos visibles al bajar de plan",
-    "Productos excedentes pausados y guardados",
-    "Fotos adicionales conservadas",
-    "Cambios aplicados tras confirmar el pago"
+    "Nueva cabecera ilustrada en planes-comercios.html",
+    "Botones visuales enlazados a Básico, Destacado y Pro",
+    "Botones grandes alternativos para celular",
+    "Explicación completa de cambios de plan conservada debajo",
+    "Imagen optimizada en WebP con respaldo PNG"
   ]
 }
