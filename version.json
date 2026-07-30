@@ -1,13 +1,14 @@
 {
-  "version": "V76",
-  "nombre": "Portada especial para celular",
+  "version": "V77",
+  "nombre": "Cabecera para publicaciones particulares",
   "fecha": "2026-07-29",
   "cambios": [
-    "Portada de escritorio conservada",
-    "Nueva portada vertical para celular",
-    "Selección automática mediante picture",
-    "Botones móviles grandes conservados",
-    "Zonas transparentes desactivadas en teléfonos",
-    "Imágenes optimizadas en WebP"
+    "Imagen de venta y alquiler usada como cabecera",
+    "Contenido repetido eliminado",
+    "Botón real Publicá ahora",
+    "Botón real Ya tengo publicaciones",
+    "Explicación del pago conservada y simplificada",
+    "Preguntas frecuentes agregadas",
+    "Sin cambios en Firebase ni en el formulario de publicación"
   ]
 }
