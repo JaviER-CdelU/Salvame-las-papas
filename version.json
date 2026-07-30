@@ -1,12 +1,12 @@
 {
-  "version": "V71",
-  "nombre": "Acceso visitante simplificado",
+  "version": "V72",
+  "nombre": "Administración discreta",
   "fecha": "2026-07-29",
   "cambios": [
-    "Un único botón grande para visitante o comprador en escritorio",
-    "Nueva frase Entrá a chusmear, capaz que alguien te salva las papas",
-    "Acceso Comprar oculto del encabezado en escritorio",
-    "Botones móviles conservados solo en pantallas pequeñas",
+    "Administración eliminada de los accesos principales de la portada",
+    "Accesos principales reducidos a Mi Comercio, Mis publicaciones y Cómo se usa",
+    "Administración trasladada al pie de página",
+    "Enlace administrativo pequeño y discreto",
     "Sin otros cambios de diseño o funcionamiento"
   ]
 }
