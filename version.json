@@ -1,11 +1,12 @@
 {
-  "version": "V70",
-  "nombre": "Texto comercial del inicio",
+  "version": "V71",
+  "nombre": "Acceso visitante simplificado",
   "fecha": "2026-07-29",
   "cambios": [
-    "Reemplazado el texto técnico del inicio",
-    "Nuevo título Elegí qué querés hacer",
-    "Nueva explicación comercial para compradores, comercios y particulares",
+    "Un único botón grande para visitante o comprador en escritorio",
+    "Nueva frase Entrá a chusmear, capaz que alguien te salva las papas",
+    "Acceso Comprar oculto del encabezado en escritorio",
+    "Botones móviles conservados solo en pantallas pequeñas",
     "Sin otros cambios de diseño o funcionamiento"
   ]
 }

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#073574">
-<meta name="app-version" content="V70">
+<meta name="app-version" content="V71">
 <link rel="manifest" href="./manifest.webmanifest">
 <title>Sálvame las Papas — Inicio</title>
 <style>
@@ -250,6 +250,60 @@ footer{
   }
 }
 
+
+/* V71 — ACCESO ÚNICO PARA VISITANTE EN ESCRITORIO */
+.visitor-entry-v71{
+  width:min(760px,calc(100% - 28px));
+  margin:18px auto 12px;
+  text-align:center;
+}
+.visitor-entry-v71 a{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  min-height:58px;
+  padding:15px 20px;
+  border-radius:15px;
+  background:#0d5aa7;
+  color:#ffffff;
+  text-decoration:none;
+  font-size:1.05rem;
+  font-weight:900;
+  box-shadow:0 10px 26px rgba(7,47,107,.14);
+}
+.visitor-entry-v71 a:hover,
+.visitor-entry-v71 a:focus-visible{
+  background:#083f7b;
+  outline:3px solid rgba(13,90,167,.24);
+}
+.visitor-entry-v71 p{
+  margin:10px 0 0;
+  color:#073574;
+  font-size:1rem;
+  line-height:1.4;
+}
+@media(min-width:761px){
+  .desktop-buy-link-v71{display:none!important}
+  .mobile-actions{display:none!important}
+}
+@media(max-width:760px){
+  .visitor-entry-v71{
+    width:calc(100% - 24px);
+    margin-top:14px;
+  }
+  .visitor-entry-v71 a{
+    min-height:54px;
+    font-size:.98rem;
+  }
+  .visitor-entry-v71 p{
+    font-size:.92rem;
+  }
+  .mobile-actions{
+    display:grid!important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -257,7 +311,7 @@ footer{
   <div class="header-inner">
     <div class="brand">Sálvame <em>las Papas 🥔</em></div>
     <nav class="header-links" aria-label="Accesos principales">
-      <a href="./comprar.html">Comprar</a>
+      <a class="desktop-buy-link-v71" href="./comprar.html">Comprar</a>
       <a href="./planes-comercios.html">Comercios</a>
       <a href="./publicar-particular.html">Venta o alquiler</a>
       <a href="./como-usar.html">Ayuda</a>
@@ -301,13 +355,12 @@ footer{
   </section>
 
   
-  <section class="visitor-entry-v66" aria-label="Entrada para visitantes y compradores">
-    <div>
-      <h2>👋 Entrar como visitante o comprador</h2>
-      <p>Accedé sin registrarte para ver comercios, publicaciones particulares, productos, servicios, ofertas y qué vende cada uno.</p>
-    </div>
-    <a href="./comprar.html">Ver negocios y publicaciones</a>
+  
+  <section class="visitor-entry-v71" aria-label="Entrada para visitantes y compradores">
+    <a href="./comprar.html">Entrar como visitante o comprador</a>
+    <p><strong><em>Entrá a chusmear, capaz que alguien te salva las papas.</em></strong></p>
   </section>
+
 
 
   <nav class="mobile-actions" aria-label="Opciones principales para celular">
@@ -335,7 +388,7 @@ footer{
   </section>
 </main>
 
-<footer>Versión V70 · Sálvame las Papas</footer>
+<footer>Versión V71 · Sálvame las Papas</footer>
 
 <script>
 if("serviceWorker" in navigator){
