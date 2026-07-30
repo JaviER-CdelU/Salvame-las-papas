@@ -3,118 +3,101 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#073574">
-<meta name="app-version" content="V79">
-<title>Pago del plan — Sálvame las Papas</title>
+<meta name="theme-color" content="#002A6A">
+<title>Sin conexión — Sálvame las Papas</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(145deg,#eef6ff,#fff8ee);color:#172338;min-height:100vh}
-header{background:#082440;color:#fff;padding:16px}
-header>div{width:min(980px,calc(100% - 28px));margin:auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-header a{color:#fff;text-decoration:none;font-weight:800}
-main{width:min(920px,calc(100% - 28px));margin:28px auto}
-.hero{background:#fff;border:1px solid #d8e3ee;border-radius:22px;padding:24px;box-shadow:0 16px 42px rgba(7,47,107,.10)}
-h1,h2,h3{color:#073574}h1{margin:0 0 8px;font-family:Georgia,serif;font-size:clamp(1.8rem,5vw,2.7rem)}
-p{color:#657287;line-height:1.5}
-.notice{padding:12px 14px;border-radius:12px;background:#fff6df;border:1px solid #ead19d;margin:15px 0;color:#6f5200}
-.loading,.empty{padding:28px;text-align:center;background:#fff;border-radius:16px;margin-top:16px;color:#687588}
-.pay-card{background:#fff;border:1px solid #d7e2ed;border-radius:18px;padding:20px;margin-top:16px;box-shadow:0 10px 28px rgba(7,47,107,.07)}
-.pay-head{display:flex;justify-content:space-between;gap:14px;align-items:start;flex-wrap:wrap}
-.price{font-size:1.8rem;font-weight:900;color:#0a6b3f}
-.badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#e8f1fb;color:#073574;font-size:.72rem;font-weight:900}
-.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
-.btn{flex:1;min-width:220px;border:0;border-radius:12px;padding:14px;text-align:center;text-decoration:none;font-weight:900;cursor:pointer}
-.mp{background:#009ee3;color:#fff}.office{background:#edf3fa;color:#073574}.wa{background:#0a9b58;color:#fff}
-.small{font-size:.77rem;color:#6c7888;line-height:1.45}
-.office-box{margin-top:14px;padding:14px;border:1px dashed #b9c9d9;border-radius:12px;background:#fafcff}
-.error{background:#fff0f0;color:#932c2c;padding:14px;border-radius:12px;margin-top:16px}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#002A6A;color:#fff;font-family:system-ui,sans-serif;padding:24px}
+.card{max-width:520px;text-align:center;background:#fff;color:#172033;border-radius:24px;padding:32px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+img{width:128px;height:128px;border-radius:28px}
+h1{margin:18px 0 8px}p{line-height:1.6;color:#586174}
+button{border:0;border-radius:999px;background:#cc0000;color:#fff;font-weight:800;padding:13px 22px;cursor:pointer}
+
+.password-contenedor{
+  position:relative;
+  width:100%;
+}
+.password-contenedor input[type="password"],
+.password-contenedor input[type="text"]{
+  width:100%;
+  padding-right:54px !important;
+}
+.btn-ver-password{
+  position:absolute;
+  right:8px;
+  top:50%;
+  transform:translateY(-50%);
+  width:40px !important;
+  min-width:40px !important;
+  height:36px;
+  padding:0 !important;
+  border:0;
+  background:transparent;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:1.1rem;
+  line-height:1;
+}
+.btn-ver-password:hover{background:rgba(0,0,0,.06)}
+
+
+/* IDENTIFICACIÓN DE VERSIÓN — V26 */
+.app-version-badge{
+  position:fixed;
+  right:12px;
+  bottom:12px;
+  z-index:9000;
+  padding:7px 10px;
+  border-radius:999px;
+  background:rgba(5,43,101,.92);
+  color:#fff;
+  border:1px solid rgba(255,255,255,.32);
+  box-shadow:0 5px 18px rgba(0,0,0,.18);
+  font:800 .72rem/1 "DM Sans",Arial,sans-serif;
+  letter-spacing:.03em;
+}
+.app-version-badge a{color:#ffd34e;text-decoration:none}
+@media(max-width:600px){
+  .app-version-badge{right:8px;bottom:8px;font-size:.66rem;padding:6px 8px}
+}
+
 </style>
+<meta name="app-version" content="V79">
 </head>
-<body>
-<header><div><strong>🥔 Sálvame las Papas</strong><div><a href="./comercio.html">Mi comercio</a> · <a href="./mis-publicaciones.html">Mis publicaciones</a> · <a href="./inicio.html">Inicio</a></div></div></header>
-<main>
-<section class="hero">
-<h1>Pago del plan</h1>
-<p>Esta pantalla muestra únicamente los planes vinculados a tu cuenta.</p>
-<div class="notice"><strong>Suscripción automática:</strong> Mercado Pago realizará el cobro todos los meses hasta que decidas cancelar la adhesión. La publicación se activa cuando Administración confirma el primer pago.</div>
-</section>
-<div id="content" class="loading">Comprobando tu cuenta y buscando el plan…</div>
-</main>
-
-<script type="module">
-import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {getFirestore,collection,query,where,getDocs} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-const app=initializeApp({
-  apiKey:"AIzaSyAE8kEBAzDbPvCCD1KCyjq67iFl3dvthLM",
-  authDomain:"salvame-las-papas-cdelu.firebaseapp.com",
-  projectId:"salvame-las-papas-cdelu",
-  storageBucket:"salvame-las-papas-cdelu.firebasestorage.app",
-  messagingSenderId:"401048945476",
-  appId:"1:401048945476:web:58695553aa93928b36cd11"
-});
-const auth=getAuth(app),db=getFirestore(app);
-const LINKS={"particular": "https://mpago.la/1zForhz", "basico": "https://mpago.la/2dMKsvo", "destacado": "https://mpago.la/29B9zHQ", "pro": "https://mpago.la/17UaRdW"};
-const content=document.getElementById('content');
-const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-
-function planInfo(plan,tipo){
-  const p=String(plan||'').toLowerCase();
-  if(tipo==='particular'||p.includes('particular')||p.includes('individual')) return {key:'particular',nombre:'Personas individuales',precio:'$10.000 por mes',link:LINKS.particular};
-  if(p.includes('45')||p.includes('max')||p.includes('pro ($45')) return {key:'pro',nombre:'Comercio Pro',precio:'$45.000 por mes',link:LINKS.pro};
-  if(p.includes('30')||p.includes('destacado')||p.includes('pro ($30')) return {key:'destacado',nombre:'Comercio Destacado',precio:'$30.000 por mes',link:LINKS.destacado};
-  return {key:'basico',nombre:'Comercio Básico',precio:'$15.000 por mes',link:LINKS.basico};
+<body><main class="card">
+<img src="./icons/icon-192.png" alt="Súper Papa">
+<h1>Estás sin conexión</h1>
+<p>La aplicación está instalada y puede abrirse, pero los datos nuevos, pedidos e inicio de sesión necesitan internet.</p>
+<button onclick="location.reload()">Volver a intentar</button>
+</main><script>
+function alternarPassword(id, boton){
+  const campo=document.getElementById(id);
+  if(!campo) return;
+  const mostrando=campo.type==='text';
+  campo.type=mostrando?'password':'text';
+  boton.textContent=mostrando?'👁️':'🙈';
+  boton.setAttribute('aria-label', mostrando?'Mostrar contraseña':'Ocultar contraseña');
+  boton.title=mostrando?'Mostrar contraseña':'Ocultar contraseña';
 }
-function card(item,tipo){
-  const info=planInfo(item.plan,tipo);
-  const nombre=tipo==='particular'?(item.nombre||'Publicación particular'):(item.nombre||'Comercio');
-  const estadoPago=item.estadoPagoPlan||item.estadoPago||'pendiente';
-  const wa='https://wa.me/5493442490585?text='+encodeURIComponent(`Hola. Quiero coordinar el pago presencial de ${nombre}. Plan: ${info.nombre}.`);
-  return `<article class="pay-card">
-    <div class="pay-head">
-      <div><span class="badge">${tipo==='particular'?'PERSONA INDIVIDUAL':'COMERCIO'}</span><h2>${esc(nombre)}</h2><p>${esc(info.nombre)}</p></div>
-      <div class="price">${info.precio}</div>
-    </div>
-    <p><strong>Estado informado:</strong> ${esc(estadoPago)}</p>
-    <div class="actions">
-      <a class="btn mp" href="${info.link}" target="_blank" rel="noopener">💳 Suscribirme con Mercado Pago</a>
-      <a class="btn wa" href="${wa}" target="_blank" rel="noopener">💬 Coordinar pago en oficina</a>
-    </div>
-    <div class="office-box">
-      <strong>Pago presencial en oficina</strong>
-      <p class="small">Podés pagar con efectivo, débito, crédito o QR, según disponibilidad. Esta modalidad no se renueva automáticamente: el pago debe repetirse cada mes.</p>
-    </div>
-    <p class="small">Al abrir Mercado Pago, revisá el nombre del plan y el importe antes de confirmar. Podés cancelar la suscripción desde Mercado Pago.</p>
-  </article>`;
+
+function prepararCamposPassword(){
+  document.querySelectorAll('input[type="password"]').forEach((campo,indice)=>{
+    if(campo.closest('.password-contenedor')) return;
+    if(!campo.id) campo.id='password-campo-'+indice+'-'+Math.random().toString(36).slice(2,7);
+    const cont=document.createElement('div');
+    cont.className='password-contenedor';
+    campo.parentNode.insertBefore(cont,campo);
+    cont.appendChild(campo);
+    const boton=document.createElement('button');
+    boton.type='button';
+    boton.className='btn-ver-password';
+    boton.textContent='👁️';
+    boton.title='Mostrar contraseña';
+    boton.setAttribute('aria-label','Mostrar contraseña');
+    boton.addEventListener('click',()=>alternarPassword(campo.id,boton));
+    cont.appendChild(boton);
+  });
 }
-async function cargar(uid){
-  try{
-    const items=[];
-    const comercios=await getDocs(query(collection(db,'comercios'),where('ownerUid','==',uid)));
-    comercios.forEach(d=>items.push({tipo:'comercio',id:d.id,...d.data()}));
-    const particulares=await getDocs(query(collection(db,'vendedoresParticulares'),where('ownerUid','==',uid)));
-    particulares.forEach(d=>items.push({tipo:'particular',id:d.id,...d.data()}));
-    if(!items.length){
-      content.className='empty';
-      content.innerHTML='No encontramos un comercio o publicación vinculada a esta cuenta. Primero completá el registro.';
-      return;
-    }
-    content.className='';
-    content.innerHTML=items.map(i=>card(i,i.tipo)).join('');
-  }catch(e){
-    content.className='error';
-    content.textContent='No se pudo cargar el plan: '+(e.message||e.code);
-  }
-}
-onAuthStateChanged(auth,user=>{
-  if(!user){
-    content.className='empty';
-    content.innerHTML='Para ver el pago de tu plan, ingresá primero desde <a href="./comercio.html">Mi comercio</a> o <a href="./mis-publicaciones.html">Mis publicaciones</a>.';
-    return;
-  }
-  cargar(user.uid);
-});
+document.addEventListener('DOMContentLoaded',prepararCamposPassword);
 </script>
-</body>
-</html>
+
+</body></html>
