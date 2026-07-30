@@ -1,4 +1,4 @@
-const CACHE_NAME = "salvame-papas-v73-planes-sin-duplicados";
+const CACHE_NAME = "salvame-papas-v74-botones-planes-reales";
 const APP_SHELL = ["./","./index.html","./images/cabecera-planes-comercios-v69.png","./images/cabecera-planes-comercios-v69.webp","./images/portada-salvame-papas-v67.png","./images/portada-salvame-papas-v67.webp","./images/portada-salvame-papas.png","./images/portada-salvame-papas.webp","./pago-pro.html","./pago-destacado.html","./pago-basico.html","./pago-particular.html","./publicar-particular.html","./registrar-comercio.html","./planes-comercios.html","./comprar.html","./comercio.html","./admin.html","./seguimiento-comercios.html","./como-usar.html","./diccionario-entrerriano.html","./offline.html","./pago-plan.html","./restablecer-clave.html","./manifest.webmanifest","./version.json"];
 
 self.addEventListener("install",event=>{

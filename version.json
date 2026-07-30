@@ -1,14 +1,14 @@
 {
-  "version": "V73",
-  "nombre": "Planes sin contenido duplicado",
+  "version": "V74",
+  "nombre": "Botones reales para elegir planes",
   "fecha": "2026-07-29",
   "cambios": [
-    "Cabecera ilustrada conservada",
-    "Eliminadas las tres tarjetas grandes repetidas",
-    "Nueva tabla breve de comparación",
-    "Botones reales para Básico, Destacado y Pro",
-    "Explicación de cambios de plan conservada",
-    "Formas de pago conservadas",
-    "Sin otros cambios de funcionamiento"
+    "Eliminadas las zonas transparentes sobre la imagen",
+    "Nueva botonera visible debajo de la cabecera",
+    "Botón real para Básico",
+    "Botón real para Destacado",
+    "Botón real para Pro",
+    "Mismos botones en computadora y celular",
+    "Tabla comparativa y explicación conservadas"
   ]
 }

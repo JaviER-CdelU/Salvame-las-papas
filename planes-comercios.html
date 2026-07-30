@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#073574"><meta name="app-version" content="V73">
+<meta name="theme-color" content="#073574"><meta name="app-version" content="V74">
 <title>Planes para comercios — Sálvame las Papas</title>
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f3f7fb;color:#172338}
@@ -84,16 +84,16 @@ main{width:min(1180px,calc(100% - 28px));margin:30px auto}.hero{text-align:cente
 .plans-visual-v69{width:min(1600px,calc(100% - 24px));margin:18px auto 26px}
 .plans-visual-wrap-v69{position:relative;overflow:hidden;border-radius:22px;border:1px solid #c9dced;background:#fff;box-shadow:0 15px 38px rgba(7,47,107,.12)}
 .plans-visual-wrap-v69 picture,.plans-visual-wrap-v69 img{display:block;width:100%;height:auto}
-.plan-hotspot-v69{position:absolute;display:block;z-index:3;border-radius:16px}
-.plan-hotspot-v69:hover,.plan-hotspot-v69:focus-visible{outline:5px solid rgba(255,114,0,.9);background:rgba(255,255,255,.08)}
-.plan-hotspot-basic-v69{left:18.1%;top:59.5%;width:17%;height:10.5%}
-.plan-hotspot-featured-v69{left:39.6%;top:59.5%;width:17%;height:10.5%}
-.plan-hotspot-pro-v69{left:60.5%;top:59.5%;width:17%;height:10.5%}
+
+
+
+
+
 .plans-mobile-actions-v69{display:none!important}
 .plans-mobile-actions-v69 a{display:block;padding:13px;border-radius:12px;color:#fff;text-decoration:none;text-align:center;font-weight:900}
 .plans-mobile-actions-v69 .basic{background:#176bd1}.plans-mobile-actions-v69 .featured{background:#ff7200}.plans-mobile-actions-v69 .pro{background:#7b32cc}
 .plans-continue-v69{width:min(1180px,calc(100% - 28px));margin:0 auto 12px;padding:14px 16px;border-radius:14px;background:#eef6ff;border:1px solid #b8d2ec;color:#073574;text-align:center;line-height:1.45}
-@media(max-width:760px){.plan-hotspot-v69{display:none}.plans-mobile-actions-v69{display:none!important}.plans-visual-v69{width:calc(100% - 16px);margin-top:12px}.plans-visual-wrap-v69{border-radius:14px}}
+@media(max-width:760px){.plans-mobile-actions-v69{display:none!important}.plans-visual-v69{width:calc(100% - 16px);margin-top:12px}.plans-visual-wrap-v69{border-radius:14px}}
 
 
 /* V73 — COMPARACIÓN BREVE SIN TARJETAS DUPLICADAS */
@@ -171,6 +171,47 @@ main{width:min(1180px,calc(100% - 28px));margin:30px auto}.hero{text-align:cente
   .plans-real-buttons-v73{grid-template-columns:1fr}
 }
 
+
+/* V74 — BOTONES REALES DE PLANES */
+.plans-header-buttons-v74{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+  margin-top:14px;
+}
+.plans-header-buttons-v74 a{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  min-height:72px;
+  padding:14px;
+  border-radius:14px;
+  color:#ffffff;
+  text-decoration:none;
+  text-align:center;
+  font-weight:900;
+  box-shadow:0 8px 20px rgba(7,47,107,.10);
+}
+.plans-header-buttons-v74 a span{
+  font-size:1rem;
+  margin-bottom:3px;
+}
+.plans-header-buttons-v74 a strong{
+  font-size:.9rem;
+}
+.plans-header-buttons-v74 .basic{background:#176bd1}
+.plans-header-buttons-v74 .featured{background:#ff7200}
+.plans-header-buttons-v74 .pro{background:#7b32cc}
+.plans-header-buttons-v74 a:hover,
+.plans-header-buttons-v74 a:focus-visible{
+  filter:brightness(.92);
+  outline:3px solid rgba(7,47,107,.20);
+}
+@media(max-width:760px){
+  .plans-header-buttons-v74{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 <body>
@@ -184,10 +225,9 @@ main{width:min(1180px,calc(100% - 28px));margin:30px auto}.hero{text-align:cente
            alt="Planes Básico, Destacado y Pro de Sálvame las Papas"
            width="1672" height="941" fetchpriority="high">
     </picture>
-    <a class="plan-hotspot-v69 plan-hotspot-basic-v69" href="./registrar-comercio.html?plan=1" aria-label="Elegir plan Básico"></a>
-    <a class="plan-hotspot-v69 plan-hotspot-featured-v69" href="./registrar-comercio.html?plan=2" aria-label="Elegir plan Destacado"></a>
-    <a class="plan-hotspot-v69 plan-hotspot-pro-v69" href="./registrar-comercio.html?plan=3" aria-label="Elegir plan Pro"></a>
-  </div>
+
+
+</div>
   <nav class="plans-mobile-actions-v69" aria-label="Elegir plan desde celular">
     <a class="basic" href="./registrar-comercio.html?plan=1">Elegir Básico — $15.000</a>
     <a class="featured" href="./registrar-comercio.html?plan=2">Elegir Destacado — $30.000</a>
