@@ -1,14 +1,14 @@
 {
-  "version": "V77",
-  "nombre": "Cabecera para publicaciones particulares",
-  "fecha": "2026-07-29",
+  "version": "V78",
+  "nombre": "Portada móvil corregida",
+  "fecha": "2026-07-30",
   "cambios": [
-    "Imagen de venta y alquiler usada como cabecera",
-    "Contenido repetido eliminado",
-    "Botón real Publicá ahora",
-    "Botón real Ya tengo publicaciones",
-    "Explicación del pago conservada y simplificada",
-    "Preguntas frecuentes agregadas",
-    "Sin cambios en Firebase ni en el formulario de publicación"
+    "Nueva imagen móvil vertical sin botones dibujados",
+    "Botones reales mostrados una sola vez",
+    "Tres acciones móviles: chusmear, publicar comercio y vender o alquilar",
+    "Portadas en WebP y PNG",
+    "Rutas de imágenes revisadas",
+    "Portada de escritorio conservada",
+    "Cache actualizado para evitar mostrar una versión anterior"
   ]
 }
