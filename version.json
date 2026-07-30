@@ -1,14 +1,1 @@
-{
-  "version": "V78",
-  "nombre": "Portada móvil corregida",
-  "fecha": "2026-07-30",
-  "cambios": [
-    "Nueva imagen móvil vertical sin botones dibujados",
-    "Botones reales mostrados una sola vez",
-    "Tres acciones móviles: chusmear, publicar comercio y vender o alquilar",
-    "Portadas en WebP y PNG",
-    "Rutas de imágenes revisadas",
-    "Portada de escritorio conservada",
-    "Cache actualizado para evitar mostrar una versión anterior"
-  ]
-}
+{"version":"V80"}

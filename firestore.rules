@@ -1268,14 +1268,14 @@ img{max-width:100%;height:auto}
 <meta name="apple-mobile-web-app-title" content="Sálvame">
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
-<meta name="app-version" content="V78">
+<meta name="app-version" content="V79">
 </head>
 <body>
 
 <!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
-    <span class="owner-login-kicker">PANEL DEL COMERCIO · V78</span>
+    <span class="owner-login-kicker">PANEL DEL COMERCIO · V79</span>
     <div class="login-logo">Sálvame <em>las Papas 🥔</em></div>
     <h1 class="owner-login-title">Administrá tu comercio</h1>
     <p class="owner-login-help">
@@ -1321,7 +1321,7 @@ img{max-width:100%;height:auto}
 <!-- PANEL -->
 <div id="panel-screen">
   <nav class="panel-nav">
-    <div class="panel-logo">Sálvame <em>las Papas</em> — Mi Comercio <span class="panel-version">V78</span></div>
+    <div class="panel-logo">Sálvame <em>las Papas</em> — Mi Comercio <span class="panel-version">V79</span></div>
     <div class="site-switcher" aria-label="Navegación del sitio">
       <a href="index.html">🏠 Sitio público</a>
       <a class="active" href="comercio.html">🏪 Mi comercio</a>
