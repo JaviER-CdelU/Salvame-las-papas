@@ -1,1 +1,12 @@
-{"version":"V80"}
+{
+  "version": "V82",
+  "nombre": "Misma papa oficial en celular",
+  "fecha": "2026-07-30",
+  "cambios": [
+    "La portada móvil usa la misma identidad de papa de Concepción del Uruguay",
+    "Bandera de Entre Ríos al hombro",
+    "Escudo de Concepción del Uruguay en el pecho",
+    "Imagen guardada en PNG y WebP dentro de images",
+    "Portada de escritorio y funciones de V81 conservadas"
+  ]
+}
