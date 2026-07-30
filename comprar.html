@@ -3073,6 +3073,258 @@ nav .nav-btns,nav .nav-portals{display:none!important}
   .buyer-help-links-v75{width:100%;display:grid}
 }
 
+
+/* V89 — TARJETAS DE COMERCIOS CLARAS Y FOTOGRÁFICAS */
+.comercio-max-v89{
+  --foto-comercio:none;
+  grid-column:span 2!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1.15fr) minmax(300px,.85fr)!important;
+  gap:24px!important;
+  min-height:410px;
+  padding:28px!important;
+  position:relative!important;
+  overflow:hidden!important;
+  isolation:isolate;
+  color:#17243a!important;
+  background:#ffffff!important;
+  border:1px solid #dfe6ec!important;
+  border-radius:24px!important;
+  box-shadow:0 16px 42px rgba(11,38,64,.12)!important;
+}
+.comercio-max-v89::before{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  background-image:var(--foto-comercio)!important;
+  background-size:cover!important;
+  background-position:center!important;
+  opacity:.52!important;
+  z-index:-3!important;
+  border-radius:inherit!important;
+  padding:0!important;
+  box-shadow:none!important;
+}
+.comercio-max-v89.sin-foto-v89::before{
+  background:
+    radial-gradient(circle at 88% 30%,rgba(86,170,114,.16),transparent 28%),
+    linear-gradient(135deg,#ffffff 0%,#f7fbf8 58%,#edf7ef 100%)!important;
+  opacity:1!important;
+}
+.comercio-max-overlay-v89{
+  position:absolute;
+  inset:0;
+  z-index:-2;
+  background:linear-gradient(90deg,
+    rgba(255,255,255,.99) 0%,
+    rgba(255,255,255,.96) 42%,
+    rgba(255,255,255,.77) 63%,
+    rgba(255,255,255,.28) 100%);
+}
+.cmax-left-v89{
+  position:relative;
+  z-index:2;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  min-width:0;
+}
+.favorito-v89{
+  position:absolute;
+  top:-8px;
+  left:-8px;
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  border:1px solid #dfe5ea;
+  background:#fff;
+  color:#17243a;
+  font-size:1.45rem;
+  cursor:pointer;
+  box-shadow:0 6px 18px rgba(10,30,50,.10);
+}
+.titulo-comercio-v89{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:12px;
+  padding-left:48px;
+  margin-bottom:12px;
+}
+.comercio-emoji-v89{
+  font-size:2rem;
+  line-height:1;
+}
+.cmax-title-v89{
+  font-family:"Fraunces",Georgia,serif;
+  font-size:clamp(2rem,4vw,3rem);
+  font-weight:900;
+  line-height:1;
+  color:#113e2b;
+  letter-spacing:-.025em;
+  text-shadow:none;
+}
+.cmax-cat-v89{
+  margin-top:5px;
+  color:#5e6d68;
+  font:600 .95rem/1.35 "DM Sans",Arial,sans-serif;
+}
+.comercio-max-v89 .info-publica-comercio{
+  margin:4px 0 10px;
+  color:#26384b!important;
+  font-family:"DM Sans",Arial,sans-serif;
+  font-weight:600;
+}
+.comercio-max-v89 .info-publica-comercio a{
+  color:#17663e!important;
+  font-weight:800;
+}
+.comercio-max-v89 .quality-badges-v33{
+  margin:4px 0 12px;
+}
+.comercio-max-v89 .quality-badges-v33 span{
+  background:rgba(255,255,255,.88)!important;
+  color:#526171!important;
+  border:1px solid #dce4e8!important;
+  box-shadow:0 2px 7px rgba(18,44,64,.04);
+}
+.comercio-max-v89 .quality-badges-v33 span.ok{
+  background:#edf9ef!important;
+  color:#27643d!important;
+  border-color:#b9dfc3!important;
+}
+.cmax-desc-v89{
+  max-width:650px;
+  margin:3px 0 12px;
+  color:#34465a!important;
+  font:500 1rem/1.55 "DM Sans",Arial,sans-serif;
+}
+.tienda-tags-v89{
+  margin:0 0 15px;
+}
+.tienda-tags-v89 .tag{
+  background:rgba(255,255,255,.90)!important;
+  color:#30445a!important;
+  border:1px solid #d7e0e7!important;
+  padding:6px 12px!important;
+}
+.cmax-wa-v89{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  min-height:54px;
+  margin-top:auto;
+  padding:13px 18px;
+  border:0;
+  border-radius:12px;
+  background:linear-gradient(135deg,#168a4b,#30ad64);
+  color:#fff;
+  font:900 1rem/1.2 "DM Sans",Arial,sans-serif;
+  cursor:pointer;
+  box-shadow:0 9px 22px rgba(25,140,76,.22);
+}
+.cmax-wa-v89 strong{margin-left:8px;font-size:1.25rem}
+.cmax-wa-v89:hover{filter:brightness(.96);transform:translateY(-1px)}
+
+.cmax-right-v89{
+  position:relative;
+  z-index:2;
+  align-self:stretch;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  min-width:0;
+}
+.vitrina-head-v89{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:12px;
+  font:800 .78rem/1 "DM Sans",Arial,sans-serif;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+}
+.vitrina-head-v89 span{
+  padding:8px 13px;
+  border-radius:8px;
+  background:rgba(232,248,235,.92);
+  color:#307b48;
+}
+.vitrina-head-v89 strong{
+  padding:9px 14px;
+  border-radius:999px;
+  background:#ff7a0a;
+  color:#fff;
+  box-shadow:0 6px 14px rgba(255,122,10,.22);
+}
+.cmax-productos-v89{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(145px,1fr));
+  gap:13px;
+}
+.cprod-v89{
+  overflow:hidden;
+  border-radius:14px;
+  background:rgba(255,255,255,.94);
+  border:1px solid rgba(216,225,231,.95);
+  box-shadow:0 10px 25px rgba(20,45,60,.10);
+}
+.cprod-photo-v89,
+.cprod-placeholder-v89{
+  display:block;
+  width:100%;
+  height:145px;
+  object-fit:cover;
+}
+.cprod-placeholder-v89{
+  display:grid;
+  place-items:center;
+  background:#eef3f5;
+  font-size:2rem;
+}
+.cprod-body-v89{padding:11px 12px 13px}
+.cprod-name-v89{
+  min-height:2.5em;
+  color:#17243a;
+  font:800 .9rem/1.35 "DM Sans",Arial,sans-serif;
+}
+.cprod-price-v89{
+  margin-top:6px;
+  color:#e55c00;
+  font:900 1.15rem/1.1 "Fraunces",Georgia,serif;
+}
+.cmax-right-empty-v89{
+  min-height:160px;
+}
+
+@media(max-width:900px){
+  .comercio-max-v89{
+    grid-column:span 1!important;
+    grid-template-columns:1fr!important;
+    min-height:auto;
+    padding:20px!important;
+  }
+  .comercio-max-overlay-v89{
+    background:linear-gradient(180deg,
+      rgba(255,255,255,.98) 0%,
+      rgba(255,255,255,.94) 64%,
+      rgba(255,255,255,.80) 100%);
+  }
+  .cmax-right-v89{margin-top:6px}
+  .cmax-productos-v89{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:520px){
+  .comercio-max-v89{padding:17px!important;border-radius:18px!important}
+  .titulo-comercio-v89{padding-left:42px;gap:8px}
+  .favorito-v89{width:38px;height:38px}
+  .cmax-title-v89{font-size:1.85rem}
+  .cmax-productos-v89{grid-template-columns:1fr}
+  .cprod-photo-v89,.cprod-placeholder-v89{height:185px}
+  .cmax-wa-v89{width:100%;font-size:.92rem}
+}
+
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -4070,30 +4322,69 @@ function renderComercio(c, globalIdx){
   }).join('')
 
   if(c.plan === 3){
-    const prods = (c.productos||[]).map(p =>
-      `<div class="cprod">${p.foto?`<img class="cprod-photo" src="${p.foto}" alt="${textoSeguro(p.n)}" loading="lazy">`:`<span class="cprod-emoji">${p.e||'📦'}</span>`}<div class="cprod-name">${p.n}</div><div class="cprod-price">${p.p}</div></div>`
-    ).join('')
+    const productos = Array.isArray(c.productos) ? c.productos : [];
+    const primeraFoto = productos.find(p => p?.foto || p?.fotos?.[0]);
+    const fotoFondo = primeraFoto ? String(primeraFoto.foto || primeraFoto.fotos?.[0] || '').replace(/["']/g,'') : '';
+    const estiloFondo = fotoFondo ? `style="--foto-comercio:url(${fotoFondo})"` : '';
+
+    const prods = productos.slice(0,3).map(p => {
+      const foto = p.foto || p.fotos?.[0] || '';
+      return `
+        <article class="cprod-v89">
+          ${foto
+            ? `<img class="cprod-photo-v89" src="${foto}" alt="${textoSeguro(p.n)}" loading="lazy">`
+            : `<div class="cprod-placeholder-v89">${p.e||'📦'}</div>`}
+          <div class="cprod-body-v89">
+            <div class="cprod-name-v89">${textoSeguro(p.n)}</div>
+            <div class="cprod-price-v89">${textoSeguro(p.p)}</div>
+          </div>
+        </article>`;
+    }).join('');
+
     return `
-    <div class="comercio-max">
-      <div class="cmax-left">
-        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:.25rem">
-          <div class="cmax-title" style="margin:0">${c.emoji||"🏪"} ${c.nombre}</div>
+    <article class="comercio-max comercio-max-v89 ${fotoFondo?'con-foto-v89':'sin-foto-v89'}" ${estiloFondo}>
+      <div class="comercio-max-overlay-v89"></div>
+
+      <div class="cmax-left-v89">
+        <button class="favorito-v89" type="button" aria-label="Agregar ${textoSeguro(c.nombre)} a favoritos">♡</button>
+
+        <div class="titulo-comercio-v89">
+          <span class="comercio-emoji-v89">${c.emoji||"🏪"}</span>
+          <div>
+            <div class="cmax-title-v89">${textoSeguro(c.nombre)}</div>
+            <div class="cmax-cat-v89">${textoSeguro(c.cat)} · ${textoSeguro(c.barrio||"CDU")}</div>
+          </div>
           ${badgeEstado(c.horarios)}
         </div>
-        <div class="cmax-cat">${c.cat} · ${c.barrio||"CDU"}</div>
-        ${infoPublicaComercio(c,true)}
-        ${estadoCalidadComercioV33(c,true)}
-        <p class="cmax-desc">${c.desc||""}</p>
-        <div class="tienda-tags">${tags}</div>
-        <button class="cmax-wa" type="button" onclick="${refCall}">
-          🛒 Ver productos, entrega y formas de pago
+
+        ${infoPublicaComercio(c,false)}
+        ${estadoCalidadComercioV33(c,false)}
+
+        ${c.desc ? `<p class="cmax-desc-v89">${textoSeguro(c.desc)}</p>` : ''}
+        <div class="tienda-tags tienda-tags-v89">${tags}</div>
+
+        <button class="cmax-wa-v89" type="button" onclick="${refCall}">
+          <span>🛒</span>
+          <span>Ver productos, entrega y formas de pago</span>
+          <strong>→</strong>
         </button>
       </div>
-      <div>
-        <div style="font-size:.8rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem;font-weight:700">Productos en vitrina</div>
-        <div class="cmax-productos">${prods}</div>
-      </div>
-    </div>`
+
+      ${prods ? `
+      <div class="cmax-right-v89">
+        <div class="vitrina-head-v89">
+          <span>Productos en vitrina</span>
+          <strong>⭐ PLAN MAX</strong>
+        </div>
+        <div class="cmax-productos-v89">${prods}</div>
+      </div>` : `
+      <div class="cmax-right-v89 cmax-right-empty-v89">
+        <div class="vitrina-head-v89">
+          <span>Comercio destacado</span>
+          <strong>⭐ PLAN MAX</strong>
+        </div>
+      </div>`}
+    </article>`
   }
 
   if(c.plan === 2){
