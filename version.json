@@ -1,4 +1,13 @@
 {
-  "version": "V83",
-  "nombre": "Inicio a prueba de caché"
+  "version": "V84",
+  "nombre": "Administrador privado y métricas",
+  "fecha": "2026-07-30",
+  "cambios": [
+    "Ingreso con correo y contraseña",
+    "Ingreso alternativo con Google",
+    "Recuperación de contraseña",
+    "Aprobación y estados de comercios conservados",
+    "Resumen de visitas, Ver comercio, WhatsApp, productos vistos, pedidos y operaciones cerradas",
+    "No se modificó la portada pública"
+  ]
 }
