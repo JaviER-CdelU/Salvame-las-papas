@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0b376f">
-<meta name="app-version" content="V86">
+<meta name="app-version" content="V87">
 <title>Sálvame las Papas — Inicio</title>
 <meta name="description" content="Portada principal de Sálvame las Papas: comprar, publicar un comercio o vender y alquilar.">
 <link rel="icon" href="./icons/favicon-32.png" sizes="32x32" type="image/png">
@@ -51,6 +51,14 @@ header{background:var(--navy);color:#fff;padding:12px 18px;box-shadow:0 6px 18px
 footer{padding:22px;text-align:center;color:#6c7c90;font-size:.78rem}footer a{color:#6c7c90;text-decoration:none;font-weight:800}footer a:hover{text-decoration:underline}
 @media(max-width:780px){.header-links{display:none}.actions,.quick{grid-template-columns:1fr}.actions{margin-top:14px}.action{min-height:92px}.hero img{width:100%;height:auto;object-fit:contain}.intro{margin-top:24px}}
 @media(max-width:460px){header{padding:11px 14px}.brand{font-size:1rem}.action{padding:15px}.action .round{width:54px;height:54px;flex-basis:54px}.action strong{font-size:1.05rem}.action small{font-size:.82rem}.quick a{min-height:92px;padding:15px}.quick .circle{width:52px;height:52px;flex-basis:52px}.local{padding:20px 16px}}
+
+.hero-inner{position:relative}
+.hero-link-layer{position:absolute;inset:0;width:100%;height:100%;z-index:5;pointer-events:none}
+.hero-link-layer a{pointer-events:auto;fill:transparent;stroke:transparent;stroke-width:8;cursor:pointer}
+.hero-link-layer a:focus-visible rect,.hero-link-layer a:hover rect{stroke:rgba(255,114,0,.95);fill:rgba(255,255,255,.06)}
+.hero-links-mobile{display:none}
+@media(max-width:700px){.hero-links-desktop{display:none}.hero-links-mobile{display:block}}
+
 </style>
 </head>
 <body>
@@ -73,21 +81,18 @@ footer{padding:22px;text-align:center;color:#6c7c90;font-size:.78rem}footer a{co
         <source srcset="./images/portada-escritorio-v78.webp" type="image/webp">
         <img src="./images/portada-escritorio-v78.png" alt="Sálvame las Papas, comercios locales y publicaciones particulares" fetchpriority="high">
       </picture>
+      <svg class="hero-link-layer hero-links-desktop" viewBox="0 0 1672 941" preserveAspectRatio="none" aria-label="Accesos principales de la portada">
+        <a href="./comprar.html" aria-label="Explorar comercios, productos, ofertas y servicios"><rect x="58" y="506" width="571" height="263" rx="24"/></a>
+        <a href="./planes-comercios.html" aria-label="Publicar mi comercio"><rect x="642" y="506" width="423" height="263" rx="24"/></a>
+        <a href="./publicar-particular.html" aria-label="Vender o alquilar"><rect x="1075" y="506" width="510" height="263" rx="24"/></a>
+      </svg>
+      <svg class="hero-link-layer hero-links-mobile" viewBox="0 0 941 1672" preserveAspectRatio="none" aria-label="Accesos principales de la portada móvil">
+        <a href="./comprar.html" aria-label="Entrar a chusmear"><rect x="54" y="810" width="833" height="181" rx="30"/></a>
+        <a href="./planes-comercios.html" aria-label="Publicar mi comercio"><rect x="54" y="1005" width="833" height="181" rx="30"/></a>
+        <a href="./publicar-particular.html" aria-label="Vender o alquilar"><rect x="54" y="1200" width="833" height="181" rx="30"/></a>
+      </svg>
     </div>
   </section>
-
-  <nav class="actions" aria-label="Acciones principales">
-    <a class="action action-buy" href="./comprar.html">
-      <span class="round">🔎</span><span><strong>Entrar como visitante o comprador</strong><small>Recorré comercios, productos, ofertas y publicaciones particulares.</small></span>
-    </a>
-    <a class="action action-commerce" href="./planes-comercios.html">
-      <span class="round">🏪</span><span><strong>Publicar mi comercio</strong><small>Elegí un plan y sumá tu negocio a la plataforma.</small></span>
-    </a>
-    <a class="action action-seller" href="./publicar-particular.html">
-      <span class="round">🏷️</span><span><strong>Vender o alquilar</strong><small>Publicá lo que vendés o necesitás alquilar.</small></span>
-    </a>
-  </nav>
-
   <section class="intro">
     <h1>Elegí qué querés hacer</h1>
     <p>Encontrá productos y comercios, publicá tu negocio o vendé algo de manera particular.</p>
@@ -104,7 +109,7 @@ footer{padding:22px;text-align:center;color:#6c7c90;font-size:.78rem}footer a{co
     <p>Una red local para acercar vecinos, comercios, productos, servicios y oportunidades.</p>
   </section>
 </main>
-<footer>Versión V86 · Sálvame las Papas · <a href="./admin.html">Editor responsable</a></footer>
+<footer>Versión V87 · Sálvame las Papas · <a href="./admin.html">Editor responsable</a></footer>
 <script>
 // Limpieza de aplicaciones y cachés antiguas. Esta portada no registra service worker.
 if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});}
