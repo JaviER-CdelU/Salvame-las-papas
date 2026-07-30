@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#073574">
-<meta name="app-version" content="V82">
+<meta name="app-version" content="V83">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icons/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="./icons/icon-180.png">
@@ -417,6 +417,7 @@ footer{
 }
 
 </style>
+<link rel="canonical" href="./inicio.html">
 </head>
 <body>
 <!-- V81: PORTADA PRINCIPAL REAL, SIN INTERCEPCIÓN DE CACHÉ -->
@@ -522,27 +523,11 @@ footer{
 </main>
 
 <footer>
-  <span>Versión V82 · Sálvame las Papas</span>
+  <span>Versión V83 · Sálvame las Papas</span>
   <span class="footer-separator-v72"> · </span>
   <a class="admin-footer-v72" href="./admin.html">Editor responsable</a>
 </footer>
 
-<script>
-// V81: elimina registros y cachés viejos para que Vercel no muestre otra página como inicio.
-window.addEventListener("load", async () => {
-  try {
-    if ("serviceWorker" in navigator) {
-      const regs = await navigator.serviceWorker.getRegistrations();
-      await Promise.all(regs.map(reg => reg.unregister()));
-    }
-    if ("caches" in window) {
-      const names = await caches.keys();
-      await Promise.all(names.map(name => caches.delete(name)));
-    }
-  } catch (e) {
-    console.warn("No se pudo limpiar una caché anterior", e);
-  }
-});
-</script>
+
 </body>
 </html>

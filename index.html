@@ -1,6 +1,15 @@
 <!doctype html>
 <html lang="es">
 <head>
+<script>
+(function(){
+  const p=location.pathname.replace(/\/+$/,'');
+  if(p==='' || p==='/' || p.endsWith('/index.html')){
+    location.replace('./inicio.html?v=83');
+  }
+})();
+</script>
+
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#002A6A">
@@ -61,8 +70,8 @@ footer{background:#04162e;color:rgba(255,255,255,.68);text-align:center;padding:
 </head>
 <body>
 <header class="top"><div class="topin">
-  <a class="brand" href="./index.html"><img src="./icons/icon-192.png" alt="">Sálvame las Papas</a>
-  <a class="back" href="./index.html">← Volver al inicio</a>
+  <a class="brand" href="./inicio.html"><img src="./icons/icon-192.png" alt="">Sálvame las Papas</a>
+  <a class="back" href="./inicio.html">← Volver al inicio</a>
 </div></header>
 
 <section class="hero"><div class="heroin">
@@ -129,7 +138,7 @@ footer{background:#04162e;color:rgba(255,255,255,.68);text-align:center;padding:
   <section class="cta">
     <h2>¿Listo para buscar?</h2>
     <p>Volvé al inicio y encontrá una solución cerca tuyo.</p>
-    <a href="./index.html">Ir a Sálvame las Papas</a>
+    <a href="./inicio.html">Ir a Sálvame las Papas</a>
   </section>
 </main>
 
