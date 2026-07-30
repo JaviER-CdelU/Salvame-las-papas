@@ -1,12 +1,11 @@
 {
-  "version": "V69",
-  "nombre": "Cabecera gráfica para planes de comercios",
-  "fecha": "2026-07-27",
+  "version": "V70",
+  "nombre": "Texto comercial del inicio",
+  "fecha": "2026-07-29",
   "cambios": [
-    "Nueva cabecera ilustrada en planes-comercios.html",
-    "Botones visuales enlazados a Básico, Destacado y Pro",
-    "Botones grandes alternativos para celular",
-    "Explicación completa de cambios de plan conservada debajo",
-    "Imagen optimizada en WebP con respaldo PNG"
+    "Reemplazado el texto técnico del inicio",
+    "Nuevo título Elegí qué querés hacer",
+    "Nueva explicación comercial para compradores, comercios y particulares",
+    "Sin otros cambios de diseño o funcionamiento"
   ]
 }
