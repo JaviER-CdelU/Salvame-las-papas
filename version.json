@@ -1,15 +1,13 @@
 {
-  "version": "V75",
-  "nombre": "Página de compradores limpia",
+  "version": "V76",
+  "nombre": "Portada especial para celular",
   "fecha": "2026-07-29",
   "cambios": [
-    "Eliminados físicamente los planes y el registro comercial de comprar.html",
-    "Eliminada el alta promocional de vendedores",
-    "Buscador y filtros reorganizados",
-    "Nuevo filtro por comercios, productos o particulares",
-    "Filtro por barrio, entrega, abierto ahora y favoritos",
-    "Ofertas, comercios y particulares conservados",
-    "Ayuda y contacto al final",
-    "Reducción del HTML de 307266 a 271534 caracteres"
+    "Portada de escritorio conservada",
+    "Nueva portada vertical para celular",
+    "Selección automática mediante picture",
+    "Botones móviles grandes conservados",
+    "Zonas transparentes desactivadas en teléfonos",
+    "Imágenes optimizadas en WebP"
   ]
 }
