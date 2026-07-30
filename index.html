@@ -1,149 +1,114 @@
 <!doctype html>
 <html lang="es">
 <head>
-<script>
-(function(){
-  const p=location.pathname.replace(/\/+$/,'');
-  if(p==='' || p==='/' || p.endsWith('/index.html')){
-    location.replace('./inicio.html?v=83');
-  }
-})();
-</script>
-
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#002A6A">
-<meta name="description" content="Guía visual para comprar y pedir con Sálvame las Papas.">
-<meta name="app-version" content="V79">
-<title>Cómo funciona — Sálvame las Papas</title>
-<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#0b376f">
+<meta name="app-version" content="V86">
+<title>Sálvame las Papas — Inicio</title>
+<meta name="description" content="Portada principal de Sálvame las Papas: comprar, publicar un comercio o vender y alquilar.">
+<link rel="icon" href="./icons/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="./icons/icon-180.png">
-<link rel="icon" href="./icons/favicon-32.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--azul:#002A6A;--azul2:#07549b;--rojo:#CC0000;--naranja:#F47521;--fondo:#F7F4EF;--texto:#1c2430;--suave:#667085}
 *{box-sizing:border-box}
-body{margin:0;background:var(--fondo);font-family:"DM Sans",sans-serif;color:var(--texto)}
-.top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.97);border-bottom:1px solid #e2e7ee;box-shadow:0 5px 18px rgba(0,42,106,.06)}
-.topin{max-width:1180px;margin:auto;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:14px}
-.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--azul);font-family:"Fraunces",serif;font-weight:900;font-size:1.08rem}
-.brand img{width:46px;height:46px;border-radius:13px}
-.back{text-decoration:none;background:var(--azul);color:#fff;padding:10px 16px;border-radius:999px;font-weight:800}
-.hero{background:linear-gradient(135deg,#002A6A,#07549b);color:#fff;overflow:hidden}
-.heroin{max-width:1180px;margin:auto;padding:58px 20px;display:grid;grid-template-columns:1.1fr .9fr;gap:32px;align-items:center}
-.hero-kicker{display:inline-flex;padding:7px 12px;border-radius:999px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.25);font-size:.78rem;font-weight:900;letter-spacing:.08em}
-.hero h1{font-family:"Fraunces",serif;font-size:clamp(2.7rem,7vw,4.8rem);line-height:1;margin:13px 0 15px}
-.hero p{font-size:1.08rem;line-height:1.7;color:rgba(255,255,255,.86);max-width:680px}
-.hero img{width:100%;max-width:360px;justify-self:center;filter:drop-shadow(0 20px 25px rgba(0,0,0,.22))}
-.wrap{max-width:1180px;margin:auto;padding:52px 20px}
-.intro{max-width:800px;text-align:center;margin:0 auto 35px}
-.intro h2{font-family:"Fraunces",serif;color:var(--azul);font-size:2.25rem;margin:0 0 9px}
-.intro p{color:var(--suave);line-height:1.7}
-.no-register{margin:0 auto 34px;max-width:900px;padding:16px 18px;border-radius:16px;background:#edf9f0;border:1px solid #8dcc9a;color:#245f35;line-height:1.55;text-align:center}
-.steps{display:grid;gap:26px}
-.step{display:grid;grid-template-columns:1fr 1fr;background:#fff;border-radius:24px;overflow:hidden;border:1px solid #e1e6ec;box-shadow:0 14px 38px rgba(0,42,106,.09)}
-.step:nth-child(even) .pic{order:2}
-.pic{min-height:330px;background:#eaf1f8}
-.pic img{width:100%;height:100%;object-fit:cover;display:block}
-.copy{padding:36px;display:flex;flex-direction:column;justify-content:center}
-.num{display:grid;place-items:center;width:43px;height:43px;border-radius:50%;background:var(--naranja);color:#fff;font-weight:900;margin-bottom:14px;box-shadow:0 6px 14px rgba(244,117,33,.25)}
-.copy h3{font-family:"Fraunces",serif;font-size:1.8rem;color:var(--azul);margin:0 0 9px}
-.copy p{line-height:1.75;color:#535d6b;margin:0}
-.copy ul{margin:13px 0 0;padding-left:19px;color:#535d6b;line-height:1.7}
-.tip{margin-top:38px;background:#fff4e8;border:2px solid #ffc68d;border-radius:20px;padding:22px;line-height:1.65}
-.cta{margin-top:38px;background:linear-gradient(135deg,#CC0000,#a30000);color:#fff;border-radius:24px;padding:32px;text-align:center}
-.cta h2{font-family:"Fraunces",serif;font-size:2rem;margin:0 0 8px}
-.cta p{color:rgba(255,255,255,.84)}
-.cta a{display:inline-block;background:#fff;color:var(--rojo);text-decoration:none;font-weight:900;padding:12px 20px;border-radius:999px}
-footer{background:#04162e;color:rgba(255,255,255,.68);text-align:center;padding:24px}
-.version{display:inline-block;margin-top:8px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.10);color:#ffd34e;font-size:.72rem;font-weight:800}
-@media(max-width:760px){
- .heroin,.step{grid-template-columns:1fr}
- .hero img{max-width:260px}
- .step:nth-child(even) .pic{order:0}
- .pic{min-height:230px}
- .copy{padding:24px}
- .brand{font-size:.9rem}
+:root{
+  --navy:#0b376f;
+  --blue:#1267c4;
+  --green:#2f8a55;
+  --orange:#ff7600;
+  --purple:#6b42c7;
+  --aqua:#129aaa;
+  --ink:#17314f;
+  --muted:#66758a;
+  --paper:#f3f8fd;
 }
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Arial,sans-serif;background:var(--paper);color:var(--ink)}
+header{background:var(--navy);color:#fff;padding:12px 18px;box-shadow:0 6px 18px rgba(4,33,70,.18)}
+.header-inner{width:min(1500px,100%);margin:auto;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.brand{font-family:Georgia,serif;font-size:1.18rem;font-weight:900}.brand em{color:#ffbd76;font-style:normal}
+.header-links{display:flex;gap:10px;flex-wrap:wrap}.header-links a{color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.35);padding:9px 14px;border-radius:999px;font-weight:900;font-size:.84rem}
+.hero{background:#fff;border-bottom:4px solid var(--orange)}
+.hero picture,.hero img{display:block;width:100%;height:auto}.hero-inner{width:min(1536px,100%);margin:auto}
+.actions{width:min(1180px,calc(100% - 28px));margin:22px auto 14px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.action{display:flex;align-items:center;gap:14px;min-height:104px;padding:18px;border-radius:20px;text-decoration:none;color:#fff;box-shadow:0 12px 28px rgba(8,48,96,.13);transition:transform .18s ease,box-shadow .18s ease}
+.action:hover,.action:focus-visible{transform:translateY(-2px);box-shadow:0 16px 34px rgba(8,48,96,.18);outline:3px solid rgba(255,255,255,.65)}
+.action .round{width:62px;height:62px;flex:0 0 62px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:1.8rem;box-shadow:0 8px 18px rgba(0,0,0,.12)}
+.action strong{display:block;font-size:1.2rem;line-height:1.1;margin-bottom:6px}.action small{display:block;font-size:.9rem;line-height:1.35;color:rgba(255,255,255,.95);font-weight:700}
+.action-buy{background:linear-gradient(135deg,#0d5aa7,#1684ea)}.action-buy .round{color:#0d5aa7}
+.action-commerce{background:linear-gradient(135deg,#247a42,#60b83c)}.action-commerce .round{color:#247a42}
+.action-seller{background:linear-gradient(135deg,#ff6a00,#ff9d3c)}.action-seller .round{color:#ff6a00}
+.intro{width:min(950px,calc(100% - 28px));margin:30px auto 22px;text-align:center}.intro h1{margin:0 0 8px;color:var(--navy);font-family:Georgia,serif;font-size:clamp(1.8rem,4vw,2.75rem)}.intro p{margin:0;color:var(--muted);line-height:1.55;font-size:1.02rem}
+.quick{width:min(1180px,calc(100% - 28px));margin:0 auto 32px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.quick a{text-decoration:none;border-radius:20px;padding:18px;min-height:104px;display:flex;align-items:center;gap:15px;box-shadow:0 10px 24px rgba(6,31,70,.08);font-weight:900;transition:transform .18s ease}
+.quick a:hover,.quick a:focus-visible{transform:translateY(-2px);outline:3px solid rgba(11,55,111,.15)}
+.quick .circle{width:58px;height:58px;flex:0 0 58px;border-radius:50%;display:grid;place-items:center;font-size:1.55rem;color:#fff}
+.quick .label{display:flex;flex-direction:column;gap:5px}.quick strong{font-size:1.14rem}.quick small{font-size:.87rem;line-height:1.35;font-weight:700;color:#50647d}
+.quick-commerce{background:#eff7ff;border:1px solid #b8d7f4;color:#075aa8}.quick-commerce .circle{background:#7fc7fa}
+.quick-publications{background:#fff5ea;border:1px solid #ffd1a1;color:#8d4c00}.quick-publications .circle{background:#f2a93b}
+.quick-help{background:#effaf6;border:1px solid #b8dfcf;color:#12614a}.quick-help .circle{background:#5fc39c}
+.local{width:min(1180px,calc(100% - 28px));margin:0 auto 28px;background:linear-gradient(135deg,#0b376f,#125ab5);color:#fff;border-radius:22px;padding:24px;text-align:center}.local h2{margin:0 0 8px;font-family:Georgia,serif}.local p{margin:0;color:#dcecff}
+footer{padding:22px;text-align:center;color:#6c7c90;font-size:.78rem}footer a{color:#6c7c90;text-decoration:none;font-weight:800}footer a:hover{text-decoration:underline}
+@media(max-width:780px){.header-links{display:none}.actions,.quick{grid-template-columns:1fr}.actions{margin-top:14px}.action{min-height:92px}.hero img{width:100%;height:auto;object-fit:contain}.intro{margin-top:24px}}
+@media(max-width:460px){header{padding:11px 14px}.brand{font-size:1rem}.action{padding:15px}.action .round{width:54px;height:54px;flex-basis:54px}.action strong{font-size:1.05rem}.action small{font-size:.82rem}.quick a{min-height:92px;padding:15px}.quick .circle{width:52px;height:52px;flex-basis:52px}.local{padding:20px 16px}}
 </style>
 </head>
 <body>
-<header class="top"><div class="topin">
-  <a class="brand" href="./inicio.html"><img src="./icons/icon-192.png" alt="">Sálvame las Papas</a>
-  <a class="back" href="./inicio.html">← Volver al inicio</a>
-</div></header>
-
-<section class="hero"><div class="heroin">
-  <div>
-    <span class="hero-kicker">GUÍA VISUAL PARA CLIENTES</span>
-    <h1>¿Cómo funciona?</h1>
-    <p>Buscá, compará, armá tu pedido y coordiná directamente con el comercio. Podés recorrer toda la página antes de crear una cuenta.</p>
+<header>
+  <div class="header-inner">
+    <div class="brand">Sálvame <em>las Papas 🥔</em></div>
+    <nav class="header-links" aria-label="Navegación principal">
+      <a href="./planes-comercios.html">Comercios</a>
+      <a href="./publicar-particular.html">Venta o alquiler</a>
+      <a href="./como-usar.html">Ayuda</a>
+    </nav>
   </div>
-  <img src="./images/super-papa.webp" alt="Súper Papa">
-</div></section>
-
-<main class="wrap">
-  <div class="intro">
-    <h2>Comprar es simple</h2>
-    <p>La plataforma te ayuda a encontrar comercios y productos de Concepción del Uruguay sin perder tiempo.</p>
-  </div>
-
-  <div class="no-register"><strong>No necesitás registrarte para mirar.</strong> Tus datos se solicitan únicamente cuando decidís confirmar un pedido.</div>
-
-  <section class="steps">
-    <article class="step">
-      <div class="pic"><img src="./images/guia/paso-1.webp" alt="Persona buscando una solución local"></div>
-      <div class="copy"><span class="num">1</span><h3>Buscá lo que necesitás</h3>
-        <p>Usá el buscador, las categorías o los filtros para encontrar comercios, productos y servicios.</p>
-        <ul><li>Buscá por producto, comercio o barrio.</li><li>Filtrá por entrega, retiro y disponibilidad.</li></ul>
-      </div>
-    </article>
-
-    <article class="step">
-      <div class="pic"><img src="./images/guia/paso-2.webp" alt="Comparación de comercios y productos"></div>
-      <div class="copy"><span class="num">2</span><h3>Compará y elegí</h3>
-        <p>Entrá a cada comercio para revisar fotos, precios, horarios, dirección y formas de entrega.</p>
-        <ul><li>Comprobá si está abierto.</li><li>Revisá ubicación y Google Maps.</li><li>Elegí la opción que mejor te sirva.</li></ul>
-      </div>
-    </article>
-
-    <article class="step">
-      <div class="pic"><img src="./images/guia/paso-3.webp" alt="Cliente armando su pedido"></div>
-      <div class="copy"><span class="num">3</span><h3>Armá tu pedido</h3>
-        <p>Agregá los productos, modificá cantidades y elegí retiro, envío y forma de pago.</p>
-        <ul><li>Podés seguir mirando antes de confirmar.</li><li>El total se calcula automáticamente.</li></ul>
-      </div>
-    </article>
-
-    <article class="step">
-      <div class="pic"><img src="./images/guia/paso-4.webp" alt="Confirmación de datos del cliente"></div>
-      <div class="copy"><span class="num">4</span><h3>Confirmá tus datos</h3>
-        <p>Recién en este momento ingresás o creás una cuenta. El comercio recibe únicamente los datos necesarios para preparar y entregar el pedido.</p>
-        <ul><li>Nombre y WhatsApp.</li><li>Entrega o retiro.</li><li>Forma de pago y observaciones.</li></ul>
-      </div>
-    </article>
-
-    <article class="step">
-      <div class="pic"><img src="./images/guia/paso-5.webp" alt="Pedido coordinado y entregado"></div>
-      <div class="copy"><span class="num">5</span><h3>Coordiná y recibí</h3>
-        <p>El pedido queda registrado y se abre WhatsApp con el detalle completo para coordinar con el comercio.</p>
-        <ul><li>Confirmá disponibilidad y tiempo.</li><li>Coordiná pago, envío o retiro.</li><li>Guardá el número de pedido.</li></ul>
-      </div>
-    </article>
+</header>
+<main>
+  <section class="hero" aria-label="Presentación principal">
+    <div class="hero-inner">
+      <picture>
+        <source media="(max-width: 700px)" srcset="./images/portada-inicio-celular-v82.webp" type="image/webp">
+        <source media="(max-width: 700px)" srcset="./images/portada-inicio-celular-v82.png" type="image/png">
+        <source srcset="./images/portada-escritorio-v78.webp" type="image/webp">
+        <img src="./images/portada-escritorio-v78.png" alt="Sálvame las Papas, comercios locales y publicaciones particulares" fetchpriority="high">
+      </picture>
+    </div>
   </section>
 
-  <div class="tip"><strong>💡 Recordá:</strong> Sálvame las Papas conecta al cliente con el comercio. El negocio confirma la disponibilidad, el precio final y la entrega.</div>
+  <nav class="actions" aria-label="Acciones principales">
+    <a class="action action-buy" href="./comprar.html">
+      <span class="round">🔎</span><span><strong>Entrar como visitante o comprador</strong><small>Recorré comercios, productos, ofertas y publicaciones particulares.</small></span>
+    </a>
+    <a class="action action-commerce" href="./planes-comercios.html">
+      <span class="round">🏪</span><span><strong>Publicar mi comercio</strong><small>Elegí un plan y sumá tu negocio a la plataforma.</small></span>
+    </a>
+    <a class="action action-seller" href="./publicar-particular.html">
+      <span class="round">🏷️</span><span><strong>Vender o alquilar</strong><small>Publicá lo que vendés o necesitás alquilar.</small></span>
+    </a>
+  </nav>
 
-  <section class="cta">
-    <h2>¿Listo para buscar?</h2>
-    <p>Volvé al inicio y encontrá una solución cerca tuyo.</p>
-    <a href="./inicio.html">Ir a Sálvame las Papas</a>
+  <section class="intro">
+    <h1>Elegí qué querés hacer</h1>
+    <p>Encontrá productos y comercios, publicá tu negocio o vendé algo de manera particular.</p>
+  </section>
+
+  <nav class="quick" aria-label="Accesos de gestión y ayuda">
+    <a class="quick-commerce" href="./comercio.html"><span class="circle">🏪</span><span class="label"><strong>Mi Comercio</strong><small>Entrá a tu panel y administrá tu negocio.</small></span></a>
+    <a class="quick-publications" href="./mis-publicaciones.html"><span class="circle">🏷️</span><span class="label"><strong>Mis publicaciones</strong><small>Revisá, editá o renová tus avisos particulares.</small></span></a>
+    <a class="quick-help" href="./como-usar.html"><span class="circle">📖</span><span class="label"><strong>Cómo se usa</strong><small>Consultá la guía rápida de la plataforma.</small></span></a>
+  </nav>
+
+  <section class="local">
+    <h2>Hecho en Concepción del Uruguay, para nuestra comunidad</h2>
+    <p>Una red local para acercar vecinos, comercios, productos, servicios y oportunidades.</p>
   </section>
 </main>
-
-<footer>Sálvame las Papas · Concepción del Uruguay
-  <div class="version">Versión V79</div>
-</footer>
+<footer>Versión V86 · Sálvame las Papas · <a href="./admin.html">Editor responsable</a></footer>
+<script>
+// Limpieza de aplicaciones y cachés antiguas. Esta portada no registra service worker.
+if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});}
+if('caches' in window){caches.keys().then(keys=>Promise.all(keys.map(k=>caches.delete(k)))).catch(()=>{});}
+</script>
 </body>
 </html>
