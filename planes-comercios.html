@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#073574"><meta name="app-version" content="V72">
+<meta name="theme-color" content="#073574"><meta name="app-version" content="V73">
 <title>Planes para comercios — Sálvame las Papas</title>
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f3f7fb;color:#172338}
@@ -89,11 +89,87 @@ main{width:min(1180px,calc(100% - 28px));margin:30px auto}.hero{text-align:cente
 .plan-hotspot-basic-v69{left:18.1%;top:59.5%;width:17%;height:10.5%}
 .plan-hotspot-featured-v69{left:39.6%;top:59.5%;width:17%;height:10.5%}
 .plan-hotspot-pro-v69{left:60.5%;top:59.5%;width:17%;height:10.5%}
-.plans-mobile-actions-v69{display:none;gap:9px;margin-top:12px}
+.plans-mobile-actions-v69{display:none!important}
 .plans-mobile-actions-v69 a{display:block;padding:13px;border-radius:12px;color:#fff;text-decoration:none;text-align:center;font-weight:900}
 .plans-mobile-actions-v69 .basic{background:#176bd1}.plans-mobile-actions-v69 .featured{background:#ff7200}.plans-mobile-actions-v69 .pro{background:#7b32cc}
 .plans-continue-v69{width:min(1180px,calc(100% - 28px));margin:0 auto 12px;padding:14px 16px;border-radius:14px;background:#eef6ff;border:1px solid #b8d2ec;color:#073574;text-align:center;line-height:1.45}
-@media(max-width:760px){.plan-hotspot-v69{display:none}.plans-mobile-actions-v69{display:grid}.plans-visual-v69{width:calc(100% - 16px);margin-top:12px}.plans-visual-wrap-v69{border-radius:14px}}
+@media(max-width:760px){.plan-hotspot-v69{display:none}.plans-mobile-actions-v69{display:none!important}.plans-visual-v69{width:calc(100% - 16px);margin-top:12px}.plans-visual-wrap-v69{border-radius:14px}}
+
+
+/* V73 — COMPARACIÓN BREVE SIN TARJETAS DUPLICADAS */
+.plans-compare-v73{
+  margin:25px 0;
+  background:#ffffff;
+  border:1px solid #d6e2ed;
+  border-radius:20px;
+  padding:22px;
+  box-shadow:0 12px 30px rgba(7,47,107,.08);
+}
+.plans-compare-v73 h2{
+  margin:0 0 6px;
+  color:#073574;
+  font-family:Georgia,serif;
+  font-size:clamp(1.55rem,4vw,2.2rem);
+  text-align:center;
+}
+.plans-compare-lead-v73{
+  margin:0 0 16px;
+  color:#657388;
+  text-align:center;
+}
+.plans-table-wrap-v73{
+  overflow-x:auto;
+}
+.plans-table-v73{
+  width:100%;
+  border-collapse:collapse;
+  min-width:680px;
+}
+.plans-table-v73 th,
+.plans-table-v73 td{
+  border:1px solid #dbe4ed;
+  padding:12px 10px;
+  text-align:center;
+  vertical-align:middle;
+}
+.plans-table-v73 th{
+  background:#073574;
+  color:#ffffff;
+  font-weight:900;
+}
+.plans-table-v73 th:first-child,
+.plans-table-v73 td:first-child{
+  text-align:left;
+  font-weight:800;
+}
+.plans-table-v73 tbody tr:nth-child(even){
+  background:#f6f9fc;
+}
+.plans-real-buttons-v73{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+  margin-top:16px;
+}
+.plans-real-buttons-v73 a{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:52px;
+  padding:13px;
+  border-radius:12px;
+  color:#ffffff;
+  text-decoration:none;
+  text-align:center;
+  font-weight:900;
+}
+.plans-real-buttons-v73 .basic{background:#176bd1}
+.plans-real-buttons-v73 .featured{background:#ff7200}
+.plans-real-buttons-v73 .pro{background:#7b32cc}
+@media(max-width:760px){
+  .plans-compare-v73{padding:15px}
+  .plans-real-buttons-v73{grid-template-columns:1fr}
+}
 
 </style>
 </head>
@@ -118,15 +194,79 @@ main{width:min(1180px,calc(100% - 28px));margin:30px auto}.hero{text-align:cente
     <a class="pro" href="./registrar-comercio.html?plan=3">Elegir Pro — $45.000</a>
   </nav>
 </section>
-<p class="plans-continue-v69">Debajo de esta cabecera podés revisar la explicación completa, comparar los planes y conocer qué pasa cuando subís o bajás de plan.</p>
+<p class="plans-continue-v69">Más abajo podés comparar los detalles y conocer qué pasa cuando subís o bajás de plan.</p>
 
 <main>
 <section class="hero"><h1>Elegí cómo publicar tu comercio</h1><p>Los planes son mensuales. Podés adherirte mediante Mercado Pago con renovación automática o coordinar un pago presencial con renovación manual.</p></section>
-<section class="grid">
-<article class="plan"><span class="badge">PLAN BÁSICO</span><h2>Básico</h2><div class="price">$15.000/mes</div><p class="comparison">Menos de un alfajor por día</p><ul><li>Hasta 10 productos</li><li>1 foto por producto</li><li>WhatsApp y ubicación</li><li>Aparición normal en búsquedas</li></ul><a href="./registrar-comercio.html?plan=1">Elegir Básico y registrarme</a></article>
-<article class="plan featured"><span class="badge">MÁS VISIBILIDAD</span><h2>Destacado</h2><div class="price">$30.000/mes</div><p class="comparison">Menos de un café por día</p><ul><li>Hasta 30 productos</li><li>2 fotos por producto</li><li>Ofertas de la semana</li><li>Mejor posición en categorías</li><li>Estadísticas básicas</li></ul><a href="./registrar-comercio.html?plan=2">Elegir Destacado y registrarme</a></article>
-<article class="plan"><span class="badge">MAYOR EXPOSICIÓN</span><h2>Pro</h2><div class="price">$45.000/mes</div><p class="comparison">Menos de una Coca-Cola chica por día</p><ul><li>Hasta 60 productos</li><li>4 fotos por producto</li><li>Prioridad en portada</li><li>Promociones y difusión</li><li>Estadísticas completas</li></ul><a href="./registrar-comercio.html?plan=3">Elegir Pro y registrarme</a></article>
+
+<section class="plans-compare-v73" aria-label="Comparación de planes">
+  <h2>Compará los planes</h2>
+  <p class="plans-compare-lead-v73">Elegí según la cantidad de productos, fotos y visibilidad que necesita tu comercio.</p>
+
+  <div class="plans-table-wrap-v73">
+    <table class="plans-table-v73">
+      <thead>
+        <tr>
+          <th>Característica</th>
+          <th>Básico</th>
+          <th>Destacado</th>
+          <th>Pro</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Precio mensual</td>
+          <td>$15.000</td>
+          <td>$30.000</td>
+          <td>$45.000</td>
+        </tr>
+        <tr>
+          <td>Productos publicados</td>
+          <td>Hasta 10</td>
+          <td>Hasta 30</td>
+          <td>Hasta 60</td>
+        </tr>
+        <tr>
+          <td>Fotos por producto</td>
+          <td>1</td>
+          <td>2</td>
+          <td>4</td>
+        </tr>
+        <tr>
+          <td>Visibilidad</td>
+          <td>Normal</td>
+          <td>Mejor ubicación</td>
+          <td>Mayor exposición</td>
+        </tr>
+        <tr>
+          <td>Ofertas destacadas</td>
+          <td>—</td>
+          <td>Sí</td>
+          <td>Sí, con prioridad</td>
+        </tr>
+        <tr>
+          <td>Estadísticas</td>
+          <td>Básicas</td>
+          <td>Mensuales</td>
+          <td>Completas</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="plans-real-buttons-v73">
+    <a class="basic" href="./registrar-comercio.html?plan=1">
+      Elegir Básico — $15.000
+    </a>
+    <a class="featured" href="./registrar-comercio.html?plan=2">
+      Elegir Destacado — $30.000
+    </a>
+    <a class="pro" href="./registrar-comercio.html?plan=3">
+      Elegir Pro — $45.000
+    </a>
+  </div>
 </section>
+
 
 <section class="plan-change-v68">
   <h2>¿Qué pasa si subís o bajás de plan?</h2>

@@ -1,12 +1,14 @@
 {
-  "version": "V72",
-  "nombre": "Administración discreta",
+  "version": "V73",
+  "nombre": "Planes sin contenido duplicado",
   "fecha": "2026-07-29",
   "cambios": [
-    "Administración eliminada de los accesos principales de la portada",
-    "Accesos principales reducidos a Mi Comercio, Mis publicaciones y Cómo se usa",
-    "Administración trasladada al pie de página",
-    "Enlace administrativo pequeño y discreto",
-    "Sin otros cambios de diseño o funcionamiento"
+    "Cabecera ilustrada conservada",
+    "Eliminadas las tres tarjetas grandes repetidas",
+    "Nueva tabla breve de comparación",
+    "Botones reales para Básico, Destacado y Pro",
+    "Explicación de cambios de plan conservada",
+    "Formas de pago conservadas",
+    "Sin otros cambios de funcionamiento"
   ]
 }

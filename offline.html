@@ -1,157 +1,103 @@
-rules_version = '2';
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#002A6A">
+<title>Sin conexión — Sálvame las Papas</title>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#002A6A;color:#fff;font-family:system-ui,sans-serif;padding:24px}
+.card{max-width:520px;text-align:center;background:#fff;color:#172033;border-radius:24px;padding:32px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+img{width:128px;height:128px;border-radius:28px}
+h1{margin:18px 0 8px}p{line-height:1.6;color:#586174}
+button{border:0;border-radius:999px;background:#cc0000;color:#fff;font-weight:800;padding:13px 22px;cursor:pointer}
 
-service cloud.firestore {
-  match /databases/{database}/documents {
-
-    function signedIn() {
-      return request.auth != null;
-    }
-
-    function isAdmin() {
-      return signedIn()
-        && request.auth.token.email == "salvamelaspapascdelu@gmail.com";
-    }
-
-    function isSellerOwner() {
-      return signedIn() && resource.data.ownerUid == request.auth.uid;
-    }
-
-    match /comercios/{comercioId} {
-      function legacyEmailOwner() {
-        return signedIn()
-          && resource.data.email is string
-          && resource.data.email == request.auth.token.email;
-      }
-
-      function safeLegacyClaim() {
-        return legacyEmailOwner()
-          && !('ownerUid' in resource.data)
-          && request.resource.data.ownerUid == request.auth.uid
-          && request.resource.data.email == resource.data.email
-          && request.resource.data.diff(resource.data).affectedKeys()
-             .hasOnly(["ownerUid", "vinculadoEn"]);
-      }
-
-      allow read: if isAdmin()
-                  || (signedIn() && resource.data.ownerUid == request.auth.uid)
-                  || legacyEmailOwner()
-                  || resource.data.estado == "activo";
-
-      allow create: if signedIn();
-
-      allow update: if isAdmin()
-                    || (signedIn() && resource.data.ownerUid == request.auth.uid)
-                    || safeLegacyClaim();
-
-      allow delete: if isAdmin()
-                    || (signedIn() && resource.data.ownerUid == request.auth.uid);
-
-      match /metricas/{mesId} {
-        function metricKeysOk() {
-          return request.resource.data.keys().hasOnly(["visitas","clicsWhatsApp","actualizadoEn"]);
-        }
-        function validCreateMetric() {
-          return metricKeysOk()
-            && (!("visitas" in request.resource.data) || request.resource.data.visitas == 1)
-            && (!("clicsWhatsApp" in request.resource.data) || request.resource.data.clicsWhatsApp == 1);
-        }
-        function validUpdateMetric() {
-          return metricKeysOk()
-            && request.resource.data.visitas >= resource.data.visitas
-            && request.resource.data.visitas <= resource.data.visitas + 1
-            && request.resource.data.clicsWhatsApp >= resource.data.clicsWhatsApp
-            && request.resource.data.clicsWhatsApp <= resource.data.clicsWhatsApp + 1;
-        }
-        allow read: if isAdmin()
-                    || (signedIn() && (
-                      get(/databases/$(database)/documents/comercios/$(comercioId)).data.ownerUid == request.auth.uid
-                      || get(/databases/$(database)/documents/comercios/$(comercioId)).data.email == request.auth.token.email
-                    ));
-        allow create: if validCreateMetric();
-        allow update: if validUpdateMetric();
-        allow delete: if isAdmin();
-      }
-
-      match /productos/{productoId} {
-        function parentCommerce() {
-          return get(/databases/$(database)/documents/comercios/$(comercioId)).data;
-        }
-
-        function parentOwner() {
-          return signedIn()
-            && (
-              parentCommerce().ownerUid == request.auth.uid
-              || (
-                parentCommerce().email is string
-                && parentCommerce().email == request.auth.token.email
-              )
-            );
-        }
-
-        allow read: if isAdmin()
-                    || parentCommerce().estado == "activo"
-                    || parentOwner();
-
-        allow create, update, delete: if isAdmin() || parentOwner();
-      }
-    }
-
-    match /vendedoresParticulares/{publicacionId} {
-      allow create: if signedIn()
-                    && request.resource.data.ownerUid == request.auth.uid
-                    && request.resource.data.tipo == "vendedor_particular"
-                    && request.resource.data.estado == "pendiente"
-                    && request.resource.data.estadoPago == "pendiente"
-                    && request.resource.data.nombre is string
-                    && request.resource.data.nombre.size() >= 2
-                    && request.resource.data.whatsapp is string
-                    && request.resource.data.whatsapp.size() >= 8
-                    && request.resource.data.articulos is list
-                    && request.resource.data.articulos.size() >= 1
-                    && request.resource.data.articulos.size() <= 2;
-
-      allow read: if isAdmin()
-                  || isSellerOwner()
-                  || resource.data.estado == "activo";
-
-      allow update: if isAdmin()
-                    || (
-                      isSellerOwner()
-                      && request.resource.data.ownerUid == resource.data.ownerUid
-                      && request.resource.data.estado == resource.data.estado
-                      && request.resource.data.estadoPago == resource.data.estadoPago
-                      && request.resource.data.plan == resource.data.plan
-                      && request.resource.data.vencimiento == resource.data.vencimiento
-                      && request.resource.data.articulos is list
-                      && request.resource.data.articulos.size() >= 1
-                      && request.resource.data.articulos.size() <= 2
-                      && request.resource.data.diff(resource.data).affectedKeys()
-                         .hasOnly(["articulos", "actualizadoEn"])
-                    );
-
-      allow delete: if isAdmin();
-    }
-
-    match /pedidos/{pedidoId} {
-      function pedidoOwner() {
-        return signedIn()
-          && (
-            get(/databases/$(database)/documents/comercios/$(resource.data.comercioId)).data.ownerUid == request.auth.uid
-            || get(/databases/$(database)/documents/comercios/$(resource.data.comercioId)).data.email == request.auth.token.email
-          );
-      }
-      allow create: if signedIn() && request.resource.data.clienteUid == request.auth.uid;
-      allow read: if isAdmin() || pedidoOwner() || (signedIn() && resource.data.clienteUid == request.auth.uid);
-      allow update: if isAdmin() || pedidoOwner();
-      allow delete: if isAdmin();
-    }
-
-    match /usuarios/{usuarioId} {
-      allow read, write: if signedIn() && request.auth.uid == usuarioId;
-    }
-
-    match /{document=**} {
-      allow read, write: if false;
-    }
-  }
+.password-contenedor{
+  position:relative;
+  width:100%;
 }
+.password-contenedor input[type="password"],
+.password-contenedor input[type="text"]{
+  width:100%;
+  padding-right:54px !important;
+}
+.btn-ver-password{
+  position:absolute;
+  right:8px;
+  top:50%;
+  transform:translateY(-50%);
+  width:40px !important;
+  min-width:40px !important;
+  height:36px;
+  padding:0 !important;
+  border:0;
+  background:transparent;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:1.1rem;
+  line-height:1;
+}
+.btn-ver-password:hover{background:rgba(0,0,0,.06)}
+
+
+/* IDENTIFICACIÓN DE VERSIÓN — V26 */
+.app-version-badge{
+  position:fixed;
+  right:12px;
+  bottom:12px;
+  z-index:9000;
+  padding:7px 10px;
+  border-radius:999px;
+  background:rgba(5,43,101,.92);
+  color:#fff;
+  border:1px solid rgba(255,255,255,.32);
+  box-shadow:0 5px 18px rgba(0,0,0,.18);
+  font:800 .72rem/1 "DM Sans",Arial,sans-serif;
+  letter-spacing:.03em;
+}
+.app-version-badge a{color:#ffd34e;text-decoration:none}
+@media(max-width:600px){
+  .app-version-badge{right:8px;bottom:8px;font-size:.66rem;padding:6px 8px}
+}
+
+</style>
+<meta name="app-version" content="V73">
+</head>
+<body><main class="card">
+<img src="./icons/icon-192.png" alt="Súper Papa">
+<h1>Estás sin conexión</h1>
+<p>La aplicación está instalada y puede abrirse, pero los datos nuevos, pedidos e inicio de sesión necesitan internet.</p>
+<button onclick="location.reload()">Volver a intentar</button>
+</main><script>
+function alternarPassword(id, boton){
+  const campo=document.getElementById(id);
+  if(!campo) return;
+  const mostrando=campo.type==='text';
+  campo.type=mostrando?'password':'text';
+  boton.textContent=mostrando?'👁️':'🙈';
+  boton.setAttribute('aria-label', mostrando?'Mostrar contraseña':'Ocultar contraseña');
+  boton.title=mostrando?'Mostrar contraseña':'Ocultar contraseña';
+}
+
+function prepararCamposPassword(){
+  document.querySelectorAll('input[type="password"]').forEach((campo,indice)=>{
+    if(campo.closest('.password-contenedor')) return;
+    if(!campo.id) campo.id='password-campo-'+indice+'-'+Math.random().toString(36).slice(2,7);
+    const cont=document.createElement('div');
+    cont.className='password-contenedor';
+    campo.parentNode.insertBefore(cont,campo);
+    cont.appendChild(campo);
+    const boton=document.createElement('button');
+    boton.type='button';
+    boton.className='btn-ver-password';
+    boton.textContent='👁️';
+    boton.title='Mostrar contraseña';
+    boton.setAttribute('aria-label','Mostrar contraseña');
+    boton.addEventListener('click',()=>alternarPassword(campo.id,boton));
+    cont.appendChild(boton);
+  });
+}
+document.addEventListener('DOMContentLoaded',prepararCamposPassword);
+</script>
+
+</body></html>
