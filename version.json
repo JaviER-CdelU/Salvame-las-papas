@@ -1,14 +1,15 @@
 {
-  "version": "V74",
-  "nombre": "Botones reales para elegir planes",
+  "version": "V75",
+  "nombre": "Página de compradores limpia",
   "fecha": "2026-07-29",
   "cambios": [
-    "Eliminadas las zonas transparentes sobre la imagen",
-    "Nueva botonera visible debajo de la cabecera",
-    "Botón real para Básico",
-    "Botón real para Destacado",
-    "Botón real para Pro",
-    "Mismos botones en computadora y celular",
-    "Tabla comparativa y explicación conservadas"
+    "Eliminados físicamente los planes y el registro comercial de comprar.html",
+    "Eliminada el alta promocional de vendedores",
+    "Buscador y filtros reorganizados",
+    "Nuevo filtro por comercios, productos o particulares",
+    "Filtro por barrio, entrega, abierto ahora y favoritos",
+    "Ofertas, comercios y particulares conservados",
+    "Ayuda y contacto al final",
+    "Reducción del HTML de 307266 a 271534 caracteres"
   ]
 }
