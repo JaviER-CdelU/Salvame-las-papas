@@ -3561,6 +3561,119 @@ nav{background:linear-gradient(135deg,#59b8f2,#2e90df)!important;border-bottom:0
   .seller-entry-links-v45 a{padding:10px 13px!important;font-size:.8rem}
 }
 
+
+/* V96 — SECCIONES COMPACTAS, CATEGORÍAS Y ORDEN COMERCIAL */
+.v91-rail{
+  padding:14px!important;
+  min-height:0!important;
+}
+.v91-rail-head{
+  margin-bottom:12px!important;
+}
+.v91-track{
+  min-height:132px!important;
+  padding-bottom:4px!important;
+}
+.v91-track:has(.v91-empty){
+  min-height:78px!important;
+}
+.v91-track .v91-empty{
+  min-height:72px!important;
+  padding:14px 18px!important;
+}
+.v95-skeleton-card{
+  min-height:116px!important;
+}
+.v95-skeleton-card i{
+  min-height:116px!important;
+}
+.v96-categories{
+  display:block!important;
+  padding:18px 20px!important;
+}
+.v96-cat-heading{
+  display:flex;
+  align-items:baseline;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-bottom:13px;
+}
+.v96-cat-heading strong{
+  font-family:"Fraunces",Georgia,serif;
+  color:#073574;
+  font-size:1.55rem!important;
+}
+.v96-cat-heading span{
+  color:#68788a;
+  font-size:.9rem;
+}
+.v91-category-list{
+  display:flex!important;
+  gap:9px!important;
+  flex-wrap:wrap!important;
+}
+.v91-category-list button,
+.v96-more-cats button{
+  border:1px solid #d8e3ec!important;
+  background:#fff!important;
+  color:#24415e!important;
+  border-radius:999px!important;
+  padding:10px 15px!important;
+  font-weight:800!important;
+  cursor:pointer;
+  transition:.16s ease;
+}
+.v91-category-list button:hover,
+.v96-more-cats button:hover{
+  border-color:#4d9be6!important;
+  background:#f1f8ff!important;
+  transform:translateY(-1px);
+}
+.v91-category-list button.active,
+.v96-more-cats button.active{
+  color:#fff!important;
+  border-color:#1675ce!important;
+  background:#1675ce!important;
+  box-shadow:0 5px 14px rgba(22,117,206,.20);
+}
+.v96-more-cats{
+  display:flex;
+  gap:9px;
+  flex-wrap:wrap;
+  margin-top:10px;
+  padding-top:10px;
+  border-top:1px solid #edf1f4;
+}
+.v96-more-cats[hidden]{display:none!important}
+
+/* Oculta bloques antiguos repetidos que ya están cubiertos por V96 */
+.local-highlight-v47.local-summary-v38,
+.categories-v33,
+#abiertos-home-section,
+.filtro-bar{
+  display:none!important;
+}
+@media(max-width:650px){
+  .v91-rail{padding:10px!important}
+  .v91-track{min-height:118px!important}
+  .v96-categories{padding:15px 13px!important}
+  .v96-cat-heading strong{font-size:1.32rem!important}
+  .v91-category-list,
+  .v96-more-cats{
+    flex-wrap:nowrap!important;
+    overflow-x:auto;
+    scrollbar-width:none;
+    padding-bottom:4px;
+  }
+  .v91-category-list::-webkit-scrollbar,
+  .v96-more-cats::-webkit-scrollbar{display:none}
+  .v91-category-list button,
+  .v96-more-cats button{
+    flex:0 0 auto;
+    padding:9px 13px!important;
+  }
+}
+
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -3822,7 +3935,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
 }
 
 </style>
-<meta name="app-version" content="V95">
+<meta name="app-version" content="V96">
 </head>
 <body>
 
@@ -3879,15 +3992,35 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
   <div class="v91-location"><span>📍 Concepción del Uruguay, Entre Ríos</span><button type="button" onclick="usarMiUbicacion()">Usar mi ubicación</button></div>
 </section>
 
-<section class="v91-categories" aria-label="Categorías rápidas">
-  <strong>Explorá por categoría</strong>
-  <div class="v91-category-list" id="v91-categorias"></div>
+<section class="v91-categories v96-categories" aria-label="Categorías rápidas">
+  <div class="v96-cat-heading">
+    <strong>Explorá por categoría</strong>
+    <span>Elegí una opción para ver comercios relacionados.</span>
+  </div>
+  <div class="v91-category-list" id="v91-categorias">
+    <button class="active" type="button" data-cat="todos" onclick="filtrarCategoriaV96('todos',this)">▦ Todos</button>
+    <button type="button" data-cat="alimentos" onclick="filtrarCategoriaV96('alimentos',this)">🍎 Alimentos</button>
+    <button type="button" data-cat="ferreterias" onclick="filtrarCategoriaV96('ferreterias',this)">🛠️ Ferreterías</button>
+    <button type="button" data-cat="ropa" onclick="filtrarCategoriaV96('ropa',this)">👕 Ropa</button>
+    <button type="button" data-cat="hogar" onclick="filtrarCategoriaV96('hogar',this)">🏠 Hogar</button>
+    <button type="button" data-cat="servicios" onclick="filtrarCategoriaV96('servicios',this)">✂️ Servicios</button>
+    <button type="button" data-cat="construccion" onclick="filtrarCategoriaV96('construccion',this)">🧱 Construcción</button>
+    <button type="button" data-cat="turismo" onclick="filtrarCategoriaV96('turismo',this)">🏔️ Turismo</button>
+    <button type="button" data-cat="mas" onclick="mostrarMasCategoriasV96(this)">＋ Más categorías</button>
+  </div>
+  <div class="v96-more-cats" id="v96-more-cats" hidden>
+    <button type="button" onclick="filtrarCategoriaV96('salud',this)">💊 Salud</button>
+    <button type="button" onclick="filtrarCategoriaV96('automotor',this)">🚗 Automotor</button>
+    <button type="button" onclick="filtrarCategoriaV96('tecnologia',this)">💻 Tecnología</button>
+    <button type="button" onclick="filtrarCategoriaV96('mascotas',this)">🐾 Mascotas</button>
+    <button type="button" onclick="filtrarCategoriaV96('inmuebles',this)">🏘️ Inmuebles</button>
+  </div>
 </section>
 
 <section class="v91-rails" aria-label="Descubrir comercios y ofertas">
-  <div class="v91-rail" id="v91-nuevos">
-    <div class="v91-rail-head"><div><span class="v91-tag nuevo">Nuevo</span><h2>Nuevos comercios</h2><p>Conocé los últimos comercios que se sumaron.</p></div><div><button onclick="moverV92('v91-nuevos-track',-1)">‹</button><button onclick="moverV92('v91-nuevos-track',1)">›</button></div></div>
-    <div class="v91-track" id="v91-nuevos-track" aria-live="polite">
+  <div class="v91-rail" id="v91-ofertas">
+    <div class="v91-rail-head"><div><span class="v91-tag oferta">Oferta</span><h2>Ofertas de la semana</h2><p>Productos con precios y promociones publicadas.</p></div><div><button onclick="moverV92('v91-ofertas-track',-1)">‹</button><button onclick="moverV92('v91-ofertas-track',1)">›</button></div></div>
+    <div class="v91-track" id="v91-ofertas-track" aria-live="polite">
 <div class="v95-skeleton-card"><i></i><span><b></b><em></em><em></em></span></div>
 <div class="v95-skeleton-card"><i></i><span><b></b><em></em><em></em></span></div>
 <div class="v95-skeleton-card"><i></i><span><b></b><em></em><em></em></span></div>
@@ -3895,9 +4028,9 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
 </div>
   </div>
 
-  <div class="v91-rail" id="v91-ofertas">
-    <div class="v91-rail-head"><div><span class="v91-tag oferta">Oferta</span><h2>Ofertas de la semana</h2><p>Productos con precios y promociones publicadas.</p></div><div><button onclick="moverV92('v91-ofertas-track',-1)">‹</button><button onclick="moverV92('v91-ofertas-track',1)">›</button></div></div>
-    <div class="v91-track" id="v91-ofertas-track" aria-live="polite">
+  <div class="v91-rail" id="v91-nuevos">
+    <div class="v91-rail-head"><div><span class="v91-tag nuevo">Nuevo</span><h2>Nuevos comercios</h2><p>Conocé los últimos comercios que se sumaron.</p></div><div><button onclick="moverV92('v91-nuevos-track',-1)">‹</button><button onclick="moverV92('v91-nuevos-track',1)">›</button></div></div>
+    <div class="v91-track" id="v91-nuevos-track" aria-live="polite">
 <div class="v95-skeleton-card"><i></i><span><b></b><em></em><em></em></span></div>
 <div class="v95-skeleton-card"><i></i><span><b></b><em></em><em></em></span></div>
 <div class="v95-skeleton-card"><i></i><span><b></b><em></em><em></em></span></div>
@@ -5517,6 +5650,21 @@ function estaAbiertoV75(c){
 }
 function aplicarFiltrosAvanzados(){
  const q=normalizar(document.getElementById('filtro-texto')?.value||document.getElementById('busqueda')?.value);
+ const categoriaV96=window.categoriaActivaV96||'todos';
+ const mapaCategoriasV96={
+   alimentos:['verduleria','fruteria','panaderia','almacen','kiosco','carniceria','rotiseria','comida','restaurante','pizzeria','bebida','dietética','dietica'],
+   ferreterias:['ferreteria','herramienta','cerrajeria'],
+   ropa:['ropa','indumentaria','calzado','textil','boutique'],
+   hogar:['hogar','mueble','decoracion','bazar','electrodomestico','limpieza'],
+   servicios:['servicio','peluqueria','estetica','electricista','plomero','tecnico','profesional'],
+   construccion:['construccion','corralon','materiales','madera','cabana','arquitectura'],
+   turismo:['turismo','alojamiento','hotel','cabana','excursion','viaje'],
+   salud:['salud','farmacia','optica','medico','odontologia'],
+   automotor:['automotor','mecanico','repuesto','lubricentro','lavadero'],
+   tecnologia:['tecnologia','informatica','celular','computacion','electronica'],
+   mascotas:['mascota','veterinaria','pet shop'],
+   inmuebles:['inmueble','propiedad','alquiler','terreno','casa']
+ };
  const barrio=normalizar(document.getElementById('filtro-barrio')?.value);
  const entrega=document.getElementById('filtro-envio')?.value;
  const vista=document.getElementById('filtro-vista')?.value;
@@ -5529,7 +5677,10 @@ function aplicarFiltrosAvanzados(){
    const blobProductos=normalizar(productos.map(p=>[p.n,p.nombre,p.descripcion,p.precio].join(' ')).join(' '));
    const blob=tipo==='productos'?blobProductos:(blobComercio+' '+blobProductos);
    const tags=normalizar((c.tags||[]).join(' ')+' '+(c.envio||''));
-   return(!q||blob.includes(q))
+   const palabrasCategoria=mapaCategoriasV96[categoriaV96]||[];
+   const coincideCategoria=categoriaV96==='todos'||palabrasCategoria.some(p=>blob.includes(normalizar(p)));
+   return coincideCategoria
+     &&(!q||blob.includes(q))
      &&(!barrio||normalizar(c.barrio)===barrio)
      &&(!entrega||(entrega==='envio'?tags.includes('envio'):tags.includes('retiro')))
      &&(!vista||fav.includes(comercioKey(c)))
@@ -6244,10 +6395,10 @@ function renderV92(){
  const dest=[...arr].sort((a,b)=>(Number(b.plan||0)-Number(a.plan||0))+(Number(b.visitas||b.vistas||0)-Number(a.visitas||a.vistas||0))/1000).slice(0,12);
  document.getElementById('v91-destacados-track').innerHTML=dest.map(c=>cardComercioV92(c,Number(c.plan||0)>=3?'DESTACADO':'RECOMENDADO')).join('');
  let ofertas=[];arr.forEach(c=>(c.productos||[]).forEach((p,pi)=>{const precio=Number(p.precio||p.p||0),antes=Number(p.precioAnterior||p.antes||0);if(precio>0)ofertas.push({c,p,pi,precio,antes})}));ofertas.sort((a,b)=>Number(b.antes>b.precio)-Number(a.antes>a.precio)||b.c.plan-a.c.plan);ofertas=ofertas.slice(0,12);
- document.getElementById('v91-ofertas-track').innerHTML=ofertas.length?ofertas.map(x=>{const i=arr.indexOf(x.c),foto=x.p.foto||x.p.fotos?.[0]||'',desc=x.antes>x.precio?Math.round((1-x.precio/x.antes)*100):0;return `<article class="v91-card" onclick="abrirOfertaHomeV54(${i},${x.pi},false)"><div class="v91-card-media">${foto?`<img src="${foto}" alt="${textoV92(x.p.nombre||x.p.n)}" loading="lazy">`:(x.p.emoji||'📦')}</div><div class="v91-card-copy">${desc?`<span class="v91-discount">-${desc}%</span>`:'<span class="v91-discount">OFERTA</span>'}<h3>${textoV92(x.p.nombre||x.p.n||'Producto')}</h3><p>${textoV92(x.c.nombre)}</p><p class="v91-price">$${x.precio.toLocaleString('es-AR')}</p></div></article>`}).join(''):'<div class="v91-empty">Todavía no hay productos con precio para mostrar como oferta.</div>';
+ document.getElementById('v91-ofertas-track').innerHTML=ofertas.length?ofertas.map(x=>{const i=arr.indexOf(x.c),foto=x.p.foto||x.p.fotos?.[0]||'',desc=x.antes>x.precio?Math.round((1-x.precio/x.antes)*100):0;return `<article class="v91-card" onclick="abrirOfertaHomeV54(${i},${x.pi},false)"><div class="v91-card-media">${foto?`<img src="${foto}" alt="${textoV92(x.p.nombre||x.p.n)}" loading="lazy">`:(x.p.emoji||'📦')}</div><div class="v91-card-copy">${desc?`<span class="v91-discount">-${desc}%</span>`:'<span class="v91-discount">OFERTA</span>'}<h3>${textoV92(x.p.nombre||x.p.n||'Producto')}</h3><p>${textoV92(x.c.nombre)}</p><p class="v91-price">$${x.precio.toLocaleString('es-AR')}</p></div></article>`}).join(''):'<div class="v91-empty">Todavía no hay ofertas publicadas.<br><small>Volvé pronto para descubrir promociones nuevas.</small></div>';
  const cats={};arr.forEach(c=>{const k=c.cat||'Otros';cats[k]=(cats[k]||0)+1});const emojis={'Verdulería':'🍅','Frutería':'🍎','Panadería':'🥖','Ferretería':'🛠️','Almacén':'🛒','Compraventa':'🏷️','Turismo':'🏔️','Ropa':'👕','Servicios':'✂️'};
  const top=Object.entries(cats).sort((a,b)=>b[1]-a[1]).slice(0,6);document.getElementById('v91-buscados-track').innerHTML=top.map(([k,n])=>`<button class="v91-search-chip" onclick="filtrarCategoriaV31('${textoV92(k)}')"><span>${emojis[k]||'🔎'}</span>${textoV92(k)}<small style="display:block;color:#7b8a9a;margin-top:4px">${n} comercio${n===1?'':'s'}</small></button>`).join('');
- document.getElementById('v91-categorias').innerHTML=['Todos',...top.map(x=>x[0])].map(k=>`<button onclick="${k==='Todos'?"document.getElementById('comercios').scrollIntoView({behavior:'smooth'})":`filtrarCategoriaV31('${textoV92(k)}')`}">${k==='Todos'?'▦':emojis[k]||'🔎'} ${textoV92(k)}</button>`).join('');
+ actualizarConteosCategoriasV96(arr);
 }
 
 /* V94 — sincronización robusta entre Firebase y los carruseles */
@@ -6273,9 +6424,9 @@ function iniciarCarruselesV94(){
     if(intentos >= maxIntentos){
       clearInterval(reloj);
       const mensajes = {
-        'v91-nuevos-track':'Todavía no hay comercios activos para mostrar.',
-        'v91-ofertas-track':'Todavía no hay productos con precio u ofertas publicadas.',
-        'v91-destacados-track':'Todavía no hay comercios destacados para mostrar.'
+        'v91-nuevos-track':'Todavía no hay comercios nuevos para mostrar.<br><small>Los próximos comercios aparecerán acá.</small>',
+        'v91-ofertas-track':'Todavía no hay ofertas publicadas.<br><small>Volvé pronto para descubrir promociones nuevas.</small>',
+        'v91-destacados-track':'Todavía no hay comercios destacados.<br><small>Cuando haya uno disponible aparecerá acá.</small>'
       };
       Object.entries(mensajes).forEach(([id,msg])=>{
         const el=document.getElementById(id);
@@ -6379,6 +6530,55 @@ document.addEventListener('DOMContentLoaded',prepararTodosCarruselesV95);
 window.addEventListener('resize',()=>document.querySelectorAll('#v91-nuevos-track,#v91-ofertas-track,#v91-destacados-track,#seller-public-grid-v41').forEach(actualizarFlechasV95));
 setTimeout(prepararTodosCarruselesV95,400);
 setTimeout(prepararTodosCarruselesV95,1800);
+
+
+/* V96 — categorías activas y orden definitivo */
+window.categoriaActivaV96='todos';
+
+function marcarCategoriaV96(btn){
+  document.querySelectorAll('#v91-categorias button,#v96-more-cats button')
+    .forEach(b=>b.classList.remove('active'));
+  btn?.classList.add('active');
+}
+function filtrarCategoriaV96(categoria,btn){
+  window.categoriaActivaV96=categoria||'todos';
+  marcarCategoriaV96(btn);
+  const texto=document.getElementById('filtro-texto');
+  if(texto)texto.value='';
+  aplicarFiltrosAvanzados();
+  document.getElementById('comercios')?.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function mostrarMasCategoriasV96(btn){
+  const box=document.getElementById('v96-more-cats');
+  if(!box)return;
+  box.hidden=!box.hidden;
+  btn.textContent=box.hidden?'＋ Más categorías':'－ Menos categorías';
+}
+function actualizarConteosCategoriasV96(arr){
+  const total=Array.isArray(arr)?arr.length:0;
+  const todos=document.querySelector('#v91-categorias [data-cat="todos"]');
+  if(todos)todos.title=`${total} comercio${total===1?'':'s'} activo${total===1?'':'s'}`;
+}
+function ordenarSeccionesV96(){
+  const rails=document.querySelector('.v91-rails');
+  const ofertas=document.getElementById('v91-ofertas');
+  const nuevos=document.getElementById('v91-nuevos');
+  const destacados=document.getElementById('v91-destacados');
+  if(rails&&ofertas&&nuevos&&destacados){
+    rails.insertBefore(ofertas,rails.firstElementChild);
+    ofertas.after(nuevos);
+    nuevos.after(destacados);
+  }
+
+  const buscados=document.getElementById('v91-buscados');
+  const particulares=document.getElementById('vendedores-particulares');
+  if(buscados&&particulares){
+    particulares.after(buscados);
+    buscados.classList.add('v96-buscados-final');
+  }
+}
+document.addEventListener('DOMContentLoaded',ordenarSeccionesV96);
+if(document.readyState!=='loading')ordenarSeccionesV96();
 
 </script>
 
