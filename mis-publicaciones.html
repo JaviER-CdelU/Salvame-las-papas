@@ -1,157 +1,185 @@
-rules_version = '2';
-
-service cloud.firestore {
-  match /databases/{database}/documents {
-
-    function signedIn() {
-      return request.auth != null;
-    }
-
-    function isAdmin() {
-      return signedIn()
-        && request.auth.token.email == "salvamelaspapascdelu@gmail.com";
-    }
-
-    function isSellerOwner() {
-      return signedIn() && resource.data.ownerUid == request.auth.uid;
-    }
-
-    match /comercios/{comercioId} {
-      function legacyEmailOwner() {
-        return signedIn()
-          && resource.data.email is string
-          && resource.data.email == request.auth.token.email;
-      }
-
-      function safeLegacyClaim() {
-        return legacyEmailOwner()
-          && !('ownerUid' in resource.data)
-          && request.resource.data.ownerUid == request.auth.uid
-          && request.resource.data.email == resource.data.email
-          && request.resource.data.diff(resource.data).affectedKeys()
-             .hasOnly(["ownerUid", "vinculadoEn"]);
-      }
-
-      allow read: if isAdmin()
-                  || (signedIn() && resource.data.ownerUid == request.auth.uid)
-                  || legacyEmailOwner()
-                  || resource.data.estado == "activo";
-
-      allow create: if signedIn();
-
-      allow update: if isAdmin()
-                    || (signedIn() && resource.data.ownerUid == request.auth.uid)
-                    || safeLegacyClaim();
-
-      allow delete: if isAdmin()
-                    || (signedIn() && resource.data.ownerUid == request.auth.uid);
-
-      match /metricas/{mesId} {
-        function metricKeysOk() {
-          return request.resource.data.keys().hasOnly(["visitas","clicsWhatsApp","actualizadoEn"]);
-        }
-        function validCreateMetric() {
-          return metricKeysOk()
-            && (!("visitas" in request.resource.data) || request.resource.data.visitas == 1)
-            && (!("clicsWhatsApp" in request.resource.data) || request.resource.data.clicsWhatsApp == 1);
-        }
-        function validUpdateMetric() {
-          return metricKeysOk()
-            && request.resource.data.visitas >= resource.data.visitas
-            && request.resource.data.visitas <= resource.data.visitas + 1
-            && request.resource.data.clicsWhatsApp >= resource.data.clicsWhatsApp
-            && request.resource.data.clicsWhatsApp <= resource.data.clicsWhatsApp + 1;
-        }
-        allow read: if isAdmin()
-                    || (signedIn() && (
-                      get(/databases/$(database)/documents/comercios/$(comercioId)).data.ownerUid == request.auth.uid
-                      || get(/databases/$(database)/documents/comercios/$(comercioId)).data.email == request.auth.token.email
-                    ));
-        allow create: if validCreateMetric();
-        allow update: if validUpdateMetric();
-        allow delete: if isAdmin();
-      }
-
-      match /productos/{productoId} {
-        function parentCommerce() {
-          return get(/databases/$(database)/documents/comercios/$(comercioId)).data;
-        }
-
-        function parentOwner() {
-          return signedIn()
-            && (
-              parentCommerce().ownerUid == request.auth.uid
-              || (
-                parentCommerce().email is string
-                && parentCommerce().email == request.auth.token.email
-              )
-            );
-        }
-
-        allow read: if isAdmin()
-                    || parentCommerce().estado == "activo"
-                    || parentOwner();
-
-        allow create, update, delete: if isAdmin() || parentOwner();
-      }
-    }
-
-    match /vendedoresParticulares/{publicacionId} {
-      allow create: if signedIn()
-                    && request.resource.data.ownerUid == request.auth.uid
-                    && request.resource.data.tipo == "vendedor_particular"
-                    && request.resource.data.estado == "pendiente"
-                    && request.resource.data.estadoPago == "pendiente"
-                    && request.resource.data.nombre is string
-                    && request.resource.data.nombre.size() >= 2
-                    && request.resource.data.whatsapp is string
-                    && request.resource.data.whatsapp.size() >= 8
-                    && request.resource.data.articulos is list
-                    && request.resource.data.articulos.size() >= 1
-                    && request.resource.data.articulos.size() <= 2;
-
-      allow read: if isAdmin()
-                  || isSellerOwner()
-                  || resource.data.estado == "activo";
-
-      allow update: if isAdmin()
-                    || (
-                      isSellerOwner()
-                      && request.resource.data.ownerUid == resource.data.ownerUid
-                      && request.resource.data.estado == resource.data.estado
-                      && request.resource.data.estadoPago == resource.data.estadoPago
-                      && request.resource.data.plan == resource.data.plan
-                      && request.resource.data.vencimiento == resource.data.vencimiento
-                      && request.resource.data.articulos is list
-                      && request.resource.data.articulos.size() >= 1
-                      && request.resource.data.articulos.size() <= 2
-                      && request.resource.data.diff(resource.data).affectedKeys()
-                         .hasOnly(["articulos", "actualizadoEn"])
-                    );
-
-      allow delete: if isAdmin();
-    }
-
-    match /pedidos/{pedidoId} {
-      function pedidoOwner() {
-        return signedIn()
-          && (
-            get(/databases/$(database)/documents/comercios/$(resource.data.comercioId)).data.ownerUid == request.auth.uid
-            || get(/databases/$(database)/documents/comercios/$(resource.data.comercioId)).data.email == request.auth.token.email
-          );
-      }
-      allow create: if signedIn() && request.resource.data.clienteUid == request.auth.uid;
-      allow read: if isAdmin() || pedidoOwner() || (signedIn() && resource.data.clienteUid == request.auth.uid);
-      allow update: if isAdmin() || pedidoOwner();
-      allow delete: if isAdmin();
-    }
-
-    match /usuarios/{usuarioId} {
-      allow read, write: if signedIn() && request.auth.uid == usuarioId;
-    }
-
-    match /{document=**} {
-      allow read, write: if false;
-    }
-  }
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b376f">
+<meta name="app-version" content="V102">
+<title>Mis publicaciones — Sálvame las Papas</title>
+<meta name="description" content="Panel privado para administrar publicaciones particulares en Sálvame las Papas.">
+<link rel="icon" href="./icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="./icons/icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+:root{
+  --navy:#0b376f;
+  --navy-dark:#061f46;
+  --blue:#1267c4;
+  --orange:#ff7600;
+  --orange-dark:#e45f00;
+  --green:#218653;
+  --ink:#17314f;
+  --muted:#68798e;
+  --paper:#f2f7fc;
+  --line:#d8e4ee;
+  --white:#fff;
 }
+html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;font-family:"DM Sans",Arial,sans-serif;background:linear-gradient(180deg,#eaf4fd 0,#f7fafc 340px);color:var(--ink)}
+button,input,select,textarea{font:inherit}
+button,a{touch-action:manipulation}
+.site-header{position:sticky;top:0;z-index:30;background:var(--navy-dark);color:#fff;padding:12px 18px;box-shadow:0 8px 24px rgba(3,28,61,.22)}
+.header-inner{width:min(1180px,100%);margin:auto;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.brand{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;min-width:0}
+.brand-icon{width:42px;height:42px;display:grid;place-items:center;flex:0 0 42px;border-radius:50%;background:linear-gradient(145deg,#ff9d45,#ff6f00);font-size:1.45rem;box-shadow:inset 0 0 0 2px rgba(255,255,255,.25)}
+.brand-copy{display:flex;flex-direction:column;line-height:1.05}.brand-copy strong{font:900 1.16rem/1.05 "Fraunces",Georgia,serif}.brand-copy strong em{color:#ffb66d;font-style:normal}.brand-copy small{margin-top:4px;color:#cfe0f3;font-size:.72rem;font-weight:700}
+.top-nav{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}.top-nav a,.top-nav button{min-height:40px;display:inline-flex;align-items:center;justify-content:center;padding:9px 13px;border:1px solid rgba(255,255,255,.28);border-radius:999px;background:transparent;color:#fff;text-decoration:none;font-size:.82rem;font-weight:800;cursor:pointer}.top-nav a:hover,.top-nav button:hover{background:rgba(255,255,255,.12)}.top-nav .new-link{border-color:#ff9f4d;background:var(--orange);box-shadow:0 5px 15px rgba(255,118,0,.2)}
+.wrap{width:min(1100px,calc(100% - 28px));margin:0 auto;padding:26px 0 48px}
+.page-intro{position:relative;display:grid;grid-template-columns:1fr 180px;align-items:center;gap:24px;margin-bottom:20px;padding:28px 30px;overflow:hidden;border:1px solid #a9cdec;border-radius:24px;background:radial-gradient(circle at 88% 18%,rgba(255,182,109,.42),transparent 27%),linear-gradient(135deg,#fff 0,#edf7ff 62%,#ddecff 100%);box-shadow:0 16px 40px rgba(7,55,111,.11)}
+.page-intro::after{content:"";position:absolute;right:-55px;bottom:-75px;width:230px;height:230px;border-radius:50%;background:rgba(18,103,196,.08)}
+.intro-copy{position:relative;z-index:2}.eyebrow{margin:0 0 6px;color:var(--orange-dark);font-size:.76rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.page-intro h1{margin:0;color:var(--navy);font:900 clamp(1.8rem,4vw,2.8rem)/1.02 "Fraunces",Georgia,serif}.page-intro p{max-width:700px;margin:9px 0 0;color:var(--muted);line-height:1.55}.intro-pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}.intro-pills span{padding:7px 10px;border:1px solid #c5ddef;border-radius:999px;background:rgba(255,255,255,.82);color:#315675;font-size:.74rem;font-weight:900}
+.intro-mascot{position:relative;z-index:2;display:flex;justify-content:center}.intro-mascot img{display:block;width:165px;aspect-ratio:1;object-fit:cover;border:5px solid #fff;border-radius:32px;box-shadow:0 15px 30px rgba(7,47,107,.2);transform:rotate(2deg)}
+.box{background:#fff;border:1px solid var(--line);border-radius:22px;padding:24px;box-shadow:0 13px 34px rgba(7,47,107,.09)}
+h1,h2,h3{font-family:"Fraunces",Georgia,serif;color:var(--navy)}
+.login{max-width:920px;margin:auto;padding:0;overflow:hidden}.login-layout{display:grid;grid-template-columns:.9fr 1.1fr}.login-help{padding:34px;background:linear-gradient(145deg,var(--navy),#0a559e);color:#fff}.login-help .lock{width:58px;height:58px;display:grid;place-items:center;margin-bottom:18px;border-radius:18px;background:rgba(255,255,255,.14);font-size:1.7rem}.login-help h2{margin:0;color:#fff;font-size:1.75rem}.login-help p{color:#d8e9f9;line-height:1.55}.login-help ul{margin:20px 0 0;padding:0;list-style:none;display:grid;gap:11px}.login-help li{display:flex;gap:9px;align-items:flex-start;color:#fff;font-size:.9rem}.login-form{padding:34px}.login-form h2{margin:0 0 7px;font-size:2rem}.login-form>p{margin:0 0 20px;color:var(--muted);line-height:1.5}
+.google{width:100%;gap:10px;background:#fff;color:#17314f;border:1.5px solid #c9d8e5;box-shadow:0 5px 14px rgba(7,47,107,.08)}.google:hover{background:#f6f9fc;border-color:#9ebbd3}.google-mark{width:25px;height:25px;display:grid;place-items:center;border-radius:50%;background:conic-gradient(from -45deg,#4285f4 0 25%,#34a853 0 50%,#fbbc05 0 75%,#ea4335 0);color:#fff;font-weight:900}.login-divider{display:flex;align-items:center;gap:10px;margin:17px 0;color:#7b8999;font-size:.75rem;font-weight:800}.login-divider::before,.login-divider::after{content:"";height:1px;flex:1;background:#dce5ed}
+label{display:block;margin:13px 0 6px;color:#294866;font-size:.8rem;font-weight:900}input,select,textarea{width:100%;min-height:46px;padding:11px 12px;border:1.5px solid #c9d8e5;border-radius:11px;background:#fff;color:var(--ink);outline:none;transition:border-color .15s,box-shadow .15s}input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(18,103,196,.14)}textarea{min-height:105px;resize:vertical}input[type=file]{min-height:auto;padding:8px;background:#f7fafc;font-size:.73rem}
+button,.btn{min-height:44px;border:0;border-radius:11px;padding:11px 15px;font-weight:900;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;text-align:center}.primary{background:var(--orange);color:#fff;box-shadow:0 7px 18px rgba(255,118,0,.2)}.primary:hover{background:var(--orange-dark)}.blue{background:var(--navy);color:#fff}.light{background:#edf4fb;color:var(--navy);border:1px solid #c8dbea}.danger{background:#a82a2a;color:#fff}.green{background:var(--green);color:#fff;box-shadow:0 7px 18px rgba(33,134,83,.18)}.green:hover{background:#176c41}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:17px}.status{padding:12px 14px;border-radius:11px;margin-top:13px;display:none;line-height:1.45}.status.show{display:block}.status.ok{background:#e5f7eb;border:1px solid #b9e4c7;color:#23673a}.status.error{background:#fff0f0;border:1px solid #f0c8c8;color:#912626}.hidden{display:none!important}
+.account-summary{display:flex;align-items:center;justify-content:space-between;gap:18px;background:linear-gradient(135deg,#fff,#f2f8ff)}.account-summary h2{margin:0;font-size:2rem}.account-summary .note{max-width:720px;margin:6px 0 0}.account-actions{display:flex;gap:8px;flex-wrap:wrap;flex:0 0 auto}.account-actions .btn{white-space:nowrap}
+#publications{margin-top:18px}.pub-card{background:#fff;border:1px solid var(--line);border-radius:21px;overflow:hidden;margin-bottom:20px;box-shadow:0 11px 30px rgba(7,47,107,.08)}.pub-head{padding:17px 20px;background:linear-gradient(90deg,#eaf5ff,#f8fbfe);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}.pub-head strong{display:block;color:var(--navy);font:900 1.35rem/1.1 "Fraunces",Georgia,serif}.badge{display:inline-flex;align-items:center;padding:7px 10px;border-radius:999px;font-size:.72rem;font-weight:900}.badge.pending{background:#fff0bf;color:#715000}.badge.active{background:#dff5e7;color:#176436}.badge.other{background:#edf1f5;color:#556273}
+.pub-body{padding:18px}.article{position:relative;border:1px solid #d9e5ee;border-radius:17px;padding:17px;margin-top:13px;background:#fbfdff}.article h3{margin:0 0 13px;padding-bottom:11px;border-bottom:1px solid #e2ebf2;font-size:1.28rem}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 15px}.full{grid-column:1/-1}.photos{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:15px}.photos img{width:100%;aspect-ratio:1;object-fit:cover;border:1px solid #d7e3ed;border-radius:11px;background:#edf3f8}.photo-inputs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.note{font-size:.86rem;color:var(--muted);line-height:1.5}.empty{text-align:center;padding:36px;color:var(--muted)}
+.save{min-width:180px}.save-status{max-width:560px}
+@media(max-width:820px){.site-header{position:relative}.header-inner{align-items:flex-start}.top-nav{gap:6px}.top-nav a,.top-nav button{padding:8px 10px;font-size:.75rem}.page-intro{grid-template-columns:1fr 115px;padding:23px}.intro-mascot img{width:108px;border-radius:24px}.login-layout{grid-template-columns:1fr}.login-help{padding:26px}.login-form{padding:26px}.account-summary{align-items:flex-start;flex-direction:column}.account-actions{width:100%}.account-actions .btn{flex:1}.grid{grid-template-columns:1fr}.full{grid-column:auto}}
+@media(max-width:560px){.site-header{padding:11px 12px}.header-inner{display:block}.brand{margin-bottom:11px}.brand-copy small{display:none}.top-nav{justify-content:flex-start}.top-nav a{flex:1}.top-nav .payment-link{display:none}.wrap{width:calc(100% - 18px);padding-top:14px}.page-intro{grid-template-columns:1fr 80px;gap:10px;padding:18px;border-radius:18px}.page-intro h1{font-size:1.75rem}.page-intro p{font-size:.88rem}.intro-mascot img{width:76px;border-width:3px;border-radius:18px}.intro-pills{grid-column:1/-1}.intro-pills span{font-size:.68rem;padding:6px 8px}.box{padding:17px;border-radius:17px}.login{padding:0}.login-help,.login-form{padding:21px}.login-help ul{display:none}.login-form h2{font-size:1.65rem}.login-form .actions{display:grid}.login-form .actions>*{width:100%}.pub-head,.pub-body{padding:14px}.article{padding:13px}.photos,.photo-inputs{grid-template-columns:repeat(2,1fr)}.account-actions{display:grid}.account-actions .btn{width:100%}.save{width:100%}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="./inicio.html" aria-label="Ir al inicio de Sálvame las Papas">
+      <span class="brand-icon">🥔</span>
+      <span class="brand-copy"><strong>Sálvame <em>las Papas</em></strong><small>Comercios y oportunidades de tu ciudad</small></span>
+    </a>
+    <nav class="top-nav" aria-label="Accesos principales">
+      <a href="./inicio.html">Inicio</a>
+      <a href="./comprar.html">Comprar</a>
+      <a class="new-link" href="./vendedor.html">＋ Nueva publicación</a>
+      <a class="payment-link" href="./pago-particular.html">Pago del plan</a>
+      <button id="logout" class="hidden" type="button">Salir</button>
+    </nav>
+  </div>
+</header>
+<main class="wrap">
+<section class="page-intro" aria-labelledby="page-title">
+  <div class="intro-copy">
+    <p class="eyebrow">Área privada de vendedores particulares</p>
+    <h1 id="page-title">Administrá tus publicaciones</h1>
+    <p>Entrá a tu cuenta para actualizar precios, fotos, descripciones y disponibilidad de los artículos que publicaste.</p>
+    <div class="intro-pills"><span>✏️ Editá tus avisos</span><span>📷 Cambiá las fotos</span><span>✅ Marcá vendido o alquilado</span></div>
+  </div>
+  <div class="intro-mascot"><img src="./images/super-papa.webp" alt="Súper Papa, mascota de Sálvame las Papas"></div>
+</section>
+<section id="login-view" class="box login">
+  <div class="login-layout">
+    <aside class="login-help">
+      <div class="lock" aria-hidden="true">🔐</div>
+      <h2>Tu espacio privado</h2>
+      <p>Desde acá podés mantener tus avisos actualizados sin volver a cargarlos.</p>
+      <ul>
+        <li><span>✓</span><span>Cambiar precio, descripción y categoría.</span></li>
+        <li><span>✓</span><span>Reemplazar hasta cuatro fotos.</span></li>
+        <li><span>✓</span><span>Marcar un artículo como vendido o alquilado.</span></li>
+      </ul>
+    </aside>
+    <div class="login-form">
+      <h2>Ingresar a mi cuenta</h2>
+      <p>Usá la misma cuenta con la que entrás a Mi Comercio.</p>
+      <button id="login-google" class="google" type="button"><span class="google-mark">G</span>Ingresar con Google</button>
+      <div class="login-divider"><span>o ingresá con correo y contraseña</span></div>
+      <label for="email">Correo electrónico</label><input id="email" type="email" autocomplete="email" placeholder="tu-correo@ejemplo.com">
+      <label for="pass">Contraseña</label><input id="pass" type="password" autocomplete="current-password" placeholder="Tu contraseña">
+      <div class="actions"><button id="login" class="primary" type="button">Ingresar</button><button id="reset-pass" class="light" type="button">Olvidé mi contraseña</button><a class="btn light" href="./vendedor.html">Crear publicación</a></div>
+      <div id="login-status" class="status" role="status"></div>
+    </div>
+  </div>
+</section>
+<section id="account-view" class="hidden">
+  <div class="box account-summary">
+    <div><p class="eyebrow">Panel del vendedor</p><h2>Mis publicaciones</h2><p class="note">Podés modificar precio, descripción, modalidad, fotos y disponibilidad. Administración conserva el control del pago, aprobación y vencimiento.</p></div>
+    <div class="account-actions"><a class="btn primary" href="./vendedor.html">＋ Crear otra publicación</a><a class="btn light" href="./pago-particular.html">Ver pago del plan</a></div>
+  </div>
+  <div id="publications"><div class="box empty">Cargando publicaciones…</div></div>
+</section>
+</main>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,signInWithPopup,signInWithRedirect,GoogleAuthProvider,signInWithEmailAndPassword,sendPasswordResetEmail,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getFirestore,collection,query,where,getDocs,doc,updateDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const app=initializeApp({
+  apiKey:"AIzaSyAE8kEBAzDbPvCCD1KCyjq67iFl3dvthLM",
+  authDomain:"salvame-las-papas-cdelu.firebaseapp.com",
+  projectId:"salvame-las-papas-cdelu",
+  storageBucket:"salvame-las-papas-cdelu.firebasestorage.app",
+  messagingSenderId:"401048945476",
+  appId:"1:401048945476:web:58695553aa93928b36cd11"
+});const auth=getAuth(app),db=getFirestore(app);auth.languageCode="es";const googleProvider=new GoogleAuthProvider();
+const loginView=document.getElementById('login-view'),accountView=document.getElementById('account-view'),pubs=document.getElementById('publications'),logout=document.getElementById('logout');
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+async function comprimir(file){
+ if(!file)return null;const data=await new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(r.result);r.onerror=no;r.readAsDataURL(file)});
+ const img=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=data});const max=700,scale=Math.min(1,max/Math.max(img.width,img.height));
+ const c=document.createElement('canvas');c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);c.getContext('2d').drawImage(img,0,0,c.width,c.height);return c.toDataURL('image/jpeg',.58)
+}
+document.getElementById('reset-pass').onclick=async()=>{const st=document.getElementById('login-status'),email=document.getElementById('email').value.trim().toLowerCase(),intento=new Date().toLocaleString('es-AR');if(!email){st.className='status show error';st.textContent='Escribí primero tu correo.';return}try{await sendPasswordResetEmail(auth,email,{url:new URL('./restablecer-clave.html?tipo=particular',window.location.href).href,handleCodeInApp:false});st.className='status show ok';st.innerHTML='✅ Solicitud enviada.<br>Revisá Entrada, Correo no deseado, Spam y Promociones. El enlace te permitirá crear una contraseña nueva y regresar a Mis publicaciones.'}catch(e){st.className='status show error';st.innerHTML='❌ Firebase rechazó la solicitud.<br><small>Código: '+(e.code||'sin código')+'<br>Mensaje: '+(e.message||'sin mensaje')+'<br>Dominio: '+window.location.hostname+'<br>Hora: '+intento+'</small>';console.error('RECUPERACION_PARTICULAR',e)}};
+document.getElementById('login-google').onclick=async()=>{const st=document.getElementById('login-status');st.className='status show';st.textContent='Abriendo el acceso de Google…';try{await signInWithPopup(auth,googleProvider);st.className='status'}catch(e){if(e.code==='auth/popup-blocked'){await signInWithRedirect(auth,googleProvider);return}const mensajes={'auth/unauthorized-domain':'Este dominio todavía no está autorizado en Firebase.','auth/operation-not-allowed':'El acceso con Google no está habilitado en Firebase.','auth/popup-closed-by-user':'Cerraste la ventana de Google antes de terminar.','auth/account-exists-with-different-credential':'Esta cuenta fue creada con contraseña. Ingresá con correo o recuperá la clave.'};st.className='status show error';st.textContent=mensajes[e.code]||('No se pudo ingresar con Google. Código: '+(e.code||'sin código'));console.error('LOGIN_GOOGLE_PARTICULAR',e)}};
+document.getElementById('login').onclick=async()=>{const st=document.getElementById('login-status'),email=document.getElementById('email').value.trim().toLowerCase(),pass=document.getElementById('pass').value;if(!email||!pass){st.className='status show error';st.textContent='Completá el correo y la contraseña.';return}st.className='status show';st.textContent='Ingresando…';try{await signInWithEmailAndPassword(auth,email,pass);st.className='status'}catch(e){const mensajes={'auth/invalid-credential':'El correo o la contraseña no coinciden. Si normalmente entrás con Google, usá el botón “Ingresar con Google”.','auth/user-disabled':'Esta cuenta fue deshabilitada.','auth/too-many-requests':'Hubo demasiados intentos. Esperá unos minutos o recuperá la contraseña.','auth/network-request-failed':'No se pudo conectar. Revisá Internet y volvé a intentar.'};st.className='status show error';st.textContent=(mensajes[e.code]||'No se pudo ingresar.')+' Código: '+(e.code||'sin código');console.error('LOGIN_EMAIL_PARTICULAR',e)}};
+logout.onclick=()=>signOut(auth);
+onAuthStateChanged(auth,user=>{if(user){loginView.classList.add('hidden');accountView.classList.remove('hidden');logout.classList.remove('hidden');cargar(user.uid)}else{loginView.classList.remove('hidden');accountView.classList.add('hidden');logout.classList.add('hidden')}});
+function estadoBadge(e){return e==='activo'?'<span class="badge active">✅ Activa</span>':e==='pendiente'?'<span class="badge pending">⏳ Pendiente</span>':`<span class="badge other">${esc(e||'Sin estado')}</span>`}
+function artEditor(a,i,id){
+ const fotos=Array.isArray(a.fotos)?a.fotos:[];
+ return `<section class="article" data-doc="${id}" data-index="${i}">
+ <h3>${i+1}. ${esc(a.titulo||'Aviso')}</h3>
+ <div class="grid">
+ <div><label>Venta o alquiler</label><select class="tipo"><option value="venta" ${a.tipoOperacion==='venta'?'selected':''}>Venta</option><option value="alquiler" ${a.tipoOperacion==='alquiler'?'selected':''}>Alquiler</option></select></div>
+ <div><label>Título</label><input class="titulo" value="${esc(a.titulo||'')}"></div>
+ <div><label>Precio</label><input class="precio" type="number" min="0" value="${Number(a.precio||0)}"></div>
+ <div><label>Precio por</label><select class="periodo">${['total','día','semana','mes','consultar'].map(x=>`<option value="${x}" ${a.periodoPrecio===x?'selected':''}>${x}</option>`).join('')}</select></div>
+ <div><label>Estado del artículo</label><select class="estadoArticulo">${['Usado','Como nuevo','Nuevo','No corresponde'].map(x=>`<option ${a.estadoArticulo===x?'selected':''}>${x}</option>`).join('')}</select></div>
+ <div><label>Categoría</label><input class="categoria" value="${esc(a.categoria||'')}"></div>
+ <div><label>Zona</label><input class="zona" value="${esc(a.zona||'')}"></div>
+ <div><label>Disponibilidad</label><select class="disponible"><option value="true" ${a.disponible!==false?'selected':''}>Disponible</option><option value="false" ${a.disponible===false?'selected':''}>Vendido / alquilado</option></select></div>
+ <div class="full"><label>Descripción</label><textarea class="descripcion">${esc(a.descripcion||'')}</textarea></div>
+ </div>
+ ${fotos.length?`<div class="photos">${fotos.map(f=>`<img src="${f}" alt="Foto">`).join('')}</div>`:''}
+ <label>Reemplazar fotos (opcional, hasta 4)</label><div class="photo-inputs">${[1,2,3,4].map(()=>'<input type="file" accept="image/*">').join('')}</div>
+ </section>`
+}
+async function cargar(uid){
+ pubs.innerHTML='<div class="empty">Cargando publicaciones…</div>';
+ try{const snap=await getDocs(query(collection(db,'vendedoresParticulares'),where('ownerUid','==',uid)));const arr=[];snap.forEach(d=>arr.push({id:d.id,...d.data()}));
+ if(!arr.length){pubs.innerHTML='<div class="box empty"><div style="font-size:3rem;margin-bottom:10px">🏷️</div><h2 style="margin:0 0 8px">Esta cuenta todavía no tiene avisos particulares</h2><p class="note" style="max-width:620px;margin:0 auto">Tu comercio puede estar correctamente asociado y administrarse por separado. Los productos del comercio se modifican desde <b>Mi Comercio</b>; acá aparecen solamente los avisos particulares de venta o alquiler.</p><div class="actions" style="justify-content:center"><a class="btn blue" href="./comercio.html">Ir a Mi Comercio</a><a class="btn primary" href="./vendedor.html">Crear un aviso particular</a></div></div>';return}
+ pubs.innerHTML=arr.map(v=>`<article class="pub-card" data-id="${v.id}"><div class="pub-head"><div><strong>${esc(v.nombre||'Vendedor particular')}</strong><div class="note">${esc(v.plan||'')}</div></div>${estadoBadge(v.estado)}</div><div class="pub-body">${(v.articulos||[]).map((a,i)=>artEditor(a,i,v.id)).join('')}<div class="actions"><button class="green save" data-id="${v.id}">Guardar cambios</button></div><div class="status save-status"></div></div></article>`).join('');
+ document.querySelectorAll('.save').forEach(b=>b.onclick=()=>guardar(b.dataset.id));
+ }catch(e){pubs.innerHTML='<div class="box empty">No se pudieron cargar tus publicaciones: '+esc(e.message||e.code)+'</div>'}
+}
+async function guardar(id){
+ const card=document.querySelector(`.pub-card[data-id="${id}"]`),st=card.querySelector('.save-status');st.className='status show';st.textContent='Guardando…';
+ try{const articulos=[];for(const sec of card.querySelectorAll('.article')){const files=[...sec.querySelectorAll('input[type=file]')].map(x=>x.files[0]).filter(Boolean).slice(0,4);let nuevas=[];for(const f of files)nuevas.push(await comprimir(f));
+ const disponible=sec.querySelector('.disponible').value==='true';articulos.push({
+ tipoOperacion:sec.querySelector('.tipo').value,titulo:sec.querySelector('.titulo').value.trim(),precio:Number(sec.querySelector('.precio').value||0),periodoPrecio:sec.querySelector('.periodo').value,
+ estadoArticulo:sec.querySelector('.estadoArticulo').value,categoria:sec.querySelector('.categoria').value.trim(),zona:sec.querySelector('.zona').value.trim(),descripcion:sec.querySelector('.descripcion').value.trim(),
+ fotos:nuevas.length?nuevas:[],disponible,vendido:!disponible&&sec.querySelector('.tipo').value==='venta',alquilado:!disponible&&sec.querySelector('.tipo').value==='alquiler'
+ });}
+ // Preserve old photos when no replacements were selected.
+ const snap=await getDocs(query(collection(db,'vendedoresParticulares'),where('ownerUid','==',auth.currentUser.uid)));let current=null;snap.forEach(d=>{if(d.id===id)current=d.data()});
+ articulos.forEach((a,i)=>{if(!a.fotos.length)a.fotos=current?.articulos?.[i]?.fotos||[]});
+ await updateDoc(doc(db,'vendedoresParticulares',id),{articulos,actualizadoEn:serverTimestamp()});
+ st.className='status show ok';st.textContent='✅ Cambios guardados.';setTimeout(()=>cargar(auth.currentUser.uid),700)
+ }catch(e){st.className='status show error';st.textContent='No se pudo guardar: '+(e.message||e.code)}
+}
+</script>
+</body></html>
