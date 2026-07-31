@@ -6,6 +6,7 @@
 <meta name="description" content="Panel de comercios de Sálvame las Papas para administrar productos y disponibilidad."/>
 <meta name="theme-color" content="#002A6A"/>
 <meta name="color-scheme" content="light"/>
+<meta name="app-version" content="V103"/>
 <title>Mi Comercio — Sálvame las Papas 🥔</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
@@ -142,7 +143,8 @@ function renderSelectorComercios(){
     return
   }
 
-  bloque.style.display='block'
+  // Si hay un solo comercio, evitamos mostrar dos veces la misma información.
+  bloque.style.display=comerciosDeLaCuenta.length>1?'block':'none'
   cont.innerHTML=comerciosDeLaCuenta.map(c=>{
     const d=c.data||{}
     const activo=c.id===miComercioId
@@ -583,13 +585,16 @@ window.borrarProducto = async (id, nombre) => {
 async function cargarPedidos(){
   if(!miComercioId) return
   const cont=document.getElementById('pedidos-lista')
+  misPedidos=[]
   try{
     const snap=await getDocs(query(collection(db,'pedidos'),where('comercioId','==',miComercioId)))
-    misPedidos=[];snap.forEach(d=>misPedidos.push({id:d.id,...d.data()}))
+    snap.forEach(d=>misPedidos.push({id:d.id,...d.data()}))
     misPedidos.sort((a,b)=>(b.creadoEn?.seconds||0)-(a.creadoEn?.seconds||0))
     renderPedidos()
+    await cargarMetricasV60()
   }catch(e){
     if(cont) cont.innerHTML='<div class="pedido-empty">No se pudieron cargar los pedidos: '+esc(e.message)+'</div>'
+    await cargarMetricasV60()
   }
 }
 function renderPedidos(){
@@ -609,7 +614,7 @@ function renderPedidos(){
   }).join('')
 }
 window.cambiarEstadoPedido=async(id,estado)=>{
-  try{await updateDoc(doc(db,'pedidos',id),{estado,actualizadoEn:serverTimestamp()});toast('Pedido actualizado: '+estado);await cargarPedidos();await cargarMetricasV60()}catch(e){toast('Error: '+e.message)}
+  try{await updateDoc(doc(db,'pedidos',id),{estado,actualizadoEn:serverTimestamp()});toast('Pedido actualizado: '+estado);await cargarPedidos()}catch(e){toast('Error: '+e.message)}
 }
 
 function mostrarSeccion(id){
@@ -736,16 +741,24 @@ function inicioMesV60(){
 async function cargarMetricasV60(){
   if(!miComercioId)return;
   const mes=mesClaveV60();
-  document.getElementById('metrics-period-v60').textContent=new Date().toLocaleDateString('es-AR',{month:'long',year:'numeric'});
+  const periodo=document.getElementById('metrics-period-v60');
+  const estado=document.getElementById('metrics-status-v103');
+  periodo.textContent=new Date().toLocaleDateString('es-AR',{month:'long',year:'numeric'});
+  if(estado){estado.className='metrics-status-v103 loading';estado.textContent='Actualizando resultados…'}
   let visitas=0,whatsapp=0;
   try{
     const snap=await getDoc(doc(db,'comercios',miComercioId,'metricas',mes));
     if(snap.exists()){const d=snap.data();visitas=Number(d.visitas||0);whatsapp=Number(d.clicsWhatsApp||0)}
-  }catch(e){console.warn('Métricas:',e.message)}
+  }catch(e){
+    console.warn('Métricas:',e.message)
+    if(estado){estado.className='metrics-status-v103 warning';estado.textContent='No se pudieron leer visitas y WhatsApp. Los pedidos sí se calcularon.'}
+  }
   const desde=inicioMesV60();
+  let pedidosSinFecha=0;
   const pedidosMes=misPedidos.filter(p=>{
     const f=p.creadoEn?.toDate?p.creadoEn.toDate():new Date(p.creadoEn||0);
-    return !isNaN(f)&&f>=desde;
+    if(isNaN(f)||Number(f)===0){pedidosSinFecha++;return true}
+    return f>=desde;
   });
   const confirmados=pedidosMes.filter(p=>['confirmado','en preparación','entregado'].includes(String(p.estado||'').toLowerCase())).length;
   const entregados=pedidosMes.filter(p=>String(p.estado||'').toLowerCase()==='entregado').length;
@@ -756,6 +769,8 @@ async function cargarMetricasV60(){
   document.getElementById('m-confirmados-v60').textContent=confirmados.toLocaleString('es-AR');
   document.getElementById('m-entregados-v60').textContent=entregados.toLocaleString('es-AR');
   document.getElementById('m-total-v60').textContent='$'+total.toLocaleString('es-AR');
+  if(pedidosSinFecha) periodo.textContent+=` · incluye ${pedidosSinFecha} sin fecha`;
+  if(estado&&!estado.classList.contains('warning')){estado.className='metrics-status-v103 ok';estado.textContent='✅ Resultados actualizados'}
 }
 window.copiarInformeV60=async()=>{
   if(!miComercio)return;
@@ -1255,6 +1270,7 @@ img{max-width:100%;height:auto}
 .metrics-grid-v60 article{background:#f6f9fd;border:1px solid #dfe7f0;border-radius:12px;padding:12px;text-align:center}
 .metrics-grid-v60 span{display:block;font-size:1.25rem}.metrics-grid-v60 b{display:block;color:#073574;font-size:1.25rem;margin:4px 0}.metrics-grid-v60 small{color:#687588;font-size:.7rem}
 .metrics-note-v60{margin-top:10px;font-size:.72rem;color:#758194}
+.metrics-status-v103{display:inline-flex;align-items:center;min-height:30px;margin-top:8px;padding:6px 10px;border-radius:999px;font-size:.72rem;font-weight:800}.metrics-status-v103.loading{background:#edf4fb;color:#315675}.metrics-status-v103.ok{background:#e1f6e8;color:#176436}.metrics-status-v103.warning{background:#fff2cf;color:#745100}
 @media(max-width:900px){.metrics-grid-v60{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:560px){.profile-checks-v60{grid-template-columns:1fr}.metrics-grid-v60{grid-template-columns:repeat(2,1fr)}}
 
@@ -1268,7 +1284,7 @@ img{max-width:100%;height:auto}
 <meta name="apple-mobile-web-app-title" content="Sálvame">
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
-<meta name="app-version" content="V79">
+<meta name="app-version" content="V103">
 </head>
 <body>
 
@@ -1321,12 +1337,13 @@ img{max-width:100%;height:auto}
 <!-- PANEL -->
 <div id="panel-screen">
   <nav class="panel-nav">
-    <div class="panel-logo">Sálvame <em>las Papas</em> — Mi Comercio <span class="panel-version">V79</span></div>
-    <div class="site-switcher" aria-label="Navegación del sitio">
-      <a href="index.html">🏠 Sitio público</a>
-      <a class="active" href="comercio.html">🏪 Mi comercio</a>
-      <a href="admin.html">⚙️ Admin</a>
-    </div>
+    <div class="panel-logo">Sálvame <em>las Papas</em> — Panel del comercio <span class="panel-version">V103</span></div>
+    <nav class="site-switcher" aria-label="Navegación del sitio">
+      <a href="index.html">🏠 Inicio general</a>
+      <a href="comprar.html">🛒 Ver como cliente</a>
+      <a class="active" href="comercio.html">🏪 Administrar comercio</a>
+      <a href="admin.html">⚙️ Administración</a>
+    </nav>
     <div class="user-info">
       <span id="user-email"></span>
       <button class="btn-salir" onclick="cerrarSesion()">Salir</button>
@@ -1413,6 +1430,7 @@ img{max-width:100%;height:auto}
           <div>
             <h3>📊 Resultados del mes</h3>
             <p id="metrics-period-v60">Cargando período...</p>
+            <span id="metrics-status-v103" class="metrics-status-v103 loading">Esperando datos…</span>
           </div>
           <div class="metrics-actions-v60">
             <button type="button" onclick="cargarMetricasV60()">Actualizar</button>
@@ -1427,7 +1445,7 @@ img{max-width:100%;height:auto}
           <article><span>📦</span><b id="m-entregados-v60">0</b><small>Entregados</small></article>
           <article><span>💰</span><b id="m-total-v60">$0</b><small>Total de pedidos</small></article>
         </div>
-        <p class="metrics-note-v60">Las visitas y clics son aproximados por sesión/dispositivo. Los pedidos y estados se toman de los registros reales.</p>
+        <p class="metrics-note-v60">Las visitas y clics empiezan a contarse cuando una persona abre la ficha o usa WhatsApp. Los pedidos se calculan con los registros reales; los pedidos antiguos sin fecha se incluyen para que no desaparezcan del resumen.</p>
       </section>
 
       <section class="pedidos-section">
