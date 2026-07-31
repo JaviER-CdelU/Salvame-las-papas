@@ -1,8 +1,10 @@
 {
-  "version": "V108",
-  "nombre": "Varios comercios por una misma cuenta",
+  "version": "V109",
+  "nombre": "Informes de estadísticas por WhatsApp",
   "fecha": "2026-07-31",
   "cambios": [
+    "nuevo botón para enviar el informe mensual directamente por WhatsApp",
+    "el mensaje incluye comercio, período, visitas, clics, pedidos, confirmados, entregados y total",
     "una misma cuenta puede registrar y administrar varios comercios",
     "cuando hay dos o más negocios el sistema pregunta cuál se quiere administrar",
     "cada comercio conserva por separado sus datos, productos, pedidos y estado",

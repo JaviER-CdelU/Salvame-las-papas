@@ -6,7 +6,7 @@
 <meta name="description" content="Panel de comercios de Sálvame las Papas para administrar productos y disponibilidad."/>
 <meta name="theme-color" content="#002A6A"/>
 <meta name="color-scheme" content="light"/>
-<meta name="app-version" content="V108"/>
+<meta name="app-version" content="V109"/>
 <title>Mi Comercio — Sálvame las Papas 🥔</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
@@ -770,16 +770,30 @@ async function cargarMetricasV60(){
   if(pedidosSinFecha) periodo.textContent+=` · incluye ${pedidosSinFecha} sin fecha`;
   if(estado&&!estado.classList.contains('warning')){estado.className='metrics-status-v103 ok';estado.textContent='✅ Resultados actualizados'}
 }
-window.copiarInformeV60=async()=>{
+function textoInformeV109(){
   if(!miComercio)return;
-  const texto=`Resultados de ${miComercio.nombre||'Mi comercio'} — ${document.getElementById('metrics-period-v60').textContent}
+  return `📊 Informe de resultados
+🏪 ${miComercio.nombre||'Mi comercio'}
+📅 ${document.getElementById('metrics-period-v60').textContent}
+
 Visitas: ${document.getElementById('m-visitas-v60').textContent}
 Clics en WhatsApp: ${document.getElementById('m-whatsapp-v60').textContent}
 Pedidos: ${document.getElementById('m-pedidos-v60').textContent}
 Confirmados: ${document.getElementById('m-confirmados-v60').textContent}
 Entregados: ${document.getElementById('m-entregados-v60').textContent}
-Total de pedidos: ${document.getElementById('m-total-v60').textContent}`;
+Total de pedidos: ${document.getElementById('m-total-v60').textContent}
+
+🥔 Sálvame las Papas`;
+}
+window.copiarInformeV60=async()=>{
+  const texto=textoInformeV109();
+  if(!texto)return;
   try{await navigator.clipboard.writeText(texto);toast('✅ Informe copiado')}catch(e){toast('No se pudo copiar el informe')}
+};
+window.enviarInformeWhatsAppV109=()=>{
+  const texto=textoInformeV109();
+  if(!texto)return;
+  window.open('https://wa.me/?text='+encodeURIComponent(texto),'_blank','noopener');
 };
 window.cargarMetricasV60=cargarMetricasV60;
 
@@ -1282,14 +1296,14 @@ img{max-width:100%;height:auto}
 <meta name="apple-mobile-web-app-title" content="Sálvame">
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
-<meta name="app-version" content="V108">
+<meta name="app-version" content="V109">
 </head>
 <body>
 
 <!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
-    <span class="owner-login-kicker">PANEL DEL COMERCIO · V108</span>
+    <span class="owner-login-kicker">PANEL DEL COMERCIO · V109</span>
     <div class="login-logo">Sálvame <em>las Papas 🥔</em></div>
     <h1 class="owner-login-title">Administrá tu comercio</h1>
     <p class="owner-login-help">
@@ -1326,7 +1340,7 @@ img{max-width:100%;height:auto}
 <!-- PANEL -->
 <div id="panel-screen">
   <nav class="panel-nav">
-    <div class="panel-logo">Sálvame <em>las Papas</em> — Panel del comercio <span class="panel-version">V108</span></div>
+    <div class="panel-logo">Sálvame <em>las Papas</em> — Panel del comercio <span class="panel-version">V109</span></div>
     <nav class="site-switcher" aria-label="Navegación del sitio">
       <a href="index.html">🏠 Inicio general</a>
       <a href="comprar.html">🛒 Ver como cliente</a>
@@ -1425,6 +1439,7 @@ img{max-width:100%;height:auto}
           <div class="metrics-actions-v60">
             <button type="button" onclick="cargarMetricasV60()">Actualizar</button>
             <button type="button" onclick="copiarInformeV60()">Copiar informe</button>
+            <button type="button" onclick="enviarInformeWhatsAppV109()">💬 Enviar por WhatsApp</button>
           </div>
         </div>
         <div class="metrics-grid-v60">
