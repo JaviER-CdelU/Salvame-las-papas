@@ -814,6 +814,10 @@ img{max-width:100%;height:auto}
 .checkout-box h2{font:900 1.65rem Fraunces;color:var(--azul-d);margin-bottom:.35rem}.checkout-sub{color:var(--suave);line-height:1.5;margin-bottom:1rem}.checkout-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.checkout-full{grid-column:1/-1}.checkout-label{display:flex;flex-direction:column;gap:5px;font-size:.85rem;font-weight:700;color:var(--azul-d)}
 .checkout-label input,.checkout-label select,.checkout-label textarea{width:100%;border:1.5px solid #ccd6e2;border-radius:10px;padding:11px 12px;font:inherit}.checkout-actions{display:flex;gap:10px;margin-top:1rem;flex-wrap:wrap}.checkout-actions button{flex:1;min-width:160px}.checkout-note{background:#eef5ff;border:1px solid #cbdcf4;border-radius:11px;padding:10px 12px;font-size:.83rem;line-height:1.45;margin:.8rem 0}.checkout-error{display:none;color:#a40000;background:#fff0f0;border:1px solid #f0b7b7;border-radius:9px;padding:9px 11px;margin-top:8px;font-size:.85rem}.checkout-error.show{display:block}.checkout-tabs{display:flex;gap:8px;margin-bottom:12px}.checkout-tabs button{flex:1;padding:10px;border-radius:10px;border:1.5px solid #ccd6e2;background:#fff;font-weight:700;cursor:pointer}.checkout-tabs button.active{background:var(--azul-d);color:#fff;border-color:var(--azul-d)}
 @media(max-width:560px){.checkout-grid{grid-template-columns:1fr}.checkout-full{grid-column:auto}.checkout-box{padding:1.15rem;border-radius:18px}.checkout-actions button{width:100%}}
+.checkout-qr-v110{display:none;grid-column:1/-1;background:#fff8e8;border:2px solid #efc76d;border-radius:14px;padding:14px;text-align:center}
+.checkout-qr-v110.show{display:block}.checkout-qr-v110 img{display:block;width:min(260px,100%);max-height:300px;object-fit:contain;margin:10px auto;border-radius:12px;background:#fff}.checkout-qr-v110 strong{display:block;color:#744b00}.checkout-qr-v110 small{display:block;color:#765f35;margin-top:6px;line-height:1.4}
+.ver-articulos-v110{display:block;width:100%;margin-top:10px;border:0;border-radius:10px;padding:10px 12px;background:#073d83;color:#fff;font-weight:900;cursor:pointer}
+.ver-articulos-v110:hover{background:#f06a10}
 
 
 .registro-final-card{max-width:820px;margin:0 auto;text-align:center;background:#fff;border:2px solid #B7D7C2;border-radius:22px;padding:clamp(1.5rem,4vw,3rem);box-shadow:0 14px 40px rgba(32,76,55,.10)}
@@ -4375,7 +4379,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
 }
 
 </style>
-<meta name="app-version" content="V99">
+<meta name="app-version" content="V110">
 </head>
 <body>
 
@@ -4677,6 +4681,53 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
       <span><b>Mercado Pago:</b> suscripción mensual con renovación automática hasta que la canceles.</span>
       <span><b>Oficina:</b> efectivo, débito, crédito o QR; renovación manual cada mes.</span>
       <small>El enlace del plan se muestra después del registro, dentro de tu cuenta.</small>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CLIENTE / CONFIRMAR PEDIDO -->
+<div class="checkout-overlay" id="checkout-modal" onclick="cerrarCheckout(event)">
+  <div class="checkout-box">
+    <button class="mclose" onclick="cerrarCheckout()">✕</button>
+    <div id="checkout-auth">
+      <h2>Identificate para confirmar</h2>
+      <p class="checkout-sub">Podés mirar todos los productos sin registrarte. La cuenta se solicita recién cuando confirmás el pedido.</p>
+      <div class="checkout-tabs">
+        <button id="co-tab-login" class="active" onclick="cambiarModoCliente('login')">Ya tengo cuenta</button>
+        <button id="co-tab-reg" onclick="cambiarModoCliente('registro')">Crear cuenta</button>
+      </div>
+      <div class="checkout-grid">
+        <label class="checkout-label checkout-full">Email<input id="co-email" type="email" autocomplete="email" placeholder="tuemail@ejemplo.com"></label>
+        <label class="checkout-label checkout-full">Contraseña<input id="co-pass" type="password" autocomplete="current-password" placeholder="Mínimo 6 caracteres"></label>
+        <label class="checkout-label checkout-full" id="co-pass2-wrap" style="display:none">Repetí la contraseña<input id="co-pass2" type="password" autocomplete="new-password"></label>
+      </div>
+      <div class="checkout-note">🔒 El comercio recibirá tu nombre, teléfono y datos del pedido. Nunca verá tu contraseña.</div>
+      <div class="checkout-account-help-v57">
+        <span>¿Tu correo ya pertenece a un comercio? Podés usarlo también para comprar.</span>
+        <button type="button" onclick="recuperarClaveClienteV57()">Olvidé mi contraseña</button>
+      </div>
+      <div class="checkout-error" id="co-auth-error"></div>
+      <div class="checkout-actions"><button class="btn btn-azul" id="co-auth-btn" onclick="autenticarClientePedido()">Ingresar y continuar</button></div>
+    </div>
+    <div id="checkout-datos" style="display:none">
+      <h2>Datos, entrega y pago</h2>
+      <p class="checkout-sub" id="co-resumen-cuenta"></p>
+      <div class="checkout-grid">
+        <label class="checkout-label">Nombre y apellido<input id="co-nombre" type="text" autocomplete="name"></label>
+        <label class="checkout-label">WhatsApp<input id="co-telefono" type="tel" autocomplete="tel" placeholder="+54 9 3442..."></label>
+        <label class="checkout-label">Entrega<select id="co-entrega" onchange="actualizarEntregaCliente()"></select></label>
+        <label class="checkout-label">Forma de pago<select id="co-pago" onchange="actualizarPagoClienteV110()"></select></label>
+        <label class="checkout-label checkout-full" id="co-direccion-wrap" style="display:none">Dirección de entrega<input id="co-direccion" type="text" autocomplete="street-address"></label>
+        <div class="checkout-qr-v110" id="co-qr-wrap">
+          <strong>💳 Pago mediante QR</strong>
+          <img id="co-qr-img" alt="Código QR del comercio" style="display:none">
+          <small id="co-qr-mensaje">El comercio todavía no cargó una imagen de QR. Podrás coordinar el pago al enviar el pedido.</small>
+        </div>
+        <label class="checkout-label checkout-full">Observaciones<textarea id="co-observaciones" rows="3" placeholder="Timbre, horario preferido, aclaraciones..."></textarea></label>
+      </div>
+      <div class="checkout-note">El pedido quedará registrado con número, fecha, cliente y estado “pendiente de pago”. Después se abrirá WhatsApp para coordinar con el comercio.</div>
+      <div class="checkout-error" id="co-datos-error"></div>
+      <div class="checkout-actions"><button class="btn btn-ghost" onclick="cerrarCheckout()">Cancelar</button><button class="btn btn-rojo" id="co-confirmar-btn" onclick="confirmarPedidoRegistrado()">Confirmar pedido</button></div>
     </div>
   </div>
 </div>
@@ -5439,6 +5490,7 @@ function opcionesPagoComercio(c){
     if(x.includes('efectivo')&&!salida.includes('Efectivo')) salida.push('Efectivo');
     if(x.includes('transfer')&&!salida.includes('Transferencia')) salida.push('Transferencia');
     if(x.includes('mercado pago')&&!salida.includes('Mercado Pago')) salida.push('Mercado Pago');
+    if(x.includes('qr')&&!salida.includes('QR del comercio')) salida.push('QR del comercio');
     if((x.includes('débito')||x.includes('debito'))&&!salida.includes('Débito')) salida.push('Débito');
     if((x.includes('crédito')||x.includes('credito'))&&!salida.includes('Crédito')) salida.push('Crédito');
     if(x.includes('cuotas')&&!salida.includes('Cuotas')) salida.push('Cuotas');
@@ -5464,6 +5516,7 @@ function configurarOpcionesPedido(c){
     pago.innerHTML=opciones.map(v=>`<option value="${textoSeguro(v)}">${textoSeguro(v)}</option>`).join('');
   }
   actualizarEntregaCliente();
+  actualizarPagoClienteV110();
 }
 
 function abrirComercio(c){
@@ -5766,8 +5819,27 @@ function mostrarDatosCliente(user){
   document.getElementById('co-telefono').value=localStorage.getItem('slp_cliente_tel')||''
 }
 function actualizarEntregaCliente(){
-  const envio=document.getElementById('co-entrega').value==='Envío a domicilio'
+  const opcion=String(document.getElementById('co-entrega')?.value||'').toLowerCase();
+  const envio=opcion.includes('domicilio')||opcion.includes('cadete')||opcion.includes('envío propio')||opcion.includes('envio propio');
   document.getElementById('co-direccion-wrap').style.display=envio?'flex':'none'
+}
+function actualizarPagoClienteV110(){
+  const pago=String(document.getElementById('co-pago')?.value||'').toLowerCase();
+  const bloque=document.getElementById('co-qr-wrap');
+  const imagen=document.getElementById('co-qr-img');
+  const mensaje=document.getElementById('co-qr-mensaje');
+  if(!bloque)return;
+  const usaQr=pago.includes('qr');
+  bloque.classList.toggle('show',usaQr);
+  if(!usaQr)return;
+  const fuente=comercioActivo?.qrPago||comercioActivo?.imagenQr||comercioActivo?.qrImagen||'';
+  if(fuente){
+    imagen.src=fuente;imagen.style.display='block';
+    mensaje.textContent='Escaneá el QR del comercio y conservá el comprobante.';
+  }else{
+    imagen.removeAttribute('src');imagen.style.display='none';
+    mensaje.textContent='El comercio todavía no cargó una imagen de QR. Podrás coordinar el pago al enviar el pedido.';
+  }
 }
 
 function limpiarUndefined(valor){
@@ -6586,7 +6658,7 @@ function renderPlanesV31(){
     const tag=c.plan===3?'PRO / MAX':c.plan===2?'DESTACADO':'BÁSICO';
     const foto=(c.productos||[]).find(p=>p&&p.foto)?.foto||'';
     const productos=(c.productos||[]).slice(0,c.plan===3?3:2).map(p=>`<span>${textoSeguro(p.emoji||'📦')} ${textoSeguro(p.nombre||p.n||'Producto')}</span>`).join('');
-    return `<article class="plan-card-v31 ${clase}" onclick="abrirHomeComercio(${realIndex})"><span class="plan-tag-v31">${tag}</span><div class="plan-cover-v31">${foto?`<img src="${foto}" alt="${textoSeguro(c.nombre)}" loading="lazy">`:textoSeguro(c.emoji||'🏪')}</div><div class="plan-body-v31"><h3>${textoSeguro(c.nombre||'Comercio')}</h3><div class="plan-meta-v31">${textoSeguro(c.cat||'Comercio')} · ${textoSeguro(c.barrio||'CDU')}<br>${textoSeguro(horarioTexto(c.horarios))}<br>${textoSeguro(c.direccion||'Dirección por confirmar')}<br>${c.tel?'WhatsApp disponible':'WhatsApp no informado'}</div><div class="plan-products-v31">${productos||'<span>Ver productos</span>'}</div></div></article>`;
+    return `<article class="plan-card-v31 ${clase}" onclick="abrirHomeComercio(${realIndex})"><span class="plan-tag-v31">${tag}</span><div class="plan-cover-v31">${foto?`<img src="${foto}" alt="${textoSeguro(c.nombre)}" loading="lazy">`:textoSeguro(c.emoji||'🏪')}</div><div class="plan-body-v31"><h3>${textoSeguro(c.nombre||'Comercio')}</h3><div class="plan-meta-v31">${textoSeguro(c.cat||'Comercio')} · ${textoSeguro(c.barrio||'CDU')}<br>${textoSeguro(horarioTexto(c.horarios))}<br>${textoSeguro(c.direccion||'Dirección por confirmar')}<br>${c.tel?'WhatsApp disponible':'WhatsApp no informado'}</div><div class="plan-products-v31">${productos||'<span>Sin artículos publicados todavía</span>'}</div><button class="ver-articulos-v110" type="button" onclick="event.stopPropagation();abrirHomeComercio(${realIndex})">Ver todos los artículos y comprar</button></div></article>`;
   }).join('');
 }
 function actualizarStatsV31(){
@@ -6786,7 +6858,7 @@ function fechaV92(c){const f=c?.fechaIngreso||c?.creado||c?.fechaAlta||c?.create
 function fotoV92(c){return c?.fotoPortada||c?.logo||c?.productos?.find(p=>p?.foto||p?.fotos?.[0])?.foto||c?.productos?.find(p=>p?.fotos?.[0])?.fotos?.[0]||''}
 function cardComercioV92(c,etiqueta=''){
  const i=(window.comerciosTodos||comerciosTodos||[]).indexOf(c), foto=fotoV92(c), estado=typeof estadoHorarioV39==='function'?estadoHorarioV39(c.horarios):{estado:'consultar',texto:'Consultar horario'};
- return `<article class="v91-card" onclick="abrirHomeComercio(${i})"><div class="v91-card-media">${foto?`<img src="${foto}" alt="${textoV92(c.nombre)}" loading="lazy">`:textoV92(c.emoji||'🏪')}</div><div class="v91-card-copy">${etiqueta?`<span class="v91-discount">${etiqueta}</span>`:''}<h3>${textoV92(c.nombre||'Comercio')}</h3><p>${textoV92(c.cat||'Comercio local')} · ${textoV92(c.barrio||'CDU')}</p><b>${estado.estado==='abierto'?'● Abierto ahora':textoV92(estado.texto)}</b></div></article>`}
+ return `<article class="v91-card" onclick="abrirHomeComercio(${i})"><div class="v91-card-media">${foto?`<img src="${foto}" alt="${textoV92(c.nombre)}" loading="lazy">`:textoV92(c.emoji||'🏪')}</div><div class="v91-card-copy">${etiqueta?`<span class="v91-discount">${etiqueta}</span>`:''}<h3>${textoV92(c.nombre||'Comercio')}</h3><p>${textoV92(c.cat||'Comercio local')} · ${textoV92(c.barrio||'CDU')}</p><b>${estado.estado==='abierto'?'● Abierto ahora':textoV92(estado.texto)}</b><button class="ver-articulos-v110" type="button" onclick="event.stopPropagation();abrirHomeComercio(${i})">Ver todos los artículos y comprar</button></div></article>`}
 function moverV92(id,dir){
  const rail=document.getElementById(id);
  if(!rail)return;

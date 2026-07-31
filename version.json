@@ -1,8 +1,13 @@
 {
-  "version": "V109",
-  "nombre": "Informes de estadísticas por WhatsApp",
+  "version": "V110",
+  "nombre": "Ficha completa, carrito y confirmación de compra",
   "fecha": "2026-07-31",
   "cambios": [
+    "restaurada la pantalla donde el comprador ingresa o crea su cuenta al confirmar",
+    "restaurados los datos de cliente, entrega, dirección, forma de pago y observaciones",
+    "nuevo botón visible para ver todos los artículos de cada comercio y comprar",
+    "cada carrito permanece separado por comercio",
+    "preparado el espacio para mostrar el QR propio del comercio cuando elija esa forma de pago",
     "nuevo botón para enviar el informe mensual directamente por WhatsApp",
     "el mensaje incluye comercio, período, visitas, clics, pedidos, confirmados, entregados y total",
     "una misma cuenta puede registrar y administrar varios comercios",
