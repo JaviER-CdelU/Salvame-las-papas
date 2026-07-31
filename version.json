@@ -1,8 +1,9 @@
 {
-  "version": "V112",
-  "nombre": "Fotos por plan y varios comercios por correo",
+  "version": "V113",
+  "nombre": "Registro de comercios sin arreglos anidados",
   "fecha": "2026-07-31",
   "cambios": [
+    "corregido el error de Firestore Nested arrays are not supported al guardar los horarios del comercio",
     "registro de productos con 1 foto en Básico, 2 en Pro y 4 en Max de 45.000 pesos",
     "nuevo acceso con Google para asociar otro comercio a una cuenta existente",
     "un correo existente inicia sesión en lugar de intentar crear una cuenta duplicada",
