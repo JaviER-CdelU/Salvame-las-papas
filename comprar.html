@@ -3873,6 +3873,247 @@ nav{background:linear-gradient(135deg,#59b8f2,#2e90df)!important;border-bottom:0
   .v98-offer b{grid-column:2}
 }
 
+
+/* V99 — CELULAR MÁS CÓMODO Y CIUDAD PREPARADA */
+#buscar-actualizacion,
+#btn-buscar-actualizacion,
+.update-float,
+.floating-update,
+.version-check-float,
+.actualizar-float,
+button[onclick*="actualiz"],
+a[onclick*="actualiz"]{
+  display:none!important;
+}
+
+/* Selector de ciudad */
+.v99-location{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  width:100%;
+  max-width:1600px;
+  margin:0 auto 16px;
+  padding:13px 16px;
+  border:1px solid #d9e5ef;
+  border-radius:15px;
+  background:#fff;
+  box-shadow:0 5px 16px rgba(11,48,84,.06);
+}
+.v99-location-current{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  min-width:0;
+  color:#0a356f;
+  font:900 .98rem/1.25 "DM Sans",Arial,sans-serif;
+}
+.v99-location-current span:last-child{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.v99-location button{
+  flex:0 0 auto;
+  padding:10px 15px;
+  border:1px solid #b9d4ec;
+  border-radius:999px;
+  background:#f4f9ff;
+  color:#0d69bd;
+  font:900 .84rem/1 "DM Sans",Arial,sans-serif;
+  cursor:pointer;
+}
+.v99-location button:hover{background:#e8f4ff}
+
+/* Panel futuro de ciudades */
+.v99-location-panel{
+  width:100%;
+  max-width:1600px;
+  margin:-5px auto 16px;
+  padding:14px;
+  border:1px solid #dfe7ed;
+  border-radius:14px;
+  background:#fff;
+}
+.v99-location-panel[hidden]{display:none!important}
+.v99-location-panel p{
+  margin:0 0 10px;
+  color:#5e7184;
+  font:600 .9rem/1.35 "DM Sans",Arial,sans-serif;
+}
+.v99-city-list{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.v99-city-list button{
+  padding:9px 13px;
+  border:1px solid #dce5ec;
+  border-radius:999px;
+  background:#f8fafc;
+  color:#476074;
+  font-weight:800;
+}
+.v99-city-list button.active{
+  background:#0d69bd;
+  border-color:#0d69bd;
+  color:#fff;
+}
+.v99-city-list button:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+}
+
+/* Ajustes móviles */
+@media(max-width:700px){
+  .v91-hero,
+  .hero,
+  .hero-v91,
+  .buyer-hero,
+  [class*="hero"]{
+    min-height:0!important;
+  }
+
+  .v91-hero{
+    padding:0!important;
+    margin-bottom:10px!important;
+  }
+
+  .v91-hero img,
+  .v91-hero picture,
+  .hero img,
+  .buyer-hero img{
+    max-height:360px!important;
+    object-fit:cover!important;
+    object-position:center!important;
+  }
+
+  .v91-hero-copy h1,
+  .hero h1,
+  .buyer-hero h1{
+    font-size:clamp(2rem,10vw,3rem)!important;
+    line-height:.98!important;
+    margin-bottom:10px!important;
+  }
+
+  .v91-hero-copy p,
+  .hero p,
+  .buyer-hero p{
+    font-size:.98rem!important;
+    line-height:1.45!important;
+  }
+
+  .v91-search,
+  .search-wrap,
+  .buyer-search,
+  [class*="search-wrap"]{
+    min-height:58px!important;
+    width:100%!important;
+  }
+
+  .v91-search input,
+  .search-wrap input,
+  .buyer-search input{
+    min-width:0!important;
+    font-size:1rem!important;
+    padding:0 14px!important;
+  }
+
+  .v91-search button,
+  .search-wrap button,
+  .buyer-search button{
+    min-width:102px!important;
+    padding:0 16px!important;
+    font-size:.95rem!important;
+  }
+
+  .v91-rail-head h2,
+  .seller-public-head h2{
+    font-size:1.55rem!important;
+    line-height:1.05!important;
+  }
+
+  .v91-track{
+    gap:12px!important;
+    padding-right:16vw!important;
+    scroll-padding-left:0;
+  }
+
+  .v91-card,
+  .v95-skeleton-card{
+    flex:0 0 82vw!important;
+    max-width:340px!important;
+  }
+
+  .v95-particulares-track{
+    padding-right:16vw!important;
+  }
+
+  .v95-particulares-track .seller-card-v41{
+    flex:0 0 82vw!important;
+    max-width:340px!important;
+  }
+
+  .v98-commerce-card{
+    min-height:0!important;
+  }
+
+  .v98-commerce-media{
+    height:155px!important;
+  }
+
+  .v98-commerce-body{
+    padding:14px!important;
+  }
+
+  .v98-view-btn{
+    min-height:48px!important;
+    font-size:1rem!important;
+  }
+
+  .v99-location{
+    margin:0 12px 12px;
+    width:auto;
+    padding:12px;
+  }
+
+  .v99-location-current{
+    font-size:.9rem;
+  }
+
+  .v99-location button{
+    padding:9px 12px;
+    font-size:.78rem;
+  }
+
+  .v99-location-panel{
+    width:auto;
+    margin:-4px 12px 12px;
+  }
+}
+
+@media(max-width:420px){
+  .v91-hero img,
+  .hero img,
+  .buyer-hero img{
+    max-height:300px!important;
+  }
+
+  .v91-search button,
+  .search-wrap button,
+  .buyer-search button{
+    min-width:88px!important;
+    padding:0 12px!important;
+  }
+
+  .v91-card,
+  .v95-skeleton-card,
+  .v95-particulares-track .seller-card-v41{
+    flex-basis:86vw!important;
+  }
+}
+
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -4134,7 +4375,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
 }
 
 </style>
-<meta name="app-version" content="V98">
+<meta name="app-version" content="V99">
 </head>
 <body>
 
@@ -4189,6 +4430,25 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
   </div>
   <div class="v91-hero-art" aria-hidden="true"></div>
   <div class="v91-location"><span>📍 Concepción del Uruguay, Entre Ríos</span><button type="button" onclick="usarMiUbicacion()">Usar mi ubicación</button></div>
+</section>
+
+
+<section class="v99-location" aria-label="Ubicación seleccionada">
+  <div class="v99-location-current">
+    <span>📍</span>
+    <span>Concepción del Uruguay, Entre Ríos</span>
+  </div>
+  <button type="button" onclick="toggleUbicacionV99()">Cambiar ubicación</button>
+</section>
+<section class="v99-location-panel" id="v99-location-panel" hidden>
+  <p>Por ahora Sálvame las Papas está disponible en Concepción del Uruguay. Estas ciudades quedan preparadas para una futura expansión.</p>
+  <div class="v99-city-list">
+    <button type="button" class="active">Concepción del Uruguay</button>
+    <button type="button" disabled>Colón — próximamente</button>
+    <button type="button" disabled>San José — próximamente</button>
+    <button type="button" disabled>Gualeguaychú — próximamente</button>
+    <button type="button" disabled>Paraná — próximamente</button>
+  </div>
 </section>
 
 <section class="v91-categories v96-categories" aria-label="Categorías rápidas">
@@ -6726,6 +6986,15 @@ function ordenarSeccionesV96(){
 }
 document.addEventListener('DOMContentLoaded',ordenarSeccionesV96);
 if(document.readyState!=='loading')ordenarSeccionesV96();
+
+
+/* V99 — selector de ciudad preparado */
+function toggleUbicacionV99(){
+  const panel=document.getElementById('v99-location-panel');
+  if(!panel)return;
+  panel.hidden=!panel.hidden;
+  if(!panel.hidden)panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
 
 </script>
 
