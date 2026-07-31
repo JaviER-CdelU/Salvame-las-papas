@@ -1,14 +1,12 @@
 {
-  "version": "V85",
-  "nombre": "Inicio limpio con botones reales",
-  "fecha": "2026-07-30",
+  "version": "V104",
+  "nombre": "Repositorio limpio y archivos reparados",
+  "fecha": "2026-07-31",
   "cambios": [
-    "index.html e inicio.html idénticos",
-    "sin contenido de comprar.html",
-    "sin enlaces transparentes sobre imágenes",
-    "botones HTML reales",
-    "sin botones flotantes",
-    "sin service worker en el inicio",
-    "cabeceras sin caché para Vercel"
+    "restaurados manifest, diccionario, páginas de pago y página sin conexión",
+    "eliminadas copias duplicadas, archivos mal nombrados y documentación antigua",
+    "portada V91 ubicada dentro de images para que comprar.html pueda cargarla",
+    "conservadas las mejoras V90, V99, V102 y V103",
+    "estructura lista para GitHub y despliegue automático en Vercel"
   ]
 }
