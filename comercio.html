@@ -6,7 +6,7 @@
 <meta name="description" content="Panel de comercios de Sálvame las Papas para administrar productos y disponibilidad."/>
 <meta name="theme-color" content="#002A6A"/>
 <meta name="color-scheme" content="light"/>
-<meta name="app-version" content="V109"/>
+<meta name="app-version" content="V112"/>
 <title>Mi Comercio — Sálvame las Papas 🥔</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
@@ -448,8 +448,8 @@ document.addEventListener('input',e=>{
 let fotosProductoActuales=['','','',''];
 
 function limiteFotosPlan(){
-  return miComercio?.plan?.includes('Max') || miComercio?.plan?.includes('Pro') ? 4
-    : miComercio?.plan?.includes('Destacado') ? 2 : 1;
+  return miComercio?.plan?.includes('Max') ? 4
+    : (miComercio?.plan?.includes('Pro') || miComercio?.plan?.includes('Destacado')) ? 2 : 1;
 }
 function renderFotosProducto(){
   const limite=limiteFotosPlan();
@@ -517,6 +517,7 @@ window.abrirModalProducto = (id) => {
   document.getElementById('mp-desc').value     = p?.descripcion || ''
   document.getElementById('mp-stock').value    = p?.stock || ''
   document.getElementById('mp-disp').checked  = p?.disponible !== false
+  cargarFotosProducto(p?.fotos || (p?.foto?[p.foto]:[]))
   document.getElementById('modal-prod').classList.add('open')
 }
 
@@ -1296,14 +1297,14 @@ img{max-width:100%;height:auto}
 <meta name="apple-mobile-web-app-title" content="Sálvame">
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
-<meta name="app-version" content="V109">
+<meta name="app-version" content="V112">
 </head>
 <body>
 
 <!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
-    <span class="owner-login-kicker">PANEL DEL COMERCIO · V109</span>
+    <span class="owner-login-kicker">PANEL DEL COMERCIO · V112</span>
     <div class="login-logo">Sálvame <em>las Papas 🥔</em></div>
     <h1 class="owner-login-title">Administrá tu comercio</h1>
     <p class="owner-login-help">
@@ -1340,7 +1341,7 @@ img{max-width:100%;height:auto}
 <!-- PANEL -->
 <div id="panel-screen">
   <nav class="panel-nav">
-    <div class="panel-logo">Sálvame <em>las Papas</em> — Panel del comercio <span class="panel-version">V109</span></div>
+    <div class="panel-logo">Sálvame <em>las Papas</em> — Panel del comercio <span class="panel-version">V112</span></div>
     <nav class="site-switcher" aria-label="Navegación del sitio">
       <a href="index.html">🏠 Inicio general</a>
       <a href="comprar.html">🛒 Ver como cliente</a>
@@ -1560,7 +1561,7 @@ img{max-width:100%;height:auto}
         <div class="photo-slot-v28" id="photo-slot-2"><img id="mp-foto-preview-2" alt="Foto 3"><label for="mp-foto-file-2">＋ Foto 3</label><input id="mp-foto-file-2" type="file" accept="image/*" hidden><button type="button" onclick="quitarFotoProducto(2)">✕</button></div>
         <div class="photo-slot-v28" id="photo-slot-3"><img id="mp-foto-preview-3" alt="Foto 4"><label for="mp-foto-file-3">＋ Foto 4</label><input id="mp-foto-file-3" type="file" accept="image/*" hidden><button type="button" onclick="quitarFotoProducto(3)">✕</button></div>
       </div>
-      <small class="photo-help">Básico: 1 foto · Destacado: 2 · Pro/Max: hasta 4 fotos.</small>
+      <small class="photo-help">Básico: 1 foto · Pro ($30.000): 2 fotos · Max ($45.000): hasta 4 fotos.</small>
     </div>
 
 

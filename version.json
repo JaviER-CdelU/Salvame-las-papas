@@ -1,8 +1,12 @@
 {
-  "version": "V111",
-  "nombre": "Acceso funcional a las fichas de comercios",
+  "version": "V112",
+  "nombre": "Fotos por plan y varios comercios por correo",
   "fecha": "2026-07-31",
   "cambios": [
+    "registro de productos con 1 foto en Básico, 2 en Pro y 4 en Max de 45.000 pesos",
+    "nuevo acceso con Google para asociar otro comercio a una cuenta existente",
+    "un correo existente inicia sesión en lugar de intentar crear una cuenta duplicada",
+    "los productos iniciales y sus fotos se guardan por separado dentro de cada comercio",
     "corregido el carrusel que capturaba los clics de los botones",
     "botón compacto Entrar al comercio en ofertas, nuevos y destacados",
     "las fichas completas vuelven a abrir todos los artículos y el carrito",
