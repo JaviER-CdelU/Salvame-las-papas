@@ -3674,6 +3674,205 @@ nav{background:linear-gradient(135deg,#59b8f2,#2e90df)!important;border-bottom:0
   }
 }
 
+
+/* V98 — TARJETAS ÚTILES Y ESTILO UNIFICADO */
+.comercios-grid{
+  grid-template-columns:repeat(auto-fit,minmax(285px,1fr))!important;
+  gap:18px!important;
+  align-items:stretch;
+}
+.comercios-grid>*{
+  grid-column:auto!important;
+}
+.v98-commerce-card{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+  overflow:hidden;
+  border:1px solid #dfe6ec;
+  border-radius:18px;
+  background:#fff;
+  box-shadow:0 8px 24px rgba(11,48,84,.08);
+  cursor:pointer;
+  transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
+}
+.v98-commerce-card:hover{
+  transform:translateY(-3px);
+  border-color:#b9cee0;
+  box-shadow:0 15px 32px rgba(11,48,84,.13);
+}
+.v98-commerce-media{
+  position:relative;
+  height:178px;
+  overflow:hidden;
+  background:#eef4f8;
+}
+.v98-commerce-media img{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+}
+.v98-commerce-placeholder{
+  width:100%;
+  height:100%;
+  display:grid;
+  place-items:center;
+  font-size:4rem;
+  background:linear-gradient(145deg,#edf5fb,#f8fbfd);
+}
+.v98-plan{
+  position:absolute;
+  top:12px;
+  left:12px;
+  padding:7px 10px;
+  border-radius:999px;
+  background:rgba(255,255,255,.95);
+  color:#31516f;
+  font:800 .72rem/1 "DM Sans",Arial,sans-serif;
+  box-shadow:0 4px 13px rgba(15,45,70,.12);
+}
+.v98-plan-destacado{
+  color:#8b5a00;
+  border:1px solid #efc05b;
+  background:#fff8df;
+}
+.v98-commerce-body{
+  display:flex;
+  flex:1;
+  flex-direction:column;
+  padding:17px;
+}
+.v98-commerce-main h3{
+  margin:0 0 5px;
+  color:#0a356f;
+  font:900 1.35rem/1.1 "Fraunces",Georgia,serif;
+}
+.v98-commerce-main p{
+  margin:0;
+  color:#68788a;
+  font:600 .9rem/1.35 "DM Sans",Arial,sans-serif;
+}
+.v98-commerce-status{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin:14px 0 0;
+}
+.v98-commerce-status span{
+  padding:7px 9px;
+  border-radius:999px;
+  background:#f4f7f9;
+  color:#486074;
+  font:800 .76rem/1 "DM Sans",Arial,sans-serif;
+}
+.v98-commerce-status .open{
+  background:#e4f7e9;
+  color:#18703a;
+}
+.v98-commerce-status .closed{
+  background:#fff0f0;
+  color:#a13434;
+}
+.v98-commerce-status .check{
+  background:#fff8df;
+  color:#805d12;
+}
+.v98-offer{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:8px;
+  margin-top:13px;
+  padding:10px 11px;
+  border-radius:12px;
+  background:#fff4e9;
+  border:1px solid #ffd5af;
+}
+.v98-offer span{
+  color:#d95700;
+  font:900 .72rem/1 "DM Sans",Arial,sans-serif;
+  text-transform:uppercase;
+}
+.v98-offer strong{
+  overflow:hidden;
+  color:#5e4a3d;
+  font:800 .82rem/1.25 "DM Sans",Arial,sans-serif;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+}
+.v98-offer b{
+  color:#e45c00;
+  font:900 .98rem/1 "DM Sans",Arial,sans-serif;
+}
+.v98-view-btn{
+  width:100%;
+  min-height:45px;
+  margin-top:auto;
+  padding:11px 16px;
+  border:0;
+  border-radius:11px;
+  background:#0d69bd;
+  color:#fff;
+  font:900 .93rem/1 "DM Sans",Arial,sans-serif;
+  cursor:pointer;
+}
+.v98-view-btn:hover{background:#07569d}
+
+/* Mismo lenguaje visual en los carruseles */
+.v91-card,
+.seller-card-v41{
+  border:1px solid #dfe6ec!important;
+  border-radius:15px!important;
+  background:#fff!important;
+  box-shadow:0 7px 20px rgba(11,48,84,.08)!important;
+  font-family:"DM Sans",Arial,sans-serif!important;
+}
+.v91-card-copy h3,
+.seller-card-v41 h3,
+.seller-card-v41 b{
+  color:#0a356f!important;
+  font-family:"Fraunces",Georgia,serif!important;
+}
+.v91-card-copy p,
+.seller-card-v41 p,
+.seller-card-v41 span{
+  font-family:"DM Sans",Arial,sans-serif!important;
+}
+.v91-card-copy b{
+  font-family:"DM Sans",Arial,sans-serif!important;
+}
+.v91-discount{
+  background:#f36a16!important;
+}
+.v91-price{
+  color:#e45c00!important;
+}
+.v95-particulares-track .seller-card-v41{
+  border-top:4px solid #8757b5!important;
+}
+
+/* Paleta limitada por sección */
+#v91-nuevos .v91-rail-head{background:#dff0ff!important}
+#v91-ofertas .v91-rail-head{background:#ffead5!important}
+#v91-destacados .v91-rail-head{background:#fff1b9!important}
+#vendedores-particulares .seller-public-head{
+  border-radius:16px;
+  padding:14px 16px;
+  background:#eee4f8!important;
+}
+@media(max-width:650px){
+  .comercios-grid{
+    grid-template-columns:1fr!important;
+    gap:14px!important;
+  }
+  .v98-commerce-media{height:168px}
+  .v98-commerce-main h3{font-size:1.25rem}
+  .v98-offer{grid-template-columns:auto 1fr}
+  .v98-offer b{grid-column:2}
+}
+
 </style>
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -3935,7 +4134,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
 }
 
 </style>
-<meta name="app-version" content="V96">
+<meta name="app-version" content="V98">
 </head>
 <body>
 
@@ -4719,133 +4918,81 @@ function estadoCalidadComercioV33(c,oscuro=false){
 }
 
 function renderComercio(c, globalIdx){
-  // Store reference for carrito
-  if(globalIdx !== undefined) window._comercioRefs = window._comercioRefs || {}
-  if(globalIdx !== undefined) window._comercioRefs[globalIdx] = c
-  const refCall = globalIdx !== undefined ? `abrirComercio(window._comercioRefs[${globalIdx}])` : 'abrirComercio({})'
-  const tags = (c.tags||[]).map(t => {
-    let cls = t.includes('Abierto')||t.includes('horas') ? 't-abierto' : t.includes('nvío')||t.includes('Cadete')||t.includes('Retiro') ? 't-envio' : 't-efectivo'
-    return `<span class="tag ${cls}">${t}</span>`
-  }).join('')
+  if(globalIdx !== undefined) window._comercioRefs = window._comercioRefs || {};
+  if(globalIdx !== undefined) window._comercioRefs[globalIdx] = c;
 
-  if(c.plan === 3){
-    const productos = Array.isArray(c.productos) ? c.productos : [];
-    const primeraFoto = productos.find(p => p?.foto || p?.fotos?.[0]);
-    const fotoFondo = primeraFoto ? String(primeraFoto.foto || primeraFoto.fotos?.[0] || '').replace(/["']/g,'') : '';
-    const estiloFondo = fotoFondo ? `style="--foto-comercio:url(${fotoFondo})"` : '';
+  const refCall = globalIdx !== undefined
+    ? `abrirComercio(window._comercioRefs[${globalIdx}])`
+    : 'abrirComercio({})';
 
-    const prods = productos.slice(0,3).map(p => {
-      const foto = p.foto || p.fotos?.[0] || '';
-      return `
-        <article class="cprod-v89">
-          ${foto
-            ? `<img class="cprod-photo-v89" src="${foto}" alt="${textoSeguro(p.n)}" loading="lazy">`
-            : `<div class="cprod-placeholder-v89">${p.e||'📦'}</div>`}
-          <div class="cprod-body-v89">
-            <div class="cprod-name-v89">${textoSeguro(p.n)}</div>
-            <div class="cprod-price-v89">${textoSeguro(p.p)}</div>
-          </div>
-        </article>`;
-    }).join('');
+  const productos = Array.isArray(c.productos) ? c.productos : [];
+  const productoConFoto = productos.find(p => p?.foto || p?.fotos?.[0]);
+  const foto = productoConFoto
+    ? (productoConFoto.foto || productoConFoto.fotos?.[0] || '')
+    : '';
 
-    return `
-    <article class="comercio-max comercio-max-v89 ${fotoFondo?'con-foto-v89':'sin-foto-v89'}" ${estiloFondo}>
-      <div class="comercio-max-overlay-v89"></div>
+  const estado = typeof estadoHorarioV39 === 'function'
+    ? estadoHorarioV39(c.horarios)
+    : {estado:'consultar',texto:'Consultar horario'};
 
-      <div class="cmax-left-v89">
-        <button class="favorito-v89" type="button" aria-label="Agregar ${textoSeguro(c.nombre)} a favoritos">♡</button>
+  const tagsNormalizados = (c.tags || []).map(t => normalizar(t));
+  const tieneEnvio = tagsNormalizados.some(t => t.includes('envio') || t.includes('cadete'));
+  const tieneRetiro = tagsNormalizados.some(t => t.includes('retiro'));
+  const modalidad = tieneEnvio && tieneRetiro
+    ? '🚚 Envío y retiro'
+    : tieneEnvio
+      ? '🚚 Con envío'
+      : tieneRetiro
+        ? '🏬 Retiro en el comercio'
+        : '🤝 Consultar entrega';
 
-        <div class="titulo-comercio-v89">
-          <span class="comercio-emoji-v89">${c.emoji||"🏪"}</span>
-          <div>
-            <div class="cmax-title-v89">${textoSeguro(c.nombre)}</div>
-            <div class="cmax-cat-v89">${textoSeguro(c.cat)} · ${textoSeguro(c.barrio||"CDU")}</div>
-          </div>
-          ${badgeEstado(c.horarios)}
-        </div>
+  const oferta = productos.map((p,pi)=>{
+    const precio = numeroPrecioV54(p.precio ?? p.p);
+    const antes = numeroPrecioV54(p.precioAnterior ?? p.antes);
+    const esOferta = p.oferta === true || p.destacado === true || (antes > precio && precio > 0);
+    return {p,pi,precio,antes,esOferta};
+  }).find(x => x.esOferta && x.precio > 0);
 
-        ${infoPublicaComercio(c,false)}
-        ${estadoCalidadComercioV33(c,false)}
+  const insignia = Number(c.plan) === 3
+    ? '<span class="v98-plan v98-plan-destacado">⭐ Destacado</span>'
+    : Number(c.plan) === 2
+      ? '<span class="v98-plan">Comercio recomendado</span>'
+      : '';
 
-        ${c.desc ? `<p class="cmax-desc-v89">${textoSeguro(c.desc)}</p>` : ''}
-        <div class="tienda-tags tienda-tags-v89">${tags}</div>
-
-        <button class="cmax-wa-v89" type="button" onclick="${refCall}">
-          <span>🛒</span>
-          <span>Ver productos, entrega y formas de pago</span>
-          <strong>→</strong>
-        </button>
-      </div>
-
-      ${prods ? `
-      <div class="cmax-right-v89">
-        <div class="vitrina-head-v89">
-          <span>Productos en vitrina</span>
-          <strong>⭐ PLAN MAX</strong>
-        </div>
-        <div class="cmax-productos-v89">${prods}</div>
-      </div>` : `
-      <div class="cmax-right-v89 cmax-right-empty-v89">
-        <div class="vitrina-head-v89">
-          <span>Comercio destacado</span>
-          <strong>⭐ PLAN MAX</strong>
-        </div>
-      </div>`}
-    </article>`
-  }
-
-  if(c.plan === 2){
-    const prods = (c.productos||[]).map(p =>
-      `<div class="cpro-prod"><span class="cpro-prod-name">${p.e} ${p.n}</span><span class="cpro-prod-price">${p.p}</span></div>`
-    ).join('')
-    return `
-    <div class="comercio-pro">
-      <div class="cpro-top">
-        <div class="cpro-avatar" style="background:${c.bg||'#EEE'}">${c.emoji||"🏪"}</div>
-        <div>
-          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-            <div class="cpro-name">${c.nombre}</div>
-            ${badgeEstado(c.horarios)}
-          </div>
-          <div class="cpro-cat">${c.cat} · ${c.barrio||"CDU"}</div>
-          ${infoPublicaComercio(c,true)}
-          ${estadoCalidadComercioV33(c,true)}
-        </div>
-      </div>
-      <div class="tienda-tags">${tags}</div>
-      ${prods ? `<div><div style="font-size:.78rem;color:var(--suave);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem">Productos del día</div><div class="cpro-productos">${prods}</div></div>` : ''}
-      <div style="display:flex;gap:7px">
-        <button class="btn-agregar" style="flex:1;padding:10px" onclick="${refCall}">
-          🛒 Ver productos y comprar
-        </button>
-        <button class="wa-btn" type="button" style="flex:0;padding:10px 12px" onclick="${refCall}" title="Ver productos y opciones de compra">🛒</button>
-      </div>
-    </div>`
-  }
-
-  // BÁSICO
   return `
-  <div class="comercio-basico">
-    <div class="cbasico-top">
-      <div class="cbasico-avatar" style="background:${c.bg||'#EEE'}">${c.emoji||"🏪"}</div>
-      <div>
-        <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap">
-          <div class="cbasico-name">${c.nombre}</div>
-          ${badgeEstado(c.horarios)}
-        </div>
-        <div class="cbasico-cat">${c.cat} · ${c.barrio||"CDU"}</div>
-        ${infoPublicaComercio(c,false)}
-        ${estadoCalidadComercioV33(c,false)}
+  <article class="v98-commerce-card" onclick="${refCall}">
+    <div class="v98-commerce-media">
+      ${foto
+        ? `<img src="${foto}" alt="${textoSeguro(c.nombre)}" loading="lazy">`
+        : `<div class="v98-commerce-placeholder">${textoSeguro(c.emoji || '🏪')}</div>`}
+      ${insignia}
+    </div>
+
+    <div class="v98-commerce-body">
+      <div class="v98-commerce-main">
+        <h3>${textoSeguro(c.nombre || 'Comercio')}</h3>
+        <p>${textoSeguro(c.cat || 'Comercio local')} · ${textoSeguro(c.barrio || 'Concepción del Uruguay')}</p>
       </div>
-    </div>
-    <div class="tienda-tags">${tags}</div>
-    <div style="display:flex;gap:7px">
-      <button class="btn-agregar" style="flex:1" onclick="event.stopPropagation();${refCall}">
-        🛒 Ver y comprar
+
+      <div class="v98-commerce-status">
+        <span class="${estado.estado === 'abierto' ? 'open' : estado.estado === 'cerrado' ? 'closed' : 'check'}">
+          ${estado.estado === 'abierto' ? '● Abierto ahora' : textoSeguro(estado.texto || 'Consultar horario')}
+        </span>
+        <span>${modalidad}</span>
+      </div>
+
+      ${oferta ? `
+      <div class="v98-offer">
+        <span>🔥 Oferta</span>
+        <strong>${textoSeguro(oferta.p.nombre || oferta.p.n || 'Producto destacado')}</strong>
+        <b>$${oferta.precio.toLocaleString('es-AR')}</b>
+      </div>` : ''}
+
+      <button type="button" class="v98-view-btn" onclick="event.stopPropagation();${refCall}">
+        Ver comercio
       </button>
-      <button class="wa-btn" type="button" style="flex:0;padding:9px 12px" onclick="event.stopPropagation();${refCall}" title="Ver productos y opciones de compra">🛒</button>
     </div>
-  </div>`
+  </article>`;
 }
 
 function renderPagina(lista, pag){
@@ -5638,7 +5785,7 @@ function comercioKey(c){return normalizar(c.id||c.nombre).replace(/[^a-z0-9]+/g,
 function getFavoritos(){try{return JSON.parse(localStorage.getItem('slp_favoritos')||'[]')}catch{return []}}
 function esFavorito(c){return getFavoritos().includes(comercioKey(c))}
 function toggleFavorito(idx){const c=window._comercioRefs?.[idx];if(!c)return;let f=getFavoritos(),k=comercioKey(c);f=f.includes(k)?f.filter(x=>x!==k):[...f,k];localStorage.setItem('slp_favoritos',JSON.stringify(f));aplicarFiltrosAvanzados();toast(f.includes(k)?'❤️ Guardado en favoritos':'Favorito eliminado')}
-function decorarTarjetas(pagina, offset){setTimeout(()=>{const cards=[...document.querySelectorAll('#lista-comercios > div')];cards.forEach((card,i)=>{const idx=offset+i,c=window._comercioRefs?.[idx];if(!c)return;card.style.position='relative';const b=document.createElement('button');b.className='fav-btn'+(esFavorito(c)?' active':'');b.innerHTML=esFavorito(c)?'♥':'♡';b.title='Guardar comercio';b.onclick=e=>{e.stopPropagation();toggleFavorito(idx)};card.appendChild(b)})},0)}
+function decorarTarjetas(pagina, offset){setTimeout(()=>{const cards=[...document.querySelectorAll('#lista-comercios > *')];cards.forEach((card,i)=>{const idx=offset+i,c=window._comercioRefs?.[idx];if(!c)return;card.style.position='relative';const b=document.createElement('button');b.className='fav-btn'+(esFavorito(c)?' active':'');b.innerHTML=esFavorito(c)?'♥':'♡';b.title='Guardar comercio';b.onclick=e=>{e.stopPropagation();toggleFavorito(idx)};card.appendChild(b)})},0)}
 function poblarBarrios(){const sel=document.getElementById('filtro-barrio');if(!sel)return;const actual=sel.value;const barrios=[...new Set(comerciosTodos.map(c=>c.barrio).filter(Boolean))].sort();sel.innerHTML='<option value="">Todos</option>'+barrios.map(b=>`<option>${b}</option>`).join('');sel.value=actual}
 function estaAbiertoV75(c){
  const estado=String(c.estadoHorario||c.abiertoAhora||'').toLowerCase();
