@@ -6,7 +6,7 @@
 <meta name="description" content="Panel de comercios de Sálvame las Papas para administrar productos y disponibilidad."/>
 <meta name="theme-color" content="#002A6A"/>
 <meta name="color-scheme" content="light"/>
-<meta name="app-version" content="V103"/>
+<meta name="app-version" content="V107"/>
 <title>Mi Comercio — Sálvame las Papas 🥔</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
@@ -15,8 +15,9 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { getFirestore, collection, addDoc, updateDoc, deleteDoc,
          doc, getDoc, getDocs, setDoc, query, where, serverTimestamp }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { getAuth, signInWithPopup, signInWithRedirect, GoogleAuthProvider,
-         signInWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged, signOut }
+import { getAuth, setPersistence, browserSessionPersistence,
+         signInWithPopup, signInWithRedirect, GoogleAuthProvider,
+         onAuthStateChanged, signOut }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -33,6 +34,15 @@ const db   = getFirestore(app);
 const auth = getAuth(app);
 auth.languageCode = "es";
 const gProvider = new GoogleAuthProvider();
+gProvider.setCustomParameters({ prompt: 'select_account' });
+
+// El panel no reutiliza indefinidamente una cuenta guardada en el navegador.
+// La sesión dura solamente mientras permanezca abierta esta sesión del navegador.
+const COMERCIO_AUTH_SESSION = 'slp_comercio_google_autorizado';
+await setPersistence(auth, browserSessionPersistence);
+if(!sessionStorage.getItem(COMERCIO_AUTH_SESSION)){
+  await signOut(auth).catch(() => {});
+}
 
 let miComercioId = null;
 let miComercio   = null;
@@ -48,7 +58,18 @@ function safeArg(value){ return encodeURIComponent(String(value ?? '')) }
 
 // ── Auth ──
 onAuthStateChanged(auth, async user => {
-  if(user){
+  const ingresoConGoogle = user?.providerData?.some(
+    proveedor => proveedor.providerId === 'google.com'
+  );
+
+  if(user && !ingresoConGoogle){
+    sessionStorage.removeItem(COMERCIO_AUTH_SESSION);
+    await signOut(auth);
+    return;
+  }
+
+  if(user && ingresoConGoogle){
+    sessionStorage.setItem(COMERCIO_AUTH_SESSION, '1');
     usuarioActual = user
     document.getElementById('login-screen').style.display = 'none'
     document.getElementById('panel-screen').style.display = 'block'
@@ -633,6 +654,7 @@ window.loginGoogle = async () => {
   } catch(e){
     console.error('Google login:',e)
     if(e.code==='auth/popup-blocked'){
+      sessionStorage.setItem(COMERCIO_AUTH_SESSION, 'pendiente');
       await signInWithRedirect(auth,gProvider)
       return
     }
@@ -640,49 +662,17 @@ window.loginGoogle = async () => {
       'auth/unauthorized-domain':'Este dominio todavía no está autorizado en Firebase. Agregalo en Authentication → Settings → Authorized domains.',
       'auth/operation-not-allowed':'El acceso con Google no está habilitado en Firebase Authentication.',
       'auth/popup-closed-by-user':'Cerraste la ventana de Google antes de terminar.',
-      'auth/account-exists-with-different-credential':'Ese email ya fue registrado con contraseña. Entrá con email o recuperá la contraseña.'
+      'auth/account-exists-with-different-credential':'Ese correo ya existe con otro método de acceso. Para este panel debés usar su cuenta de Google.'
     }
     err.textContent=mensajes[e.code]||('No se pudo entrar con Google: '+e.message)
     err.style.display='block'
   }
 }
-window.loginEmail = async () => {
-  const email = document.getElementById('l-email').value.trim().toLowerCase()
-  const pass  = document.getElementById('l-pass').value
-  const err=document.getElementById('l-error')
-  err.style.display='none'
-  if(!email||!pass){ toast('Completá email y contraseña'); return }
-  try { await signInWithEmailAndPassword(auth, email, pass) }
-  catch(e){
-    const mensajes={
-      'auth/invalid-credential':'El correo o la contraseña no coinciden. Usá el botón del ojo para revisar la contraseña.',
-      'auth/user-disabled':'Esta cuenta fue deshabilitada.',
-      'auth/too-many-requests':'Hubo demasiados intentos. Esperá unos minutos o recuperá la contraseña.'
-    }
-    err.textContent=mensajes[e.code]||e.message
-    err.style.display='block'
-  }
+window.cerrarSesion = async () => {
+  sessionStorage.removeItem(COMERCIO_AUTH_SESSION)
+  localStorage.removeItem('slp_ultimo_comercio')
+  await signOut(auth)
 }
-window.recuperarClave = async () => {
-  const email=document.getElementById('l-email').value.trim().toLowerCase()
-  const err=document.getElementById('l-error')
-  if(!email){
-    err.textContent='Escribí primero tu email y después tocá “Olvidé mi contraseña”.'
-    err.style.display='block'; return
-  }
-  const intento=new Date().toLocaleString('es-AR')
-  try{
-    await sendPasswordResetEmail(auth,email,{url:new URL('./restablecer-clave.html?tipo=comercio',window.location.href).href,handleCodeInApp:false})
-    err.innerHTML='✅ Solicitud enviada.<br><br>Revisá Entrada, Correo no deseado, Spam y Promociones. Abrí el enlace para crear una contraseña nueva y regresar a Sálvame las Papas.'
-    err.style.display='block'
-  }catch(e){
-    const detalle='Código: '+(e.code||'sin código')+' | Mensaje: '+(e.message||'sin mensaje')+' | Dominio: '+window.location.hostname+' | Hora: '+intento
-    err.innerHTML='❌ Firebase rechazó la solicitud.<br><small>'+detalle+'</small>'
-    err.style.display='block'
-    console.error('RECUPERACION_COMERCIO',e)
-  }
-}
-window.cerrarSesion = async () => { await signOut(auth) }
 
 function toast(msg){
   const t = document.getElementById('panel-toast')
@@ -1284,19 +1274,19 @@ img{max-width:100%;height:auto}
 <meta name="apple-mobile-web-app-title" content="Sálvame">
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
-<meta name="app-version" content="V103">
+<meta name="app-version" content="V107">
 </head>
 <body>
 
 <!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
-    <span class="owner-login-kicker">PANEL DEL COMERCIO · V79</span>
+    <span class="owner-login-kicker">PANEL DEL COMERCIO · V107</span>
     <div class="login-logo">Sálvame <em>las Papas 🥔</em></div>
     <h1 class="owner-login-title">Administrá tu comercio</h1>
     <p class="owner-login-help">
-      Ingresá con el mismo correo y contraseña que usaste al registrar el negocio.
-      El sistema buscará todos los comercios asociados a tu cuenta.
+      Ingresá con una cuenta de Google/Gmail. Recién después de verificarla,
+      el sistema buscará los comercios asociados a ese correo.
     </p>
     <div class="owner-login-features">
       <span>✏️ Editar datos</span>
@@ -1314,19 +1304,10 @@ img{max-width:100%;height:auto}
       </svg>
       Entrar con Google
     </button>
-    <div class="divider">o con email</div>
-    <label class="owner-login-label" for="l-email">Correo electrónico del comercio</label>
-    <input class="l-input" id="l-email" type="email" placeholder="ejemplo@correo.com"
-      autocomplete="email" onkeydown="if(event.key==='Enter')loginEmail()"/>
-    <label class="owner-login-label" for="l-pass">Contraseña</label>
-    <input class="l-input" id="l-pass" type="password" placeholder="Tu contraseña"
-      autocomplete="current-password" onkeydown="if(event.key==='Enter')loginEmail()"/>
     <div class="l-error" id="l-error"></div>
-    <button class="btn-login" onclick="loginEmail()">Entrar</button>
-    <button type="button" onclick="recuperarClave()" style="margin-top:10px;background:none;border:none;color:#003B8E;font-weight:700;cursor:pointer">¿Olvidaste tu contraseña?</button>
 <div class="owner-login-note">
-  <strong>Importante:</strong> si el comercio ya existe, no lo registres otra vez.
-  Entrá con el correo original. Después elegí el comercio y tocá
+  <strong>Acceso protegido:</strong> sin iniciar sesión con Google no se muestra ningún comercio.
+  Si el comercio ya existe, entrá con su correo original y no lo registres otra vez. Después elegí el comercio y tocá
   <strong>Editar datos</strong> o <strong>Productos</strong>.
 </div>
 
@@ -1337,7 +1318,7 @@ img{max-width:100%;height:auto}
 <!-- PANEL -->
 <div id="panel-screen">
   <nav class="panel-nav">
-    <div class="panel-logo">Sálvame <em>las Papas</em> — Panel del comercio <span class="panel-version">V103</span></div>
+    <div class="panel-logo">Sálvame <em>las Papas</em> — Panel del comercio <span class="panel-version">V107</span></div>
     <nav class="site-switcher" aria-label="Navegación del sitio">
       <a href="index.html">🏠 Inicio general</a>
       <a href="comprar.html">🛒 Ver como cliente</a>

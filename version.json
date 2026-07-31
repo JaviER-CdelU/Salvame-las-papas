@@ -1,8 +1,12 @@
 {
-  "version": "V106",
-  "nombre": "Reinicio limpio de GitHub y Vercel",
+  "version": "V107",
+  "nombre": "Acceso protegido a Mi Comercio con Google",
   "fecha": "2026-07-31",
   "cambios": [
+    "Mi Comercio exige iniciar sesión con una cuenta de Google o Gmail",
+    "ningún comercio se muestra antes de autenticar al usuario",
+    "la sesión deja de persistir indefinidamente y se limita a la sesión del navegador",
+    "al salir se elimina también la selección del último comercio",
     "restaurados manifest, diccionario, páginas de pago y página sin conexión",
     "eliminadas copias duplicadas, archivos mal nombrados y documentación antigua",
     "portada V91 ubicada dentro de images para que comprar.html pueda cargarla",
