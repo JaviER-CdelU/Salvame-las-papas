@@ -1,12 +1,14 @@
 {
-  "version": "V104",
-  "nombre": "Repositorio limpio y archivos reparados",
+  "version": "V106",
+  "nombre": "Reinicio limpio de GitHub y Vercel",
   "fecha": "2026-07-31",
   "cambios": [
     "restaurados manifest, diccionario, páginas de pago y página sin conexión",
     "eliminadas copias duplicadas, archivos mal nombrados y documentación antigua",
     "portada V91 ubicada dentro de images para que comprar.html pueda cargarla",
     "conservadas las mejoras V90, V99, V102 y V103",
-    "estructura lista para GitHub y despliegue automático en Vercel"
+    "registro comercial sin espacios ni botones flotantes duplicados",
+    "imagen de portada convertida a WebP real",
+    "estructura definitiva lista para reemplazar completamente GitHub y desplegar en Vercel"
   ]
 }
