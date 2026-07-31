@@ -41,8 +41,17 @@ onAuthStateChanged(auth, u => {
   const bi = document.getElementById('nav-btn-ingresar');
   const bo = document.getElementById('nav-btn-salir');
   if (!bi) return;
-  if (u) { bi.style.display='none'; bo.style.display='flex'; bo.textContent='👋 '+u.email.split('@')[0]; }
-  else   { bi.style.display='flex'; bo.style.display='none'; }
+  const emailComercio=document.getElementById('f-email');
+  const cuentaRow=document.getElementById('cuenta-comercio-row');
+  if (u) {
+    bi.style.display='none'; bo.style.display='flex'; bo.textContent='👋 '+u.email.split('@')[0];
+    if(emailComercio){emailComercio.value=(u.email||'').toLowerCase();emailComercio.readOnly=true}
+    if(cuentaRow) cuentaRow.style.display='none';
+  } else {
+    bi.style.display='flex'; bo.style.display='none';
+    if(emailComercio) emailComercio.readOnly=false;
+    if(cuentaRow) cuentaRow.style.display='grid';
+  }
 });
 </script>
 
@@ -3701,7 +3710,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
 <section class="acceso-comercio-existente" aria-label="Acceso de comercios registrados">
   <div>
     <h2>🏪 ¿Tu comercio ya está registrado?</h2>
-    <p>Entrá con el correo y la contraseña que elegiste al inscribirte. Desde ahí podés editar los datos, agregar artículos, usar la carga rápida y revisar pedidos.</p>
+    <p>Entrá con Google/Gmail. Desde ahí podés elegir uno de tus comercios, editar sus datos, agregar artículos y registrar otro negocio con la misma cuenta.</p>
     <small>No vuelvas a inscribir el mismo comercio.</small>
   </div>
   <a href="./comercio.html">Ingresar a Mi comercio →</a>
@@ -3775,7 +3784,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
         <div class="fgroup"><label>WhatsApp del comercio *</label><input class="fi" id="f-tel" type="tel" placeholder="+54 9 3442 000000"/><span class="hint">Los clientes te contactan por acá</span></div>
       </div>
       <div class="frow">
-        <div class="fgroup"><label>Email de acceso *</label><input class="fi" id="f-email" type="email" autocomplete="email" placeholder="micomercio@email.com"/><span class="hint">A esta casilla enviaremos la verificación y será tu usuario para entrar al panel.</span></div>
+        <div class="fgroup"><label>Email de acceso *</label><input class="fi" id="f-email" type="email" autocomplete="email" placeholder="micomercio@email.com"/><span class="hint">Podés usar el mismo correo para varios comercios. Cada negocio tendrá su ficha separada.</span></div>
         <div class="fgroup"><label>Instagram (opcional)</label><input class="fi" id="f-ig" type="text" placeholder="@mi_comercio"/></div>
       </div>
       <div class="frow" id="cuenta-comercio-row">
@@ -4395,16 +4404,6 @@ async function enviarForm(){
       throw new Error('Ya hay una sesión iniciada con '+user.email+'. Cerrala o usá ese mismo email.')
     }
 
-    // V52: consultar solo documentos del usuario autenticado.
-    // Buscar por email en toda la colección era rechazado por las reglas de privacidad.
-    const repetidos=await window._fb.getDocs(
-      window._fb.query(
-        window._fb.collection(window._fb.db,'comercios'),
-        window._fb.where('ownerUid','==',user.uid)
-      )
-    )
-    if(!repetidos.empty) throw new Error('Esta cuenta ya tiene un comercio registrado. Ingresá desde “Mi comercio” para administrarlo.')
-
     const datos={nombre,telefono:tel,direccion:dir,
       barrio:document.getElementById('f-barrio').value.trim(),
       email,
@@ -4440,7 +4439,7 @@ async function enviarForm(){
   }catch(e){
     console.error('Registro de comercio:',e)
     const mensajes={
-      'auth/email-already-in-use':'Ese email ya tiene una cuenta. Ingresá primero desde “Mi comercio” o usá “Olvidé mi contraseña”.',
+      'auth/email-already-in-use':'Ese correo ya tiene una cuenta. Entrá primero en “Mi comercio” con Google y después elegí “Registrar otro comercio”.',
       'auth/weak-password':'La contraseña debe tener al menos 6 caracteres.',
       'auth/invalid-email':'El email no tiene un formato válido.',
       'permission-denied':'Firebase bloqueó una operación. Actualizá la página y verificá que hayas ingresado con la cuenta correcta.'

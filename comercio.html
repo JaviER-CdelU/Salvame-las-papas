@@ -6,7 +6,7 @@
 <meta name="description" content="Panel de comercios de Sálvame las Papas para administrar productos y disponibilidad."/>
 <meta name="theme-color" content="#002A6A"/>
 <meta name="color-scheme" content="light"/>
-<meta name="app-version" content="V107"/>
+<meta name="app-version" content="V108"/>
 <title>Mi Comercio — Sálvame las Papas 🥔</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
@@ -139,12 +139,16 @@ async function cargarMiComercio(email){
       return
     }
 
-    const ultimo=localStorage.getItem('slp_ultimo_comercio')
-    const elegido=comerciosDeLaCuenta.find(c=>c.id===ultimo) || comerciosDeLaCuenta[0]
-    await seleccionarComercio(elegido.id)
-    if(estado) estado.textContent=comerciosDeLaCuenta.length===1
-      ? 'Encontramos 1 comercio asociado a este correo.'
-      : `Encontramos ${comerciosDeLaCuenta.length} comercios asociados a este correo. Elegí el nombre de fantasía que querés administrar.`
+    if(comerciosDeLaCuenta.length===1){
+      await seleccionarComercio(comerciosDeLaCuenta[0].id)
+      if(estado) estado.textContent='Encontramos 1 comercio asociado a este correo.'
+    }else{
+      miComercioId=null
+      miComercio=null
+      localStorage.removeItem('slp_ultimo_comercio')
+      mostrarSeccion('elegir-comercio')
+      if(estado) estado.textContent=`Encontramos ${comerciosDeLaCuenta.length} comercios asociados a este correo. Elegí cuál querés administrar.`
+    }
   } catch(e){
     console.error(e)
     if(estado) estado.textContent='No se pudo completar la búsqueda. Revisá la conexión o los permisos.'; if(estadoVacio) estadoVacio.textContent='No se pudo completar la búsqueda. Revisá la conexión o los permisos.'
@@ -196,6 +200,8 @@ window.seleccionarComercio=async(id)=>{
   miComercioId=encontrado.id
   miComercio=encontrado.data
   localStorage.setItem('slp_ultimo_comercio',id)
+  const resumen=document.getElementById('comercio-resumen')
+  if(resumen) resumen.style.display='flex'
 
   document.getElementById('comercio-nombre').textContent=miComercio.nombre||'Mi comercio'
   document.getElementById('comercio-cat').textContent=
@@ -643,6 +649,8 @@ function mostrarSeccion(id){
     const el = document.getElementById(s)
     if(el) el.style.display = s === id ? 'block' : 'none'
   })
+  const resumen=document.getElementById('comercio-resumen')
+  if(resumen && id!=='mi-panel') resumen.style.display='none'
 }
 
 // ── Auth functions ──
@@ -1050,9 +1058,9 @@ img{max-width:100%;height:auto}
 .selector-kicker{font-size:.72rem;font-weight:900;letter-spacing:.08em;color:#f06a10}
 .selector-heading h2{font-family:"Fraunces",serif;color:#063574;margin:4px 0;font-size:1.45rem}
 .selector-heading p{color:#617086;font-size:.87rem}
-.selector-heading>button{
+.selector-heading>button,.selector-heading>.btn-nuevo-comercio{
   border:1px solid #b8cde6;border-radius:10px;padding:10px 13px;background:#fff;color:#073c80;
-  font-weight:800;cursor:pointer;white-space:nowrap
+  font-weight:800;cursor:pointer;white-space:nowrap;text-decoration:none
 }
 .mis-comercios-lista{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
 .mi-comercio-card{
@@ -1274,14 +1282,14 @@ img{max-width:100%;height:auto}
 <meta name="apple-mobile-web-app-title" content="Sálvame">
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
-<meta name="app-version" content="V107">
+<meta name="app-version" content="V108">
 </head>
 <body>
 
 <!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
-    <span class="owner-login-kicker">PANEL DEL COMERCIO · V107</span>
+    <span class="owner-login-kicker">PANEL DEL COMERCIO · V108</span>
     <div class="login-logo">Sálvame <em>las Papas 🥔</em></div>
     <h1 class="owner-login-title">Administrá tu comercio</h1>
     <p class="owner-login-help">
@@ -1318,7 +1326,7 @@ img{max-width:100%;height:auto}
 <!-- PANEL -->
 <div id="panel-screen">
   <nav class="panel-nav">
-    <div class="panel-logo">Sálvame <em>las Papas</em> — Panel del comercio <span class="panel-version">V107</span></div>
+    <div class="panel-logo">Sálvame <em>las Papas</em> — Panel del comercio <span class="panel-version">V108</span></div>
     <nav class="site-switcher" aria-label="Navegación del sitio">
       <a href="index.html">🏠 Inicio general</a>
       <a href="comprar.html">🛒 Ver como cliente</a>
@@ -1344,13 +1352,14 @@ img{max-width:100%;height:auto}
         <button id="btn-rebuscar-comercios" type="button" onclick="volverABuscarComercios()">
           🔄 Volver a buscar
         </button>
+        <a href="registrar-comercio.html" class="btn-nuevo-comercio">➕ Registrar otro comercio</a>
       </div>
       <div id="mis-comercios-lista" class="mis-comercios-lista"></div>
       <div id="busqueda-comercios-estado" class="busqueda-comercios-estado"></div>
     </section>
 
     <!-- Info del comercio -->
-    <div class="comercio-header">
+    <div class="comercio-header" id="comercio-resumen" style="display:none">
       <div class="comercio-info">
         <h2 id="comercio-nombre">Mi Comercio</h2>
         <div class="comercio-cat-text" id="comercio-cat"></div>

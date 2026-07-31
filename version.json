@@ -1,8 +1,12 @@
 {
-  "version": "V107",
-  "nombre": "Acceso protegido a Mi Comercio con Google",
+  "version": "V108",
+  "nombre": "Varios comercios por una misma cuenta",
   "fecha": "2026-07-31",
   "cambios": [
+    "una misma cuenta puede registrar y administrar varios comercios",
+    "cuando hay dos o más negocios el sistema pregunta cuál se quiere administrar",
+    "cada comercio conserva por separado sus datos, productos, pedidos y estado",
+    "nuevo acceso para registrar otro comercio desde el selector de negocios",
     "Mi Comercio exige iniciar sesión con una cuenta de Google o Gmail",
     "ningún comercio se muestra antes de autenticar al usuario",
     "la sesión deja de persistir indefinidamente y se limita a la sesión del navegador",
