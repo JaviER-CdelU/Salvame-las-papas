@@ -31,7 +31,7 @@ module.exports=async(req,res)=>{
     const origen=`${proto}://${host}`,url=`${origen}/api/producto?c=${encodeURIComponent(comercioId)}&p=${encodeURIComponent(productoId)}`;
     const imagen=`${origen}/api/producto-imagen?c=${encodeURIComponent(comercioId)}&p=${encodeURIComponent(productoId)}&i=0`;
     const titulo=`${p.nombre||'Producto'} — $${dinero(p.precio)}`;
-    const descripcion=`Disponible en ${c.nombre||'este comercio'}. ${p.descripcion||'Consultá disponibilidad, entrega y forma de pago en Sálvame las Papas.'}`;
+    const descripcion=`Hacé clic y comprá en ${c.nombre||'este comercio'} desde Sálvame las Papas. ${p.descripcion||'Consultá disponibilidad, entrega y forma de pago.'}`;
     const ficha=`${origen}/ver-comercio.html?id=${encodeURIComponent(comercioId)}`;
     const tel=String(c.telefono||'').replace(/\D/g,''),wa=tel?`https://wa.me/${tel}?text=${encodeURIComponent(`Hola ${c.nombre}. Vi ${p.nombre} a $${dinero(p.precio)} en Sálvame las Papas.`)}`:'';
     res.setHeader('Cache-Control','public, s-maxage=300, stale-while-revalidate=900');

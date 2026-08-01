@@ -6,7 +6,7 @@
 <meta name="description" content="Panel de comercios de Sálvame las Papas para administrar productos y disponibilidad."/>
 <meta name="theme-color" content="#002A6A"/>
 <meta name="color-scheme" content="light"/>
-<meta name="app-version" content="V127"/>
+<meta name="app-version" content="V129"/>
 <title>Mi Comercio — Sálvame las Papas 🥔</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
@@ -290,7 +290,7 @@ function renderProductos(){
 
   const difusionHabilitada = planPermiteDifusionV115()
   const ayudaDifusion=document.getElementById('difusion-ayuda-v116');
-  if(ayudaDifusion) ayudaDifusion.innerHTML='<strong>📣 Hoja de publicaciones</strong> Elegí un producto, mirá cómo quedará y preparalo para Facebook.<button type="button" class="publish-sheet-btn" onclick="abrirHojaPublicacionesV127()">Abrir hoja para publicar en Facebook</button>';
+  if(ayudaDifusion) ayudaDifusion.innerHTML='<strong>📣 Hoja de publicaciones</strong> Elegí un producto, mirá cómo quedará y preparalo para Facebook.<button type="button" class="publish-sheet-btn" onclick="abrirHojaPublicacionesV129()">Abrir hoja para publicar en Facebook</button>';
   grid.innerHTML = misProductos.map(p => {
     const foto=(Array.isArray(p.fotos)&&p.fotos.find(Boolean))||p.foto||'';
     return `
@@ -315,6 +315,7 @@ function renderProductos(){
       ${difusionHabilitada?`<div class="social-product-v115">
         <button type="button" onclick="compartirProductoRedV117('${p.id}','facebook')">f&nbsp; Facebook</button>
         <button type="button" onclick="compartirProductoRedV117('${p.id}','instagram')">◎ Instagram</button>
+        <button type="button" class="share-all" onclick="compartirProductoGeneralV129('${p.id}')">↗ Compartir</button>
         <button type="button" class="slp" onclick="enviarProductoSlpV115('${p.id}')">🥔 Enviar a SLP</button>
       </div>`:''}
     </div>
@@ -329,11 +330,12 @@ function datosCompartirProductoV115(id){
  // La tarjeta social necesita una función de servidor. GitHub Pages no ejecuta
  // /api, por eso siempre se comparte el despliegue dinámico de Vercel aunque
  // el comerciante haya abierto el panel desde la dirección de GitHub.
- const url=new URL('https://salvame-las-papas.vercel.app/api/producto');url.searchParams.set('c',miComercioId);url.searchParams.set('p',id);url.searchParams.set('v','126');
+ const url=new URL('https://salvame-las-papas.vercel.app/api/producto');url.searchParams.set('c',miComercioId);url.searchParams.set('p',id);url.searchParams.set('v','129');
+ const ficha=`https://salvame-las-papas.vercel.app/ver-comercio.html?id=${encodeURIComponent(miComercioId)}`;
  const precio=Number(p.precio||0).toLocaleString('es-AR');
- const texto=`${p.nombre||'Producto'} · $${precio}\nComercio: ${miComercio?.nombre||'Comercio'}\nEstá publicado en Sálvame las Papas.\n${url.href}`;
+ const texto=`Hacé clic en el sitio Sálvame las Papas y andá a comprar lo que te interesa.\n\n${p.nombre||'Producto'} · $${precio}\nComercio: ${miComercio?.nombre||'Comercio'}\n\n🥔 Sálvame las Papas: https://salvame-las-papas.vercel.app/\n🏪 Ver y comprar en ${miComercio?.nombre||'el comercio'}: ${ficha}\n🔎 Publicación: ${url.href}`;
  const foto=(Array.isArray(p.fotos)&&p.fotos.find(Boolean))||p.foto||'';
- return {p,url:url.href,texto,foto};
+ return {p,url:url.href,ficha,texto,foto};
 }
 async function archivoProductoV117(d){
  if(!d?.foto)return null;
@@ -343,8 +345,19 @@ function direccionRedV118(red){
  const valor=String(red==='facebook'?miComercio?.facebook:miComercio?.instagram||'').trim();
  if(!valor)return '';
  if(/^https?:\/\//i.test(valor))return valor;
- const usuario=valor.replace(/^@/,'').replace(/^\/+|\/+$/g,'').replace(/\s/g,'');
+ const limpio=valor.replace(/^(?:www\.)?(?:instagram\.com|facebook\.com)\//i,'');
+ const usuario=limpio.replace(/^@/,'').replace(/^\/+|\/+$/g,'').replace(/\s/g,'');
  return red==='facebook'?'https://www.facebook.com/'+usuario:'https://www.instagram.com/'+usuario+'/';
+}
+function normalizarRedV129(valor,red){
+ valor=String(valor||'').trim();if(!valor)return '';
+ if(!/^https?:\/\//i.test(valor)&&/^(?:www\.)?(?:instagram\.com|facebook\.com)\//i.test(valor))valor='https://'+valor;
+ if(/^https?:\/\//i.test(valor)){
+   try{const u=new URL(valor),host=u.hostname.replace(/^www\./,'').toLowerCase(),esperado=red==='instagram'?'instagram.com':'facebook.com';if(host!==esperado&&host!=='m.'+esperado)throw new Error();u.protocol='https:';if(red==='instagram')u.search='';u.hash='';return u.href.replace(/\/$/,'')+(red==='instagram'?'/':'')}catch(e){throw new Error('La dirección de '+(red==='instagram'?'Instagram':'Facebook')+' no es válida.')}
+ }
+ const usuario=valor.replace(/^@/,'').replace(/\s/g,'').replace(/^\/+|\/+$/g,'');
+ if(!usuario)throw new Error('Falta el usuario de '+(red==='instagram'?'Instagram':'Facebook')+'.');
+ return (red==='instagram'?'https://www.instagram.com/':'https://www.facebook.com/')+usuario+(red==='instagram'?'/':'');
 }
 window.compartirProductoRedV117=async(id,red)=>{
  const d=datosCompartirProductoV115(id);if(!d)return;
@@ -380,22 +393,32 @@ window.compartirProductoRedV117=async(id,red)=>{
  }catch(e){if(ventana)ventana.close();toast('No se pudo preparar la publicación')}
 };
 window.enviarProductoSlpV115=id=>{const d=datosCompartirProductoV115(id);if(!d)return;window.open('https://wa.me/5493442490585?text='+encodeURIComponent('Hola Sálvame las Papas. Quiero difundir este producto en la página:\n\n'+d.texto),'_blank','noopener,noreferrer')};
+window.compartirProductoGeneralV129=async id=>{
+ const d=datosCompartirProductoV115(id);if(!d)return;
+ try{
+   const archivo=await archivoProductoV117(d),datos={title:d.p.nombre||'Producto',text:d.texto,url:d.url};
+   if(archivo&&navigator.canShare?.({files:[archivo]}))datos.files=[archivo];
+   if(navigator.share){await navigator.share(datos);toast('✅ Elegí WhatsApp, Instagram, correo u otra aplicación.');return}
+   await navigator.clipboard.writeText(d.texto);toast('✅ Publicación copiada. Pegala donde quieras compartirla.');
+ }catch(e){if(e?.name!=='AbortError')toast('No se pudo abrir el menú de compartir')}
+};
 
-let hojaProductoV127='',hojaFiltroV127='todos';
-function esOfertaV127(p){const t=(String(p.nombre||'')+' '+String(p.descripcion||'')).toLowerCase();return p.oferta===true||p.esOferta===true||String(p.tipo||'').toLowerCase()==='oferta'||/oferta|promoci[oó]n|descuento/.test(t)}
-window.abrirHojaPublicacionesV127=()=>{hojaProductoV127=misProductos.find(p=>p.disponible!==false)?.id||misProductos[0]?.id||'';hojaFiltroV127='todos';document.getElementById('modal-publicaciones-v124').classList.add('open');renderHojaPublicacionesV127()};
-window.cerrarHojaPublicacionesV127=e=>{const m=document.getElementById('modal-publicaciones-v124');if(!e||e.target===m)m.classList.remove('open')};
-window.filtrarHojaV127=f=>{hojaFiltroV127=f;renderHojaPublicacionesV127()};
-window.seleccionarHojaV127=id=>{hojaProductoV127=id;renderHojaPublicacionesV127()};
-function renderHojaPublicacionesV127(){
- const lista=misProductos.filter(p=>hojaFiltroV127==='ofertas'?esOfertaV127(p):hojaFiltroV127==='disponibles'?p.disponible!==false:true),grid=document.getElementById('publish-grid-v124');
- document.querySelectorAll('#publish-filters-v124 button').forEach(b=>b.classList.toggle('active',b.dataset.filter===hojaFiltroV127));
- grid.innerHTML=lista.length?lista.map(p=>{const foto=(Array.isArray(p.fotos)&&p.fotos.find(Boolean))||p.foto||'';return`<article class="publish-choice ${p.id===hojaProductoV127?'selected':''}" onclick="seleccionarHojaV127('${p.id}')">${foto?`<img src="${esc(foto)}" alt="${esc(p.nombre)}">`:`<div class="no-photo">${p.emoji||'📦'}</div>`}<div class="publish-choice-copy"><strong>${esc(p.nombre||'Producto')}</strong><small>$${Number(p.precio||0).toLocaleString('es-AR')}</small>${esOfertaV127(p)?'<span> · OFERTA</span>':''}</div></article>`}).join(''):'<p>No hay productos en este filtro.</p>';
- const p=misProductos.find(x=>x.id===hojaProductoV127),prev=document.getElementById('publish-preview-v124'),fb=document.getElementById('publish-facebook-v124'),ig=document.getElementById('publish-instagram-v124'),instagramCargado=!!direccionRedV118('instagram'),esTelefono=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)||navigator.userAgentData?.mobile===true;fb.disabled=ig.disabled=!p;ig.textContent=instagramCargado?(esTelefono?'◎ Compartir desde el teléfono':'◎ Preparar y abrir mi Instagram'):'＋ Agregar Instagram';
+let hojaProductoV129='',hojaFiltroV129='todos';
+function esOfertaV129(p){const t=(String(p.nombre||'')+' '+String(p.descripcion||'')).toLowerCase();return p.oferta===true||p.esOferta===true||String(p.tipo||'').toLowerCase()==='oferta'||/oferta|promoci[oó]n|descuento/.test(t)}
+window.abrirHojaPublicacionesV129=()=>{hojaProductoV129=misProductos.find(p=>p.disponible!==false)?.id||misProductos[0]?.id||'';hojaFiltroV129='todos';document.getElementById('modal-publicaciones-v124').classList.add('open');renderHojaPublicacionesV129()};
+window.cerrarHojaPublicacionesV129=e=>{const m=document.getElementById('modal-publicaciones-v124');if(!e||e.target===m)m.classList.remove('open')};
+window.filtrarHojaV129=f=>{hojaFiltroV129=f;renderHojaPublicacionesV129()};
+window.seleccionarHojaV129=id=>{hojaProductoV129=id;renderHojaPublicacionesV129()};
+function renderHojaPublicacionesV129(){
+ const lista=misProductos.filter(p=>hojaFiltroV129==='ofertas'?esOfertaV129(p):hojaFiltroV129==='disponibles'?p.disponible!==false:true),grid=document.getElementById('publish-grid-v124');
+ document.querySelectorAll('#publish-filters-v124 button').forEach(b=>b.classList.toggle('active',b.dataset.filter===hojaFiltroV129));
+ grid.innerHTML=lista.length?lista.map(p=>{const foto=(Array.isArray(p.fotos)&&p.fotos.find(Boolean))||p.foto||'';return`<article class="publish-choice ${p.id===hojaProductoV129?'selected':''}" onclick="seleccionarHojaV129('${p.id}')">${foto?`<img src="${esc(foto)}" alt="${esc(p.nombre)}">`:`<div class="no-photo">${p.emoji||'📦'}</div>`}<div class="publish-choice-copy"><strong>${esc(p.nombre||'Producto')}</strong><small>$${Number(p.precio||0).toLocaleString('es-AR')}</small>${esOfertaV129(p)?'<span> · OFERTA</span>':''}</div></article>`}).join(''):'<p>No hay productos en este filtro.</p>';
+ const p=misProductos.find(x=>x.id===hojaProductoV129),prev=document.getElementById('publish-preview-v124'),fb=document.getElementById('publish-facebook-v124'),ig=document.getElementById('publish-instagram-v124'),instagramCargado=!!direccionRedV118('instagram'),esTelefono=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)||navigator.userAgentData?.mobile===true;fb.disabled=ig.disabled=!p;ig.textContent=instagramCargado?(esTelefono?'◎ Compartir desde el teléfono':'◎ Preparar y abrir mi Instagram'):'＋ Agregar Instagram';
  if(!p){prev.innerHTML='<div class="publish-preview-copy"><h3>Elegí un producto</h3></div>';return}
  const foto=(Array.isArray(p.fotos)&&p.fotos.find(Boolean))||p.foto||'';prev.innerHTML=`${foto?`<img src="${esc(foto)}" alt="${esc(p.nombre)}">`:`<div class="no-photo">${p.emoji||'📦'}</div>`}<div class="publish-preview-copy"><span>SALVAME-LAS-PAPAS.VERCEL.APP</span><h3>${esc(p.nombre||'Producto')} — $${Number(p.precio||0).toLocaleString('es-AR')}</h3><p>Disponible en ${esc(miComercio?.nombre||'este comercio')}.</p></div>`;
 }
-window.publicarDesdeHojaV127=red=>{if(!hojaProductoV127)return;window.compartirProductoRedV117(hojaProductoV127,red)};
+window.publicarDesdeHojaV129=red=>{if(!hojaProductoV129)return;window.compartirProductoRedV117(hojaProductoV129,red)};
+window.compartirSeleccionHojaV129=()=>{if(!hojaProductoV129)return;window.compartirProductoGeneralV129(hojaProductoV129)};
 
 
 // ── Carga rápida de varios productos ──
@@ -815,7 +838,8 @@ window.guardarPerfil = async () => {
  if(document.getElementById('pf-pay-credito').checked)pagos.push('Crédito');
  if(document.getElementById('pf-pay-cuotas').checked)pagos.push('Cuotas');
  if(document.getElementById('pf-pay-coordinar').checked)pagos.push('A coordinar');
- const datos={nombre:document.getElementById('pf-nombre').value.trim(),descripcion:document.getElementById('pf-desc').value.trim(),direccion:document.getElementById('pf-direccion').value.trim(),telefono:document.getElementById('pf-telefono').value.trim(),horarios:document.getElementById('pf-horarios').value.trim(),instagram:document.getElementById('pf-instagram').value.trim(),facebook:document.getElementById('pf-facebook').value.trim(),aliasPago:document.getElementById('pf-alias').value.trim(),qrPago:qrPagoActual,envio,pagos,actualizadoEn:serverTimestamp()};
+ let instagram='',facebook='';try{instagram=normalizarRedV129(document.getElementById('pf-instagram').value,'instagram');facebook=normalizarRedV129(document.getElementById('pf-facebook').value,'facebook')}catch(e){toast('⚠️ '+e.message);btn.disabled=false;btn.textContent='Guardar cambios';return}
+ const datos={nombre:document.getElementById('pf-nombre').value.trim(),descripcion:document.getElementById('pf-desc').value.trim(),direccion:document.getElementById('pf-direccion').value.trim(),telefono:document.getElementById('pf-telefono').value.trim(),horarios:document.getElementById('pf-horarios').value.trim(),instagram,facebook,aliasPago:document.getElementById('pf-alias').value.trim(),qrPago:qrPagoActual,envio,pagos,actualizadoEn:serverTimestamp()};
  try{await updateDoc(doc(db,'comercios',miComercioId),datos);Object.assign(miComercio,datos);document.getElementById('comercio-nombre').textContent=datos.nombre||'Mi comercio';document.getElementById('modal-perfil').classList.remove('open');toast('✅ Perfil actualizado')}
  catch(e){toast('Error: '+e.message)}finally{btn.disabled=false;btn.textContent='Guardar cambios'}
 }
@@ -980,6 +1004,7 @@ body{font-family:"DM Sans",sans-serif;background:#F0F4F8;color:#1A1A1A;min-heigh
 .social-product-v115{grid-column:1/-1;display:flex;gap:7px;flex-wrap:wrap;border-top:1px solid #e1e8f2;padding-top:10px;margin-top:4px}
 .social-product-v115 button{border:0;border-radius:9px;padding:8px 10px;background:#1877f2;color:#fff;font:800 .76rem 'DM Sans',sans-serif;cursor:pointer}
 .social-product-v115 button:nth-child(2){background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045)}
+.social-product-v115 button.share-all{background:#087f8c}
 .social-product-v115 button.slp{background:#ff6a00}
 .difusion-ayuda-v116{margin:0 0 14px;padding:12px 14px;border:1px solid #b9d5f3;border-radius:12px;background:#eef7ff;color:#073574;font-size:.88rem}.difusion-ayuda-v116 strong{display:block;margin-bottom:3px}
 .publish-sheet-btn{margin-top:9px;border:0;border-radius:9px;background:#1877f2;color:#fff;padding:9px 13px;font-weight:900;cursor:pointer}.publish-modal{max-width:920px!important}.publish-filters{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}.publish-filters button{border:1px solid #b9cce0;background:#eef5fc;color:#174b83;border-radius:999px;padding:7px 11px;font-weight:800;cursor:pointer}.publish-filters button.active{background:#0a4e94;color:#fff}.publish-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;max-height:390px;overflow:auto;padding:2px}.publish-choice{border:2px solid #d5e0ea;border-radius:13px;background:#fff;overflow:hidden;cursor:pointer;display:flex;flex-direction:column}.publish-choice.selected{border-color:#1877f2;box-shadow:0 0 0 3px #1877f226}.publish-choice img,.publish-choice .no-photo{width:100%;height:125px;object-fit:contain;background:#f7f9fc}.publish-choice .no-photo{display:grid;place-items:center;font-size:2.4rem}.publish-choice-copy{padding:9px}.publish-choice strong{display:block;color:#083c7c;line-height:1.2}.publish-choice small{color:#d60000;font-weight:900}.publish-preview{margin-top:15px;border:1px solid #ccd8e5;border-radius:13px;background:#f0f2f5;display:grid;grid-template-columns:150px 1fr;overflow:hidden}.publish-preview img,.publish-preview .no-photo{width:150px;height:150px;object-fit:contain;background:#fff}.publish-preview .no-photo{display:grid;place-items:center;font-size:2.5rem}.publish-preview-copy{padding:15px}.publish-preview-copy span{font-size:.7rem;color:#667;text-transform:uppercase}.publish-preview-copy h3{font:900 1.2rem Fraunces,serif;color:#17314d;margin:6px 0}.publish-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:13px}.publish-actions button{border:0;border-radius:9px;padding:10px 14px;font-weight:900;cursor:pointer}.publish-go{background:#1877f2;color:#fff}.publish-go:disabled{background:#a9b6c5}.publish-close{background:#e8edf3;color:#334b64}@media(max-width:700px){.publish-grid{grid-template-columns:repeat(2,1fr)}.publish-preview{grid-template-columns:105px 1fr}.publish-preview img,.publish-preview .no-photo{width:105px;height:120px}}@media(max-width:440px){.publish-grid{grid-template-columns:1fr}}
@@ -1401,14 +1426,14 @@ img{max-width:100%;height:auto}
 <meta name="apple-mobile-web-app-title" content="Sálvame">
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
-<meta name="app-version" content="V127">
+<meta name="app-version" content="V129">
 </head>
 <body>
 
 <!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
-    <span class="owner-login-kicker">PANEL DEL COMERCIO · V127</span>
+    <span class="owner-login-kicker">PANEL DEL COMERCIO · V129</span>
     <div class="login-logo">Sálvame <em>las Papas 🥔</em></div>
     <h1 class="owner-login-title">Administrá tu comercio</h1>
     <p class="owner-login-help">
@@ -1445,7 +1470,7 @@ img{max-width:100%;height:auto}
 <!-- PANEL -->
 <div id="panel-screen">
   <nav class="panel-nav">
-    <div class="panel-logo">Sálvame <em>las Papas</em> — Panel del comercio <span class="panel-version">V127</span></div>
+    <div class="panel-logo">Sálvame <em>las Papas</em> — Panel del comercio <span class="panel-version">V129</span></div>
     <nav class="site-switcher" aria-label="Navegación del sitio">
       <a href="index.html">🏠 Inicio general</a>
       <a href="comprar.html">🛒 Ver como cliente</a>
@@ -1530,7 +1555,7 @@ img{max-width:100%;height:auto}
           <button class="btn-agregar-prod" onclick="abrirModalProducto()">+ Agregar uno</button>
         </div>
       </div>
-      <div class="difusion-ayuda-v116" id="difusion-ayuda-v116"><strong>📣 Difusión de productos</strong> Cargando las opciones de tu plan…<button type="button" class="publish-sheet-btn" onclick="abrirHojaPublicacionesV127()">Abrir hoja para publicar en Facebook</button></div>
+      <div class="difusion-ayuda-v116" id="difusion-ayuda-v116"><strong>📣 Difusión de productos</strong> Cargando las opciones de tu plan…<button type="button" class="publish-sheet-btn" onclick="abrirHojaPublicacionesV129()">Abrir hoja para publicar en Facebook</button></div>
       <div class="productos-grid" id="productos-grid">
         <p style="color:#666;text-align:center;padding:2rem;grid-column:1/-1">Cargando...</p>
       </div>
@@ -1682,15 +1707,15 @@ img{max-width:100%;height:auto}
 </div>
 
 
-<div class="modal-overlay" id="modal-publicaciones-v124" onclick="cerrarHojaPublicacionesV127(event)">
+<div class="modal-overlay" id="modal-publicaciones-v124" onclick="cerrarHojaPublicacionesV129(event)">
   <div class="modal publish-modal">
-    <button class="mclose" onclick="cerrarHojaPublicacionesV127()">✕</button>
+    <button class="mclose" onclick="cerrarHojaPublicacionesV129()">✕</button>
     <h2>📣 Hoja de publicaciones</h2>
     <p class="profile-help">Elegí una publicación. Facebook arma la tarjeta enlazada; Instagram recibe la foto y el texto preparados.</p>
-    <div class="publish-filters" id="publish-filters-v124"><button data-filter="todos" onclick="filtrarHojaV127('todos')">Todos</button><button data-filter="ofertas" onclick="filtrarHojaV127('ofertas')">Ofertas</button><button data-filter="disponibles" onclick="filtrarHojaV127('disponibles')">Disponibles</button></div>
+    <div class="publish-filters" id="publish-filters-v124"><button data-filter="todos" onclick="filtrarHojaV129('todos')">Todos</button><button data-filter="ofertas" onclick="filtrarHojaV129('ofertas')">Ofertas</button><button data-filter="disponibles" onclick="filtrarHojaV129('disponibles')">Disponibles</button></div>
     <div class="publish-grid" id="publish-grid-v124"></div>
     <div class="publish-preview" id="publish-preview-v124"></div>
-    <div class="publish-actions"><button class="publish-close" onclick="cerrarHojaPublicacionesV127()">Cerrar</button><button class="publish-go" id="publish-instagram-v124" onclick="publicarDesdeHojaV127('instagram')">◎ Preparar para Instagram</button><button class="publish-go" id="publish-facebook-v124" onclick="publicarDesdeHojaV127('facebook')">f Publicar en Facebook</button></div>
+    <div class="publish-actions"><button class="publish-close" onclick="cerrarHojaPublicacionesV129()">Cerrar</button><button class="publish-go" style="background:#087f8c" onclick="compartirSeleccionHojaV129()">↗ Compartir en otras aplicaciones</button><button class="publish-go" id="publish-instagram-v124" onclick="publicarDesdeHojaV129('instagram')">◎ Preparar para Instagram</button><button class="publish-go" id="publish-facebook-v124" onclick="publicarDesdeHojaV129('facebook')">f Publicar en Facebook</button></div>
   </div>
 </div>
 
@@ -1704,8 +1729,8 @@ img{max-width:100%;height:auto}
     <div class="form-group"><label>Dirección</label><input class="form-input" id="pf-direccion"></div>
     <div class="form-group"><label>WhatsApp</label><input class="form-input" id="pf-telefono"></div>
     <div class="form-group"><label>Horarios</label><input class="form-input" id="pf-horarios"></div>
-    <div class="form-group"><label>Instagram</label><input class="form-input" id="pf-instagram"></div>
-    <div class="form-group"><label>Facebook</label><input class="form-input" id="pf-facebook" type="url" placeholder="https://facebook.com/miComercio"></div>
+    <div class="form-group"><label>Instagram</label><input class="form-input" id="pf-instagram" type="text" placeholder="@usuario o https://instagram.com/usuario"><small>Podés escribir el usuario, @usuario o pegar el enlace completo.</small></div>
+    <div class="form-group"><label>Facebook</label><input class="form-input" id="pf-facebook" type="text" placeholder="usuario o https://facebook.com/miComercio"><small>Podés escribir el usuario o pegar el enlace completo de la página.</small></div>
     <div class="form-group"><label>Alias para transferencias o billeteras</label><input class="form-input" id="pf-alias" placeholder="Ej: MI.COMERCIO.MP"><small>El cliente podrá copiarlo desde el carrito o pedirte un QR por WhatsApp.</small></div>
     <div class="form-group"><label>QR de cobro propio del comercio</label><input class="form-input" id="pf-qr-file" type="file" accept="image/png,image/jpeg,image/webp"><small>Cargá el QR abierto de Mercado Pago u otra billetera. El cliente escribirá el total desde su teléfono.</small><img id="pf-qr-preview" hidden alt="Vista previa del QR" style="display:block;max-width:220px;max-height:220px;object-fit:contain;margin:10px auto;border:2px solid #cbd8e6;border-radius:14px;background:#fff;padding:8px"><button type="button" class="btn-save-profile" style="background:#6b7890;margin-top:6px" onclick="quitarQrPago()">Quitar QR</button></div>
 
