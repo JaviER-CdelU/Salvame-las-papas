@@ -1,5 +1,4 @@
 const PROJECT='salvame-las-papas-cdelu';
-const API_KEY='AIzaSyAE8kEBAzDbPvCCD1KCyjq67iFl3dvthLM';
 
 function valor(v){
   if(!v||typeof v!=='object')return null;
@@ -17,7 +16,7 @@ function campos(fields){return Object.fromEntries(Object.entries(fields||{}).map
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function dinero(v){return Number(v||0).toLocaleString('es-AR')}
 async function documento(path){
-  const url=`https://firestore.googleapis.com/v1/projects/${PROJECT}/databases/(default)/documents/${path}?key=${API_KEY}`;
+  const url=`https://firestore.googleapis.com/v1/projects/${PROJECT}/databases/(default)/documents/${path}`;
   const r=await fetch(url,{headers:{accept:'application/json'}});
   if(!r.ok)return null;
   const j=await r.json();return campos(j.fields);

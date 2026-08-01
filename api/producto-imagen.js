@@ -1,7 +1,6 @@
 const PROJECT='salvame-las-papas-cdelu';
-const API_KEY='AIzaSyAE8kEBAzDbPvCCD1KCyjq67iFl3dvthLM';
 function valor(v){if(!v||typeof v!=='object')return null;if('stringValue'in v)return v.stringValue;if('booleanValue'in v)return v.booleanValue;if(v.arrayValue)return(v.arrayValue.values||[]).map(valor);if(v.mapValue)return Object.fromEntries(Object.entries(v.mapValue.fields||{}).map(([k,x])=>[k,valor(x)]));return null}
-async function doc(path){const r=await fetch(`https://firestore.googleapis.com/v1/projects/${PROJECT}/databases/(default)/documents/${path}?key=${API_KEY}`);if(!r.ok)return null;const j=await r.json();return Object.fromEntries(Object.entries(j.fields||{}).map(([k,v])=>[k,valor(v)]))}
+async function doc(path){const r=await fetch(`https://firestore.googleapis.com/v1/projects/${PROJECT}/databases/(default)/documents/${path}`);if(!r.ok)return null;const j=await r.json();return Object.fromEntries(Object.entries(j.fields||{}).map(([k,v])=>[k,valor(v)]))}
 module.exports=async(req,res)=>{
  const c=String(req.query.c||''),p=String(req.query.p||''),i=Math.max(0,Math.min(3,Number(req.query.i||0)));
  if(!/^[A-Za-z0-9_-]{1,160}$/.test(c)||!/^[A-Za-z0-9_-]{1,160}$/.test(p))return res.status(400).end();

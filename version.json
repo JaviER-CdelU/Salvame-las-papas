@@ -1,8 +1,14 @@
 {
-  "version": "V124",
-  "nombre": "Hoja de publicaciones para Facebook e Instagram",
+  "version": "V126",
+  "nombre": "Tarjetas sociales sin repetir la clave Firebase en la API",
   "fecha": "2026-08-01",
   "cambios": [
+    "eliminada la clave web de Firebase de los dos servicios nuevos de Vercel",
+    "las lecturas públicas de productos utilizan directamente las reglas activas de Firestore",
+    "corregida la alerta GitGuardian provocada por repetir la clave dentro de la carpeta api",
+    "Facebook utiliza siempre el servicio dinámico de Vercel aunque el panel se abra desde GitHub Pages",
+    "corregida la tarjeta Page not found que impedía mostrar foto, precio y comercio",
+    "agregada una versión nueva a cada enlace para evitar que Facebook conserve la vista previa rota",
     "cada comercio dispone de una hoja para elegir qué producto publicar",
     "filtros de publicaciones para todos los productos, ofertas y disponibles",
     "vista previa con foto, precio y nombre del comercio antes de compartir",
