@@ -6,7 +6,7 @@
 <meta name="description" content="Panel de comercios de Sálvame las Papas para administrar productos y disponibilidad."/>
 <meta name="theme-color" content="#002A6A"/>
 <meta name="color-scheme" content="light"/>
-<meta name="app-version" content="V117"/>
+<meta name="app-version" content="V118"/>
 <title>Mi Comercio — Sálvame las Papas 🥔</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
@@ -339,17 +339,31 @@ async function archivoProductoV117(d){
  if(!d?.foto)return null;
  try{const respuesta=await fetch(d.foto),blob=await respuesta.blob(),tipo=blob.type||'image/jpeg',ext=tipo.includes('png')?'png':'jpg',nombre=String(d.p.nombre||'producto').replace(/[^a-z0-9áéíóúñ]+/gi,'-').replace(/^-|-$/g,'')||'producto';return new File([blob],nombre+'.'+ext,{type:tipo})}catch(e){return null}
 }
+function direccionRedV118(red){
+ const valor=String(red==='facebook'?miComercio?.facebook:miComercio?.instagram||'').trim();
+ if(!valor)return '';
+ if(/^https?:\/\//i.test(valor))return valor;
+ const usuario=valor.replace(/^@/,'').replace(/^\/+|\/+$/g,'').replace(/\s/g,'');
+ return red==='facebook'?'https://www.facebook.com/'+usuario:'https://www.instagram.com/'+usuario+'/';
+}
 window.compartirProductoRedV117=async(id,red)=>{
  const d=datosCompartirProductoV115(id);if(!d)return;
+ const destino=direccionRedV118(red);
+ if(!destino){
+   toast('⚠️ Este comercio todavía no tiene cargada su dirección de '+(red==='facebook'?'Facebook':'Instagram')+'.');
+   abrirModalPerfil();
+   setTimeout(()=>document.getElementById(red==='facebook'?'pf-facebook':'pf-instagram')?.focus(),350);
+   return;
+ }
+ const ventana=window.open('about:blank','_blank');
+ if(ventana)ventana.opener=null;
  try{
-   const archivo=await archivoProductoV117(d),datos={title:d.p.nombre,text:d.texto,url:d.url};
-   if(archivo&&navigator.canShare?.({files:[archivo]}))datos.files=[archivo];
-   if(navigator.share){await navigator.share(datos);return}
-   await navigator.clipboard.writeText(d.texto);
+   const archivo=await archivoProductoV117(d);
+   await navigator.clipboard.writeText(d.texto).catch(()=>{});
    if(archivo){const a=document.createElement('a');a.href=URL.createObjectURL(archivo);a.download=archivo.name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1500)}
-   toast('✅ Foto preparada y texto copiado. Pegalos en '+(red==='facebook'?'Facebook':'Instagram')+'.');
-   window.open(red==='facebook'?'https://www.facebook.com/':'https://www.instagram.com/','_blank','noopener,noreferrer');
- }catch(e){if(e.name!=='AbortError')toast('No se pudo preparar la publicación')}
+   toast('✅ Foto descargada y texto copiado. Se abre la cuenta del comercio para publicarlos.');
+   if(ventana)ventana.location.href=destino;else window.location.href=destino;
+ }catch(e){if(ventana)ventana.close();toast('No se pudo preparar la publicación')}
 };
 window.enviarProductoSlpV115=id=>{const d=datosCompartirProductoV115(id);if(!d)return;window.open('https://wa.me/5493442490585?text='+encodeURIComponent('Hola Sálvame las Papas. Quiero difundir este producto en la página:\n\n'+d.texto),'_blank','noopener,noreferrer')};
 
@@ -1352,14 +1366,14 @@ img{max-width:100%;height:auto}
 <meta name="apple-mobile-web-app-title" content="Sálvame">
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
-<meta name="app-version" content="V117">
+<meta name="app-version" content="V118">
 </head>
 <body>
 
 <!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
-    <span class="owner-login-kicker">PANEL DEL COMERCIO · V117</span>
+    <span class="owner-login-kicker">PANEL DEL COMERCIO · V118</span>
     <div class="login-logo">Sálvame <em>las Papas 🥔</em></div>
     <h1 class="owner-login-title">Administrá tu comercio</h1>
     <p class="owner-login-help">
@@ -1396,7 +1410,7 @@ img{max-width:100%;height:auto}
 <!-- PANEL -->
 <div id="panel-screen">
   <nav class="panel-nav">
-    <div class="panel-logo">Sálvame <em>las Papas</em> — Panel del comercio <span class="panel-version">V117</span></div>
+    <div class="panel-logo">Sálvame <em>las Papas</em> — Panel del comercio <span class="panel-version">V118</span></div>
     <nav class="site-switcher" aria-label="Navegación del sitio">
       <a href="index.html">🏠 Inicio general</a>
       <a href="comprar.html">🛒 Ver como cliente</a>
