@@ -6,7 +6,7 @@
 <meta name="description" content="Panel de comercios de Sálvame las Papas para administrar productos y disponibilidad."/>
 <meta name="theme-color" content="#002A6A"/>
 <meta name="color-scheme" content="light"/>
-<meta name="app-version" content="V119"/>
+<meta name="app-version" content="V121"/>
 <title>Mi Comercio — Sálvame las Papas 🥔</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
@@ -745,10 +745,12 @@ function toast(msg){
   setTimeout(() => t.classList.remove('show'), 3500)
 }
 
+let qrPagoActual='';
 window.abrirModalPerfil = () => {
  if(!miComercio)return;
- const vals={nombre:'nombre',desc:'descripcion',direccion:'direccion',telefono:'telefono',horarios:'horarios',instagram:'instagram',facebook:'facebook'};
+ const vals={nombre:'nombre',desc:'descripcion',direccion:'direccion',telefono:'telefono',horarios:'horarios',instagram:'instagram',facebook:'facebook',alias:'aliasPago'};
  Object.entries(vals).forEach(([id,k])=>{const e=document.getElementById('pf-'+id);if(e)e.value=miComercio[k]||''});
+ qrPagoActual=miComercio.qrPago||'';const qrPrev=document.getElementById('pf-qr-preview');if(qrPrev){qrPrev.src=qrPagoActual;qrPrev.hidden=!qrPagoActual}
  const env=Array.isArray(miComercio.envio)?miComercio.envio:String(miComercio.envio||'').split(/[,;|]/).map(x=>x.trim());
  const pay=Array.isArray(miComercio.pagos)?miComercio.pagos:String(miComercio.pagos||'').split(/[,;|]/).map(x=>x.trim());
  const tiene=(lista,...partes)=>lista.some(v=>partes.some(p=>String(v).toLowerCase().includes(p)));
@@ -766,6 +768,8 @@ window.abrirModalPerfil = () => {
  document.getElementById('modal-perfil').classList.add('open')
 }
 window.cerrarModalPerfil = e => {if(!e||e.target===document.getElementById('modal-perfil'))document.getElementById('modal-perfil').classList.remove('open')}
+window.quitarQrPago=()=>{qrPagoActual='';const p=document.getElementById('pf-qr-preview'),f=document.getElementById('pf-qr-file');if(p){p.hidden=true;p.removeAttribute('src')}if(f)f.value=''};
+document.addEventListener('change',e=>{if(e.target?.id!=='pf-qr-file')return;const file=e.target.files?.[0];if(!file)return;const reader=new FileReader();reader.onerror=()=>toast('No se pudo leer el QR');reader.onload=()=>{const img=new Image();img.onerror=()=>toast('La imagen del QR no es válida');img.onload=()=>{const max=600,s=Math.min(1,max/img.width,max/img.height),c=document.createElement('canvas');c.width=Math.max(1,Math.round(img.width*s));c.height=Math.max(1,Math.round(img.height*s));c.getContext('2d').drawImage(img,0,0,c.width,c.height);qrPagoActual=c.toDataURL('image/png');if(qrPagoActual.length>700000)qrPagoActual=c.toDataURL('image/jpeg',.92);const p=document.getElementById('pf-qr-preview');p.src=qrPagoActual;p.hidden=false};img.src=reader.result};reader.readAsDataURL(file)});
 window.guardarPerfil = async () => {
  if(!miComercioId)return; const btn=document.getElementById('btn-save-profile');btn.disabled=true;btn.textContent='Guardando...';
  const envio=[];
@@ -781,7 +785,7 @@ window.guardarPerfil = async () => {
  if(document.getElementById('pf-pay-credito').checked)pagos.push('Crédito');
  if(document.getElementById('pf-pay-cuotas').checked)pagos.push('Cuotas');
  if(document.getElementById('pf-pay-coordinar').checked)pagos.push('A coordinar');
- const datos={nombre:document.getElementById('pf-nombre').value.trim(),descripcion:document.getElementById('pf-desc').value.trim(),direccion:document.getElementById('pf-direccion').value.trim(),telefono:document.getElementById('pf-telefono').value.trim(),horarios:document.getElementById('pf-horarios').value.trim(),instagram:document.getElementById('pf-instagram').value.trim(),facebook:document.getElementById('pf-facebook').value.trim(),envio,pagos,actualizadoEn:serverTimestamp()};
+ const datos={nombre:document.getElementById('pf-nombre').value.trim(),descripcion:document.getElementById('pf-desc').value.trim(),direccion:document.getElementById('pf-direccion').value.trim(),telefono:document.getElementById('pf-telefono').value.trim(),horarios:document.getElementById('pf-horarios').value.trim(),instagram:document.getElementById('pf-instagram').value.trim(),facebook:document.getElementById('pf-facebook').value.trim(),aliasPago:document.getElementById('pf-alias').value.trim(),qrPago:qrPagoActual,envio,pagos,actualizadoEn:serverTimestamp()};
  try{await updateDoc(doc(db,'comercios',miComercioId),datos);Object.assign(miComercio,datos);document.getElementById('comercio-nombre').textContent=datos.nombre||'Mi comercio';document.getElementById('modal-perfil').classList.remove('open');toast('✅ Perfil actualizado')}
  catch(e){toast('Error: '+e.message)}finally{btn.disabled=false;btn.textContent='Guardar cambios'}
 }
@@ -1366,14 +1370,14 @@ img{max-width:100%;height:auto}
 <meta name="apple-mobile-web-app-title" content="Sálvame">
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
-<meta name="app-version" content="V119">
+<meta name="app-version" content="V121">
 </head>
 <body>
 
 <!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
-    <span class="owner-login-kicker">PANEL DEL COMERCIO · V119</span>
+    <span class="owner-login-kicker">PANEL DEL COMERCIO · V121</span>
     <div class="login-logo">Sálvame <em>las Papas 🥔</em></div>
     <h1 class="owner-login-title">Administrá tu comercio</h1>
     <p class="owner-login-help">
@@ -1410,7 +1414,7 @@ img{max-width:100%;height:auto}
 <!-- PANEL -->
 <div id="panel-screen">
   <nav class="panel-nav">
-    <div class="panel-logo">Sálvame <em>las Papas</em> — Panel del comercio <span class="panel-version">V119</span></div>
+    <div class="panel-logo">Sálvame <em>las Papas</em> — Panel del comercio <span class="panel-version">V121</span></div>
     <nav class="site-switcher" aria-label="Navegación del sitio">
       <a href="index.html">🏠 Inicio general</a>
       <a href="comprar.html">🛒 Ver como cliente</a>
@@ -1659,6 +1663,8 @@ img{max-width:100%;height:auto}
     <div class="form-group"><label>Horarios</label><input class="form-input" id="pf-horarios"></div>
     <div class="form-group"><label>Instagram</label><input class="form-input" id="pf-instagram"></div>
     <div class="form-group"><label>Facebook</label><input class="form-input" id="pf-facebook" type="url" placeholder="https://facebook.com/miComercio"></div>
+    <div class="form-group"><label>Alias para transferencias o billeteras</label><input class="form-input" id="pf-alias" placeholder="Ej: MI.COMERCIO.MP"><small>El cliente podrá copiarlo desde el carrito o pedirte un QR por WhatsApp.</small></div>
+    <div class="form-group"><label>QR de cobro propio del comercio</label><input class="form-input" id="pf-qr-file" type="file" accept="image/png,image/jpeg,image/webp"><small>Cargá el QR abierto de Mercado Pago u otra billetera. El cliente escribirá el total desde su teléfono.</small><img id="pf-qr-preview" hidden alt="Vista previa del QR" style="display:block;max-width:220px;max-height:220px;object-fit:contain;margin:10px auto;border:2px solid #cbd8e6;border-radius:14px;background:#fff;padding:8px"><button type="button" class="btn-save-profile" style="background:#6b7890;margin-top:6px" onclick="quitarQrPago()">Quitar QR</button></div>
 
     <div class="profile-options-v60">
       <h3>🚚 Entregas disponibles</h3>

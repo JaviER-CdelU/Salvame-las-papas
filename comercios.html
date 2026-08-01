@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="app-version" content="V119">
+<meta name="app-version" content="V121">
 <meta name="description" content="Directorio alfabético de comercios de Sálvame las Papas.">
 <title>Directorio de comercios — Sálvame las Papas</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700;800&family=Fraunces:wght@700;900&display=swap" rel="stylesheet">
@@ -34,7 +34,7 @@ footer{text-align:center;color:#66788a;padding:24px;border-top:1px solid var(--b
   <section class="grid" id="grid"><div class="loading">Consultando los comercios activos…</div></section>
   <nav class="pagination" id="paginacion" aria-label="Páginas de comercios"></nav>
 </main>
-<footer>V119 · Directorio de comercios · Sálvame las Papas</footer>
+<footer>V121 · Directorio de comercios · Sálvame las Papas</footer>
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import{getFirestore,collection,getDocs,query,where}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -44,7 +44,7 @@ const $=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,
 const normal=v=>String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 function fecha(v){try{return v?.toDate?v.toDate():v?.seconds?new Date(v.seconds*1000):new Date(v||0)}catch{return new Date(0)}}
 function publicable(d){if(d.estado!=='activo'||d.estadoSuscripcion==='vencido'||d.estadoRenovacion==='vencido')return false;const f=fecha(d.proximaRenovacion);if(!d.proximaRenovacion||isNaN(f))return true;f.setHours(23,59,59,999);return f>=new Date()}
-function enlace(c){const clave=normal(c.id||c.nombre).replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');return './comprar.html#comercio='+encodeURIComponent(clave)}
+function enlace(c){return './ver-comercio.html?id='+encodeURIComponent(c.id)}
 function tarjeta(c){const foto=c.productos.find(p=>p.foto)?.foto||c.fotoPortada||c.logo||'',nombres=c.productos.slice(0,3).map(p=>`<span>${esc(p.nombre)}</span>`).join('');return `<article class="card"><div class="photo">${foto?`<img src="${esc(foto)}" alt="${esc(c.nombre)}" loading="lazy">`:esc(c.emoji||'🏪')}</div><div class="body"><div class="category">${esc(c.categoria||'Comercio local')}</div><h2>${esc(c.nombre||'Comercio')}</h2><div class="place">📍 ${esc(c.barrio||c.direccion||'Concepción del Uruguay')}</div>${c.descripcion?`<div class="desc">${esc(c.descripcion)}</div>`:''}<div class="products">${nombres||'<span>Consultá sus productos y servicios</span>'}</div><div class="actions"><span class="count">${c.productos.length} producto${c.productos.length===1?'':'s'}</span><a class="open" href="${enlace(c)}">Ver qué vende →</a></div></div></article>`}
 function render(){const totalPag=Math.max(1,Math.ceil(filtrados.length/POR_PAGINA));pagina=Math.min(Math.max(1,pagina),totalPag);const desde=(pagina-1)*POR_PAGINA,items=filtrados.slice(desde,desde+POR_PAGINA);$('resultado').textContent=filtrados.length+' comercio'+(filtrados.length===1?' encontrado':'s encontrados');$('pagina-info').textContent=filtrados.length?`Página ${pagina} de ${totalPag} · mostrando ${desde+1}–${Math.min(desde+10,filtrados.length)}`:'';$('grid').innerHTML=items.length?items.map(tarjeta).join(''):'<div class="empty"><strong>No encontramos comercios con esos filtros.</strong><br>Probá otra categoría o borrá la búsqueda.</div>';let b=`<button ${pagina===1?'disabled':''} data-p="${pagina-1}">← Anterior</button>`;for(let i=1;i<=totalPag;i++){if(totalPag>7&&i>2&&i<totalPag-1&&Math.abs(i-pagina)>1){if(i===3||i===totalPag-2)b+='<span>…</span>';continue}b+=`<button class="${i===pagina?'active':''}" data-p="${i}">${i}</button>`}b+=`<button ${pagina===totalPag?'disabled':''} data-p="${pagina+1}">Siguiente →</button>`;$('paginacion').innerHTML=filtrados.length>10?b:'';$('paginacion').querySelectorAll('button').forEach(x=>x.onclick=()=>{pagina=Number(x.dataset.p);render();scrollTo({top:document.querySelector('main').offsetTop-15,behavior:'smooth'})})}
 function aplicar(){const q=normal($('buscar').value),cat=$('categoria').value,ord=$('orden').value;filtrados=todos.filter(c=>(!cat||c.categoria===cat)&&(!q||normal([c.nombre,c.categoria,c.barrio,c.descripcion,...c.productos.map(p=>p.nombre)].join(' ')).includes(q)));filtrados.sort((a,b)=>ord==='za'?b.nombre.localeCompare(a.nombre,'es'):ord==='categoria'?(a.categoria||'').localeCompare(b.categoria||'','es')||a.nombre.localeCompare(b.nombre,'es'):ord==='recientes'?fecha(b.creadoEn)-fecha(a.creadoEn):a.nombre.localeCompare(b.nombre,'es'));pagina=1;render()}
