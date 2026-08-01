@@ -6,7 +6,7 @@
 <meta name="description" content="Panel de comercios de Sálvame las Papas para administrar productos y disponibilidad."/>
 <meta name="theme-color" content="#002A6A"/>
 <meta name="color-scheme" content="light"/>
-<meta name="app-version" content="V126"/>
+<meta name="app-version" content="V127"/>
 <title>Mi Comercio — Sálvame las Papas 🥔</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
@@ -290,7 +290,7 @@ function renderProductos(){
 
   const difusionHabilitada = planPermiteDifusionV115()
   const ayudaDifusion=document.getElementById('difusion-ayuda-v116');
-  if(ayudaDifusion) ayudaDifusion.innerHTML='<strong>📣 Hoja de publicaciones</strong> Elegí un producto, mirá cómo quedará y preparalo para Facebook.<button type="button" class="publish-sheet-btn" onclick="abrirHojaPublicacionesV126()">Abrir hoja para publicar en Facebook</button>';
+  if(ayudaDifusion) ayudaDifusion.innerHTML='<strong>📣 Hoja de publicaciones</strong> Elegí un producto, mirá cómo quedará y preparalo para Facebook.<button type="button" class="publish-sheet-btn" onclick="abrirHojaPublicacionesV127()">Abrir hoja para publicar en Facebook</button>';
   grid.innerHTML = misProductos.map(p => {
     const foto=(Array.isArray(p.fotos)&&p.fotos.find(Boolean))||p.foto||'';
     return `
@@ -354,19 +354,20 @@ window.compartirProductoRedV117=async(id,red)=>{
    toast('✅ Facebook mostrará la foto, el precio y el comercio desde Sálvame las Papas.');
    return;
  }
- if(red==='instagram'&&navigator.share){
+ const destino=direccionRedV118(red);
+ if(!destino){
+   toast('⚠️ Este comercio no tiene Instagram cargado. Completalo ahora en Editar datos del comercio.');
+   abrirModalPerfil();
+   setTimeout(()=>document.getElementById('pf-instagram')?.focus(),350);
+   return;
+ }
+ const esTelefono=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)||navigator.userAgentData?.mobile===true;
+ if(red==='instagram'&&esTelefono&&navigator.share){
    try{
      const archivo=await archivoProductoV117(d),datos={title:d.p.nombre||'Producto',text:d.texto,url:d.url};
      if(archivo&&navigator.canShare?.({files:[archivo]}))datos.files=[archivo];
      await navigator.share(datos);toast('✅ Publicación enviada al menú del teléfono. Elegí Instagram para terminar.');return;
    }catch(e){if(e?.name==='AbortError')return}
- }
- const destino=direccionRedV118(red);
- if(!destino){
-   toast('⚠️ Este comercio todavía no tiene cargada su dirección de '+(red==='facebook'?'Facebook':'Instagram')+'.');
-   abrirModalPerfil();
-   setTimeout(()=>document.getElementById(red==='facebook'?'pf-facebook':'pf-instagram')?.focus(),350);
-   return;
  }
  const ventana=window.open('about:blank','_blank');
  if(ventana)ventana.opener=null;
@@ -380,21 +381,21 @@ window.compartirProductoRedV117=async(id,red)=>{
 };
 window.enviarProductoSlpV115=id=>{const d=datosCompartirProductoV115(id);if(!d)return;window.open('https://wa.me/5493442490585?text='+encodeURIComponent('Hola Sálvame las Papas. Quiero difundir este producto en la página:\n\n'+d.texto),'_blank','noopener,noreferrer')};
 
-let hojaProductoV126='',hojaFiltroV126='todos';
-function esOfertaV126(p){const t=(String(p.nombre||'')+' '+String(p.descripcion||'')).toLowerCase();return p.oferta===true||p.esOferta===true||String(p.tipo||'').toLowerCase()==='oferta'||/oferta|promoci[oó]n|descuento/.test(t)}
-window.abrirHojaPublicacionesV126=()=>{hojaProductoV126=misProductos.find(p=>p.disponible!==false)?.id||misProductos[0]?.id||'';hojaFiltroV126='todos';document.getElementById('modal-publicaciones-v124').classList.add('open');renderHojaPublicacionesV126()};
-window.cerrarHojaPublicacionesV126=e=>{const m=document.getElementById('modal-publicaciones-v124');if(!e||e.target===m)m.classList.remove('open')};
-window.filtrarHojaV126=f=>{hojaFiltroV126=f;renderHojaPublicacionesV126()};
-window.seleccionarHojaV126=id=>{hojaProductoV126=id;renderHojaPublicacionesV126()};
-function renderHojaPublicacionesV126(){
- const lista=misProductos.filter(p=>hojaFiltroV126==='ofertas'?esOfertaV126(p):hojaFiltroV126==='disponibles'?p.disponible!==false:true),grid=document.getElementById('publish-grid-v124');
- document.querySelectorAll('#publish-filters-v124 button').forEach(b=>b.classList.toggle('active',b.dataset.filter===hojaFiltroV126));
- grid.innerHTML=lista.length?lista.map(p=>{const foto=(Array.isArray(p.fotos)&&p.fotos.find(Boolean))||p.foto||'';return`<article class="publish-choice ${p.id===hojaProductoV126?'selected':''}" onclick="seleccionarHojaV126('${p.id}')">${foto?`<img src="${esc(foto)}" alt="${esc(p.nombre)}">`:`<div class="no-photo">${p.emoji||'📦'}</div>`}<div class="publish-choice-copy"><strong>${esc(p.nombre||'Producto')}</strong><small>$${Number(p.precio||0).toLocaleString('es-AR')}</small>${esOfertaV126(p)?'<span> · OFERTA</span>':''}</div></article>`}).join(''):'<p>No hay productos en este filtro.</p>';
- const p=misProductos.find(x=>x.id===hojaProductoV126),prev=document.getElementById('publish-preview-v124'),fb=document.getElementById('publish-facebook-v124'),ig=document.getElementById('publish-instagram-v124');fb.disabled=ig.disabled=!p;
+let hojaProductoV127='',hojaFiltroV127='todos';
+function esOfertaV127(p){const t=(String(p.nombre||'')+' '+String(p.descripcion||'')).toLowerCase();return p.oferta===true||p.esOferta===true||String(p.tipo||'').toLowerCase()==='oferta'||/oferta|promoci[oó]n|descuento/.test(t)}
+window.abrirHojaPublicacionesV127=()=>{hojaProductoV127=misProductos.find(p=>p.disponible!==false)?.id||misProductos[0]?.id||'';hojaFiltroV127='todos';document.getElementById('modal-publicaciones-v124').classList.add('open');renderHojaPublicacionesV127()};
+window.cerrarHojaPublicacionesV127=e=>{const m=document.getElementById('modal-publicaciones-v124');if(!e||e.target===m)m.classList.remove('open')};
+window.filtrarHojaV127=f=>{hojaFiltroV127=f;renderHojaPublicacionesV127()};
+window.seleccionarHojaV127=id=>{hojaProductoV127=id;renderHojaPublicacionesV127()};
+function renderHojaPublicacionesV127(){
+ const lista=misProductos.filter(p=>hojaFiltroV127==='ofertas'?esOfertaV127(p):hojaFiltroV127==='disponibles'?p.disponible!==false:true),grid=document.getElementById('publish-grid-v124');
+ document.querySelectorAll('#publish-filters-v124 button').forEach(b=>b.classList.toggle('active',b.dataset.filter===hojaFiltroV127));
+ grid.innerHTML=lista.length?lista.map(p=>{const foto=(Array.isArray(p.fotos)&&p.fotos.find(Boolean))||p.foto||'';return`<article class="publish-choice ${p.id===hojaProductoV127?'selected':''}" onclick="seleccionarHojaV127('${p.id}')">${foto?`<img src="${esc(foto)}" alt="${esc(p.nombre)}">`:`<div class="no-photo">${p.emoji||'📦'}</div>`}<div class="publish-choice-copy"><strong>${esc(p.nombre||'Producto')}</strong><small>$${Number(p.precio||0).toLocaleString('es-AR')}</small>${esOfertaV127(p)?'<span> · OFERTA</span>':''}</div></article>`}).join(''):'<p>No hay productos en este filtro.</p>';
+ const p=misProductos.find(x=>x.id===hojaProductoV127),prev=document.getElementById('publish-preview-v124'),fb=document.getElementById('publish-facebook-v124'),ig=document.getElementById('publish-instagram-v124'),instagramCargado=!!direccionRedV118('instagram'),esTelefono=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)||navigator.userAgentData?.mobile===true;fb.disabled=ig.disabled=!p;ig.textContent=instagramCargado?(esTelefono?'◎ Compartir desde el teléfono':'◎ Preparar y abrir mi Instagram'):'＋ Agregar Instagram';
  if(!p){prev.innerHTML='<div class="publish-preview-copy"><h3>Elegí un producto</h3></div>';return}
  const foto=(Array.isArray(p.fotos)&&p.fotos.find(Boolean))||p.foto||'';prev.innerHTML=`${foto?`<img src="${esc(foto)}" alt="${esc(p.nombre)}">`:`<div class="no-photo">${p.emoji||'📦'}</div>`}<div class="publish-preview-copy"><span>SALVAME-LAS-PAPAS.VERCEL.APP</span><h3>${esc(p.nombre||'Producto')} — $${Number(p.precio||0).toLocaleString('es-AR')}</h3><p>Disponible en ${esc(miComercio?.nombre||'este comercio')}.</p></div>`;
 }
-window.publicarDesdeHojaV126=red=>{if(!hojaProductoV126)return;window.compartirProductoRedV117(hojaProductoV126,red)};
+window.publicarDesdeHojaV127=red=>{if(!hojaProductoV127)return;window.compartirProductoRedV117(hojaProductoV127,red)};
 
 
 // ── Carga rápida de varios productos ──
@@ -1400,14 +1401,14 @@ img{max-width:100%;height:auto}
 <meta name="apple-mobile-web-app-title" content="Sálvame">
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
-<meta name="app-version" content="V126">
+<meta name="app-version" content="V127">
 </head>
 <body>
 
 <!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
-    <span class="owner-login-kicker">PANEL DEL COMERCIO · V126</span>
+    <span class="owner-login-kicker">PANEL DEL COMERCIO · V127</span>
     <div class="login-logo">Sálvame <em>las Papas 🥔</em></div>
     <h1 class="owner-login-title">Administrá tu comercio</h1>
     <p class="owner-login-help">
@@ -1444,7 +1445,7 @@ img{max-width:100%;height:auto}
 <!-- PANEL -->
 <div id="panel-screen">
   <nav class="panel-nav">
-    <div class="panel-logo">Sálvame <em>las Papas</em> — Panel del comercio <span class="panel-version">V126</span></div>
+    <div class="panel-logo">Sálvame <em>las Papas</em> — Panel del comercio <span class="panel-version">V127</span></div>
     <nav class="site-switcher" aria-label="Navegación del sitio">
       <a href="index.html">🏠 Inicio general</a>
       <a href="comprar.html">🛒 Ver como cliente</a>
@@ -1529,7 +1530,7 @@ img{max-width:100%;height:auto}
           <button class="btn-agregar-prod" onclick="abrirModalProducto()">+ Agregar uno</button>
         </div>
       </div>
-      <div class="difusion-ayuda-v116" id="difusion-ayuda-v116"><strong>📣 Difusión de productos</strong> Cargando las opciones de tu plan…<button type="button" class="publish-sheet-btn" onclick="abrirHojaPublicacionesV126()">Abrir hoja para publicar en Facebook</button></div>
+      <div class="difusion-ayuda-v116" id="difusion-ayuda-v116"><strong>📣 Difusión de productos</strong> Cargando las opciones de tu plan…<button type="button" class="publish-sheet-btn" onclick="abrirHojaPublicacionesV127()">Abrir hoja para publicar en Facebook</button></div>
       <div class="productos-grid" id="productos-grid">
         <p style="color:#666;text-align:center;padding:2rem;grid-column:1/-1">Cargando...</p>
       </div>
@@ -1681,15 +1682,15 @@ img{max-width:100%;height:auto}
 </div>
 
 
-<div class="modal-overlay" id="modal-publicaciones-v124" onclick="cerrarHojaPublicacionesV126(event)">
+<div class="modal-overlay" id="modal-publicaciones-v124" onclick="cerrarHojaPublicacionesV127(event)">
   <div class="modal publish-modal">
-    <button class="mclose" onclick="cerrarHojaPublicacionesV126()">✕</button>
+    <button class="mclose" onclick="cerrarHojaPublicacionesV127()">✕</button>
     <h2>📣 Hoja de publicaciones</h2>
     <p class="profile-help">Elegí una publicación. Facebook arma la tarjeta enlazada; Instagram recibe la foto y el texto preparados.</p>
-    <div class="publish-filters" id="publish-filters-v124"><button data-filter="todos" onclick="filtrarHojaV126('todos')">Todos</button><button data-filter="ofertas" onclick="filtrarHojaV126('ofertas')">Ofertas</button><button data-filter="disponibles" onclick="filtrarHojaV126('disponibles')">Disponibles</button></div>
+    <div class="publish-filters" id="publish-filters-v124"><button data-filter="todos" onclick="filtrarHojaV127('todos')">Todos</button><button data-filter="ofertas" onclick="filtrarHojaV127('ofertas')">Ofertas</button><button data-filter="disponibles" onclick="filtrarHojaV127('disponibles')">Disponibles</button></div>
     <div class="publish-grid" id="publish-grid-v124"></div>
     <div class="publish-preview" id="publish-preview-v124"></div>
-    <div class="publish-actions"><button class="publish-close" onclick="cerrarHojaPublicacionesV126()">Cerrar</button><button class="publish-go" id="publish-instagram-v124" onclick="publicarDesdeHojaV126('instagram')">◎ Preparar para Instagram</button><button class="publish-go" id="publish-facebook-v124" onclick="publicarDesdeHojaV126('facebook')">f Publicar en Facebook</button></div>
+    <div class="publish-actions"><button class="publish-close" onclick="cerrarHojaPublicacionesV127()">Cerrar</button><button class="publish-go" id="publish-instagram-v124" onclick="publicarDesdeHojaV127('instagram')">◎ Preparar para Instagram</button><button class="publish-go" id="publish-facebook-v124" onclick="publicarDesdeHojaV127('facebook')">f Publicar en Facebook</button></div>
   </div>
 </div>
 

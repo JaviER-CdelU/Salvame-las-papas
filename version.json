@@ -1,8 +1,13 @@
 {
-  "version": "V126",
-  "nombre": "Tarjetas sociales sin repetir la clave Firebase en la API",
+  "version": "V127",
+  "nombre": "Acceso de Instagram claro según dispositivo y comercio",
   "fecha": "2026-08-01",
   "cambios": [
+    "Instagram se comprueba antes de preparar o abrir una publicación",
+    "si el comercio no cargó Instagram se abre directamente Editar datos del comercio",
+    "en computadora se evita el menú general de aplicaciones de Windows",
+    "en computadora se prepara el material y se abre el Instagram exacto guardado por el comercio",
+    "en teléfono se utiliza el menú de compartir compatible con la aplicación Instagram",
     "eliminada la clave web de Firebase de los dos servicios nuevos de Vercel",
     "las lecturas públicas de productos utilizan directamente las reglas activas de Firestore",
     "corregida la alerta GitGuardian provocada por repetir la clave dentro de la carpeta api",
