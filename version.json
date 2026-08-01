@@ -1,8 +1,12 @@
 {
-  "version": "V130",
-  "nombre": "Dirección de entrega y QR de Mercado Pago corregidos",
+  "version": "V131",
+  "nombre": "Pago con QR para billetera o banco",
   "fecha": "2026-08-01",
   "cambios": [
+    "el QR guardado por cada comercio ahora se conserva al cargar la página pública de compras",
+    "agregada la opción Pagar con QR para billetera o banco cuando el comercio cargó su imagen",
+    "la pantalla muestra el QR y el importe total antes de confirmar el pedido",
+    "el cliente debe verificar el destinatario antes de completar el pago",
     "corregida la validación que rechazaba una dirección completa al elegir envío con cadete o domicilio",
     "Mercado Pago ahora muestra el QR propio cargado por el comercio durante el pago",
     "la dirección solamente se exige cuando la entrega realmente es a domicilio, por cadete o mediante envío propio",
