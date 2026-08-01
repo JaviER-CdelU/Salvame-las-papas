@@ -1,8 +1,11 @@
 {
-  "version": "V133",
-  "nombre": "Comercios y particulares visibles sin correos en el buscador",
+  "version": "V134",
+  "nombre": "Buscador limpio y galerías activas",
   "fecha": "2026-08-01",
   "cambios": [
+    "el buscador público bloquea el correo que Chrome intentaba completar automáticamente incluso varios segundos después de cargar",
+    "las flechas y el movimiento automático se recalculan después de que Firebase carga comercios y particulares",
+    "las galerías avanzan cada cinco segundos cuando existen tarjetas fuera de la pantalla",
     "el buscador público ya no se completa automáticamente con el correo electrónico del usuario",
     "al entrar se limpian datos de cuenta que el navegador haya intentado colocar en la búsqueda",
     "los comercios activos vuelven a mostrarse aunque anteriormente un correo oculto dejara cero resultados",
