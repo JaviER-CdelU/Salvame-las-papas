@@ -1,8 +1,16 @@
 {
-  "version": "V123",
-  "nombre": "Administración compacta y fichas completas",
+  "version": "V124",
+  "nombre": "Hoja de publicaciones para Facebook e Instagram",
   "fecha": "2026-08-01",
   "cambios": [
+    "cada comercio dispone de una hoja para elegir qué producto publicar",
+    "filtros de publicaciones para todos los productos, ofertas y disponibles",
+    "vista previa con foto, precio y nombre del comercio antes de compartir",
+    "Facebook recibe una página individual con tarjeta Open Graph como una noticia",
+    "al tocar la tarjeta de Facebook se abre el producto y la ficha completa del comercio",
+    "Instagram recibe la foto y el texto mediante el menú de compartir del teléfono",
+    "en computadora se prepara el material y se abre el Instagram guardado por el comercio",
+    "servicio seguro de Vercel para entregar a Meta fotos antiguas guardadas en Firebase",
     "acceso de Seguimiento de comercios convertido en un encabezado compacto",
     "eliminada la pantalla azul de altura completa antes de ingresar a Administración",
     "encabezado adaptable a computadora y teléfono con acceso de Google visible",
