@@ -1,8 +1,10 @@
 {
-  "version": "V115",
-  "nombre": "Difusión social y particulares visibles",
+  "version": "V116",
+  "nombre": "Flechas visibles y difusión guiada",
   "fecha": "2026-07-31",
   "cambios": [
+    "agregadas flechas laterales grandes para avanzar una tarjeta por vez en Comprar",
+    "aclarado el acceso a Facebook e Instagram desde cada producto de los planes Pro y Max",
     "agregados Facebook e Instagram al alta y edición de cada comercio",
     "los planes Pro y Max pueden compartir productos y enviarlos a Sálvame las Papas",
     "los avisos particulares muestran cada artículo de venta o alquiler y permiten compartirlo",
