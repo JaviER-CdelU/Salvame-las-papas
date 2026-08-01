@@ -1,8 +1,11 @@
 {
-  "version": "V118",
-  "nombre": "Abrir redes del comercio correcto",
+  "version": "V119",
+  "nombre": "Directorio paginado de comercios",
   "fecha": "2026-07-31",
   "cambios": [
+    "creada comercios.html como guía independiente de todos los negocios activos",
+    "directorio ordenable alfabéticamente o por categoría con diez comercios por página",
+    "cada ficha muestra foto, categoría, productos y un botón para abrir el comercio completo",
     "Facebook e Instagram abren la dirección guardada específicamente en el comercio seleccionado",
     "antes de abrir la red se descarga la foto real del producto y se copia el texto con precio y comercio",
     "si falta la dirección de una red se abre Editar datos para completarla",
