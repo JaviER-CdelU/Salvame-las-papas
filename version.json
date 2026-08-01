@@ -1,8 +1,12 @@
 {
-  "version": "V134",
-  "nombre": "Buscador limpio y galerías activas",
+  "version": "V135",
+  "nombre": "Galerías visibles con nuevos particulares",
   "fecha": "2026-08-01",
   "cambios": [
+    "corregido el ancho interno que dejaba la última tarjeta cortada fuera de la pantalla",
+    "las flechas de las galerías permanecen visibles y la flecha disponible permite avanzar manualmente",
+    "el movimiento automático vuelve a funcionar porque ahora existe un área desplazable real",
+    "Nuevos particulares aparece inmediatamente debajo de Nuevos comercios",
     "el buscador público bloquea el correo que Chrome intentaba completar automáticamente incluso varios segundos después de cargar",
     "las flechas y el movimiento automático se recalculan después de que Firebase carga comercios y particulares",
     "las galerías avanzan cada cinco segundos cuando existen tarjetas fuera de la pantalla",
