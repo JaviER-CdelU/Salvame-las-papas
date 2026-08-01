@@ -1,8 +1,11 @@
 {
-  "version": "V116",
-  "nombre": "Flechas visibles y difusión guiada",
+  "version": "V117",
+  "nombre": "Producto grande y publicación con foto",
   "fecha": "2026-07-31",
   "cambios": [
+    "la tarjeta del producto muestra su fotografía en tamaño grande sin apretar la información",
+    "los botones de Facebook, Instagram y SLP son pequeños y quedan debajo del producto",
+    "al compartir desde el celular se envía la foto real, el precio, el comercio y el enlace de Sálvame las Papas",
     "agregadas flechas laterales grandes para avanzar una tarjeta por vez en Comprar",
     "aclarado el acceso a Facebook e Instagram desde cada producto de los planes Pro y Max",
     "agregados Facebook e Instagram al alta y edición de cada comercio",
