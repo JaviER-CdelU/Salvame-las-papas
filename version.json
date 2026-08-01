@@ -1,8 +1,11 @@
 {
-  "version": "V129",
-  "nombre": "Redes validadas y enlaces directos para comprar",
+  "version": "V130",
+  "nombre": "Dirección de entrega y QR de Mercado Pago corregidos",
   "fecha": "2026-08-01",
   "cambios": [
+    "corregida la validación que rechazaba una dirección completa al elegir envío con cadete o domicilio",
+    "Mercado Pago ahora muestra el QR propio cargado por el comercio durante el pago",
+    "la dirección solamente se exige cuando la entrega realmente es a domicilio, por cadete o mediante envío propio",
     "Instagram y Facebook aceptan usuario, arroba o dirección completa al inscribir y editar un comercio",
     "las direcciones sociales se validan y se guardan normalizadas para evitar enlaces incorrectos",
     "la publicación comienza con una invitación clara para entrar a Sálvame las Papas y comprar",
