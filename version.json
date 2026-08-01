@@ -1,8 +1,12 @@
 {
-  "version": "V113",
-  "nombre": "Registro de comercios sin arreglos anidados",
+  "version": "V115",
+  "nombre": "Difusión social y particulares visibles",
   "fecha": "2026-07-31",
   "cambios": [
+    "agregados Facebook e Instagram al alta y edición de cada comercio",
+    "los planes Pro y Max pueden compartir productos y enviarlos a Sálvame las Papas",
+    "los avisos particulares muestran cada artículo de venta o alquiler y permiten compartirlo",
+    "agregada una validación final que impide cualquier arreglo anidado antes de registrar el comercio",
     "corregido el error de Firestore Nested arrays are not supported al guardar los horarios del comercio",
     "registro de productos con 1 foto en Básico, 2 en Pro y 4 en Max de 45.000 pesos",
     "nuevo acceso con Google para asociar otro comercio a una cuenta existente",

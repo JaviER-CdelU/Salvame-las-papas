@@ -6,7 +6,7 @@
 <meta name="description" content="Panel de comercios de Sálvame las Papas para administrar productos y disponibilidad."/>
 <meta name="theme-color" content="#002A6A"/>
 <meta name="color-scheme" content="light"/>
-<meta name="app-version" content="V112"/>
+<meta name="app-version" content="V115"/>
 <title>Mi Comercio — Sálvame las Papas 🥔</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
@@ -288,6 +288,7 @@ function renderProductos(){
     return
   }
 
+  const difusionHabilitada = planPermiteDifusionV115()
   grid.innerHTML = misProductos.map(p => `
     <div class="prod-card">
       <div class="prod-emoji">${p.emoji || '📦'}</div>
@@ -307,9 +308,29 @@ function renderProductos(){
         </button>
         <button onclick="borrarProducto('${p.id}','${safeArg(p.nombre)}')" class="btn-del">🗑️</button>
       </div>
+      ${difusionHabilitada?`<div class="social-product-v115">
+        <button type="button" onclick="compartirProductoFacebookV115('${p.id}')">Facebook</button>
+        <button type="button" onclick="compartirProductoInstagramV115('${p.id}')">Instagram</button>
+        <button type="button" class="slp" onclick="enviarProductoSlpV115('${p.id}')">Enviar a Sálvame las Papas</button>
+      </div>`:''}
     </div>
   `).join('')
 }
+
+function planPermiteDifusionV115(){
+ const plan=String(miComercio?.plan||'').toLowerCase();
+ return plan.includes('pro')||plan.includes('max')||plan.includes('30.000')||plan.includes('45.000');
+}
+function datosCompartirProductoV115(id){
+ const p=misProductos.find(x=>x.id===id);if(!p)return null;
+ const url=new URL('./comprar.html',location.href);url.hash='comercio='+encodeURIComponent(miComercioId);
+ const precio=Number(p.precio||0).toLocaleString('es-AR');
+ const texto=`${p.nombre||'Producto'} · $${precio}\n${miComercio?.nombre||'Comercio'}\nEncontranos en Sálvame las Papas: ${url.href}`;
+ return {p,url:url.href,texto};
+}
+window.compartirProductoFacebookV115=id=>{const d=datosCompartirProductoV115(id);if(!d)return;window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(d.url)+'&quote='+encodeURIComponent(d.texto),'_blank','noopener,noreferrer')};
+window.compartirProductoInstagramV115=async id=>{const d=datosCompartirProductoV115(id);if(!d)return;try{if(navigator.share){await navigator.share({title:d.p.nombre,text:d.texto,url:d.url});return}await navigator.clipboard.writeText(d.texto);toast('✅ Texto copiado. Pegalo en Instagram.');window.open('https://www.instagram.com/','_blank','noopener,noreferrer')}catch(e){if(e.name!=='AbortError')toast('No se pudo abrir el menú para compartir')}};
+window.enviarProductoSlpV115=id=>{const d=datosCompartirProductoV115(id);if(!d)return;window.open('https://wa.me/5493442490585?text='+encodeURIComponent('Hola Sálvame las Papas. Quiero difundir este producto en la página:\n\n'+d.texto),'_blank','noopener,noreferrer')};
 
 
 // ── Carga rápida de varios productos ──
@@ -691,7 +712,7 @@ function toast(msg){
 
 window.abrirModalPerfil = () => {
  if(!miComercio)return;
- const vals={nombre:'nombre',desc:'descripcion',direccion:'direccion',telefono:'telefono',horarios:'horarios',instagram:'instagram'};
+ const vals={nombre:'nombre',desc:'descripcion',direccion:'direccion',telefono:'telefono',horarios:'horarios',instagram:'instagram',facebook:'facebook'};
  Object.entries(vals).forEach(([id,k])=>{const e=document.getElementById('pf-'+id);if(e)e.value=miComercio[k]||''});
  const env=Array.isArray(miComercio.envio)?miComercio.envio:String(miComercio.envio||'').split(/[,;|]/).map(x=>x.trim());
  const pay=Array.isArray(miComercio.pagos)?miComercio.pagos:String(miComercio.pagos||'').split(/[,;|]/).map(x=>x.trim());
@@ -725,7 +746,7 @@ window.guardarPerfil = async () => {
  if(document.getElementById('pf-pay-credito').checked)pagos.push('Crédito');
  if(document.getElementById('pf-pay-cuotas').checked)pagos.push('Cuotas');
  if(document.getElementById('pf-pay-coordinar').checked)pagos.push('A coordinar');
- const datos={nombre:document.getElementById('pf-nombre').value.trim(),descripcion:document.getElementById('pf-desc').value.trim(),direccion:document.getElementById('pf-direccion').value.trim(),telefono:document.getElementById('pf-telefono').value.trim(),horarios:document.getElementById('pf-horarios').value.trim(),instagram:document.getElementById('pf-instagram').value.trim(),envio,pagos,actualizadoEn:serverTimestamp()};
+ const datos={nombre:document.getElementById('pf-nombre').value.trim(),descripcion:document.getElementById('pf-desc').value.trim(),direccion:document.getElementById('pf-direccion').value.trim(),telefono:document.getElementById('pf-telefono').value.trim(),horarios:document.getElementById('pf-horarios').value.trim(),instagram:document.getElementById('pf-instagram').value.trim(),facebook:document.getElementById('pf-facebook').value.trim(),envio,pagos,actualizadoEn:serverTimestamp()};
  try{await updateDoc(doc(db,'comercios',miComercioId),datos);Object.assign(miComercio,datos);document.getElementById('comercio-nombre').textContent=datos.nombre||'Mi comercio';document.getElementById('modal-perfil').classList.remove('open');toast('✅ Perfil actualizado')}
  catch(e){toast('Error: '+e.message)}finally{btn.disabled=false;btn.textContent='Guardar cambios'}
 }
@@ -887,6 +908,10 @@ body{font-family:"DM Sans",sans-serif;background:#F0F4F8;color:#1A1A1A;min-heigh
 .tag-disp{background:var(--verde-l);color:var(--verde);font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:99px}
 .tag-no{background:#FFEBEE;color:#9B1C1C;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:99px}
 .prod-acciones{display:flex;flex-direction:column;gap:5px;flex-shrink:0}
+.social-product-v115{grid-column:1/-1;display:flex;gap:7px;flex-wrap:wrap;border-top:1px solid #e1e8f2;padding-top:10px;margin-top:4px}
+.social-product-v115 button{border:0;border-radius:9px;padding:8px 10px;background:#1877f2;color:#fff;font:800 .76rem 'DM Sans',sans-serif;cursor:pointer}
+.social-product-v115 button:nth-child(2){background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045)}
+.social-product-v115 button.slp{background:#ff6a00}
 .btn-edit,.btn-toggle,.btn-del{width:32px;height:32px;border-radius:7px;border:1.5px solid var(--borde);background:#fff;cursor:pointer;font-size:.9rem;transition:all .15s;display:flex;align-items:center;justify-content:center}
 .btn-edit:hover{border-color:var(--azul);background:var(--azul-l)}
 .btn-toggle:hover{border-color:var(--naranja);background:#FFF3E8}
@@ -1297,14 +1322,14 @@ img{max-width:100%;height:auto}
 <meta name="apple-mobile-web-app-title" content="Sálvame">
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
-<meta name="app-version" content="V112">
+<meta name="app-version" content="V115">
 </head>
 <body>
 
 <!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
-    <span class="owner-login-kicker">PANEL DEL COMERCIO · V112</span>
+    <span class="owner-login-kicker">PANEL DEL COMERCIO · V115</span>
     <div class="login-logo">Sálvame <em>las Papas 🥔</em></div>
     <h1 class="owner-login-title">Administrá tu comercio</h1>
     <p class="owner-login-help">
@@ -1341,7 +1366,7 @@ img{max-width:100%;height:auto}
 <!-- PANEL -->
 <div id="panel-screen">
   <nav class="panel-nav">
-    <div class="panel-logo">Sálvame <em>las Papas</em> — Panel del comercio <span class="panel-version">V112</span></div>
+    <div class="panel-logo">Sálvame <em>las Papas</em> — Panel del comercio <span class="panel-version">V115</span></div>
     <nav class="site-switcher" aria-label="Navegación del sitio">
       <a href="index.html">🏠 Inicio general</a>
       <a href="comprar.html">🛒 Ver como cliente</a>
@@ -1588,6 +1613,7 @@ img{max-width:100%;height:auto}
     <div class="form-group"><label>WhatsApp</label><input class="form-input" id="pf-telefono"></div>
     <div class="form-group"><label>Horarios</label><input class="form-input" id="pf-horarios"></div>
     <div class="form-group"><label>Instagram</label><input class="form-input" id="pf-instagram"></div>
+    <div class="form-group"><label>Facebook</label><input class="form-input" id="pf-facebook" type="url" placeholder="https://facebook.com/miComercio"></div>
 
     <div class="profile-options-v60">
       <h3>🚚 Entregas disponibles</h3>
