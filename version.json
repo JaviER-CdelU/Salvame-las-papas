@@ -1,8 +1,11 @@
 {
-  "version": "V122",
-  "nombre": "Ficha pública completa por comercio",
+  "version": "V123",
+  "nombre": "Administración compacta y fichas completas",
   "fecha": "2026-08-01",
   "cambios": [
+    "acceso de Seguimiento de comercios convertido en un encabezado compacto",
+    "eliminada la pantalla azul de altura completa antes de ingresar a Administración",
+    "encabezado adaptable a computadora y teléfono con acceso de Google visible",
     "fotos destacadas reducidas aproximadamente a la mitad de su altura anterior",
     "productos y comercios muestran la imagen completa con contain, sin recortar lectores Point u objetos verticales",
     "las fotos nuevas del panel comercial se reducen a un máximo de 720 píxeles y calidad optimizada",
