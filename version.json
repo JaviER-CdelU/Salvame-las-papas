@@ -1,8 +1,14 @@
 {
-  "version": "V132",
-  "nombre": "Carruseles automáticos y pago QR visible antes de WhatsApp",
+  "version": "V133",
+  "nombre": "Comercios y particulares visibles sin correos en el buscador",
   "fecha": "2026-08-01",
   "cambios": [
+    "el buscador público ya no se completa automáticamente con el correo electrónico del usuario",
+    "al entrar se limpian datos de cuenta que el navegador haya intentado colocar en la búsqueda",
+    "los comercios activos vuelven a mostrarse aunque anteriormente un correo oculto dejara cero resultados",
+    "el mensaje diferencia entre una búsqueda sin coincidencias y una verdadera falla de carga",
+    "los vendedores particulares activos sin fecha de vencimiento dejan de descartarse por error",
+    "la galería de particulares se incorpora al movimiento automático cada cinco segundos",
     "Ofertas de la semana avanza automáticamente una tarjeta cada cinco segundos",
     "Nuevos comercios y Comercios destacados también avanzan automáticamente",
     "las galerías vuelven al comienzo al llegar a la última tarjeta y conservan sus flechas manuales",

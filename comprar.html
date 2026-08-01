@@ -4395,7 +4395,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
 .offer-home-media,.featured-home-cover,.open-home-cover,.v91-card-media{background:#fff!important}
 
 </style>
-<meta name="app-version" content="V132">
+<meta name="app-version" content="V133">
 </head>
 <body>
 
@@ -4618,7 +4618,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
     </div>
 
     <div class="smart-filters buyer-filters-v75" aria-label="Buscar y filtrar">
-      <label><span>🔎 Buscar</span><input id="filtro-texto" type="search" placeholder="Producto, comercio o barrio" oninput="aplicarFiltrosAvanzados()"></label>
+      <label><span>🔎 Buscar</span><input id="filtro-texto" name="busqueda-publica-slp" type="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Producto, comercio o barrio" oninput="aplicarFiltrosAvanzados()"></label>
       <label><span>🧭 Quiero ver</span><select id="filtro-tipo-v75" onchange="aplicarTipoV75()"><option value="">Todo</option><option value="comercios">Comercios</option><option value="productos">Productos</option><option value="particulares">Particulares</option></select></label>
       <label><span>📍 Barrio</span><select id="filtro-barrio" onchange="aplicarFiltrosAvanzados()"><option value="">Todos</option></select></label>
       <label><span>🚚 Entrega</span><select id="filtro-envio" onchange="aplicarFiltrosAvanzados()"><option value="">Cualquiera</option><option value="envio">Con envío</option><option value="retiro">Con retiro</option></select></label>
@@ -5325,7 +5325,7 @@ function renderComercio(c, globalIdx){
 
 function renderPagina(lista, pag){
   const total = lista.length
-  const totalPags = Math.ceil(total / POR_PAGINA)
+  const totalPags = Math.max(1,Math.ceil(total / POR_PAGINA))
   const inicio = (pag-1) * POR_PAGINA
   const fin = inicio + POR_PAGINA
   const pagina = lista.slice(inicio, fin)
@@ -5334,7 +5334,9 @@ function renderPagina(lista, pag){
   const grid = document.getElementById('lista-comercios')
   if(grid){
     if(pagina.length === 0){
-      grid.innerHTML = '<p style="color:var(--suave);grid-column:1/-1;padding:2rem;text-align:center">Todavía no hay comercios reales activos para mostrar. Los comercios de demostración fueron retirados. 🥔</p>'
+      grid.innerHTML = comerciosTodos.length
+        ? '<p style="color:var(--suave);grid-column:1/-1;padding:2rem;text-align:center">Hay comercios activos, pero ninguno coincide con los filtros elegidos. Pulsá <strong>Limpiar</strong> para mostrarlos todos. 🥔</p>'
+        : '<p style="color:var(--suave);grid-column:1/-1;padding:2rem;text-align:center">No se pudieron obtener comercios activos en este momento. Actualizá la página para volver a consultar. 🥔</p>'
     } else {
       const globalOffset = inicio
       grid.innerHTML = pagina.map((c,i) => renderComercio(c, globalOffset+i)).join('')
@@ -6156,7 +6158,7 @@ function estaAbiertoV75(c){
  }catch(e){return false}
 }
 function aplicarFiltrosAvanzados(){
- const q=normalizar(document.getElementById('filtro-texto')?.value||document.getElementById('busqueda')?.value);
+ const q=normalizar(document.getElementById('filtro-texto')?.value||'');
  const categoriaV96=window.categoriaActivaV96||'todos';
  const mapaCategoriasV96={
    alimentos:['verduleria','fruteria','panaderia','almacen','kiosco','carniceria','rotiseria','comida','restaurante','pizzeria','bebida','dietética','dietica'],
@@ -6200,6 +6202,14 @@ function aplicarFiltrosAvanzados(){
  aplicarTipoV75(false);
 }
 function limpiarFiltros(){['filtro-texto','filtro-tipo-v75','filtro-barrio','filtro-envio','filtro-abierto-v75','filtro-vista'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=''});aplicarFiltrosAvanzados()}
+function limpiarAutocompletadoBuscadorV133(){
+ const campo=document.getElementById('filtro-texto');
+ if(!campo)return;
+ campo.value='';
+ campo.setAttribute('autocomplete','new-password');
+ setTimeout(()=>{if(/@|\.com\b/i.test(campo.value)){campo.value='';aplicarFiltrosAvanzados()}},350);
+}
+document.addEventListener('DOMContentLoaded',limpiarAutocompletadoBuscadorV133);
 
 function aplicarTipoV75(hacerScroll=true){
  const tipo=document.getElementById('filtro-tipo-v75')?.value||'';
@@ -6774,6 +6784,7 @@ const dbV41=getFirestore(appV41);
 const escV41=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function vigenteV41(v){
   if(String(v.estado||'').toLowerCase()!=='activo') return false;
+  if(!v.vencimiento) return true;
   const f=v.vencimiento?.toDate?v.vencimiento.toDate():new Date(v.vencimiento||0);
   return !isNaN(f)&&f>=new Date();
 }
@@ -7069,7 +7080,7 @@ setTimeout(prepararTodosCarruselesV95,1800);
 
 /* V132 — avance automático de ofertas, comercios nuevos y destacados */
 let carruselesAutoV132=null;
-const carruselesAutoIdsV132=['v91-ofertas-track','v91-nuevos-track','v91-destacados-track'];
+const carruselesAutoIdsV132=['v91-ofertas-track','v91-nuevos-track','v91-destacados-track','seller-public-grid-v41'];
 function avanzarCarruselV132(rail){
   if(!rail||rail.scrollWidth<=rail.clientWidth+5)return;
   const max=Math.max(0,rail.scrollWidth-rail.clientWidth);
