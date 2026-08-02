@@ -1,8 +1,12 @@
 {
-  "version": "V138",
-  "nombre": "Seguimiento compacto y legible",
+  "version": "V139",
+  "nombre": "Seguimiento con tipos y vencimientos destacados",
   "fecha": "2026-08-02",
   "cambios": [
+    "COMERCIO y PARTICULAR se distinguen con etiquetas grandes de distinto color",
+    "los días restantes, vencidos o pendientes aparecen en una insignia destacada",
+    "cada estado de vencimiento utiliza un color propio y claramente legible",
+    "eliminado el primer resumen duplicado que mostraba cajas vacías o en cero",
     "las fichas de seguimiento ocupan menos alto y eliminan espacios sobrantes",
     "los nombres de comercios y particulares se muestran más grandes y destacados",
     "los datos de cada ficha tienen letras más grandes y legibles",
