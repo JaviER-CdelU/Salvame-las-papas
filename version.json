@@ -1,8 +1,12 @@
 {
-  "version": "V137",
-  "nombre": "Seguimiento unificado de comercios y particulares",
+  "version": "V138",
+  "nombre": "Seguimiento compacto y legible",
   "fecha": "2026-08-02",
   "cambios": [
+    "las fichas de seguimiento ocupan menos alto y eliminan espacios sobrantes",
+    "los nombres de comercios y particulares se muestran más grandes y destacados",
+    "los datos de cada ficha tienen letras más grandes y legibles",
+    "en computadora se muestran tres datos por fila y en teléfono dos por fila",
     "los particulares aparecen junto con los comercios en el seguimiento general",
     "cada particular muestra inscripción, vencimiento y días restantes",
     "se registran visitas y clics de WhatsApp mensuales para particulares",
