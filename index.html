@@ -4,7 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0b376f">
-<meta name="app-version" content="V87">
+<meta name="app-version" content="V140">
+<script src="./version-global.js" defer></script>
+<link rel="manifest" href="./manifest.webmanifest">
 <title>Sálvame las Papas — Inicio</title>
 <meta name="description" content="Portada principal de Sálvame las Papas: comprar, publicar un comercio o vender y alquilar.">
 <link rel="icon" href="./icons/favicon-32.png" sizes="32x32" type="image/png">
@@ -38,6 +40,9 @@ header{background:var(--navy);color:#fff;padding:12px 18px;box-shadow:0 6px 18px
 .action-buy{background:linear-gradient(135deg,#0d5aa7,#1684ea)}.action-buy .round{color:#0d5aa7}
 .action-commerce{background:linear-gradient(135deg,#247a42,#60b83c)}.action-commerce .round{color:#247a42}
 .action-seller{background:linear-gradient(135deg,#ff6a00,#ff9d3c)}.action-seller .round{color:#ff6a00}
+.action-directory{background:linear-gradient(135deg,#6240a8,#8c67d8)}.action-directory .round{color:#6240a8}
+.action-install{background:linear-gradient(135deg,#087f8d,#20aebb)}.action-install .round{color:#087f8d}
+.action-help{background:linear-gradient(135deg,#384d68,#627995)}.action-help .round{color:#384d68}
 .intro{width:min(950px,calc(100% - 28px));margin:30px auto 22px;text-align:center}.intro h1{margin:0 0 8px;color:var(--navy);font-family:Georgia,serif;font-size:clamp(1.8rem,4vw,2.75rem)}.intro p{margin:0;color:var(--muted);line-height:1.55;font-size:1.02rem}
 .quick{width:min(1180px,calc(100% - 28px));margin:0 auto 32px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 .quick a{text-decoration:none;border-radius:20px;padding:18px;min-height:104px;display:flex;align-items:center;gap:15px;box-shadow:0 10px 24px rgba(6,31,70,.08);font-weight:900;transition:transform .18s ease}
@@ -47,9 +52,11 @@ header{background:var(--navy);color:#fff;padding:12px 18px;box-shadow:0 6px 18px
 .quick-commerce{background:#eff7ff;border:1px solid #b8d7f4;color:#075aa8}.quick-commerce .circle{background:#7fc7fa}
 .quick-publications{background:#fff5ea;border:1px solid #ffd1a1;color:#8d4c00}.quick-publications .circle{background:#f2a93b}
 .quick-help{background:#effaf6;border:1px solid #b8dfcf;color:#12614a}.quick-help .circle{background:#5fc39c}
+.install-app{width:min(1180px,calc(100% - 28px));margin:0 auto 28px;background:linear-gradient(135deg,#eaf4ff,#fff8ed);border:2px solid #8bb8e8;border-radius:22px;padding:18px 24px;display:grid;grid-template-columns:112px 1fr auto;align-items:center;gap:20px;box-shadow:0 10px 26px rgba(6,31,70,.09)}
+.install-app img{width:106px;height:106px;object-fit:contain;border-radius:22px;background:#fff;padding:7px;border:1px solid #c9ddf2}.install-copy h2{font-family:Georgia,serif;color:var(--navy);margin:0 0 7px;font-size:clamp(1.35rem,3vw,2rem)}.install-copy p{margin:0;color:#50647d;line-height:1.5;font-weight:700}.install-actions{display:flex;flex-direction:column;gap:8px;min-width:245px}.install-button{border:0;border-radius:13px;background:var(--orange);color:#fff;padding:14px 18px;font-weight:1000;font-size:1rem;cursor:pointer;box-shadow:0 8px 18px rgba(199,82,0,.22)}.install-button:hover,.install-button:focus-visible{background:#d95700;outline:3px solid #ffd09e}.install-status{min-height:20px;text-align:center;color:#36516f;font-size:.8rem;font-weight:800}.ios-help{grid-column:1/-1;background:#fff;border:1px solid #b8d7f4;border-radius:14px;padding:13px 16px;color:#173b66;line-height:1.55}.ios-help[hidden]{display:none}.ios-help strong{color:#0b376f}
 .local{width:min(1180px,calc(100% - 28px));margin:0 auto 28px;background:linear-gradient(135deg,#0b376f,#125ab5);color:#fff;border-radius:22px;padding:24px;text-align:center}.local h2{margin:0 0 8px;font-family:Georgia,serif}.local p{margin:0;color:#dcecff}
 footer{padding:22px;text-align:center;color:#6c7c90;font-size:.78rem}footer a{color:#6c7c90;text-decoration:none;font-weight:800}footer a:hover{text-decoration:underline}
-@media(max-width:780px){.header-links{display:none}.actions,.quick{grid-template-columns:1fr}.actions{margin-top:14px}.action{min-height:92px}.hero img{width:100%;height:auto;object-fit:contain}.intro{margin-top:24px}}
+@media(max-width:780px){.header-links{display:none}.actions,.quick{grid-template-columns:1fr}.actions{margin-top:14px}.action{min-height:92px}.hero img{width:100%;height:auto;object-fit:contain}.intro{margin-top:24px}.install-app{grid-template-columns:86px 1fr;padding:16px;gap:13px}.install-app img{width:82px;height:82px}.install-actions{grid-column:1/-1;min-width:0}.install-button{width:100%}}
 @media(max-width:460px){header{padding:11px 14px}.brand{font-size:1rem}.action{padding:15px}.action .round{width:54px;height:54px;flex-basis:54px}.action strong{font-size:1.05rem}.action small{font-size:.82rem}.quick a{min-height:92px;padding:15px}.quick .circle{width:52px;height:52px;flex-basis:52px}.local{padding:20px 16px}}
 
 .hero-inner{position:relative}
@@ -99,22 +106,83 @@ footer{padding:22px;text-align:center;color:#6c7c90;font-size:.78rem}footer a{co
     <p>Encontrá productos y comercios, publicá tu negocio o vendé algo de manera particular.</p>
   </section>
 
+  <nav class="actions" aria-label="Accesos principales claramente identificados">
+    <a class="action action-directory" href="./comercios.html"><span class="round">🏪</span><span><strong>Ver comercios</strong><small>Entrá al directorio y buscá un negocio.</small></span></a>
+    <a class="action action-buy" href="./comprar.html"><span class="round">🛒</span><span><strong>Comprar</strong><small>Buscá productos, ofertas y servicios.</small></span></a>
+    <a class="action action-commerce" href="./planes-comercios.html"><span class="round">📣</span><span><strong>Publicar mi comercio</strong><small>Conocé los planes e inscribí tu negocio.</small></span></a>
+    <a class="action action-seller" href="./publicar-particular.html"><span class="round">🏷️</span><span><strong>Publicar como particular</strong><small>Vendé o alquilá sin tener un comercio.</small></span></a>
+    <a class="action action-install" href="#instalar-aplicacion"><span class="round">📲</span><span><strong>Instalar</strong><small>Agregá Sálvame las Papas al celular o computadora.</small></span></a>
+    <a class="action action-help" href="./como-usar.html"><span class="round">📖</span><span><strong>Ayuda</strong><small>Abrí la guía y aprendé a usar cada sección.</small></span></a>
+  </nav>
+
   <nav class="quick" aria-label="Accesos de gestión y ayuda">
     <a class="quick-commerce" href="./comercio.html"><span class="circle">🏪</span><span class="label"><strong>Mi Comercio</strong><small>Entrá a tu panel y administrá tu negocio.</small></span></a>
     <a class="quick-publications" href="./mis-publicaciones.html"><span class="circle">🏷️</span><span class="label"><strong>Mis publicaciones</strong><small>Revisá, editá o renová tus avisos particulares.</small></span></a>
     <a class="quick-help" href="./como-usar.html"><span class="circle">📖</span><span class="label"><strong>Cómo se usa</strong><small>Consultá la guía rápida de la plataforma.</small></span></a>
   </nav>
 
+  <section class="install-app" id="instalar-aplicacion" aria-labelledby="titulo-instalar">
+    <img src="./icons/icon-192.png" alt="Ícono de Sálvame las Papas" width="106" height="106" loading="lazy">
+    <div class="install-copy">
+      <h2 id="titulo-instalar">Instalá Sálvame las Papas</h2>
+      <p>Tenela como una aplicación en el celular o en la computadora. Es el mismo sitio y se abre desde un ícono.</p>
+    </div>
+    <div class="install-actions">
+      <button class="install-button" id="boton-instalar" type="button">📲 Instalar en este equipo</button>
+      <div class="install-status" id="estado-instalar" aria-live="polite">Android, iPhone y computadora</div>
+    </div>
+    <div class="ios-help" id="ayuda-iphone" hidden><strong>En iPhone o iPad:</strong> abrí esta página con Safari, tocá <strong>Compartir</strong> (el cuadrado con la flecha hacia arriba) y elegí <strong>Agregar a inicio</strong>.</div>
+  </section>
+
   <section class="local">
     <h2>Hecho en Concepción del Uruguay, para nuestra comunidad</h2>
     <p>Una red local para acercar vecinos, comercios, productos, servicios y oportunidades.</p>
   </section>
 </main>
-<footer>Versión V87 · Sálvame las Papas · <a href="./admin.html">Editor responsable</a></footer>
+<footer>Versión <span data-app-version>V140</span> · Sálvame las Papas · <a href="./admin.html">Editor responsable</a></footer>
 <script>
-// Limpieza de aplicaciones y cachés antiguas. Esta portada no registra service worker.
-if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});}
-if('caches' in window){caches.keys().then(keys=>Promise.all(keys.map(k=>caches.delete(k)))).catch(()=>{});}
+let avisoInstalacion=null;
+const botonInstalar=document.getElementById('boton-instalar');
+const estadoInstalar=document.getElementById('estado-instalar');
+const ayudaIphone=document.getElementById('ayuda-iphone');
+const esApple=/iphone|ipad|ipod/i.test(navigator.userAgent);
+const yaInstalada=window.matchMedia('(display-mode: standalone)').matches || navigator.standalone===true;
+
+function mostrarEstadoInstalacion(texto){ estadoInstalar.textContent=texto; }
+if(yaInstalada){ botonInstalar.disabled=true; botonInstalar.textContent='✅ Aplicación instalada'; mostrarEstadoInstalacion('Ya podés abrirla desde su ícono.'); }
+
+window.addEventListener('beforeinstallprompt',evento=>{
+  evento.preventDefault();
+  avisoInstalacion=evento;
+  botonInstalar.disabled=false;
+  mostrarEstadoInstalacion('Lista para instalar.');
+});
+
+botonInstalar.addEventListener('click',async()=>{
+  if(yaInstalada) return;
+  if(esApple){ ayudaIphone.hidden=false; ayudaIphone.scrollIntoView({behavior:'smooth',block:'center'}); mostrarEstadoInstalacion('Seguí los tres pasos indicados abajo.'); return; }
+  if(avisoInstalacion){
+    avisoInstalacion.prompt();
+    const eleccion=await avisoInstalacion.userChoice;
+    mostrarEstadoInstalacion(eleccion.outcome==='accepted'?'Instalación aceptada.':'La instalación fue cancelada.');
+    avisoInstalacion=null;
+    return;
+  }
+  mostrarEstadoInstalacion('Abrí el menú del navegador y elegí “Instalar aplicación” o “Agregar a inicio”.');
+});
+
+window.addEventListener('appinstalled',()=>{
+  botonInstalar.disabled=true;
+  botonInstalar.textContent='✅ Aplicación instalada';
+  mostrarEstadoInstalacion('La instalación terminó correctamente.');
+});
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('./service-worker.js',{updateViaCache:'none'})
+      .catch(error=>console.warn('Aplicación instalable:',error));
+  });
+}
 </script>
 </body>
 </html>

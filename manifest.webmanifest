@@ -51,7 +51,7 @@
     {
       "name": "Buscar comercios",
       "short_name": "Buscar",
-      "url": "./inicio.html#comercios",
+      "url": "./comprar.html#comercios",
       "icons": [
         {
           "src": "./icons/icon-192.png",

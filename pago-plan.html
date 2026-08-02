@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#073574">
-<meta name="app-version" content="V79">
+<meta name="app-version" content="V140">
+<script src="./version-global.js" defer></script>
 <title>Pago del plan — Sálvame las Papas</title>
 <style>
 *{box-sizing:border-box}
@@ -55,7 +56,7 @@ const app=initializeApp({
   appId:"1:401048945476:web:58695553aa93928b36cd11"
 });
 const auth=getAuth(app),db=getFirestore(app);
-const LINKS={"particular": "https://mpago.la/1zForhz", "basico": "https://mpago.la/2dMKsvo", "destacado": "https://mpago.la/29B9zHQ", "pro": "https://mpago.la/17UaRdW"};
+const LINKS={"particular": "https://mpago.la/1zForhz", "basico": "https://mpago.la/2dMKsvo", "intermedio": "https://mpago.la/29B9zHQ", "pro": "https://mpago.la/17UaRdW"};
 const content=document.getElementById('content');
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
@@ -63,7 +64,7 @@ function planInfo(plan,tipo){
   const p=String(plan||'').toLowerCase();
   if(tipo==='particular'||p.includes('particular')||p.includes('individual')) return {key:'particular',nombre:'Personas individuales',precio:'$10.000 por mes',link:LINKS.particular};
   if(p.includes('45')||p.includes('max')||p.includes('pro ($45')) return {key:'pro',nombre:'Comercio Pro',precio:'$45.000 por mes',link:LINKS.pro};
-  if(p.includes('30')||p.includes('destacado')||p.includes('pro ($30')) return {key:'destacado',nombre:'Comercio Destacado',precio:'$30.000 por mes',link:LINKS.destacado};
+  if(p.includes('30')||p.includes('intermedio')||p.includes('destacado')||p.includes('pro ($30')) return {key:'intermedio',nombre:'Comercio Intermedio',precio:'$30.000 por mes',link:LINKS.intermedio};
   return {key:'basico',nombre:'Comercio Básico',precio:'$15.000 por mes',link:LINKS.basico};
 }
 function card(item,tipo){

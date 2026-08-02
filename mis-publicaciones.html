@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0b376f">
-<meta name="app-version" content="V102">
+<meta name="app-version" content="V140">
+<script src="./version-global.js" defer></script>
 <title>Mis publicaciones — Sálvame las Papas</title>
 <meta name="description" content="Panel privado para administrar publicaciones particulares en Sálvame las Papas.">
 <link rel="icon" href="./icons/favicon-32.png" sizes="32x32" type="image/png">
@@ -80,7 +81,7 @@ button,.btn{min-height:44px;border:0;border-radius:11px;padding:11px 15px;font-w
     <p>Entrá a tu cuenta para actualizar precios, fotos, descripciones y disponibilidad de los artículos que publicaste.</p>
     <div class="intro-pills"><span>✏️ Editá tus avisos</span><span>📷 Cambiá las fotos</span><span>✅ Marcá vendido o alquilado</span></div>
   </div>
-  <div class="intro-mascot"><img src="./images/super-papa.webp" alt="Súper Papa, mascota de Sálvame las Papas"></div>
+  <div class="intro-mascot"><img src="./images/super-papa.webp" alt="Súper Papa, mascota de Sálvame las Papas" loading="lazy"></div>
 </section>
 <section id="login-view" class="box login">
   <div class="login-layout">
@@ -146,7 +147,7 @@ function artEditor(a,i,id){
  <div class="grid">
  <div><label>Venta o alquiler</label><select class="tipo"><option value="venta" ${a.tipoOperacion==='venta'?'selected':''}>Venta</option><option value="alquiler" ${a.tipoOperacion==='alquiler'?'selected':''}>Alquiler</option></select></div>
  <div><label>Título</label><input class="titulo" value="${esc(a.titulo||'')}"></div>
- <div><label>Precio</label><input class="precio" type="number" min="0" value="${Number(a.precio||0)}"></div>
+ <div><label>Precio</label><input class="precio" type="number" min="1" value="${Number(a.precio||0)}"></div>
  <div><label>Precio por</label><select class="periodo">${['total','día','semana','mes','consultar'].map(x=>`<option value="${x}" ${a.periodoPrecio===x?'selected':''}>${x}</option>`).join('')}</select></div>
  <div><label>Estado del artículo</label><select class="estadoArticulo">${['Usado','Como nuevo','Nuevo','No corresponde'].map(x=>`<option ${a.estadoArticulo===x?'selected':''}>${x}</option>`).join('')}</select></div>
  <div><label>Categoría</label><input class="categoria" value="${esc(a.categoria||'')}"></div>
@@ -154,7 +155,7 @@ function artEditor(a,i,id){
  <div><label>Disponibilidad</label><select class="disponible"><option value="true" ${a.disponible!==false?'selected':''}>Disponible</option><option value="false" ${a.disponible===false?'selected':''}>Vendido / alquilado</option></select></div>
  <div class="full"><label>Descripción</label><textarea class="descripcion">${esc(a.descripcion||'')}</textarea></div>
  </div>
- ${fotos.length?`<div class="photos">${fotos.map(f=>`<img src="${f}" alt="Foto">`).join('')}</div>`:''}
+ ${fotos.length?`<div class="photos">${fotos.map(f=>`<img src="${f}" alt="Foto" loading="lazy" decoding="async">`).join('')}</div>`:''}
  <label>Reemplazar fotos (opcional, hasta 4)</label><div class="photo-inputs">${[1,2,3,4].map(()=>'<input type="file" accept="image/*">').join('')}</div>
  </section>`
 }
@@ -169,11 +170,16 @@ async function cargar(uid){
 async function guardar(id){
  const card=document.querySelector(`.pub-card[data-id="${id}"]`),st=card.querySelector('.save-status');st.className='status show';st.textContent='Guardando…';
  try{const articulos=[];for(const sec of card.querySelectorAll('.article')){const files=[...sec.querySelectorAll('input[type=file]')].map(x=>x.files[0]).filter(Boolean).slice(0,4);let nuevas=[];for(const f of files)nuevas.push(await comprimir(f));
- const disponible=sec.querySelector('.disponible').value==='true';articulos.push({
- tipoOperacion:sec.querySelector('.tipo').value,titulo:sec.querySelector('.titulo').value.trim(),precio:Number(sec.querySelector('.precio').value||0),periodoPrecio:sec.querySelector('.periodo').value,
- estadoArticulo:sec.querySelector('.estadoArticulo').value,categoria:sec.querySelector('.categoria').value.trim(),zona:sec.querySelector('.zona').value.trim(),descripcion:sec.querySelector('.descripcion').value.trim(),
+ const disponible=sec.querySelector('.disponible').value==='true',titulo=sec.querySelector('.titulo').value.trim(),precio=Number(sec.querySelector('.precio').value||0),descripcion=sec.querySelector('.descripcion').value.trim();
+ if(!titulo)throw new Error('Todos los artículos necesitan un título.');
+ if(precio<=0)throw new Error('El precio debe ser mayor que $0.');
+ if(/\[cite\s*:/i.test(titulo+' '+descripcion))throw new Error('Quitá el texto [cite:] antes de guardar.');
+ articulos.push({
+ tipoOperacion:sec.querySelector('.tipo').value,titulo,precio,periodoPrecio:sec.querySelector('.periodo').value,
+ estadoArticulo:sec.querySelector('.estadoArticulo').value,categoria:sec.querySelector('.categoria').value.trim(),zona:sec.querySelector('.zona').value.trim(),descripcion,
  fotos:nuevas.length?nuevas:[],disponible,vendido:!disponible&&sec.querySelector('.tipo').value==='venta',alquilado:!disponible&&sec.querySelector('.tipo').value==='alquiler'
  });}
+ if(articulos.some(a=>/\bprueba\b|\(copia\)/i.test(a.titulo+' '+a.descripcion))&&!confirm('El título o la descripción contiene “prueba” o “(copia)”. ¿Querés guardarlo igualmente?'))throw new Error('Los cambios se cancelaron para que puedas revisar el texto.');
  // Preserve old photos when no replacements were selected.
  const snap=await getDocs(query(collection(db,'vendedoresParticulares'),where('ownerUid','==',auth.currentUser.uid)));let current=null;snap.forEach(d=>{if(d.id===id)current=d.data()});
  articulos.forEach((a,i)=>{if(!a.fotos.length)a.fotos=current?.articulos?.[i]?.fotos||[]});

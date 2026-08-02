@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#073574">
-<meta name="app-version" content="V79">
+<meta name="app-version" content="V140">
+<script src="./version-global.js" defer></script>
 <title>Publicar venta o alquiler — Sálvame las Papas</title>
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#172338}
@@ -124,15 +125,20 @@ function valorRadio(name){return document.querySelector(`input[name="${name}"]:c
 async function articulo(n,obligatorio){
  const titulo=document.getElementById(`a${n}-title`).value.trim();
  if(!titulo&&!obligatorio)return null;
+ if(!titulo)throw new Error(`Falta el título del artículo ${n}.`);
+ const precio=Number(document.getElementById(`a${n}-price`).value||0);
+ const descripcion=document.getElementById(`a${n}-desc`).value.trim();
+ if(precio<=0)throw new Error(`El precio del artículo ${n} debe ser mayor que $0.`);
+ if(/\[cite\s*:/i.test(titulo+' '+descripcion))throw new Error(`El artículo ${n} contiene texto [cite:] que debe quitarse.`);
  return {
    tipoOperacion:valorRadio(`a${n}-mode`),
    titulo,
-   precio:Number(document.getElementById(`a${n}-price`).value||0),
+   precio,
    periodoPrecio:document.getElementById(`a${n}-period`).value,
    estadoArticulo:document.getElementById(`a${n}-state`).value,
    categoria:document.getElementById(`a${n}-cat`).value.trim(),
    zona:document.getElementById(`a${n}-zone`).value.trim(),
-   descripcion:document.getElementById(`a${n}-desc`).value.trim(),
+   descripcion,
    fotos:await fotos(`.a${n}-photo`),
    vendido:false,alquilado:false,disponible:true
  }
@@ -144,6 +150,10 @@ document.getElementById('seller-form').addEventListener('submit',async e=>{
  const pass=document.getElementById('s-pass').value;
  const nombre=document.getElementById('s-name').value.trim();
  try{
+  const a1=await articulo(1,true),a2=await articulo(2,false);
+  const articulos=[a1,...(a2?[a2]:[])];
+  const advertencias=articulos.filter(a=>/\bprueba\b|\(copia\)/i.test(a.titulo+' '+a.descripcion));
+  if(advertencias.length&&!confirm('El título o la descripción contiene “prueba” o “(copia)”. ¿Querés publicarlo igualmente?'))throw new Error('La publicación se canceló para que puedas revisar el texto.');
   let cred;
   try{cred=await createUserWithEmailAndPassword(auth,email,pass);await updateProfile(cred.user,{displayName:nombre}).catch(()=>{})}
   catch(err){
@@ -152,8 +162,6 @@ document.getElementById('seller-form').addEventListener('submit',async e=>{
   }
   const repetidos=await getDocs(query(collection(db,'vendedoresParticulares'),where('ownerUid','==',cred.user.uid)));
   if(!repetidos.empty) throw new Error('Esta cuenta ya tiene una publicación. Ingresá a Mis publicaciones para modificarla.');
-  const a1=await articulo(1,true),a2=await articulo(2,false);
-  const articulos=[a1,...(a2?[a2]:[])];
   await addDoc(collection(db,'vendedoresParticulares'),{
    tipo:'vendedor_particular',ownerUid:cred.user.uid,emailPrivado:email,nombre,
    whatsapp:document.getElementById('s-wa').value.trim(),localidad:document.getElementById('s-city').value.trim(),

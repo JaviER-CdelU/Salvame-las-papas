@@ -162,7 +162,7 @@ nav{background:var(--azul-d);position:sticky;top:0;z-index:300;border-bottom:3px
 .tiendas-section{padding:4rem 3rem;background:#fff}
 .tiendas-inner{width:100%;max-width:1600px;margin:0 auto}
 
-/* Plan MAX (Nivel 3) — Tarjeta grande, ocupa 2 columnas */
+/* Plan PRO (Nivel 3) — Tarjeta grande, ocupa 2 columnas */
 .comercio-max {
   background: linear-gradient(135deg,#0A1A3E 0%,#002A6A 100%) !important;
   border: 3px solid var(--naranja);
@@ -178,7 +178,7 @@ nav{background:var(--azul-d);position:sticky;top:0;z-index:300;border-bottom:3px
   transition: transform .15s, box-shadow .15s;
   box-shadow: 0 8px 32px rgba(244,117,33,.2);
 }
-.comercio-max::before{content:"⭐ PLAN MAX";position:absolute;top:16px;right:16px;background:var(--naranja);color:#fff;font-size:.78rem;font-weight:700;padding:5px 14px;border-radius:99px;letter-spacing:.06em;box-shadow:0 3px 10px rgba(244,117,33,.5)}
+.comercio-max::before{content:"⭐ PLAN PRO";position:absolute;top:16px;right:16px;background:var(--naranja);color:#fff;font-size:.78rem;font-weight:700;padding:5px 14px;border-radius:99px;letter-spacing:.06em;box-shadow:0 3px 10px rgba(244,117,33,.5)}
 .comercio-max:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(244,117,33,.25)}
 .cmax-left{}
 .cmax-title{font-family:"Fraunces",serif;font-size:2rem;font-weight:900;margin-bottom:.3rem;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.3)}
@@ -193,7 +193,7 @@ nav{background:var(--azul-d);position:sticky;top:0;z-index:300;border-bottom:3px
 .cmax-wa{display:flex;align-items:center;gap:10px;background:rgba(37,211,102,.2);border:2px solid rgba(37,211,102,.6);border-radius:var(--radio-sm);padding:12px 18px;font-size:1rem;font-weight:700;color:#7BFFA8;text-decoration:none;cursor:pointer;transition:all .15s;margin-top:1rem}
 .cmax-wa:hover{background:rgba(37,211,102,.25)}
 
-/* Plan PRO (Nivel 2) — Tarjeta mediana */
+/* Plan INTERMEDIO (Nivel 2) — Tarjeta mediana */
 .comercio-pro {
   background: linear-gradient(135deg, #003B8E 0%, #1A5EA8 100%);
   border: 3px solid #74ACDF;
@@ -208,7 +208,7 @@ nav{background:var(--azul-d);position:sticky;top:0;z-index:300;border-bottom:3px
   box-shadow: 0 6px 24px rgba(0,59,142,.25);
 }
 .comercio-pro:hover{transform:translateY(-3px);box-shadow:0 10px 32px rgba(0,59,142,.35)}
-.comercio-pro::before{content:"⭐ PRO";position:absolute;top:14px;right:14px;background:#74ACDF;color:#002A6A;font-size:.75rem;font-weight:700;padding:4px 12px;border-radius:99px}
+.comercio-pro::before{content:"⭐ INTERMEDIO";position:absolute;top:14px;right:14px;background:#74ACDF;color:#002A6A;font-size:.75rem;font-weight:700;padding:4px 12px;border-radius:99px}
 
 .cpro-top{display:flex;gap:12px;align-items:flex-start}
 .cpro-avatar{width:60px;height:60px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0;background:rgba(255,255,255,.15)!important;border:2px solid rgba(255,255,255,.25)}
@@ -255,7 +255,7 @@ nav{background:var(--azul-d);position:sticky;top:0;z-index:300;border-bottom:3px
   grid-template-columns:repeat(3,1fr);
   gap:18px;
 }
-/* Force MAX card to always show blue background */
+/* Mantener azul el fondo de la tarjeta del plan PRO */
 .comercio-max,
 .comercios-grid > div:first-child {
   grid-column: span 2;
@@ -843,6 +843,7 @@ img{max-width:100%;height:auto}
 .checkout-overlay.open{display:flex}.checkout-box{width:min(560px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:22px;padding:1.5rem;box-shadow:0 28px 80px rgba(0,0,0,.32);position:relative}
 .checkout-box h2{font:900 1.65rem Fraunces;color:var(--azul-d);margin-bottom:.35rem}.checkout-sub{color:var(--suave);line-height:1.5;margin-bottom:1rem}.checkout-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.checkout-full{grid-column:1/-1}.checkout-label{display:flex;flex-direction:column;gap:5px;font-size:.85rem;font-weight:700;color:var(--azul-d)}
 .checkout-label input,.checkout-label select,.checkout-label textarea{width:100%;border:1.5px solid #ccd6e2;border-radius:10px;padding:11px 12px;font:inherit}.checkout-actions{display:flex;gap:10px;margin-top:1rem;flex-wrap:wrap}.checkout-actions button{flex:1;min-width:160px}.checkout-note{background:#eef5ff;border:1px solid #cbdcf4;border-radius:11px;padding:10px 12px;font-size:.83rem;line-height:1.45;margin:.8rem 0}.checkout-error{display:none;color:#a40000;background:#fff0f0;border:1px solid #f0b7b7;border-radius:9px;padding:9px 11px;margin-top:8px;font-size:.85rem}.checkout-error.show{display:block}.checkout-tabs{display:flex;gap:8px;margin-bottom:12px}.checkout-tabs button{flex:1;padding:10px;border-radius:10px;border:1.5px solid #ccd6e2;background:#fff;font-weight:700;cursor:pointer}.checkout-tabs button.active{background:var(--azul-d);color:#fff;border-color:var(--azul-d)}
+.checkout-transfer-v140,.checkout-qr-v110{display:none;grid-column:1/-1;border-radius:14px;padding:14px;text-align:center}.checkout-transfer-v140{background:#eef7ff;border:2px solid #b8d5f1}.checkout-qr-v110{background:#fff8e8;border:2px solid #efc76d}.checkout-transfer-v140.show,.checkout-qr-v110.show{display:block}.checkout-transfer-v140 strong,.checkout-transfer-v140 span,.checkout-qr-v110 strong,.checkout-qr-v110 small{display:block}.checkout-transfer-v140 code{display:inline-block;margin:8px;padding:8px 12px;border-radius:8px;background:#fff;color:#073574;font-weight:900;font-size:1rem}.checkout-transfer-v140 button{border:0;border-radius:9px;padding:8px 12px;background:#0b4e96;color:#fff;font-weight:900;cursor:pointer}.checkout-qr-v110 img{display:block;width:min(260px,100%);max-height:300px;object-fit:contain;margin:10px auto;border-radius:12px;background:#fff}.checkout-qr-confirm-v132{display:flex!important;align-items:center;justify-content:center;gap:8px;margin-top:12px;padding:10px;border-radius:10px;background:#fff;font-weight:800;color:#173f70}
 @media(max-width:560px){.checkout-grid{grid-template-columns:1fr}.checkout-full{grid-column:auto}.checkout-box{padding:1.15rem;border-radius:18px}.checkout-actions button{width:100%}}
 
 
@@ -2770,8 +2771,9 @@ nav .nav-btns,nav .nav-portals{display:none!important}
 .seller-desc-v41{font-size:.82rem;line-height:1.4;color:#465164;min-height:36px}
 .seller-actions-v41{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
 .seller-actions-v41 a{flex:1;min-width:125px;text-align:center;text-decoration:none;padding:10px;border-radius:10px;font-weight:800;font-size:.8rem}
+.seller-actions-v41 button{flex:1;min-width:125px;text-align:center;padding:10px;border:0;border-radius:10px;font-weight:800;font-size:.8rem;cursor:pointer}
 .seller-wa-v41{background:#0a9b58;color:#fff}
-.seller-sold-v41{background:#edf3fa;color:#073574}
+.seller-share-v115{background:#1877f2;color:#fff}
 .seller-empty-v41{grid-column:1/-1;padding:22px;text-align:center;border:1px dashed #cdd8e4;border-radius:14px;color:#687588;background:#fafcff}
 @media(max-width:1000px){.planes-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.seller-public-grid-v41{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:650px){
@@ -3382,7 +3384,8 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
 }
 
 </style>
-<meta name="app-version" content="V122">
+<meta name="app-version" content="V140">
+<script src="./version-global.js" defer></script>
 <style id="registro-layout-v105">
 /* V105 — registro sin cabecera vacía ni botones flotantes duplicados */
 .v64-reg-head{
@@ -3551,11 +3554,11 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
     <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:1.5rem;align-items:center">
       <div style="display:flex;align-items:center;gap:7px;font-size:.82rem;color:var(--suave)">
         <div style="width:12px;height:12px;border-radius:3px;background:var(--azul-d);border:1.5px solid var(--naranja)"></div>
-        <span><strong>MAX</strong> — Espacio grande + productos en vitrina</span>
+        <span><strong>PRO</strong> — Espacio grande + productos en vitrina</span>
       </div>
       <div style="display:flex;align-items:center;gap:7px;font-size:.82rem;color:var(--suave)">
         <div style="width:12px;height:12px;border-radius:3px;background:#9AB8E0"></div>
-        <span><strong>PRO</strong> — Espacio mediano + productos destacados</span>
+        <span><strong>INTERMEDIO</strong> — Espacio mediano + productos destacados</span>
       </div>
       <div style="display:flex;align-items:center;gap:7px;font-size:.82rem;color:var(--suave)">
         <div style="width:12px;height:12px;border-radius:3px;background:var(--borde)"></div>
@@ -3606,7 +3609,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
   <div class="offers-strip" id="ofertas-home"><div class="home-empty">Cargando ofertas reales…</div></div>
 </section>
   <section class="home-block home-featured-wrap" id="destacados-home-section">
-  <div class="home-section-title"><div><span class="title-icon">⭐</span><h2>Comercios destacados</h2><small>Pro/Max primero, luego Destacado y después Básico</small></div>
+  <div class="home-section-title"><div><span class="title-icon">⭐</span><h2>Comercios destacados</h2><small>Pro primero, luego Intermedio y después Básico</small></div>
     <div class="slider-controls"><button onclick="moverDestacados(-1)" aria-label="Anterior">‹</button><button onclick="moverDestacados(1)" aria-label="Siguiente">›</button></div>
   </div>
   <div class="featured-slider" id="destacados-home"><div class="home-empty">Cargando comercios reales…</div></div>
@@ -3679,7 +3682,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
 
       <div class="plan destacado" onclick="elegirPlan(2)">
         <div class="plan-badge">🏪 Para comercios</div>
-        <div class="plan-nivel">Nivel 2</div><div class="plan-nombre">Destacado</div>
+        <div class="plan-nivel">Nivel 2</div><div class="plan-nombre">Intermedio</div>
         <div class="plan-precio">$30.000<small>/mes</small></div>
         <div class="plan-periodo">Menos de un café por día</div>
         <ul class="plan-feats">
@@ -3691,7 +3694,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
           <li class="wa">WhatsApp + pedidos online</li>
           <li>Estadísticas básicas de visitas y contactos</li>
         </ul>
-        <button class="btn-plan">Elegir Destacado — Registrarme</button>
+        <button class="btn-plan">Elegir Intermedio — Registrarme</button>
       </div>
 
       <div class="plan" onclick="elegirPlan(3)">
@@ -3881,15 +3884,15 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
         </div>
         <div class="plan-opt sel" id="pop2" onclick="selPlan(2)">
           <div class="plan-opt-num">Nivel 2 ⭐ — Tarjeta mediana + vitrina 2 productos</div>
-          <div class="plan-opt-name">Pro</div>
+          <div class="plan-opt-name">Intermedio</div>
           <div class="plan-opt-price">$30.000<span style="font-size:.9rem;color:var(--suave);font-family:'DM Sans',sans-serif;font-weight:400">/mes</span></div>
-          <div class="plan-opt-desc">25 productos · 2 en vitrina · fotos · pedidos online</div>
+          <div class="plan-opt-desc">30 productos · 2 fotos por producto · pedidos online</div>
         </div>
         <div class="plan-opt" id="pop3" onclick="selPlan(3)">
           <div class="plan-opt-num">Nivel 3 🚀 — Tarjeta GRANDE + vitrina 6 productos</div>
-          <div class="plan-opt-name">Max</div>
+          <div class="plan-opt-name">Pro</div>
           <div class="plan-opt-price">$45.000<span style="font-size:.9rem;color:var(--suave);font-family:'DM Sans',sans-serif;font-weight:400">/mes</span></div>
-          <div class="plan-opt-desc">65 productos · 6 en vitrina · redes sociales · máxima visibilidad</div>
+          <div class="plan-opt-desc">60 productos · 4 fotos por producto · redes sociales · máxima visibilidad</div>
         </div>
       </div>
       <div style="background:var(--azul-l);border:2px solid #9AB8E0;border-radius:var(--radio-sm);padding:1.25rem;margin-bottom:2rem;font-size:.95rem;line-height:1.7">
@@ -3920,8 +3923,8 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
           <div style="font-size:.85rem;font-weight:600;color:var(--suave);margin-bottom:8px">Tipo de publicación</div>
           <div class="check-tipo">
             <button class="tipo-btn active-normal" id="tipo-normal" onclick="setTipo('normal')">📦 Normal</button>
-            <button class="tipo-btn" id="tipo-dest" onclick="setTipo('destacado')">⭐ Destacado (Plan Pro/Max)</button>
-            <button class="tipo-btn" id="tipo-oferta" onclick="setTipo('oferta')">🔥 Oferta semana (Plan Max)</button>
+            <button class="tipo-btn" id="tipo-dest" onclick="setTipo('destacado')">⭐ Destacado (Intermedio/Pro)</button>
+            <button class="tipo-btn" id="tipo-oferta" onclick="setTipo('oferta')">🔥 Oferta semana (Plan Pro)</button>
           </div>
         </div>
 
@@ -3996,7 +3999,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
         <div class="fotos-registro-v112">
           <label for="prod-fotos-v112">📷 Fotos del producto</label>
           <input id="prod-fotos-v112" type="file" accept="image/*" multiple onchange="prepararFotosRegistroV112(this.files)">
-          <small id="prod-fotos-ayuda-v112">Básico: 1 foto · Pro: 2 fotos · Max ($45.000): hasta 4 fotos por producto.</small>
+          <small id="prod-fotos-ayuda-v112">Básico: 1 foto · Intermedio: 2 fotos · Pro ($45.000): hasta 4 fotos por producto.</small>
           <div class="fotos-preview-v112" id="prod-fotos-preview-v112"></div>
         </div>
 
@@ -4072,7 +4075,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
 <section class="slp-project slp-project-v35">
   <div class="slp-project-card">
     <div class="slp-project-thumb">
-      <img src="./images/nuevas-v32/mascota-clara-01.png"
+      <img src="./images/nuevas-v32/mascota-clara-01.webp"
            alt="Súper Papa, proyecto local de Concepción del Uruguay"
            loading="lazy">
     </div>
@@ -4151,7 +4154,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
   </div>
   <div class="footer-bottom">© 2025 Sálvame las Papas · Concepción del Uruguay, La Histórica · Hecho con ❤️ y mate 🧉 para los vecinos del barrio</div>
 <div class="app-version-badge" title="Versión publicada de Sálvame las Papas">
-  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión V79</a>
+  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión <span data-app-version>V140</span></a>
 </div>
 </footer>
 
@@ -4212,11 +4215,13 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
         <label class="checkout-label">Nombre y apellido<input id="co-nombre" type="text" autocomplete="name"></label>
         <label class="checkout-label">WhatsApp<input id="co-telefono" type="tel" autocomplete="tel" placeholder="+54 9 3442..."></label>
         <label class="checkout-label">Entrega<select id="co-entrega" onchange="actualizarEntregaCliente()"><option value="Retiro en el comercio">Retiro en el comercio</option><option value="Envío a domicilio">Envío a domicilio</option></select></label>
-        <label class="checkout-label">Forma de pago<select id="co-pago"><option>Transferencia</option><option>Efectivo</option><option>Tarjeta / link de pago</option><option>A coordinar</option></select></label>
+        <label class="checkout-label">Forma de pago<select id="co-pago" onchange="actualizarPagoClienteV110()"><option>Transferencia</option><option>Efectivo</option><option>Tarjeta / link de pago</option><option>A coordinar</option></select></label>
         <label class="checkout-label checkout-full" id="co-direccion-wrap" style="display:none">Dirección de entrega<input id="co-direccion" type="text" autocomplete="street-address"></label>
+        <div class="checkout-transfer-v140" id="co-transfer-wrap"><strong>🏦 Alias del comercio</strong><code id="co-alias-pago">A coordinar</code><button type="button" id="co-copiar-alias" onclick="copiarAliasPedidoV140()">Copiar alias</button><span>Verificá siempre el destinatario antes de transferir.</span></div>
+        <div class="checkout-qr-v110" id="co-qr-wrap"><strong>💳 Pago mediante QR</strong><img id="co-qr-img" alt="Código QR del comercio" style="display:none"><small id="co-qr-mensaje">El comercio todavía no cargó una imagen de QR.</small><label class="checkout-qr-confirm-v132"><input id="co-qr-confirmado" type="checkbox"> Ya escaneé el QR e informo que realicé el pago</label></div>
         <label class="checkout-label checkout-full">Observaciones<textarea id="co-observaciones" rows="3" placeholder="Timbre, sin cebolla, horario preferido..."></textarea></label>
       </div>
-      <div class="checkout-note">El pedido quedará registrado con número, fecha, cliente y estado “pendiente de pago”. Luego se abrirá WhatsApp para coordinar con el comercio.</div>
+      <div class="checkout-note">El pedido quedará registrado como “recibido”. El pago figurará como pendiente, a cobrar o informado para verificar, según la opción elegida. Después se abrirá WhatsApp.</div>
       <div class="checkout-error" id="co-datos-error"></div>
       <div class="checkout-actions"><button class="btn btn-ghost" onclick="cerrarCheckout()">Cancelar</button><button class="btn btn-rojo" id="co-confirmar-btn" onclick="confirmarPedidoRegistrado()">Confirmar pedido</button></div>
     </div>
@@ -4441,7 +4446,7 @@ async function enviarForm(){
   const normalizarRedRegistroV129=(valor,red)=>{valor=String(valor||'').trim();if(!valor)return '';if(!/^https?:\/\//i.test(valor)&&/^(?:www\.)?(?:instagram\.com|facebook\.com)\//i.test(valor))valor='https://'+valor;if(/^https?:\/\//i.test(valor)){const u=new URL(valor),host=u.hostname.replace(/^www\./,'').toLowerCase(),esperado=red==='instagram'?'instagram.com':'facebook.com';if(host!==esperado&&host!=='m.'+esperado)throw new Error('La dirección de '+(red==='instagram'?'Instagram':'Facebook')+' no es válida.');u.protocol='https:';if(red==='instagram')u.search='';u.hash='';return u.href.replace(/\/$/,'')+(red==='instagram'?'/':'')}const usuario=valor.replace(/^@/,'').replace(/\s/g,'').replace(/^\/+|\/+$/g,'');if(!usuario)throw new Error('Falta el usuario de '+(red==='instagram'?'Instagram':'Facebook')+'.');return(red==='instagram'?'https://www.instagram.com/':'https://www.facebook.com/')+usuario+(red==='instagram'?'/':'')};
   let instagramRegistro='',facebookRegistro='';try{instagramRegistro=normalizarRedRegistroV129(document.getElementById('f-ig').value,'instagram');facebookRegistro=normalizarRedRegistroV129(document.getElementById('f-fb').value,'facebook')}catch(e){toast('⚠️ '+e.message);irPaso(1);return}
 
-  const planes=['','Básico ($15.000/mes)','Pro ($30.000/mes)','Max ($45.000/mes)']
+  const planes=['','Básico ($15.000/mes)','Intermedio ($30.000/mes)','Pro ($45.000/mes)']
   let qrPagoRegistro='';
   document.getElementById('f-qr-pago')?.addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;const reader=new FileReader();reader.onerror=()=>toast('❌ No se pudo leer el QR');reader.onload=()=>{const img=new Image();img.onerror=()=>toast('❌ La imagen del QR no es válida');img.onload=()=>{const max=600,s=Math.min(1,max/img.width,max/img.height),c=document.createElement('canvas');c.width=Math.max(1,Math.round(img.width*s));c.height=Math.max(1,Math.round(img.height*s));c.getContext('2d').drawImage(img,0,0,c.width,c.height);qrPagoRegistro=c.toDataURL('image/png');if(qrPagoRegistro.length>700000)qrPagoRegistro=c.toDataURL('image/jpeg',.92);const p=document.getElementById('f-qr-preview');p.src=qrPagoRegistro;p.hidden=false};img.src=reader.result};reader.readAsDataURL(file)});
   const btn=document.getElementById('btn-enviar')
@@ -4642,7 +4647,7 @@ function filtrarCat(cat){
 
 // ════════════════════════════════════════
 //  SISTEMA DE COMERCIOS PAGINADOS
-//  Prioridad: MAX(3) → PRO(2) → BÁSICO(1)
+//  Prioridad: PRO(3) → INTERMEDIO(2) → BÁSICO(1)
 // ════════════════════════════════════════
 
 
@@ -4934,10 +4939,10 @@ async function cargarComercios(){
               id: registro.id,
               plan: (() => {
                 const p=String(d.plan||'').toLowerCase();
-                if(Number(d.plan)===3 || p.includes('nivel 3') || p.includes('45.000') ||
-                   p.includes('45000') || p.includes('max') || p.includes('pro')) return 3;
                 if(Number(d.plan)===2 || p.includes('nivel 2') || p.includes('30.000') ||
                    p.includes('30000') || p.includes('destacado') || p.includes('intermedio')) return 2;
+                if(Number(d.plan)===3 || p.includes('nivel 3') || p.includes('45.000') ||
+                   p.includes('45000') || p.includes('max') || p.includes('pro')) return 3;
                 return 1;
               })(),
               nombre: d.nombre,
@@ -4949,6 +4954,8 @@ async function cargarComercios(){
               tags: [...(d.pagos||[]).slice(0,2), ...(d.envio||[]).slice(0,1)],
               pagos: Array.isArray(d.pagos) ? d.pagos : (d.pagos ? [d.pagos] : []),
               envio: Array.isArray(d.envio) ? d.envio : (d.envio ? [d.envio] : []),
+              aliasPago: d.aliasPago || d.alias || '',
+              qrPago: d.qrPago || d.imagenQr || d.qrImagen || '',
               tel: d.telefono?.replace(/\D/g,'') || '',
               emoji: d.emoji || '🏪',
               bg: d.bg || '#F0F4FF',
@@ -4965,7 +4972,7 @@ async function cargarComercios(){
         // Si todos vencieron, la página queda sin comercios: no reaparecen los ejemplos.
         // Los productos cargados desde “Mi comercio” viven en una subcolección.
         // Se cargan aquí para que aparezcan en la página pública.
-        for(const comercio of fbComercics){
+        await Promise.all(fbComercics.map(async comercio=>{
           try{
             const ps=await getDocs(collection(db,'comercios',comercio.id,'productos'))
             comercio.productos=[]
@@ -4989,7 +4996,7 @@ async function cargarComercios(){
               }
             })
           }catch(error){console.warn('Productos de '+comercio.nombre,error)}
-        }
+        }))
         comerciosTodos = ordenarPorPlan(fbComercics)
       }
     }
@@ -5052,6 +5059,7 @@ function opcionesPagoComercio(c){
     if(x.includes('cuotas')&&!salida.includes('Cuotas')) salida.push('Cuotas');
     if(x.includes('coordinar')&&!salida.includes('A coordinar')) salida.push('A coordinar');
   });
+  if((c?.qrPago||c?.imagenQr||c?.qrImagen)&&!salida.includes('Pagar con QR (billetera o banco)')) salida.push('Pagar con QR (billetera o banco)');
   if(!salida.length) salida.push('A coordinar');
   return salida;
 }
@@ -5072,6 +5080,7 @@ function configurarOpcionesPedido(c){
     pago.innerHTML=opciones.map(v=>`<option value="${textoSeguro(v)}">${textoSeguro(v)}</option>`).join('');
   }
   actualizarEntregaCliente();
+  actualizarPagoClienteV110();
 }
 
 function abrirComercio(c){
@@ -5161,6 +5170,10 @@ function agregarAlCarrito(idx){
   // Parsear precio (quitar $ y puntos)
   const precioStr = (prod.p || '0').replace(/[$.]/g,'').replace(',','.')
   const precio = parseFloat(precioStr) || 0
+  if(precio <= 0){
+    mostrarToast('Este producto no tiene un precio válido. Avisale al comercio antes de comprar.')
+    return
+  }
 
   // Buscar si ya está en el carrito
   const existing = carritoActual.find(i => i.idx === idx)
@@ -5261,6 +5274,7 @@ function actualizarCarritoUI(){
 
 // CLIENTES REGISTRADOS Y PEDIDOS
 let modoClientePedido = 'login'
+function conTiempoLimitePedidoV140(promesa,mensaje,ms=20000){return Promise.race([promesa,new Promise((_r,rechazar)=>setTimeout(()=>rechazar(new Error(mensaje)),ms))])}
 
 function enviarPedidoWA(){
   if(!comercioActivo || carritoActual.length === 0) return
@@ -5312,9 +5326,9 @@ async function autenticarClientePedido(){
   try{
     let cred
     if(modoClientePedido==='registro'){
-      cred=await window._fb.createUserWithEmailAndPassword(window._fb.auth,email,pass)
+      cred=await conTiempoLimitePedidoV140(window._fb.createUserWithEmailAndPassword(window._fb.auth,email,pass),'La conexión tardó demasiado. Revisá Internet y volvé a intentar.')
       await window._fb.sendEmailVerification(cred.user).catch(()=>{})
-    }else cred=await window._fb.signInWithEmailAndPassword(window._fb.auth,email,pass)
+    }else cred=await conTiempoLimitePedidoV140(window._fb.signInWithEmailAndPassword(window._fb.auth,email,pass),'La conexión tardó demasiado. Revisá Internet y volvé a intentar.')
     mostrarDatosCliente(cred.user)
   }catch(e){
     if(e.code==='auth/email-already-in-use'){
@@ -5346,11 +5360,11 @@ async function recuperarClaveClienteV57(){
     return;
   }
   try{
-    await window._fb.sendPasswordResetEmail(
+    await conTiempoLimitePedidoV140(window._fb.sendPasswordResetEmail(
       window._fb.auth,
       email,
       {url:new URL('./restablecer-clave.html?tipo=cliente',window.location.href).href,handleCodeInApp:false}
-    );
+    ),'La conexión tardó demasiado. Volvé a intentar.');
     cambiarModoCliente('login');
     err.textContent='✅ Enviamos el enlace para crear una contraseña nueva. Revisá Entrada, Correo no deseado, Spam y Promociones.';
     err.classList.add('show');
@@ -5374,9 +5388,20 @@ function mostrarDatosCliente(user){
   document.getElementById('co-telefono').value=localStorage.getItem('slp_cliente_tel')||''
 }
 function actualizarEntregaCliente(){
-  const envio=document.getElementById('co-entrega').value==='Envío a domicilio'
+  const opcion=String(document.getElementById('co-entrega')?.value||'').toLowerCase();
+  const envio=opcion.includes('domicilio')||opcion.includes('cadete')||opcion.includes('envío propio')||opcion.includes('envio propio');
   document.getElementById('co-direccion-wrap').style.display=envio?'flex':'none'
 }
+function actualizarPagoClienteV110(){
+  const pago=String(document.getElementById('co-pago')?.value||'').toLowerCase(),aliasPago=String(comercioActivo?.aliasPago||comercioActivo?.alias||'').trim();
+  const transferencia=document.getElementById('co-transfer-wrap'),alias=document.getElementById('co-alias-pago'),copiar=document.getElementById('co-copiar-alias');
+  const usaTransferencia=pago.includes('transfer')||pago.includes('mercado pago');
+  transferencia?.classList.toggle('show',usaTransferencia);if(alias)alias.textContent=aliasPago||'A coordinar con el comercio';if(copiar)copiar.style.display=aliasPago?'inline-block':'none';
+  const qr=document.getElementById('co-qr-wrap'),imagen=document.getElementById('co-qr-img'),mensaje=document.getElementById('co-qr-mensaje'),confirmado=document.getElementById('co-qr-confirmado'),usaQr=pago.includes('qr'),fuente=comercioActivo?.qrPago||comercioActivo?.imagenQr||comercioActivo?.qrImagen||'';
+  qr?.classList.toggle('show',usaQr);if(!usaQr){if(confirmado)confirmado.checked=false;return}const total=carritoActual.reduce((s,i)=>s+Number(i?.subtotal||0),0);
+  if(fuente){imagen.src=fuente;imagen.style.display='block';mensaje.textContent='Escaneá el QR, ingresá $'+total.toLocaleString('es-AR')+' y verificá el destinatario antes de pagar.'}else{imagen.removeAttribute('src');imagen.style.display='none';mensaje.textContent='El comercio todavía no cargó una imagen de QR.'}
+}
+async function copiarAliasPedidoV140(){const alias=String(comercioActivo?.aliasPago||comercioActivo?.alias||'').trim();if(!alias)return;try{await navigator.clipboard.writeText(alias);toast('✅ Alias copiado')}catch(_e){toast('No se pudo copiar. Seleccioná el alias manualmente.')}}
 
 function limpiarUndefined(valor){
   if(Array.isArray(valor)){
@@ -5409,6 +5434,10 @@ function numeroPedidoSeguro(valor, alternativa=0){
 async function confirmarPedidoRegistrado(){
   const user=window._fb?.auth?.currentUser
   if(!user){abrirCheckout();return}
+  if(!Array.isArray(carritoActual)||carritoActual.length===0){
+    mostrarToast('El carrito está vacío. Agregá por lo menos un producto antes de confirmar.')
+    return
+  }
   const nombre=document.getElementById('co-nombre').value.trim()
   const telefono=document.getElementById('co-telefono').value.trim()
   const entrega=document.getElementById('co-entrega').value
@@ -5420,7 +5449,12 @@ async function confirmarPedidoRegistrado(){
   err.classList.remove('show')
   if(nombre.length<3){err.textContent='Escribí tu nombre y apellido.';err.classList.add('show');return}
   if(telefono.replace(/\D/g,'').length<8){err.textContent='Escribí un WhatsApp válido.';err.classList.add('show');return}
-  if(entrega.toLowerCase().includes('domicilio')||entrega.toLowerCase().includes('cadete')||entrega.toLowerCase().includes('envío propio') && direccion.length<5){err.textContent='Falta la dirección de entrega.';err.classList.add('show');return}
+  const entregaNormalizada=entrega.toLowerCase(),requiereDireccion=entregaNormalizada.includes('domicilio')||entregaNormalizada.includes('cadete')||entregaNormalizada.includes('envío propio')||entregaNormalizada.includes('envio propio');
+  if(requiereDireccion&&direccion.length<5){err.textContent='Falta la dirección de entrega.';err.classList.add('show');return}
+  if(pago.toLowerCase().includes('qr')&&!(comercioActivo?.qrPago||comercioActivo?.imagenQr||comercioActivo?.qrImagen)){err.textContent='El comercio todavía no cargó su QR. Elegí otra forma de pago.';err.classList.add('show');return}
+  if(pago.toLowerCase().includes('qr')&&!document.getElementById('co-qr-confirmado')?.checked){err.textContent='Escaneá el QR y marcá que realizaste el pago antes de confirmar.';err.classList.add('show');return}
+  const telComercio=String(comercioActivo?.tel||'').replace(/\D/g,'');if(telComercio.length<8){err.textContent='Este comercio todavía no cargó un WhatsApp válido. No se puede enviar el pedido hasta que lo corrija.';err.classList.add('show');return}
+  let ventanaWA=window.open('about:blank','_blank');
   btn.disabled=true;btn.textContent='Registrando pedido...'
   try{
     const itemsPedido=carritoActual.map((i,indice)=>{
@@ -5436,6 +5470,7 @@ async function confirmarPedidoRegistrado(){
       }
     })
     const total=itemsPedido.reduce((s,i)=>s+i.subtotal,0)
+    const pagoQrInformado=pago.toLowerCase().includes('qr'),estadoPagoInicial=pagoQrInformado?'pago informado - verificar':(pago.toLowerCase().includes('efectivo')?'a cobrar':'pendiente de pago');
     const pedido=limpiarUndefined({
       comercioId:textoPedidoSeguro(comercioActivo?.id, textoPedidoSeguro(comercioActivo?.nombre,'comercio-sin-id')),
       comercioNombre:textoPedidoSeguro(comercioActivo?.nombre,'Comercio'),
@@ -5446,28 +5481,29 @@ async function confirmarPedidoRegistrado(){
       clienteNombre:textoPedidoSeguro(nombre,'Cliente'),
       clienteTelefono:textoPedidoSeguro(telefono,''),
       entrega:textoPedidoSeguro(entrega,'A coordinar'),
-      direccion:entrega.toLowerCase().includes('domicilio')||entrega.toLowerCase().includes('cadete')||entrega.toLowerCase().includes('envío propio')?textoPedidoSeguro(direccion,''):'',
+      direccion:requiereDireccion?textoPedidoSeguro(direccion,''):'',
       pago:textoPedidoSeguro(pago,'A coordinar'),
       observaciones:textoPedidoSeguro(observaciones,''),
       items:itemsPedido,
       total,
-      estado:'pendiente',
-      estadoPago:'pendiente de pago',
+      estado:'recibido',
+      estadoPago:estadoPagoInicial,
       creadoEn:window._fb.serverTimestamp()
     })
-    await window._fb.setDoc(window._fb.doc(window._fb.db,'usuarios',user.uid),{nombre,telefono,email:user.email||'',rol:'cliente',actualizadoEn:window._fb.serverTimestamp()},{merge:true})
+    await conTiempoLimitePedidoV140(window._fb.setDoc(window._fb.doc(window._fb.db,'usuarios',user.uid),{nombre,telefono,email:user.email||'',rol:'cliente',actualizadoEn:window._fb.serverTimestamp()},{merge:true}),'La conexión tardó demasiado al guardar tus datos. Volvé a intentar.')
     if(!user.displayName) await window._fb.updateProfile(user,{displayName:nombre}).catch(()=>{})
-    const ref=await window._fb.addDoc(window._fb.collection(window._fb.db,'pedidos'),pedido)
+    const ref=await conTiempoLimitePedidoV140(window._fb.addDoc(window._fb.collection(window._fb.db,'pedidos'),pedido),'La conexión tardó demasiado al registrar el pedido. Antes de repetirlo, consultá al comercio.',25000)
     localStorage.setItem('slp_cliente_nombre',nombre);localStorage.setItem('slp_cliente_tel',telefono)
     const lineas=itemsPedido.map(i=>`• ${i.emoji} ${i.nombre} x${i.cantidad} = $${i.subtotal.toLocaleString('es-AR')}`).join('\n')
-    const texto=`Hola ${comercioActivo.nombre}! Hice un pedido desde Sálvame las Papas 🥔\n\nPEDIDO #${ref.id.slice(0,8).toUpperCase()}\nCliente: ${nombre}\nWhatsApp: ${telefono}\nEntrega: ${entrega}${direccion?'\nDirección: '+direccion:''}\nPago: ${pago}\n\n${lineas}\n\nTOTAL: $${total.toLocaleString('es-AR')}${observaciones?'\n\nObservaciones: '+observaciones:''}\n\nEstado: pendiente de pago.`
-    const tel=(comercioActivo.tel||'5493442490585').replace(/\D/g,'')
+    const texto=`Hola ${comercioActivo.nombre}! Hice un pedido desde Sálvame las Papas 🥔\n\nPEDIDO #${ref.id.slice(0,8).toUpperCase()}\nCliente: ${nombre}\nWhatsApp: ${telefono}\nEntrega: ${entrega}${direccion?'\nDirección: '+direccion:''}\nPago: ${pago}${pagoQrInformado?'\nEl cliente informa que escaneó el QR y realizó el pago. Verificar la acreditación antes de entregar.':''}\n\n${lineas}\n\nTOTAL: $${total.toLocaleString('es-AR')}${observaciones?'\n\nObservaciones: '+observaciones:''}\n\nEstado del pedido: recibido. Estado del pago: ${estadoPagoInicial}.`
+    const urlWA='https://wa.me/'+telComercio+'?text='+encodeURIComponent(texto)
     registrarMetrica(comercioActivo,'pedidosConfirmados',false);
     registrarMetrica(comercioActivo,'clicsWhatsApp',false);
     cerrarCheckout();toast('✅ Pedido registrado. Abrimos WhatsApp para coordinar.')
-    window.open('https://wa.me/'+tel+'?text='+encodeURIComponent(texto),'_blank','noopener')
+    if(ventanaWA){ventanaWA.opener=null;ventanaWA.location.href=urlWA}else{await navigator.clipboard?.writeText(texto).catch(()=>{});toast('✅ Pedido registrado. El navegador bloqueó WhatsApp; el mensaje quedó copiado.')}
     vaciarCarrito()
   }catch(e){
+    try{if(ventanaWA&&!ventanaWA.closed)ventanaWA.close()}catch(_e){}
     console.error('Pedido:',e)
     err.textContent=e.code==='permission-denied'
       ? 'Firebase no permitió guardar el pedido. Hay que revisar las reglas de Firestore.'
@@ -5488,6 +5524,11 @@ function emojiCategoria(cat){
   if(c.includes('mascot')||c.includes('veter')) return '🐾'; if(c.includes('almac')||c.includes('kios')) return '🛒'
   return '🏪'
 }
+function escapeHTML(texto){
+  return String(texto??'').replace(/[&<>"']/g,caracter=>({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  })[caracter])
+}
 function renderFiltrosCategoriasDinamicos(){
   const bar=document.getElementById('filtro-bar'); if(!bar) return
   const cats=[...new Set(comerciosTodos.map(c=>(c.cat||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es'))
@@ -5503,7 +5544,7 @@ function renderFiltrosCategoriasDinamicos(){
 let productosForm = []
 let tipoActual = 'normal'
 let fotosRegistroV112 = []
-const LIMITES_PLAN = { 1: 10, 2: 25, 3: 65 }
+const LIMITES_PLAN = { 1: 10, 2: 30, 3: 60 }
 const FOTOS_PLAN_V112 = {1:1,2:2,3:4}
 
 function reducirFotoRegistroV112(file){
@@ -5561,12 +5602,12 @@ function actualizarLimiteMensaje(){
   const msg = document.getElementById('plan-limite-msg')
   const counter = document.getElementById('prod-count-form')
   if(msg) msg.innerHTML = `
-    <strong>Plan ${['','Básico','Pro','Max'][planSel]}</strong> — podés cargar hasta 
+    <strong>Plan ${['','Básico','Intermedio','Pro'][planSel]}</strong> — podés cargar hasta
     <strong>${limite} productos</strong>.
     <strong>${FOTOS_PLAN_V112[planSel]||1} foto${(FOTOS_PLAN_V112[planSel]||1)===1?'':'s'} por producto</strong>.
     ${planSel===3 ? ' Incluye <span style="color:var(--naranja);font-weight:700">Destacados</span> y <span style="color:#2D6A4F;font-weight:700">Ofertas de la semana</span>.' :
       planSel===2 ? ' Incluye <span style="color:var(--naranja);font-weight:700">Destacados</span>.' :
-      ' Para agregar Destacados y Ofertas subí al Plan Pro o Max.'}
+      ' Para agregar Destacados y Ofertas subí al Plan Intermedio o Pro.'}
   `
   if(counter) counter.textContent = productosForm.length + ' / ' + limite
 }
@@ -5588,12 +5629,15 @@ function agregarProductoForm(){
 
   if(!nombre){ toast('⚠️ Ponele un nombre al producto'); return }
   if(!precio){ toast('⚠️ Falta el precio'); return }
+  if(Number(String(precio).replace(',','.'))<=0){ toast('⚠️ El precio debe ser mayor que $0'); return }
+  if(/\[cite\s*:/i.test(nombre+' '+desc)){ toast('⚠️ Quitá el texto [cite:] antes de guardar'); return }
+  if(/\bprueba\b|\(copia\)/i.test(nombre+' '+desc)&&!confirm('El producto contiene “prueba” o “(copia)”. ¿Querés guardarlo igualmente?'))return
 
   if(tipoActual === 'destacado' && planSel < 2){
-    toast('⭐ Los Destacados son del Plan Pro o Max'); return
+    toast('⭐ Los Destacados son del Plan Intermedio o Pro'); return
   }
   if(tipoActual === 'oferta' && planSel < 3){
-    toast('🔥 Las Ofertas de la semana son del Plan Max'); return
+    toast('🔥 Las Ofertas de la semana son del Plan Pro'); return
   }
 
   productosForm.push({ emoji, nombre, precio, desc, stock, precioAntes, cuotas, pagos, tipo: tipoActual,
@@ -5706,10 +5750,10 @@ function limpiarFiltros(){['filtro-texto','filtro-barrio','filtro-envio','filtro
 function prepararAccionesComercio(c){
  const body=document.querySelector('.cm-body');if(!body)return;let bar=document.getElementById('cm-extra-actions');if(!bar){bar=document.createElement('div');bar.id='cm-extra-actions';bar.className='cm-extra-actions';body.parentNode.insertBefore(bar,body)}
  const maps='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent((c.direccion||c.barrio||'')+' Concepción del Uruguay Entre Ríos');
- bar.innerHTML=`<button onclick="compartirComercio()">🔗 Compartir</button><a href="${maps}" target="_blank" rel="noopener noreferrer">📍 Cómo llegar</a><button onclick="toggleFavoritoActivo()">${esFavorito(c)?'♥ Guardado':'♡ Favorito'}</button>`;
+ bar.innerHTML=`<button onclick="compartirComercio()">🔗 Compartir publicación</button><a href="${maps}" target="_blank" rel="noopener noreferrer">📍 Cómo llegar</a><button onclick="toggleFavoritoActivo()">${esFavorito(c)?'♥ Guardado':'♡ Favorito'}</button>`;
  history.replaceState(null,'','#comercio='+encodeURIComponent(comercioKey(c)))
 }
-function compartirComercio(){if(!comercioActivo)return;const url=location.href.split('#')[0]+'#comercio='+encodeURIComponent(comercioKey(comercioActivo));if(navigator.share)navigator.share({title:comercioActivo.nombre,url});else navigator.clipboard?.writeText(url).then(()=>toast('🔗 Enlace copiado'))}
+async function compartirComercio(){if(!comercioActivo)return;const url=location.href.split('#')[0]+'#comercio='+encodeURIComponent(comercioKey(comercioActivo)),titulo=comercioActivo.nombre||'Comercio local',texto=`${titulo} · Productos y servicios en Sálvame las Papas`;try{if(navigator.share)await navigator.share({title:titulo,text:texto,url});else{await navigator.clipboard.writeText(texto+'\n'+url);toast('🔗 Texto y enlace copiados para Facebook o Instagram')}}catch(e){if(e.name!=='AbortError')toast('No se pudo compartir. Copiá el enlace e intentá nuevamente.')}}
 function toggleFavoritoActivo(){if(!comercioActivo)return;let idx=Object.entries(window._comercioRefs||{}).find(([,c])=>c===comercioActivo)?.[0];if(idx!==undefined)toggleFavorito(Number(idx));prepararAccionesComercio(comercioActivo)}
 function carritoStorageKey(c){return 'slp_carrito_'+comercioKey(c)}
 function cargarCarritoGuardado(c){try{return JSON.parse(localStorage.getItem(carritoStorageKey(c))||'[]')}catch{return []}}
@@ -5860,7 +5904,6 @@ actualizarEstadoInstalacion();
 (function(){
   if(!('serviceWorker' in navigator)) return;
 
-  const VERSION_SW='v46';
   const aviso=document.getElementById('actualizacion-app');
   const boton=document.getElementById('btn-actualizar-app');
   const buscar=document.getElementById('btn-buscar-actualizacion');
@@ -5903,7 +5946,7 @@ actualizarEstadoInstalacion();
     }
   }
 
-  navigator.serviceWorker.register('./service-worker.js?'+VERSION_SW,{updateViaCache:'none'})
+  navigator.serviceWorker.register('./service-worker.js',{updateViaCache:'none'})
     .then(reg=>{
       registro=reg;
       if(reg.waiting) mostrar(reg);
@@ -5918,10 +5961,8 @@ actualizarEstadoInstalacion();
         });
       });
 
-      buscarActualizacion();
-    setTimeout(buscarActualizacion,1200);
-    setTimeout(buscarActualizacion,5000);
-      setInterval(buscarActualizacion,2*60*1000);
+      setTimeout(buscarActualizacion,1500);
+      setInterval(buscarActualizacion,5*60*1000);
       setTimeout(()=>{['abiertos-home','ofertas-home','destacados-home'].forEach(id=>{const e=document.getElementById(id);if(e&&/Cargando|Consultando/.test(e.textContent))e.innerHTML='<div class="home-empty">No hay información disponible para mostrar en esta sección.</div>'})},6500);
 
     })
@@ -6002,11 +6043,11 @@ document.addEventListener('DOMContentLoaded',prepararCamposPassword);
 let homeSliderTimer=null;
 function precioNumero(valor){return Number(String(valor??'').replace(/[^0-9,.-]/g,'').replace('.','').replace(',','.'))||0}
 function monedaHome(n){return '$'+Number(n||0).toLocaleString('es-AR')}
-function planNombreHome(p){return p===3?'PRO':p===2?'DESTACADO':'BÁSICO'}
+function planNombreHome(p){return p===3?'PRO':p===2?'INTERMEDIO':'BÁSICO'}
 function productoNormalizadoHome(p){return {nombre:p?.n||p?.nombre||'Producto',emoji:p?.e||p?.emoji||'📦',foto:p?.foto||p?.fotos?.[0]||'',fotos:Array.isArray(p?.fotos)?p.fotos:(p?.foto?[p.foto]:[]),precio:precioNumero(p?.precio??p?.p),antes:precioNumero(p?.precioAntes??p?.antes??p?.precio_antes),tipo:String(p?.tipo||'').toLowerCase()}}
 function comercioAbiertoHome(c){return estadoHorarioV39(c?.horarios).estado==='abierto'}
 function fechaComercioV39(c){const v=c?.aprobadoEn||c?.creadoEn||c?.actualizadoEn;if(!v)return null;if(typeof v.toDate==='function')return v.toDate();if(v.seconds)return new Date(v.seconds*1000);const d=new Date(v);return isNaN(d)?null:d}
-function etiquetaComercioV39(c){const f=fechaComercioV39(c);if(f){const d=(Date.now()-f.getTime())/86400000;if(d<=30)return '🆕 Nuevo comercio';if(d>=180)return '🏆 Con trayectoria'}return c.plan>=3?'⭐ Plan destacado':c.plan===2?'✨ Comercio destacado':'🥔 Comercio local'}
+function etiquetaComercioV39(c){const f=fechaComercioV39(c);if(f){const d=(Date.now()-f.getTime())/86400000;if(d<=30)return '🆕 Nuevo comercio';if(d>=180)return '🏆 Con trayectoria'}return c.plan>=3?'⭐ Mayor visibilidad':c.plan===2?'✨ Comercio recomendado':'🥔 Comercio local'}
 function ordenarCarruselV39(l){return [...l].sort((a,b)=>{const fa=fechaComercioV39(a),fb=fechaComercioV39(b),na=fa&&(Date.now()-fa)/86400000<=30?1:0,nb=fb&&(Date.now()-fb)/86400000<=30?1:0;return nb-na||b.plan-a.plan||((fa?.getTime()||0)-(fb?.getTime()||0))})}
 
 function mostrarToastOfertaV54(mensaje){
@@ -6169,7 +6210,7 @@ function renderPlanesV31(){
   grid.innerHTML=arr.map(c=>{
     const realIndex=comerciosTodos.indexOf(c);
     const clase=c.plan===3?'max':c.plan===2?'pro':'basic';
-    const tag=c.plan===3?'PRO / MAX':c.plan===2?'DESTACADO':'BÁSICO';
+    const tag=c.plan===3?'PRO':c.plan===2?'INTERMEDIO':'BÁSICO';
     const foto=(c.productos||[]).find(p=>p&&p.foto)?.foto||'';
     const productos=(c.productos||[]).slice(0,c.plan===3?3:2).map(p=>`<span>${textoSeguro(p.emoji||'📦')} ${textoSeguro(p.nombre||p.n||'Producto')}</span>`).join('');
     return `<article class="plan-card-v31 ${clase}" onclick="abrirHomeComercio(${realIndex})"><span class="plan-tag-v31">${tag}</span><div class="plan-cover-v31">${foto?`<img src="${foto}" alt="${textoSeguro(c.nombre)}" loading="lazy">`:textoSeguro(c.emoji||'🏪')}</div><div class="plan-body-v31"><h3>${textoSeguro(c.nombre||'Comercio')}</h3><div class="plan-meta-v31">${textoSeguro(c.cat||'Comercio')} · ${textoSeguro(c.barrio||'CDU')}<br>${textoSeguro(horarioTexto(c.horarios))}<br>${textoSeguro(c.direccion||'Dirección por confirmar')}<br>${c.tel?'WhatsApp disponible':'WhatsApp no informado'}</div><div class="plan-products-v31">${productos||'<span>Ver productos</span>'}</div></div></article>`;
@@ -6249,6 +6290,10 @@ const cfgV41={
 const appV41=getApps().length?getApps()[0]:initializeApp(cfgV41);
 const dbV41=getFirestore(appV41);
 const escV41=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function ocultarParticularV140(a){
+ const titulo=String(a?.titulo||'').trim(),texto=titulo+' '+String(a?.descripcion||'');
+ return Number(a?.precio||0)<=0 || /\[cite\s*:/i.test(texto) || /\bprueba\b/i.test(texto) || (titulo.toLocaleLowerCase('es-AR')==='clavo usado'&&Number(a?.precio||0)===1);
+}
 async function registrarMetricaParticularV137(id,campo){
   try{
     const mes=`${new Date().getFullYear()}-${String(new Date().getMonth()+1).padStart(2,'0')}`;
@@ -6275,14 +6320,12 @@ async function cargarVendedoresV41(){
       if(!vigenteV41(v))return;
       if(!vistos.has(v.id)){vistos.add(v.id);registrarMetricaParticularV137(v.id,'visitas')}
       (Array.isArray(v.articulos)?v.articulos:[]).forEach((a,i)=>{
-        if(a.vendido===true)return;
+        if(a.vendido===true||ocultarParticularV140(a))return;
         const foto=(Array.isArray(a.fotos)&&a.fotos[0])||'';
         const tel=String(v.whatsapp||'').replace(/\D/g,'');
         const titulo=escV41(a.titulo||'Artículo');
         const precio=Number(a.precio||0);
         const msg=encodeURIComponent(`Hola ${v.nombre||''}. Vi "${a.titulo||'el artículo'}" en Sálvame las Papas y quiero consultarte.`);
-        const mail=encodeURIComponent(`Artículo vendido: ${a.titulo||'sin título'}`);
-        const body=encodeURIComponent(`Hola Sálvame las Papas.\nInformo que se vendió el artículo "${a.titulo||''}" publicado por ${v.nombre||''}.\nWhatsApp: ${v.whatsapp||''}\nCódigo de publicación: ${v.id}`);
         cards.push(`<article class="seller-card-v41">
           ${foto?`<img src="${foto}" alt="${titulo}" loading="lazy">`:`<div style="aspect-ratio:4/3;display:grid;place-items:center;font-size:3rem;background:#eef3f8">🚲</div>`}
           <div class="seller-card-body-v41">
@@ -6292,7 +6335,7 @@ async function cargarVendedoresV41(){
             <div class="seller-desc-v41">${escV41(a.descripcion||'')}</div>
             <div class="seller-actions-v41">
               <a class="seller-wa-v41" target="_blank" rel="noopener" onclick="registrarMetricaParticularV137('${v.id}','clicsWhatsApp')" href="https://wa.me/${tel}?text=${msg}">WhatsApp</a>
-              <a class="seller-sold-v41" href="mailto:salvamelaspapascdelu@gmail.com?subject=${mail}&body=${body}">Avisar vendido</a>
+              <button type="button" class="seller-share-v115" onclick="compartirParticularV115('${encodeURIComponent(a.titulo||'Artículo')}','${v.id}')">Compartir</button>
             </div>
           </div>
         </article>`);
@@ -6303,6 +6346,7 @@ async function cargarVendedoresV41(){
     grid.innerHTML='<div class="seller-empty-v41">Las publicaciones particulares todavía no están disponibles.</div>';
   }
 }
+window.compartirParticularV115=async(tituloCod,id)=>{const titulo=decodeURIComponent(tituloCod),url=location.href.split('#')[0]+'#particular='+encodeURIComponent(id),text=`${titulo} · Venta o alquiler particular\nEncontralo en Sálvame las Papas`;try{if(navigator.share)await navigator.share({title:titulo,text,url});else{await navigator.clipboard.writeText(text+'\n'+url);toast('🔗 Publicación copiada')}}catch(e){if(e.name!=='AbortError')toast('No se pudo compartir')}};
 document.addEventListener('DOMContentLoaded',cargarVendedoresV41);
 </script>
 

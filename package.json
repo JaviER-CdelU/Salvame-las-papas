@@ -1,0 +1,7 @@
+{
+  "name": "salvame-las-papas",
+  "private": true,
+  "scripts": {
+    "verificar": "node verificar-sitio.js"
+  }
+}

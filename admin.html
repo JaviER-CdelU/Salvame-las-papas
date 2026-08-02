@@ -156,8 +156,23 @@ window.cargarVendedoresAdmin=async()=>{
 function renderVendedoresV41(lista){
  const el=document.getElementById('vendedores-lista-v41');
  if(!lista.length){el.innerHTML='<p class="cargando">No hay vendedores particulares registrados.</p>';return}
+ const motivosArticulo=a=>{
+  const titulo=String(a?.titulo||'').trim(),texto=(titulo+' '+String(a?.descripcion||''));
+  const motivos=[];
+  if(Number(a?.precio||0)<=0)motivos.push('precio en $0');
+  if(/\[cite\s*:/i.test(texto))motivos.push('texto [cite:]');
+  if(/\bprueba\b/i.test(texto))motivos.push('indica prueba');
+  if(/\(copia\)/i.test(titulo))motivos.push('título con (copia)');
+  if(titulo.toLocaleLowerCase('es-AR')==='clavo usado'&&Number(a?.precio||0)===1)motivos.push('oculto por pedido del administrador');
+  return motivos;
+ };
+ const totalRevision=lista.reduce((n,v)=>n+(Array.isArray(v.articulos)?v.articulos:[]).filter(a=>motivosArticulo(a).length).length,0);
+ const resumen=document.getElementById('revision-particulares-v140');
+ if(resumen)resumen.innerHTML=totalRevision
+   ? `<strong>⚠️ ${totalRevision} publicación${totalRevision===1?'':'es'} para revisar</strong><span>Podés corregir o eliminar cada artículo desde su ficha.</span>`
+   : '<strong>✅ Sin publicaciones observadas</strong><span>No se detectaron precios en $0, textos [cite:], pruebas ni copias.</span>';
  el.innerHTML=lista.map(v=>{
-  const arts=(Array.isArray(v.articulos)?v.articulos:[]).map((a,i)=>`<div class="vp-art-v41"><b>${esc(a.titulo||'Artículo')}</b><span>$${Number(a.precio||0).toLocaleString('es-AR')}</span><small>${esc(a.estadoArticulo||'')} · ${esc(a.categoria||'')}</small></div>`).join('');
+  const arts=(Array.isArray(v.articulos)?v.articulos:[]).map((a,i)=>{const motivos=motivosArticulo(a);return `<div class="vp-art-v41" style="${motivos.length?'border:2px solid #e3a126;background:#fff8e8':''}"><b>${esc(a.titulo||'Artículo')}</b><span>$${Number(a.precio||0).toLocaleString('es-AR')}</span><small>${esc(a.estadoArticulo||'')} · ${esc(a.categoria||'')}</small>${motivos.length?`<small style="display:block;color:#9a5600;font-weight:900">⚠️ Revisar: ${esc(motivos.join(', '))}</small>`:''}<div style="display:flex;gap:6px;margin-top:7px;flex-wrap:wrap"><button class="btn-accion" onclick="editarArticuloParticularV140('${v.id}',${i})">✏️ Corregir</button><button class="btn-accion btn-borrar" onclick="eliminarArticuloParticularV140('${v.id}',${i})">🗑️ Eliminar artículo</button></div></div>`}).join('');
   const badge=v.estado==='activo'?'<span class="badge badge-activo">✅ Activo</span>':v.estado==='rechazado'?'<span class="badge badge-rechazado">❌ Rechazado</span>':'<span class="badge badge-pendiente">⏳ Pendiente</span>';
   let acciones='';
   if(v.estado==='pendiente')acciones=`<button class="btn-accion btn-aprobar" onclick="aprobarVendedorV41('${v.id}')">✅ Aprobar pago</button><button class="btn-accion btn-rechazar" onclick="estadoVendedorV41('${v.id}','rechazado')">❌ Rechazar</button>`;
@@ -179,6 +194,25 @@ window.aprobarVendedorV41=async id=>{
 window.renovarVendedorV41=async id=>{const vence=new Date();vence.setDate(vence.getDate()+30);await updateDoc(doc(db,'vendedoresParticulares',id),{estado:'activo',estadoPago:'acreditado',vencimiento:Timestamp.fromDate(vence),actualizadoEn:serverTimestamp()});toast('✅ Renovado por 30 días');cargarComerciosAdmin()};
 window.estadoVendedorV41=async(id,estado)=>{await updateDoc(doc(db,'vendedoresParticulares',id),{estado,actualizadoEn:serverTimestamp()});cargarComerciosAdmin()};
 window.borrarVendedorV41=async id=>{if(!confirm('¿Eliminar esta publicación particular?'))return;await deleteDoc(doc(db,'vendedoresParticulares',id));cargarComerciosAdmin()};
+window.editarArticuloParticularV140=async(id,indice)=>{
+ const vendedor=vendedoresParticularesAdmin.find(v=>v.id===id),articulos=Array.isArray(vendedor?.articulos)?vendedor.articulos.map(a=>({...a})):[];
+ const actual=articulos[indice];if(!actual)return;
+ const titulo=prompt('Título del artículo:',actual.titulo||'');if(titulo===null)return;
+ const precioTexto=prompt('Precio del artículo:',String(Number(actual.precio||0)));if(precioTexto===null)return;
+ const descripcion=prompt('Descripción del artículo:',actual.descripcion||'');if(descripcion===null)return;
+ const precio=Number(String(precioTexto).replace(',','.'));
+ if(!titulo.trim()||!Number.isFinite(precio)||precio<=0||/\[cite\s*:/i.test(titulo+' '+descripcion)){alert('No se guardó. El título es obligatorio, el precio debe ser mayor que $0 y no puede quedar texto [cite:].');return}
+ articulos[indice]={...actual,titulo:titulo.trim(),precio,descripcion:descripcion.trim()};
+ await updateDoc(doc(db,'vendedoresParticulares',id),{articulos,actualizadoEn:serverTimestamp()});toast('✅ Artículo corregido');cargarVendedoresAdmin();
+};
+window.eliminarArticuloParticularV140=async(id,indice)=>{
+ const vendedor=vendedoresParticularesAdmin.find(v=>v.id===id),articulos=Array.isArray(vendedor?.articulos)?vendedor.articulos:[ ];
+ const actual=articulos[indice];if(!actual||!confirm(`¿Eliminar solamente "${actual.titulo||'este artículo'}"?`))return;
+ const restantes=articulos.filter((_a,i)=>i!==indice);
+ if(!restantes.length)await deleteDoc(doc(db,'vendedoresParticulares',id));
+ else await updateDoc(doc(db,'vendedoresParticulares',id),{articulos:restantes,actualizadoEn:serverTimestamp()});
+ toast('✅ Artículo eliminado');cargarVendedoresAdmin();
+};
 window.notificarVendedorV41=(tel,nombre)=>window.open('https://wa.me/'+tel+'?text='+encodeURIComponent('Hola '+decodeURIComponent(nombre||'')+'. Te contactamos desde Sálvame las Papas por tu publicación particular.'),'_blank');
 window.verPanelV41=panel=>{
  document.getElementById('panel-comercios-v41').style.display=panel==='comercios'?'block':'none';
@@ -201,8 +235,8 @@ function urlComercioV55(c){
 }
 function planCortoV55(plan){
   const p=String(plan||'').toLowerCase();
-  if(p.includes('45')||p.includes('pro'))return 'COMERCIO PRO';
-  if(p.includes('30')||p.includes('destacado')||p.includes('max'))return 'COMERCIO DESTACADO';
+  if(p.includes('30')||p.includes('intermedio')||p.includes('destacado'))return 'COMERCIO INTERMEDIO';
+  if(p.includes('45')||p.includes('pro')||p.includes('max'))return 'COMERCIO PRO';
   return 'NUEVO COMERCIO';
 }
 function textoBienvenidaV55(c){
@@ -458,10 +492,11 @@ function renderListaAdmin(lista){
       rechazado: '<span class="badge badge-rechazado">❌ Rechazado</span>',
     }[c.estado] || '<span class="badge badge-pendiente">⏳ Pendiente</span>'
     
-    const planBadge = c.plan?.includes('Max')
-      ? '<span class="plan-badge plan-max">MAX</span>'
-      : c.plan?.includes('Pro')
-        ? '<span class="plan-badge plan-pro">PRO</span>'
+    const textoPlan=String(c.plan||'').toLowerCase()
+    const planBadge = textoPlan.includes('45') || textoPlan.includes('max') || (textoPlan.includes('pro') && !textoPlan.includes('30'))
+      ? '<span class="plan-badge plan-max">PRO</span>'
+      : textoPlan.includes('30') || textoPlan.includes('intermedio') || textoPlan.includes('destacado')
+        ? '<span class="plan-badge plan-pro">INTERMEDIO</span>'
         : '<span class="plan-badge plan-bas">BÁSICO</span>'
     
     const pagos  = Array.isArray(c.pagos)  ? c.pagos.join(', ')  : (c.pagos||'—')
@@ -620,6 +655,60 @@ function toast(msg){
   t.classList.add('show')
   setTimeout(() => t.classList.remove('show'), 4000)
 }
+
+function valorParaRespaldoV141(valor){
+  if(valor===null || valor===undefined || typeof valor!=='object')return valor;
+  if(typeof valor.toDate==='function'){
+    try{return valor.toDate().toISOString()}catch(_e){return String(valor)}
+  }
+  if(Array.isArray(valor))return valor.map(valorParaRespaldoV141);
+  const limpio={};
+  Object.entries(valor).forEach(([clave,dato])=>{
+    if(typeof dato!=='function')limpio[clave]=valorParaRespaldoV141(dato);
+  });
+  return limpio;
+}
+
+window.descargarRespaldoV141=async()=>{
+  const usuario=auth.currentUser,boton=document.getElementById('btn-respaldo-v141');
+  if(!usuario || (usuario.email||'').toLowerCase()!==ADMIN_EMAIL){toast('⚠️ Iniciá sesión con la cuenta administradora.');return}
+  if(boton){boton.disabled=true;boton.textContent='Preparando respaldo…'}
+  try{
+    const mes=`${new Date().getFullYear()}-${String(new Date().getMonth()+1).padStart(2,'0')}`;
+    const [comerciosSnap,particularesSnap,pedidosSnap]=await Promise.all([
+      getDocs(collection(db,'comercios')),
+      getDocs(collection(db,'vendedoresParticulares')),
+      getDocs(collection(db,'pedidos')).catch(()=>null)
+    ]);
+    const comercios=await Promise.all(comerciosSnap.docs.map(async registro=>{
+      const [productosSnap,metrica]=await Promise.all([
+        getDocs(collection(db,'comercios',registro.id,'productos')).catch(()=>null),
+        getDoc(doc(db,'comercios',registro.id,'metricas',mes)).catch(()=>null)
+      ]);
+      return {id:registro.id,...valorParaRespaldoV141(registro.data()),productos:productosSnap?productosSnap.docs.map(p=>({id:p.id,...valorParaRespaldoV141(p.data())})):[],metricasMes:metrica?.exists()?valorParaRespaldoV141(metrica.data()):{}};
+    }));
+    const particulares=await Promise.all(particularesSnap.docs.map(async registro=>{
+      const metrica=await getDoc(doc(db,'vendedoresParticulares',registro.id,'metricas',mes)).catch(()=>null);
+      return {id:registro.id,...valorParaRespaldoV141(registro.data()),metricasMes:metrica?.exists()?valorParaRespaldoV141(metrica.data()):{}};
+    }));
+    const pedidos=pedidosSnap?pedidosSnap.docs.map(registro=>({id:registro.id,...valorParaRespaldoV141(registro.data())})):[];
+    const ahora=new Date(),dos=n=>String(n).padStart(2,'0'),marca=`${ahora.getFullYear()}-${dos(ahora.getMonth()+1)}-${dos(ahora.getDate())}_${dos(ahora.getHours())}-${dos(ahora.getMinutes())}`;
+    const respaldo={
+      sistema:'Sálvame las Papas',
+      generadoEn:ahora.toISOString(),
+      periodoMetricas:mes,
+      contenido:{comercios:comercios.length,particulares:particulares.length,pedidos:pedidos.length},
+      comercios,particulares,pedidos
+    };
+    const enlace=document.createElement('a');
+    enlace.href=URL.createObjectURL(new Blob([JSON.stringify(respaldo,null,2)],{type:'application/json'}));
+    enlace.download=`respaldo-salvame-las-papas_${marca}.json`;
+    document.body.appendChild(enlace);enlace.click();enlace.remove();
+    setTimeout(()=>URL.revokeObjectURL(enlace.href),2000);
+    toast(`✅ Respaldo descargado: ${comercios.length} comercios, ${particulares.length} particulares y ${pedidos.length} pedidos.`);
+  }catch(error){console.error('Respaldo:',error);toast('❌ No se pudo preparar el respaldo. Revisá la conexión y las reglas de Firebase.')}
+  finally{if(boton){boton.disabled=false;boton.textContent='⬇ Descargar respaldo'}}
+};
 
 // Registrar todas las funciones como globales
 window._adminFns = {
@@ -1079,7 +1168,8 @@ img{max-width:100%;height:auto}
 <meta name="apple-mobile-web-app-title" content="Sálvame">
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
-<meta name="app-version" content="V90">
+<meta name="app-version" content="V140">
+<script src="./version-global.js" defer></script>
 </head>
 <body>
 
@@ -1142,7 +1232,7 @@ img{max-width:100%;height:auto}
     <!-- RESUMEN DE ACTIVIDAD V84 -->
     <section class="admin-welcome-v84">
       <div><span class="admin-kicker-v84">PANEL DEL EDITOR RESPONSABLE</span><h1>Control general de Sálvame las Papas</h1><p>Aprobaciones, actividad y seguimiento de la plataforma en un solo lugar.</p></div>
-      <button type="button" onclick="cargarResumenV84();cargarComerciosAdmin()">↻ Actualizar panel</button>
+      <div style="display:flex;gap:9px;flex-wrap:wrap"><button id="btn-respaldo-v141" type="button" onclick="descargarRespaldoV141()">⬇ Descargar respaldo</button><button type="button" onclick="cargarResumenV84();cargarComerciosAdmin()">↻ Actualizar panel</button></div>
     </section>
     <section class="metrics-grid-v84" aria-label="Métricas generales">
       <article><span class="metric-icon-v84 blue">👁️</span><div><strong id="met-visitas-v84">—</strong><small>Visitas totales</small></div></article>
@@ -1202,6 +1292,7 @@ img{max-width:100%;height:auto}
       </div>
       <button class="btn-reload" type="button" onclick="cargarVendedoresAdmin()">↺ Actualizar particulares</button>
     </div>
+    <div id="revision-particulares-v140" style="display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:0 0 14px;padding:12px 14px;border:1px solid #edcb7a;border-radius:12px;background:#fff8e8;color:#754700"><strong>Revisando publicaciones…</strong></div>
     <div id="vendedores-lista-v41">
       <p class="cargando">Abrí esta pestaña para cargar los vendedores particulares.</p>
     </div>

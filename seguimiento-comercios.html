@@ -6,7 +6,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
 <meta name="description" content="Seguimiento privado de comercios y particulares de Sálvame las Papas."/>
 <meta name="theme-color" content="#002A6A"/>
-<meta name="app-version" content="V139"/>
+<meta name="app-version" content="V140"/>
+<script src="./version-global.js" defer></script>
 <title>Seguimiento de comercios y particulares — Sálvame las Papas</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script type="module">
@@ -54,9 +55,9 @@ function fechaTexto(valor){
   const d = aFecha(valor);
   return d ? d.toLocaleDateString('es-AR') : 'Sin registrar';
 }
-function fechaBase(c){ return aFecha(c.aprobadoEn) || aFecha(c.creadoEn); }
+function fechaBase(c){ return aFecha(c.aprobadoEn) || aFecha(c.creadoEn) || aFecha(c.fechaRegistro) || aFecha(c.createdAt); }
 function vencimiento(c){
-  const guardado = aFecha(c.tipoRegistro==='particular' ? c.vencimiento : c.proximaRenovacion);
+  const guardado = aFecha(c.tipoRegistro==='particular' ? (c.vencimiento || c.proximaRenovacion) : (c.proximaRenovacion || c.vencimiento));
   if(guardado) return guardado;
   const base = fechaBase(c);
   if(!base || c.estado !== 'activo') return null;
@@ -81,10 +82,17 @@ function planInfo(c){
   if(c.tipoRegistro==='particular') return {nombre:'Particular', precio:10000};
   const p = String(c.plan || '').toLowerCase();
   if(p.includes('45.000') || p.includes('45000') || p.includes('max')) return {nombre:'Pro', precio:45000};
-  if(p.includes('30.000') || p.includes('30000') || p.includes('destacado') || p.includes('nivel 2')) return {nombre:'Destacado', precio:30000};
+  if(p.includes('30.000') || p.includes('30000') || p.includes('intermedio') || p.includes('destacado') || p.includes('nivel 2')) return {nombre:'Intermedio', precio:30000};
   if(p.includes('15.000') || p.includes('15000') || p.includes('básico') || p.includes('basico') || p.includes('nivel 1')) return {nombre:'Básico', precio:15000};
   if(p.includes('pro')) return {nombre:'Pro', precio:45000};
   return {nombre:'Básico', precio:15000};
+}
+function numeroMetrica(...valores){
+  for(const valor of valores){
+    const numero=Number(valor);
+    if(Number.isFinite(numero) && numero>=0) return numero;
+  }
+  return 0;
 }
 
 onAuthStateChanged(auth, async user => {
@@ -114,8 +122,8 @@ async function cargar(){
     try{ snap = await getDocs(query(collection(db,'comercios'), orderBy('creadoEn','desc'))); }
     catch{ snap = await getDocs(collection(db,'comercios')); }
     snapParticulares = await getDocs(collection(db,'vendedoresParticulares'));
-    comercios=[]; snap.forEach(d=>comercios.push({id:d.id,tipoRegistro:'comercio',...d.data()}));
-    particulares=[]; snapParticulares.forEach(d=>particulares.push({id:d.id,tipoRegistro:'particular',...d.data()}));
+    comercios=[]; snap.forEach(d=>comercios.push({id:d.id,...d.data(),tipoRegistro:'comercio'}));
+    particulares=[]; snapParticulares.forEach(d=>particulares.push({id:d.id,...d.data(),tipoRegistro:'particular'}));
     const mes=`${new Date().getFullYear()}-${String(new Date().getMonth()+1).padStart(2,'0')}`;
     registros=[...comercios,...particulares];
     await Promise.all(registros.map(async r=>{
@@ -144,7 +152,9 @@ function aplicarFiltros(){
   let arr=registros.filter(c=>{
     const coincide=!q || [c.nombre,c.categoria,c.barrio,c.localidad,c.telefono,c.whatsapp,c.email,c.emailPrivado,c.plan].some(v=>String(v||'').toLowerCase().includes(q));
     const grupo=semaforo(c).grupo;
-    return coincide && (filtroActual==='todos' || grupo===filtroActual);
+    const coincideTipo=filtroActual==='comercios'?c.tipoRegistro==='comercio':filtroActual==='particulares'?c.tipoRegistro==='particular':true;
+    const coincideEstado=['todos','comercios','particulares'].includes(filtroActual) || grupo===filtroActual;
+    return coincide && coincideTipo && coincideEstado;
   });
   arr.sort((a,b)=>{
     const da=diasRestantes(a), db=diasRestantes(b);
@@ -161,20 +171,23 @@ function render(arr){
     const s=semaforo(c), p=planInfo(c), d=diasRestantes(c), tel=String(c.telefono||c.whatsapp||'').replace(/\D/g,'');
     const esParticular=c.tipoRegistro==='particular';
     const met=c.metricasMes||{};
-    const visitas=Number(met.visitas??c.visitas??0);
-    const clicsWA=Number(met.clicsWhatsApp??c.clicsWhatsApp??0);
-    const operaciones=Number(c.operacionesConcretadas??c.pedidosConfirmados??0);
+    const visitas=numeroMetrica(met.visitas,c.visitas);
+    const clicsWA=numeroMetrica(met.clicsWhatsApp,met.whatsapp,c.clicsWhatsApp,c.whatsappClicks);
+    const consultas=numeroMetrica(met.consultas,c.consultas,c.consultasRecibidas,clicsWA);
+    const pedidos=numeroMetrica(met.pedidos,met.pedidosRecibidos,c.pedidos,c.pedidosRecibidos);
+    const operaciones=numeroMetrica(met.operacionesConcretadas,c.operacionesConcretadas,c.pedidosConfirmados);
     const articulos=esParticular?(Array.isArray(c.articulos)?c.articulos:[]):[];
     const detalle=esParticular?articulos.map(a=>esc(a.titulo||'Artículo')+' ('+(a.tipoOperacion==='alquiler'?'alquiler':'venta')+')').join(' · '):esc(c.categoria||'Sin categoría');
-    return `<article class="ficha ${s.clase}">
+    const clasePlan=esParticular?'particular':p.nombre.toLowerCase();
+    return `<article class="ficha ${s.clase} plan-${clasePlan}">
       <header class="ficha-titulo ${s.clase}">
         <div class="ficha-identidad"><span class="tipo-registro ${esParticular?'tipo-particular':'tipo-comercio'}">${esParticular?'🚲 PARTICULAR':'🏪 COMERCIO'}</span><h2>${esc(c.nombre||(esParticular?'Particular sin nombre':'Comercio sin nombre'))}</h2></div>
         <div class="ficha-alerta"><span class="estado-tiempo ${s.clase}">${esc(s.etiqueta)}</span><span class="estado-comercio">${esc(c.estado||'pendiente')}</span></div>
       </header>
       <div class="datos">
-        <div><b>📅 Ingreso</b><span>${fechaTexto(c.creadoEn)}</span></div>
+        <div><b>📅 Inscripción</b><span>${fechaTexto(c.creadoEn || c.fechaRegistro || c.createdAt)}</span></div>
         <div><b>✅ Aprobación</b><span>${fechaTexto(c.aprobadoEn)}</span></div>
-        <div><b>💼 Plan</b><span>${esc(p.nombre)} — $${p.precio.toLocaleString('es-AR')}</span></div>
+        <div><b>💼 Plan</b><span class="plan-distintivo plan-${clasePlan}">${esc(p.nombre)} — $${p.precio.toLocaleString('es-AR')}</span></div>
         <div><b>💳 Último pago</b><span>${fechaTexto(c.ultimoPagoEn || c.aprobadoEn)}</span></div>
         <div><b>🔔 Vencimiento</b><span>${fechaTexto(vencimiento(c))} · ${d===null?'sin días calculados':d<0?'vencido hace '+Math.abs(d)+' días':d+' días restantes'}</span></div>
         <div><b>${esParticular?'🏷️ Avisos':'🏷️ Rubro'}</b><span>${detalle||'Sin artículos'}</span></div>
@@ -182,12 +195,14 @@ function render(arr){
         <div><b>✉️ Correo</b><span>${esc(c.email||c.emailPrivado||'Sin correo')}</span></div>
         <div><b>👁️ Visitas del mes</b><span>${visitas.toLocaleString('es-AR')}</span></div>
         <div><b>💬 Clics en WhatsApp del mes</b><span>${clicsWA.toLocaleString('es-AR')}</span></div>
-        <div><b>${esParticular?'🤝 Operaciones concretadas':'🧾 Pedidos confirmados'}</b><span>${operaciones.toLocaleString('es-AR')}</span></div>
+        <div><b>❓ Consultas del mes</b><span>${consultas.toLocaleString('es-AR')}</span></div>
+        <div><b>🧾 Pedidos recibidos</b><span>${pedidos.toLocaleString('es-AR')}</span></div>
+        <div><b>🤝 Operaciones concretadas</b><span>${operaciones.toLocaleString('es-AR')} <small>(registro manual)</small></span></div>
       </div>
       <div class="acciones">
         <button class="primario" onclick="registrarPago('${c.id}','${encodeURIComponent(c.nombre||'')}','${c.tipoRegistro}')">💰 Registrar pago +30 días</button>
         <button onclick="cambiarFecha('${c.id}','${c.tipoRegistro}')">📆 Cambiar vencimiento</button>
-        ${esParticular?`<button onclick="registrarOperacion('${c.id}','${encodeURIComponent(c.nombre||'')}')">🤝 Sumar operación concretada</button>`:''}
+        <button onclick="registrarOperacion('${c.id}','${encodeURIComponent(c.nombre||'')}','${c.tipoRegistro}')">🤝 Sumar operación concretada</button>
         <button onclick="recordar('${tel}','${encodeURIComponent(c.nombre||'')}',${d===null?'null':d})" ${tel?'':'disabled'}>💬 Preparar WhatsApp</button>
         <button onclick="prepararCorreo('${encodeURIComponent(c.email||'')}','${encodeURIComponent(c.nombre||'')}',${d===null?'null':d})" ${c.email?'':'disabled'}>✉️ Preparar correo</button>
         <a href="admin.html">⚙️ Ver en administración</a>
@@ -218,10 +233,11 @@ window.cambiarFecha = async (id,tipo='comercio') => {
   try{ await updateDoc(doc(db,coleccion,id),{[campo]:Timestamp.fromDate(fecha),actualizadoEn:serverTimestamp()}); toast('✅ Fecha actualizada'); await cargar(); }
   catch(e){toast('Error: '+e.message);}
 };
-window.registrarOperacion=async(id,nombreCod)=>{
+window.registrarOperacion=async(id,nombreCod,tipo='comercio')=>{
   const nombre=decodeURIComponent(nombreCod||'');
   if(!confirm('¿Sumar una operación concretada para '+nombre+'?'))return;
-  try{await updateDoc(doc(db,'vendedoresParticulares',id),{operacionesConcretadas:increment(1),actualizadoEn:serverTimestamp()});toast('✅ Operación concretada registrada');await cargar()}
+  const coleccion=tipo==='particular'?'vendedoresParticulares':'comercios';
+  try{await updateDoc(doc(db,coleccion,id),{operacionesConcretadas:increment(1),actualizadoEn:serverTimestamp()});toast('✅ Operación concretada registrada');await cargar()}
   catch(e){toast('Error: '+e.message)}
 };
 window.recordar = (tel,nombreCod,dias) => {
@@ -436,6 +452,19 @@ main{width:min(1720px,100%);margin:auto;padding:20px 16px 50px}.cabecera{display
 @media(max-width:720px){.lista{grid-template-columns:1fr}.nav-links{order:3;width:100%}nav{flex-wrap:wrap}.ficha-titulo h2{font-size:1.65rem}.datos span{font-size:1rem}.datos b{font-size:.82rem}}
 @media(max-width:600px){main{padding:16px 9px 40px}.cabecera{align-items:flex-start;flex-direction:column}.resumen{grid-template-columns:repeat(2,minmax(0,1fr))}.datos{grid-template-columns:repeat(2,minmax(0,1fr))}.ficha-titulo{padding:10px 11px}.estado-comercio{white-space:normal;text-align:center}.acciones>*{width:100%;text-align:center}.controles input{min-width:100%}}
 
+/* El borde identifica el plan; el cartel de días conserva el semáforo de vencimiento. */
+.ficha.plan-basico{border-color:#c9c1ad;box-shadow:0 4px 14px #8b806528}
+.ficha.plan-intermedio{border-color:#78a9d6;box-shadow:0 4px 14px #3779b52b}
+.ficha.plan-pro{border-color:#f28a18;box-shadow:0 4px 14px #dc741f32}
+.ficha.plan-particular{border-color:#8d58bd;box-shadow:0 4px 14px #6d329b2b}
+.plan-distintivo{display:inline-block!important;width:max-content;max-width:100%;border-radius:999px;padding:4px 8px;color:#152033!important;font-weight:1000!important}
+.plan-distintivo.plan-basico{background:#e9e4d8;border:1px solid #c9c1ad}
+.plan-distintivo.plan-intermedio{background:#dcecff;border:1px solid #78a9d6;color:#164d7d!important}
+.plan-distintivo.plan-pro{background:#ffe2c2;border:1px solid #f28a18;color:#843b00!important}
+.plan-distintivo.plan-particular{background:#eadcf7;border:1px solid #8d58bd;color:#59277d!important}
+.datos small{font-size:.7rem;color:#687386;font-weight:700}
+.leyenda-planes{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}.leyenda-planes span{border-radius:999px;padding:5px 9px;font-size:.78rem;font-weight:900}.leyenda-basico{background:#e9e4d8;border:1px solid #c9c1ad}.leyenda-intermedio{background:#dcecff;border:1px solid #78a9d6;color:#164d7d}.leyenda-pro{background:#ffe2c2;border:1px solid #f28a18;color:#843b00}.leyenda-particular{background:#eadcf7;border:1px solid #8d58bd;color:#59277d}
+
 /* ===== SEGUIMIENTO AVANZADO ===== */
 .resumen-avanzado{
   display:grid;
@@ -585,7 +614,7 @@ main{width:min(1720px,100%);margin:auto;padding:20px 16px 50px}.cabecera{display
 .admin-scope-note a{color:#d85e00;font-weight:900}
 
 </style>
-<meta name="app-version" content="V79">
+<meta name="app-version" content="V140">
 </head>
 <body>
 <section id="login" class="login"><div class="login-box"><h1>Sálvame las Papas 🥔</h1><h2>Seguimiento de comercios y particulares</h2><p>Sección privada para Administración.</p><button onclick="entrarGoogle()">Ingresar con Google</button><div id="login-error" class="login-error" hidden></div></div></section>
@@ -600,6 +629,7 @@ main{width:min(1720px,100%);margin:auto;padding:20px 16px 50px}.cabecera{display
 
 <main>
   <div class="cabecera"><div><h1>Seguimiento y renovaciones</h1><p>Comercios y particulares aparecen juntos. Cada ficha muestra alta, vencimiento, días, visitas, WhatsApp y operaciones.</p></div><button class="actualizar" onclick="cargar()">↻ Actualizar</button></div>
+  <div class="leyenda-planes" aria-label="Colores de planes"><span class="leyenda-basico">Básico</span><span class="leyenda-intermedio">Intermedio</span><span class="leyenda-pro">Pro</span><span class="leyenda-particular">Particular</span></div>
   <section class="resumen">
     <div class="resumen-card"><strong id="r-total">—</strong><span>Total</span></div>
     <div class="resumen-card vigente"><strong id="r-vigente">—</strong><span>Más de 7 días</span></div>
@@ -611,6 +641,8 @@ main{width:min(1720px,100%);margin:auto;padding:20px 16px 50px}.cabecera{display
   <div class="controles">
     <input id="buscar" oninput="buscar()" placeholder="Buscar comercio, particular, artículo, teléfono o plan…"/>
     <button class="filtro activo" data-f="todos" onclick="filtrar('todos')">Todos</button>
+    <button class="filtro" data-f="comercios" onclick="filtrar('comercios')">🏪 Comercios</button>
+    <button class="filtro" data-f="particulares" onclick="filtrar('particulares')">🚲 Particulares</button>
     <button class="filtro" data-f="vigente" onclick="filtrar('vigente')">🟢 Vigentes</button>
     <button class="filtro" data-f="aviso" onclick="filtrar('aviso')">🟡 7 a 4 días</button>
     <button class="filtro" data-f="urgente" onclick="filtrar('urgente')">🟠 3 a 1 día</button>
@@ -632,7 +664,7 @@ main{width:min(1720px,100%);margin:auto;padding:20px 16px 50px}.cabecera{display
     <label>Plan</label>
     <select id="pago-plan">
       <option value="Basico">Básico</option>
-      <option value="Destacado">Destacado</option>
+      <option value="Intermedio">Intermedio</option>
       <option value="Pro">Pro</option>
     </select>
     <label>Medio de pago</label>

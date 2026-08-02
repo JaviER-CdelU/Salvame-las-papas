@@ -6,7 +6,8 @@
 <meta name="description" content="Panel de comercios de Sálvame las Papas para administrar productos y disponibilidad."/>
 <meta name="theme-color" content="#002A6A"/>
 <meta name="color-scheme" content="light"/>
-<meta name="app-version" content="V129"/>
+<meta name="app-version" content="V140"/>
+<script src="./version-global.js" defer></script>
 <title>Mi Comercio — Sálvame las Papas 🥔</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
@@ -268,13 +269,19 @@ async function cargarProductos(){
   } catch(e){ console.warn(e) }
 }
 
+function nivelPlanComercio(plan){
+  const texto=String(plan||'').toLowerCase()
+  if(texto.includes('45.000')||texto.includes('45000')||texto.includes('max')||(texto.includes('pro')&&!texto.includes('30'))) return 3
+  if(texto.includes('30.000')||texto.includes('30000')||texto.includes('intermedio')||texto.includes('destacado')||texto.includes('pro ($30')) return 2
+  return 1
+}
+
 function renderProductos(){
   const grid = document.getElementById('productos-grid')
   const counter = document.getElementById('prod-counter')
   
   // Límite según plan
-  const limite = miComercio?.plan?.includes('Max') ? 65
-    : miComercio?.plan?.includes('Pro') ? 25 : 10
+  const limite = ({1:10,2:30,3:60})[nivelPlanComercio(miComercio?.plan)]
   
   if(counter) counter.textContent = misProductos.length + ' / ' + limite + ' productos'
 
@@ -412,7 +419,7 @@ window.seleccionarHojaV129=id=>{hojaProductoV129=id;renderHojaPublicacionesV129(
 function renderHojaPublicacionesV129(){
  const lista=misProductos.filter(p=>hojaFiltroV129==='ofertas'?esOfertaV129(p):hojaFiltroV129==='disponibles'?p.disponible!==false:true),grid=document.getElementById('publish-grid-v124');
  document.querySelectorAll('#publish-filters-v124 button').forEach(b=>b.classList.toggle('active',b.dataset.filter===hojaFiltroV129));
- grid.innerHTML=lista.length?lista.map(p=>{const foto=(Array.isArray(p.fotos)&&p.fotos.find(Boolean))||p.foto||'';return`<article class="publish-choice ${p.id===hojaProductoV129?'selected':''}" onclick="seleccionarHojaV129('${p.id}')">${foto?`<img src="${esc(foto)}" alt="${esc(p.nombre)}">`:`<div class="no-photo">${p.emoji||'📦'}</div>`}<div class="publish-choice-copy"><strong>${esc(p.nombre||'Producto')}</strong><small>$${Number(p.precio||0).toLocaleString('es-AR')}</small>${esOfertaV129(p)?'<span> · OFERTA</span>':''}</div></article>`}).join(''):'<p>No hay productos en este filtro.</p>';
+ grid.innerHTML=lista.length?lista.map(p=>{const foto=(Array.isArray(p.fotos)&&p.fotos.find(Boolean))||p.foto||'';return`<article class="publish-choice ${p.id===hojaProductoV129?'selected':''}" onclick="seleccionarHojaV129('${p.id}')">${foto?`<img src="${esc(foto)}" alt="${esc(p.nombre)}" loading="lazy" decoding="async">`:`<div class="no-photo">${p.emoji||'📦'}</div>`}<div class="publish-choice-copy"><strong>${esc(p.nombre||'Producto')}</strong><small>$${Number(p.precio||0).toLocaleString('es-AR')}</small>${esOfertaV129(p)?'<span> · OFERTA</span>':''}</div></article>`}).join(''):'<p>No hay productos en este filtro.</p>';
  const p=misProductos.find(x=>x.id===hojaProductoV129),prev=document.getElementById('publish-preview-v124'),fb=document.getElementById('publish-facebook-v124'),ig=document.getElementById('publish-instagram-v124'),instagramCargado=!!direccionRedV118('instagram'),esTelefono=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)||navigator.userAgentData?.mobile===true;fb.disabled=ig.disabled=!p;ig.textContent=instagramCargado?(esTelefono?'◎ Compartir desde el teléfono':'◎ Preparar y abrir mi Instagram'):'＋ Agregar Instagram';
  if(!p){prev.innerHTML='<div class="publish-preview-copy"><h3>Elegí un producto</h3></div>';return}
  const foto=(Array.isArray(p.fotos)&&p.fotos.find(Boolean))||p.foto||'';prev.innerHTML=`${foto?`<img src="${esc(foto)}" alt="${esc(p.nombre)}">`:`<div class="no-photo">${p.emoji||'📦'}</div>`}<div class="publish-preview-copy"><span>SALVAME-LAS-PAPAS.VERCEL.APP</span><h3>${esc(p.nombre||'Producto')} — $${Number(p.precio||0).toLocaleString('es-AR')}</h3><p>Disponible en ${esc(miComercio?.nombre||'este comercio')}.</p></div>`;
@@ -423,8 +430,7 @@ window.compartirSeleccionHojaV129=()=>{if(!hojaProductoV129)return;window.compar
 
 // ── Carga rápida de varios productos ──
 function limiteProductosActual(){
-  return miComercio?.plan?.includes('Max') ? 65
-    : miComercio?.plan?.includes('Pro') ? 25 : 10
+  return ({1:10,2:30,3:60})[nivelPlanComercio(miComercio?.plan)]
 }
 
 function lineasCargaRapida(){
@@ -557,8 +563,7 @@ document.addEventListener('input',e=>{
 let fotosProductoActuales=['','','',''];
 
 function limiteFotosPlan(){
-  return miComercio?.plan?.includes('Max') ? 4
-    : (miComercio?.plan?.includes('Pro') || miComercio?.plan?.includes('Destacado')) ? 2 : 1;
+  return ({1:1,2:2,3:4})[nivelPlanComercio(miComercio?.plan)];
 }
 function renderFotosProducto(){
   const limite=limiteFotosPlan();
@@ -662,9 +667,11 @@ window.guardarProducto = async () => {
 
   if(!nombre){ toast('⚠️ Ponele un nombre al producto'); return }
   if(!precio){ toast('⚠️ Falta el precio'); return }
+  if(Number(String(precio).replace(',','.'))<=0){ toast('⚠️ El precio debe ser mayor que $0'); return }
+  if(/\[cite\s*:/i.test(nombre+' '+desc)){ toast('⚠️ Quitá el texto [cite:] antes de guardar'); return }
+  if(/\bprueba\b|\(copia\)/i.test(nombre+' '+desc)&&!confirm('El producto contiene “prueba” o “(copia)”. ¿Querés guardarlo igualmente?'))return
 
-  const limite = miComercio?.plan?.includes('Max') ? 65
-    : miComercio?.plan?.includes('Pro') ? 25 : 10
+  const limite = ({1:10,2:30,3:60})[nivelPlanComercio(miComercio?.plan)]
   if(!id && misProductos.length >= limite){
     toast('⚠️ Llegaste al límite de ' + limite + ' productos de tu plan')
     return
@@ -719,12 +726,13 @@ window.borrarProducto = async (id, nombre) => {
 }
 
 
+function conTiempoLimiteComercioV140(promesa,mensaje,ms=20000){return Promise.race([promesa,new Promise((_r,rechazar)=>setTimeout(()=>rechazar(new Error(mensaje)),ms))])}
 async function cargarPedidos(){
   if(!miComercioId) return
   const cont=document.getElementById('pedidos-lista')
   misPedidos=[]
   try{
-    const snap=await getDocs(query(collection(db,'pedidos'),where('comercioId','==',miComercioId)))
+    const snap=await conTiempoLimiteComercioV140(getDocs(query(collection(db,'pedidos'),where('comercioId','==',miComercioId))),'La carga de pedidos tardó demasiado. Revisá Internet y tocá Actualizar.')
     snap.forEach(d=>misPedidos.push({id:d.id,...d.data()}))
     misPedidos.sort((a,b)=>(b.creadoEn?.seconds||0)-(a.creadoEn?.seconds||0))
     renderPedidos()
@@ -746,13 +754,14 @@ function renderPedidos(){
     return `<article class="pedido-card">
       <div class="pedido-head"><div><strong>Pedido #${esc(p.id.slice(0,8).toUpperCase())}</strong><small>${esc(fecha)}</small></div><span class="pedido-status">${esc(p.estado||'pendiente')}</span></div>
       <div class="pedido-grid"><div><b>Cliente</b>${esc(p.clienteNombre||'—')}<br><a href="https://wa.me/${tel}" target="_blank" rel="noopener noreferrer">${esc(p.clienteTelefono||'—')}</a><br><small>${esc(p.clienteEmail||'')}</small></div><div><b>Entrega y pago</b>${esc(p.entrega||'—')}<br>${esc(p.direccion||'')}<br>${esc(p.pago||'—')} · ${esc(p.estadoPago||'pendiente')}</div><div><b>Productos</b>${items}</div><div><b>Total</b><strong class="pedido-total">$${Number(p.total||0).toLocaleString('es-AR')}</strong>${p.observaciones?'<small>'+esc(p.observaciones)+'</small>':''}</div></div>
-      <div class="pedido-actions"><button onclick="cambiarEstadoPedido('${p.id}','confirmado')">✅ Confirmar</button><button onclick="cambiarEstadoPedido('${p.id}','en preparación')">👨‍🍳 Preparando</button><button onclick="cambiarEstadoPedido('${p.id}','entregado')">📦 Entregado</button><button onclick="cambiarEstadoPedido('${p.id}','cancelado')">❌ Cancelar</button></div>
+      <div class="pedido-actions"><button onclick="cambiarEstadoPedido('${p.id}','recibido')">📥 Recibido</button><button onclick="cambiarEstadoPedido('${p.id}','confirmado')">✅ Confirmado</button><button onclick="cambiarEstadoPedido('${p.id}','preparado')">📦 Preparado</button><button onclick="cambiarEstadoPedido('${p.id}','entregado')">🚚 Entregado</button><button onclick="cambiarEstadoPedido('${p.id}','cancelado')">❌ Cancelar</button><button onclick="cambiarEstadoPagoPedidoV140('${p.id}','pago verificado')">💳 Pago verificado</button><button onclick="cambiarEstadoPagoPedidoV140('${p.id}','pago pendiente')">⏳ Pago pendiente</button></div>
     </article>`
   }).join('')
 }
 window.cambiarEstadoPedido=async(id,estado)=>{
-  try{await updateDoc(doc(db,'pedidos',id),{estado,actualizadoEn:serverTimestamp()});toast('Pedido actualizado: '+estado);await cargarPedidos()}catch(e){toast('Error: '+e.message)}
+  try{await conTiempoLimiteComercioV140(updateDoc(doc(db,'pedidos',id),{estado,actualizadoEn:serverTimestamp()}),'La actualización tardó demasiado.');toast('Pedido actualizado: '+estado);await cargarPedidos()}catch(e){toast('Error: '+e.message)}
 }
+window.cambiarEstadoPagoPedidoV140=async(id,estadoPago)=>{try{await conTiempoLimiteComercioV140(updateDoc(doc(db,'pedidos',id),{estadoPago,actualizadoEn:serverTimestamp()}),'La actualización del pago tardó demasiado.');toast('Pago actualizado: '+estadoPago);await cargarPedidos()}catch(e){toast('Error: '+e.message)}}
 
 function mostrarSeccion(id){
   ['sin-comercio','mi-panel'].forEach(s => {
@@ -873,7 +882,7 @@ async function cargarMetricasV60(){
     if(isNaN(f)||Number(f)===0){pedidosSinFecha++;return true}
     return f>=desde;
   });
-  const confirmados=pedidosMes.filter(p=>['confirmado','en preparación','entregado'].includes(String(p.estado||'').toLowerCase())).length;
+  const confirmados=pedidosMes.filter(p=>['confirmado','preparado','en preparación','entregado'].includes(String(p.estado||'').toLowerCase())).length;
   const entregados=pedidosMes.filter(p=>String(p.estado||'').toLowerCase()==='entregado').length;
   const total=pedidosMes.filter(p=>String(p.estado||'').toLowerCase()!=='cancelado').reduce((s,p)=>s+Number(p.total||0),0);
   document.getElementById('m-visitas-v60').textContent=visitas.toLocaleString('es-AR');
@@ -1426,14 +1435,14 @@ img{max-width:100%;height:auto}
 <meta name="apple-mobile-web-app-title" content="Sálvame">
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
-<meta name="app-version" content="V129">
+<meta name="app-version" content="V140">
 </head>
 <body>
 
 <!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
-    <span class="owner-login-kicker">PANEL DEL COMERCIO · V129</span>
+    <span class="owner-login-kicker">PANEL DEL COMERCIO · <span data-app-version>V140</span></span>
     <div class="login-logo">Sálvame <em>las Papas 🥔</em></div>
     <h1 class="owner-login-title">Administrá tu comercio</h1>
     <p class="owner-login-help">
@@ -1470,7 +1479,7 @@ img{max-width:100%;height:auto}
 <!-- PANEL -->
 <div id="panel-screen">
   <nav class="panel-nav">
-    <div class="panel-logo">Sálvame <em>las Papas</em> — Panel del comercio <span class="panel-version">V129</span></div>
+    <div class="panel-logo">Sálvame <em>las Papas</em> — Panel del comercio <span class="panel-version" data-app-version>V140</span></div>
     <nav class="site-switcher" aria-label="Navegación del sitio">
       <a href="index.html">🏠 Inicio general</a>
       <a href="comprar.html">🛒 Ver como cliente</a>
@@ -1691,7 +1700,7 @@ img{max-width:100%;height:auto}
         <div class="photo-slot-v28" id="photo-slot-2"><img id="mp-foto-preview-2" alt="Foto 3"><label for="mp-foto-file-2">＋ Foto 3</label><input id="mp-foto-file-2" type="file" accept="image/*" hidden><button type="button" onclick="quitarFotoProducto(2)">✕</button></div>
         <div class="photo-slot-v28" id="photo-slot-3"><img id="mp-foto-preview-3" alt="Foto 4"><label for="mp-foto-file-3">＋ Foto 4</label><input id="mp-foto-file-3" type="file" accept="image/*" hidden><button type="button" onclick="quitarFotoProducto(3)">✕</button></div>
       </div>
-      <small class="photo-help">Básico: 1 foto · Pro ($30.000): 2 fotos · Max ($45.000): hasta 4 fotos.</small>
+      <small class="photo-help">Básico: 1 foto · Intermedio ($30.000): 2 fotos · Pro ($45.000): hasta 4 fotos.</small>
     </div>
 
 
