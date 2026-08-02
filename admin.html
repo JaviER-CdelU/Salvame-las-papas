@@ -141,6 +141,11 @@ window.cargarVendedoresAdmin=async()=>{
   const snap=await getDocs(collection(db,'vendedoresParticulares'));
   vendedoresParticularesAdmin=[];
   snap.forEach(d=>vendedoresParticularesAdmin.push({id:d.id,...d.data()}));
+  const mes=`${new Date().getFullYear()}-${String(new Date().getMonth()+1).padStart(2,'0')}`;
+  await Promise.all(vendedoresParticularesAdmin.map(async v=>{
+    try{const m=await getDoc(doc(db,'vendedoresParticulares',v.id,'metricas',mes));v.metricasMes=m.exists()?m.data():{}}
+    catch(_e){v.metricasMes={}}
+  }));
   vendedoresParticularesAdmin.sort((a,b)=>{
     const ax=a.creadoEn?.seconds||0,bx=b.creadoEn?.seconds||0;return bx-ax;
   });
@@ -158,19 +163,22 @@ function renderVendedoresV41(lista){
   if(v.estado==='pendiente')acciones=`<button class="btn-accion btn-aprobar" onclick="aprobarVendedorV41('${v.id}')">✅ Aprobar pago</button><button class="btn-accion btn-rechazar" onclick="estadoVendedorV41('${v.id}','rechazado')">❌ Rechazar</button>`;
   else if(v.estado==='activo')acciones=`<button class="btn-accion btn-rechazar" onclick="estadoVendedorV41('${v.id}','suspendido')">⏸ Suspender</button><button class="btn-accion btn-aprobar" onclick="renovarVendedorV41('${v.id}')">🔄 Renovar 30 días</button>`;
   else acciones=`<button class="btn-accion btn-aprobar" onclick="aprobarVendedorV41('${v.id}')">♻️ Reactivar</button>`;
+  const alta=v.creadoEn?.toDate?v.creadoEn.toDate():null,vence=v.vencimiento?.toDate?v.vencimiento.toDate():null;
+  const dias=vence?Math.ceil((new Date(vence.getFullYear(),vence.getMonth(),vence.getDate())-new Date(new Date().getFullYear(),new Date().getMonth(),new Date().getDate()))/86400000):null;
+  const met=v.metricasMes||{};
   return `<div class="comercio-card"><div class="cc-header"><div class="cc-title-row"><h3 class="cc-nombre">${esc(v.nombre||'Vendedor particular')}</h3>${badge}<span class="plan-badge plan-part-v41">PARTICULAR</span></div><div class="cc-meta">${esc(v.localidad||'CDU')} · $10.000 / 30 días</div></div>
-  <div class="cc-body"><div class="cc-grid"><div class="cc-field"><span class="cc-label">🔐 Cuenta privada</span><span>${esc(v.emailPrivado||'—')}</span></div><div class="cc-field"><span class="cc-label">📱 WhatsApp</span><a class="wa-link" target="_blank" href="https://wa.me/${String(v.whatsapp||'').replace(/\D/g,'')}">${esc(v.whatsapp||'—')}</a></div><div class="cc-field"><span class="cc-label">🚚 Entrega</span><span>${esc(v.entrega||'—')}</span></div><div class="cc-field"><span class="cc-label">💳 Pago</span><span>${esc(v.estadoPago||'pendiente')}</span></div><div class="cc-field"><span class="cc-label">📅 Vencimiento</span><span>${v.vencimiento?.toDate?v.vencimiento.toDate().toLocaleDateString('es-AR'):'—'}</span></div></div><div class="vp-arts-v41">${arts}</div></div>
+  <div class="cc-body"><div class="cc-grid"><div class="cc-field"><span class="cc-label">📅 Inscripción</span><span>${alta?alta.toLocaleDateString('es-AR'):'—'}</span></div><div class="cc-field"><span class="cc-label">🔐 Cuenta privada</span><span>${esc(v.emailPrivado||'—')}</span></div><div class="cc-field"><span class="cc-label">📱 WhatsApp</span><a class="wa-link" target="_blank" href="https://wa.me/${String(v.whatsapp||'').replace(/\D/g,'')}">${esc(v.whatsapp||'—')}</a></div><div class="cc-field"><span class="cc-label">🚚 Entrega</span><span>${esc(v.entrega||'—')}</span></div><div class="cc-field"><span class="cc-label">💳 Pago</span><span>${esc(v.estadoPago||'pendiente')}</span></div><div class="cc-field"><span class="cc-label">📅 Vencimiento</span><span>${vence?vence.toLocaleDateString('es-AR'):'—'}${dias===null?'':` · ${dias<0?'vencido hace '+Math.abs(dias):dias+' días restantes'}`}</span></div><div class="cc-field"><span class="cc-label">👁️ Visitas del mes</span><span>${Number(met.visitas||0).toLocaleString('es-AR')}</span></div><div class="cc-field"><span class="cc-label">💬 WhatsApp del mes</span><span>${Number(met.clicsWhatsApp||0).toLocaleString('es-AR')}</span></div><div class="cc-field"><span class="cc-label">🤝 Operaciones concretadas</span><span>${Number(v.operacionesConcretadas||0).toLocaleString('es-AR')}</span></div></div><div class="vp-arts-v41">${arts}</div></div>
   <div class="cc-footer">${acciones}<button class="btn-accion btn-reset-v50" onclick="enviarRecuperacionV50('${safeArg(v.emailPrivado||'')}','${safeArg(v.nombre||'')}')">🔑 Recuperar acceso</button><button class="btn-accion btn-wa" onclick="notificarVendedorV41('${String(v.whatsapp||'').replace(/\D/g,'')}','${safeArg(v.nombre||'')}')">💬 WhatsApp</button><button class="btn-accion btn-borrar" onclick="borrarVendedorV41('${v.id}')">🗑️ Eliminar</button></div></div>`;
  }).join('');
 }
 window.aprobarVendedorV41=async id=>{
  const ahora=new Date(),vence=new Date();vence.setDate(vence.getDate()+30);
  await updateDoc(doc(db,'vendedoresParticulares',id),{estado:'activo',estadoPago:'acreditado',aprobadoEn:serverTimestamp(),vencimiento:Timestamp.fromDate(vence),actualizadoEn:serverTimestamp()});
- toast('✅ Vendedor particular aprobado por 30 días');cargarVendedoresAdmin();
+ toast('✅ Vendedor particular aprobado por 30 días');cargarComerciosAdmin();
 };
-window.renovarVendedorV41=async id=>{const vence=new Date();vence.setDate(vence.getDate()+30);await updateDoc(doc(db,'vendedoresParticulares',id),{estado:'activo',estadoPago:'acreditado',vencimiento:Timestamp.fromDate(vence),actualizadoEn:serverTimestamp()});toast('✅ Renovado por 30 días');cargarVendedoresAdmin()};
-window.estadoVendedorV41=async(id,estado)=>{await updateDoc(doc(db,'vendedoresParticulares',id),{estado,actualizadoEn:serverTimestamp()});cargarVendedoresAdmin()};
-window.borrarVendedorV41=async id=>{if(!confirm('¿Eliminar esta publicación particular?'))return;await deleteDoc(doc(db,'vendedoresParticulares',id));cargarVendedoresAdmin()};
+window.renovarVendedorV41=async id=>{const vence=new Date();vence.setDate(vence.getDate()+30);await updateDoc(doc(db,'vendedoresParticulares',id),{estado:'activo',estadoPago:'acreditado',vencimiento:Timestamp.fromDate(vence),actualizadoEn:serverTimestamp()});toast('✅ Renovado por 30 días');cargarComerciosAdmin()};
+window.estadoVendedorV41=async(id,estado)=>{await updateDoc(doc(db,'vendedoresParticulares',id),{estado,actualizadoEn:serverTimestamp()});cargarComerciosAdmin()};
+window.borrarVendedorV41=async id=>{if(!confirm('¿Eliminar esta publicación particular?'))return;await deleteDoc(doc(db,'vendedoresParticulares',id));cargarComerciosAdmin()};
 window.notificarVendedorV41=(tel,nombre)=>window.open('https://wa.me/'+tel+'?text='+encodeURIComponent('Hola '+decodeURIComponent(nombre||'')+'. Te contactamos desde Sálvame las Papas por tu publicación particular.'),'_blank');
 window.verPanelV41=panel=>{
  document.getElementById('panel-comercios-v41').style.display=panel==='comercios'?'block':'none';
@@ -352,7 +360,13 @@ window.cargarResumenV84=async()=>{
       try{const m=await getDoc(doc(db,'comercios',c.id,'metricas',mes));return m.exists()?m.data():{}}
       catch(_e){return {}}
     }));
-    const totales=metricas.reduce((a,m)=>({
+    const particularesSnap=await getDocs(collection(db,'vendedoresParticulares'));
+    const particulares=[];particularesSnap.forEach(x=>particulares.push({id:x.id,...x.data()}));
+    const metricasParticulares=await Promise.all(particulares.map(async v=>{
+      try{const m=await getDoc(doc(db,'vendedoresParticulares',v.id,'metricas',mes));return m.exists()?m.data():{}}
+      catch(_e){return {}}
+    }));
+    const totales=[...metricas,...metricasParticulares].reduce((a,m)=>({
       visitas:a.visitas+numeroMetricaV84(m.visitas),
       whatsapp:a.whatsapp+numeroMetricaV84(m.clicsWhatsApp||m.whatsappClicks),
       verComercio:a.verComercio+numeroMetricaV84(m.clicsVerComercio||m.verComercio||m.aperturas),
@@ -361,14 +375,16 @@ window.cargarResumenV84=async()=>{
 
     let pedidos=[];
     try{const ps=await getDocs(collection(db,'pedidos'));ps.forEach(x=>pedidos.push(x.data()))}catch(_e){}
-    const completados=pedidos.filter(x=>['completado','entregado','finalizado','cerrado'].includes(String(x.estado||'').toLowerCase())).length;
+    const completadosComercios=pedidos.filter(x=>['completado','entregado','finalizado','cerrado'].includes(String(x.estado||'').toLowerCase())).length;
+    const completadosParticulares=particulares.reduce((n,v)=>n+numeroMetricaV84(v.operacionesConcretadas),0);
+    const completados=completadosComercios+completadosParticulares;
     mostrarNumeroV84('met-visitas-v84',totales.visitas);
     mostrarNumeroV84('met-ver-v84',totales.verComercio);
     mostrarNumeroV84('met-wa-v84',totales.whatsapp);
     mostrarNumeroV84('met-productos-v84',totales.productos);
     mostrarNumeroV84('met-pedidos-v84',pedidos.length);
     mostrarNumeroV84('met-cerrados-v84',completados);
-    if(estado)estado.textContent=`Datos acumulados del mes ${mes}. “Operaciones cerradas” requiere que el pedido esté marcado como completado, entregado, finalizado o cerrado.`;
+    if(estado)estado.textContent=`Datos acumulados del mes ${mes}, incluyendo comercios y particulares. “Operaciones cerradas” suma pedidos finalizados y operaciones particulares registradas.`;
   }catch(e){
     if(estado)estado.textContent='No se pudieron cargar todas las métricas. Los comercios y aprobaciones siguen disponibles.';
   }
@@ -390,6 +406,7 @@ window.cargarComerciosAdmin = async () => {
     const snap = await getDocs(query(collection(db,'comercios'), orderBy('creadoEn','desc')))
     todosComerciosAdmin = []
     snap.forEach(d => todosComerciosAdmin.push({id: d.id, ...d.data()}))
+    await cargarVendedoresAdmin()
     
     actualizarContadores()
     filtrarAdmin('todos')
@@ -425,12 +442,12 @@ window.filtrarAdmin = (filtro) => {
 function renderListaAdmin(lista){
   const el = document.getElementById('admin-lista')
   
-  if(lista.length === 0){
+  if(lista.length === 0 && !(lista===todosComerciosAdmin && vendedoresParticularesAdmin.length)){
     el.innerHTML = '<p class="cargando">No hay comercios en esta categoría</p>'
     return
   }
   
-  el.innerHTML = lista.map(c => {
+  const comerciosHtml = lista.map(c => {
     const fecha = c.creadoEn?.toDate
       ? c.creadoEn.toDate().toLocaleDateString('es-AR', {day:'2-digit',month:'2-digit',year:'numeric', hour:'2-digit',minute:'2-digit'})
       : 'Sin fecha'
@@ -507,6 +524,11 @@ function renderListaAdmin(lista){
       </div>
     </div>`
   }).join('')
+  const incluyeTodos=lista===todosComerciosAdmin;
+  const particularesHtml=incluyeTodos&&vendedoresParticularesAdmin.length
+    ? `<div class="vendedores-integrados-v137"><h2>🚲 Particulares</h2><p>También forman parte del seguimiento general.</p></div>${document.getElementById('vendedores-lista-v41')?.innerHTML||''}`
+    : '';
+  el.innerHTML=comerciosHtml+particularesHtml;
 }
 
 
@@ -1123,9 +1145,9 @@ img{max-width:100%;height:auto}
       <button type="button" onclick="cargarResumenV84();cargarComerciosAdmin()">↻ Actualizar panel</button>
     </section>
     <section class="metrics-grid-v84" aria-label="Métricas generales">
-      <article><span class="metric-icon-v84 blue">👁️</span><div><strong id="met-visitas-v84">—</strong><small>Visitas a comercios</small></div></article>
+      <article><span class="metric-icon-v84 blue">👁️</span><div><strong id="met-visitas-v84">—</strong><small>Visitas totales</small></div></article>
       <article><span class="metric-icon-v84 cyan">🏪</span><div><strong id="met-ver-v84">—</strong><small>Clics en Ver comercio</small></div></article>
-      <article><span class="metric-icon-v84 green">💬</span><div><strong id="met-wa-v84">—</strong><small>Clics en WhatsApp</small></div></article>
+      <article><span class="metric-icon-v84 green">💬</span><div><strong id="met-wa-v84">—</strong><small>WhatsApp total</small></div></article>
       <article><span class="metric-icon-v84 purple">📦</span><div><strong id="met-productos-v84">—</strong><small>Productos vistos</small></div></article>
       <article><span class="metric-icon-v84 orange">🧾</span><div><strong id="met-pedidos-v84">—</strong><small>Pedidos registrados</small></div></article>
       <article><span class="metric-icon-v84 navy">✅</span><div><strong id="met-cerrados-v84">—</strong><small>Operaciones cerradas</small></div></article>

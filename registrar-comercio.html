@@ -6237,7 +6237,7 @@ window.addEventListener('load',()=>setTimeout(()=>{
 
 <script type="module" id="seller-public-loader-v41">
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, getDocs, query, where, doc, setDoc, increment, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const cfgV41={
   apiKey:"AIzaSyAE8kEBAzDbPvCCD1KCyjq67iFl3dvthLM",
   authDomain:"salvame-las-papas-cdelu.firebaseapp.com",
@@ -6249,6 +6249,15 @@ const cfgV41={
 const appV41=getApps().length?getApps()[0]:initializeApp(cfgV41);
 const dbV41=getFirestore(appV41);
 const escV41=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+async function registrarMetricaParticularV137(id,campo){
+  try{
+    const mes=`${new Date().getFullYear()}-${String(new Date().getMonth()+1).padStart(2,'0')}`;
+    await setDoc(doc(dbV41,'vendedoresParticulares',id,'metricas',mes),{
+      visitas:increment(campo==='visitas'?1:0),clicsWhatsApp:increment(campo==='clicsWhatsApp'?1:0),actualizadoEn:serverTimestamp()
+    },{merge:true});
+  }catch(_e){}
+}
+window.registrarMetricaParticularV137=registrarMetricaParticularV137;
 function vigenteV41(v){
   if(String(v.estado||'').toLowerCase()!=='activo') return false;
   const f=v.vencimiento?.toDate?v.vencimiento.toDate():new Date(v.vencimiento||0);
@@ -6260,9 +6269,11 @@ async function cargarVendedoresV41(){
   try{
     const snap=await getDocs(query(collection(dbV41,'vendedoresParticulares'),where('estado','==','activo')));
     const cards=[];
+    const vistos=new Set();
     snap.forEach(d=>{
       const v={id:d.id,...d.data()};
       if(!vigenteV41(v))return;
+      if(!vistos.has(v.id)){vistos.add(v.id);registrarMetricaParticularV137(v.id,'visitas')}
       (Array.isArray(v.articulos)?v.articulos:[]).forEach((a,i)=>{
         if(a.vendido===true)return;
         const foto=(Array.isArray(a.fotos)&&a.fotos[0])||'';
@@ -6280,7 +6291,7 @@ async function cargarVendedoresV41(){
             <div class="seller-meta-v41">${a.tipoOperacion==='alquiler'?'🔑 Alquiler':'🏷️ Venta'} · ${escV41(a.estadoArticulo||'Usado')} · ${escV41(a.zona||v.localidad||'Concepción del Uruguay')}</div>
             <div class="seller-desc-v41">${escV41(a.descripcion||'')}</div>
             <div class="seller-actions-v41">
-              <a class="seller-wa-v41" target="_blank" rel="noopener" href="https://wa.me/${tel}?text=${msg}">WhatsApp</a>
+              <a class="seller-wa-v41" target="_blank" rel="noopener" onclick="registrarMetricaParticularV137('${v.id}','clicsWhatsApp')" href="https://wa.me/${tel}?text=${msg}">WhatsApp</a>
               <a class="seller-sold-v41" href="mailto:salvamelaspapascdelu@gmail.com?subject=${mail}&body=${body}">Avisar vendido</a>
             </div>
           </div>

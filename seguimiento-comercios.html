@@ -4,14 +4,14 @@
 <meta charset="UTF-8"/>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-<meta name="description" content="Seguimiento privado de comercios de Sálvame las Papas."/>
+<meta name="description" content="Seguimiento privado de comercios y particulares de Sálvame las Papas."/>
 <meta name="theme-color" content="#002A6A"/>
-<meta name="app-version" content="V123"/>
-<title>Seguimiento de comercios — Sálvame las Papas</title>
+<meta name="app-version" content="V137"/>
+<title>Seguimiento de comercios y particulares — Sálvame las Papas</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, updateDoc, query, orderBy, serverTimestamp, Timestamp }
+import { getFirestore, collection, getDocs, getDoc, doc, updateDoc, query, orderBy, serverTimestamp, Timestamp, increment }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -32,6 +32,8 @@ const provider = new GoogleAuthProvider();
 provider.setCustomParameters({prompt:'select_account'});
 const ADMIN_EMAIL = 'salvamelaspapascdelu@gmail.com';
 let comercios = [];
+let particulares = [];
+let registros = [];
 let filtroActual = 'todos';
 
 const $ = id => document.getElementById(id);
@@ -54,7 +56,7 @@ function fechaTexto(valor){
 }
 function fechaBase(c){ return aFecha(c.aprobadoEn) || aFecha(c.creadoEn); }
 function vencimiento(c){
-  const guardado = aFecha(c.proximaRenovacion);
+  const guardado = aFecha(c.tipoRegistro==='particular' ? c.vencimiento : c.proximaRenovacion);
   if(guardado) return guardado;
   const base = fechaBase(c);
   if(!base || c.estado !== 'activo') return null;
@@ -76,6 +78,7 @@ function semaforo(c){
   return {clase:'vigente', etiqueta:`Faltan ${d} días`, grupo:'vigente'};
 }
 function planInfo(c){
+  if(c.tipoRegistro==='particular') return {nombre:'Particular', precio:10000};
   const p = String(c.plan || '').toLowerCase();
   if(p.includes('45.000') || p.includes('45000') || p.includes('max')) return {nombre:'Pro', precio:45000};
   if(p.includes('30.000') || p.includes('30000') || p.includes('destacado') || p.includes('nivel 2')) return {nombre:'Destacado', precio:30000};
@@ -107,10 +110,21 @@ function mostrarError(t){ $('login-error').textContent=t; $('login-error').hidde
 async function cargar(){
   $('lista').innerHTML='<div class="cargando">Cargando seguimiento… 🥔</div>';
   try{
-    let snap;
+    let snap, snapParticulares;
     try{ snap = await getDocs(query(collection(db,'comercios'), orderBy('creadoEn','desc'))); }
     catch{ snap = await getDocs(collection(db,'comercios')); }
-    comercios=[]; snap.forEach(d=>comercios.push({id:d.id,...d.data()}));
+    snapParticulares = await getDocs(collection(db,'vendedoresParticulares'));
+    comercios=[]; snap.forEach(d=>comercios.push({id:d.id,tipoRegistro:'comercio',...d.data()}));
+    particulares=[]; snapParticulares.forEach(d=>particulares.push({id:d.id,tipoRegistro:'particular',...d.data()}));
+    const mes=`${new Date().getFullYear()}-${String(new Date().getMonth()+1).padStart(2,'0')}`;
+    registros=[...comercios,...particulares];
+    await Promise.all(registros.map(async r=>{
+      try{
+        const coleccion=r.tipoRegistro==='particular'?'vendedoresParticulares':'comercios';
+        const m=await getDoc(doc(db,coleccion,r.id,'metricas',mes));
+        if(m.exists()) r.metricasMes=m.data();
+      }catch(_e){r.metricasMes={}}
+    }));
     actualizarResumen(); aplicarFiltros();
   }catch(e){
     $('lista').innerHTML='<div class="error">No se pudieron cargar los comercios. Revisá la conexión y las reglas de Firebase.</div>';
@@ -120,15 +134,15 @@ window.cargar = cargar;
 
 function actualizarResumen(){
   const grupos={vigente:0,aviso:0,urgente:0,hoy:0,vencido:0,pendiente:0};
-  comercios.forEach(c=>grupos[semaforo(c).grupo]++);
-  $('r-total').textContent=comercios.length;
+  registros.forEach(c=>grupos[semaforo(c).grupo]++);
+  $('r-total').textContent=registros.length;
   Object.keys(grupos).forEach(k=>{ const el=$('r-'+k); if(el) el.textContent=grupos[k]; });
 }
 window.filtrar = f => { filtroActual=f; document.querySelectorAll('.filtro').forEach(b=>b.classList.toggle('activo',b.dataset.f===f)); aplicarFiltros(); };
 function aplicarFiltros(){
   const q=$('buscar').value.trim().toLowerCase();
-  let arr=comercios.filter(c=>{
-    const coincide=!q || [c.nombre,c.categoria,c.barrio,c.telefono,c.email,c.plan].some(v=>String(v||'').toLowerCase().includes(q));
+  let arr=registros.filter(c=>{
+    const coincide=!q || [c.nombre,c.categoria,c.barrio,c.localidad,c.telefono,c.whatsapp,c.email,c.emailPrivado,c.plan].some(v=>String(v||'').toLowerCase().includes(q));
     const grupo=semaforo(c).grupo;
     return coincide && (filtroActual==='todos' || grupo===filtroActual);
   });
@@ -142,12 +156,19 @@ function aplicarFiltros(){
 window.buscar = aplicarFiltros;
 
 function render(arr){
-  if(!arr.length){ $('lista').innerHTML='<div class="vacio">No hay comercios en esta categoría.</div>'; return; }
+  if(!arr.length){ $('lista').innerHTML='<div class="vacio">No hay comercios ni particulares en esta categoría.</div>'; return; }
   $('lista').innerHTML=arr.map(c=>{
-    const s=semaforo(c), p=planInfo(c), d=diasRestantes(c), tel=String(c.telefono||'').replace(/\D/g,'');
+    const s=semaforo(c), p=planInfo(c), d=diasRestantes(c), tel=String(c.telefono||c.whatsapp||'').replace(/\D/g,'');
+    const esParticular=c.tipoRegistro==='particular';
+    const met=c.metricasMes||{};
+    const visitas=Number(met.visitas??c.visitas??0);
+    const clicsWA=Number(met.clicsWhatsApp??c.clicsWhatsApp??0);
+    const operaciones=Number(c.operacionesConcretadas??c.pedidosConfirmados??0);
+    const articulos=esParticular?(Array.isArray(c.articulos)?c.articulos:[]):[];
+    const detalle=esParticular?articulos.map(a=>esc(a.titulo||'Artículo')+' ('+(a.tipoOperacion==='alquiler'?'alquiler':'venta')+')').join(' · '):esc(c.categoria||'Sin categoría');
     return `<article class="ficha ${s.clase}">
       <header class="ficha-titulo ${s.clase}">
-        <div><span class="estado-tiempo">${esc(s.etiqueta)}</span><h2>${esc(c.nombre||'Comercio sin nombre')}</h2></div>
+        <div><span class="estado-tiempo">${esc(s.etiqueta)}</span><h2>${esc(c.nombre||(esParticular?'Particular sin nombre':'Comercio sin nombre'))}</h2><small>${esParticular?'🚲 PARTICULAR':'🏪 COMERCIO'}</small></div>
         <span class="estado-comercio">${esc(c.estado||'pendiente')}</span>
       </header>
       <div class="datos">
@@ -155,17 +176,18 @@ function render(arr){
         <div><b>✅ Aprobación</b><span>${fechaTexto(c.aprobadoEn)}</span></div>
         <div><b>💼 Plan</b><span>${esc(p.nombre)} — $${p.precio.toLocaleString('es-AR')}</span></div>
         <div><b>💳 Último pago</b><span>${fechaTexto(c.ultimoPagoEn || c.aprobadoEn)}</span></div>
-        <div><b>🔔 Próxima renovación</b><span>${fechaTexto(vencimiento(c))}</span></div>
-        <div><b>🏷️ Rubro</b><span>${esc(c.categoria||'Sin categoría')}</span></div>
-        <div><b>📱 Teléfono</b><span>${esc(c.telefono||'Sin teléfono')}</span></div>
-        <div><b>✉️ Correo</b><span>${esc(c.email||'Sin correo')}</span></div>
-        <div><b>👁️ Visitas</b><span>${Number(c.visitas||0).toLocaleString('es-AR')}</span></div>
-        <div><b>💬 Clics en WhatsApp</b><span>${Number(c.clicsWhatsApp||0).toLocaleString('es-AR')}</span></div>
-        <div><b>🧾 Pedidos confirmados</b><span>${Number(c.pedidosConfirmados||0).toLocaleString('es-AR')}</span></div>
+        <div><b>🔔 Vencimiento</b><span>${fechaTexto(vencimiento(c))} · ${d===null?'sin días calculados':d<0?'vencido hace '+Math.abs(d)+' días':d+' días restantes'}</span></div>
+        <div><b>${esParticular?'🏷️ Avisos':'🏷️ Rubro'}</b><span>${detalle||'Sin artículos'}</span></div>
+        <div><b>📱 WhatsApp</b><span>${esc(c.telefono||c.whatsapp||'Sin teléfono')}</span></div>
+        <div><b>✉️ Correo</b><span>${esc(c.email||c.emailPrivado||'Sin correo')}</span></div>
+        <div><b>👁️ Visitas del mes</b><span>${visitas.toLocaleString('es-AR')}</span></div>
+        <div><b>💬 Clics en WhatsApp del mes</b><span>${clicsWA.toLocaleString('es-AR')}</span></div>
+        <div><b>${esParticular?'🤝 Operaciones concretadas':'🧾 Pedidos confirmados'}</b><span>${operaciones.toLocaleString('es-AR')}</span></div>
       </div>
       <div class="acciones">
-        <button class="primario" onclick="registrarPago('${c.id}','${encodeURIComponent(c.nombre||'')}')">💰 Registrar pago +30 días</button>
-        <button onclick="cambiarFecha('${c.id}')">📆 Cambiar vencimiento</button>
+        <button class="primario" onclick="registrarPago('${c.id}','${encodeURIComponent(c.nombre||'')}','${c.tipoRegistro}')">💰 Registrar pago +30 días</button>
+        <button onclick="cambiarFecha('${c.id}','${c.tipoRegistro}')">📆 Cambiar vencimiento</button>
+        ${esParticular?`<button onclick="registrarOperacion('${c.id}','${encodeURIComponent(c.nombre||'')}')">🤝 Sumar operación concretada</button>`:''}
         <button onclick="recordar('${tel}','${encodeURIComponent(c.nombre||'')}',${d===null?'null':d})" ${tel?'':'disabled'}>💬 Preparar WhatsApp</button>
         <button onclick="prepararCorreo('${encodeURIComponent(c.email||'')}','${encodeURIComponent(c.nombre||'')}',${d===null?'null':d})" ${c.email?'':'disabled'}>✉️ Preparar correo</button>
         <a href="admin.html">⚙️ Ver en administración</a>
@@ -174,23 +196,33 @@ function render(arr){
   }).join('');
 }
 
-window.registrarPago = async (id,nombreCod) => {
+window.registrarPago = async (id,nombreCod,tipo='comercio') => {
   const nombre=decodeURIComponent(nombreCod||'');
   if(!confirm('¿Registrar el pago de '+nombre+' y renovar por 30 días?')) return;
   const inicio=new Date(); const proxima=new Date(inicio); proxima.setDate(proxima.getDate()+30);
   try{
-    await updateDoc(doc(db,'comercios',id),{
-      ultimoPagoEn:Timestamp.fromDate(inicio), proximaRenovacion:Timestamp.fromDate(proxima),
+    const coleccion=tipo==='particular'?'vendedoresParticulares':'comercios';
+    const fechaCampo=tipo==='particular'?'vencimiento':'proximaRenovacion';
+    await updateDoc(doc(db,coleccion,id),{
+      ultimoPagoEn:Timestamp.fromDate(inicio), [fechaCampo]:Timestamp.fromDate(proxima),
       estadoPagoPlan:'acreditado', estadoSuscripcion:'activo', estado:'activo', actualizadoEn:serverTimestamp()
     });
     toast('✅ Pago registrado. Próxima renovación: '+proxima.toLocaleDateString('es-AR')); await cargar();
   }catch(e){ toast('Error: '+e.message); }
 };
-window.cambiarFecha = async id => {
+window.cambiarFecha = async (id,tipo='comercio') => {
   const valor=prompt('Nueva fecha de vencimiento (AAAA-MM-DD):'); if(!valor) return;
   const fecha=new Date(valor+'T12:00:00'); if(isNaN(fecha)){toast('Fecha inválida');return;}
-  try{ await updateDoc(doc(db,'comercios',id),{proximaRenovacion:Timestamp.fromDate(fecha),actualizadoEn:serverTimestamp()}); toast('✅ Fecha actualizada'); await cargar(); }
+  const coleccion=tipo==='particular'?'vendedoresParticulares':'comercios';
+  const campo=tipo==='particular'?'vencimiento':'proximaRenovacion';
+  try{ await updateDoc(doc(db,coleccion,id),{[campo]:Timestamp.fromDate(fecha),actualizadoEn:serverTimestamp()}); toast('✅ Fecha actualizada'); await cargar(); }
   catch(e){toast('Error: '+e.message);}
+};
+window.registrarOperacion=async(id,nombreCod)=>{
+  const nombre=decodeURIComponent(nombreCod||'');
+  if(!confirm('¿Sumar una operación concretada para '+nombre+'?'))return;
+  try{await updateDoc(doc(db,'vendedoresParticulares',id),{operacionesConcretadas:increment(1),actualizadoEn:serverTimestamp()});toast('✅ Operación concretada registrada');await cargar()}
+  catch(e){toast('Error: '+e.message)}
 };
 window.recordar = (tel,nombreCod,dias) => {
   const nombre=decodeURIComponent(nombreCod||'');
@@ -554,7 +586,7 @@ main{width:min(1280px,100%);margin:auto;padding:26px 18px 60px}.cabecera{display
 <meta name="app-version" content="V79">
 </head>
 <body>
-<section id="login" class="login"><div class="login-box"><h1>Sálvame las Papas 🥔</h1><h2>Seguimiento de comercios</h2><p>Sección privada para Administración.</p><button onclick="entrarGoogle()">Ingresar con Google</button><div id="login-error" class="login-error" hidden></div></div></section>
+<section id="login" class="login"><div class="login-box"><h1>Sálvame las Papas 🥔</h1><h2>Seguimiento de comercios y particulares</h2><p>Sección privada para Administración.</p><button onclick="entrarGoogle()">Ingresar con Google</button><div id="login-error" class="login-error" hidden></div></div></section>
 <div id="app" hidden>
 <nav><div class="logo">Sálvame las Papas — Seguimiento</div><div class="nav-links"><a href="index.html">🏠 Sitio</a><a href="admin.html">⚙️ Administración</a><a class="activo" href="seguimiento-comercios.html">📅 Seguimiento</a></div><button class="salir" onclick="salir()">Salir</button></nav>
 
@@ -574,7 +606,7 @@ main{width:min(1280px,100%);margin:auto;padding:26px 18px 60px}.cabecera{display
   <div class="resumen-box"><strong id="r-pagos">0</strong><span>Pagos para revisar</span></div>
 </div>
 
-  <div class="cabecera"><div><h1>Seguimiento y renovaciones</h1><p>Cada ficha se crea automáticamente con los datos registrados por el comercio.</p></div><button class="actualizar" onclick="cargar()">↻ Actualizar</button></div>
+  <div class="cabecera"><div><h1>Seguimiento y renovaciones</h1><p>Comercios y particulares aparecen juntos. Cada ficha muestra alta, vencimiento, días, visitas, WhatsApp y operaciones.</p></div><button class="actualizar" onclick="cargar()">↻ Actualizar</button></div>
   <section class="resumen">
     <div class="resumen-card"><strong id="r-total">—</strong><span>Total</span></div>
     <div class="resumen-card vigente"><strong id="r-vigente">—</strong><span>Más de 7 días</span></div>
@@ -584,7 +616,7 @@ main{width:min(1280px,100%);margin:auto;padding:26px 18px 60px}.cabecera{display
     <div class="resumen-card vencido"><strong id="r-vencido">—</strong><span>Vencidos</span></div>
   </section>
   <div class="controles">
-    <input id="buscar" oninput="buscar()" placeholder="Buscar comercio, rubro, teléfono o plan…"/>
+    <input id="buscar" oninput="buscar()" placeholder="Buscar comercio, particular, artículo, teléfono o plan…"/>
     <button class="filtro activo" data-f="todos" onclick="filtrar('todos')">Todos</button>
     <button class="filtro" data-f="vigente" onclick="filtrar('vigente')">🟢 Vigentes</button>
     <button class="filtro" data-f="aviso" onclick="filtrar('aviso')">🟡 7 a 4 días</button>

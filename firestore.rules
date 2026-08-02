@@ -52,8 +52,11 @@ service cloud.firestore {
         }
         function validCreateMetric() {
           return metricKeysOk()
-            && (!("visitas" in request.resource.data) || request.resource.data.visitas == 1)
-            && (!("clicsWhatsApp" in request.resource.data) || request.resource.data.clicsWhatsApp == 1);
+            && request.resource.data.visitas >= 0
+            && request.resource.data.visitas <= 1
+            && request.resource.data.clicsWhatsApp >= 0
+            && request.resource.data.clicsWhatsApp <= 1
+            && request.resource.data.visitas + request.resource.data.clicsWhatsApp == 1;
         }
         function validUpdateMetric() {
           return metricKeysOk()
@@ -130,6 +133,30 @@ service cloud.firestore {
                     );
 
       allow delete: if isAdmin();
+
+      match /metricas/{mesId} {
+        function metricKeysOk() {
+          return request.resource.data.keys().hasOnly(["visitas","clicsWhatsApp","actualizadoEn"]);
+        }
+        function validCreateMetric() {
+          return metricKeysOk()
+            && (!("visitas" in request.resource.data) || request.resource.data.visitas == 1)
+            && (!("clicsWhatsApp" in request.resource.data) || request.resource.data.clicsWhatsApp == 1);
+        }
+        function validUpdateMetric() {
+          return metricKeysOk()
+            && request.resource.data.visitas >= resource.data.visitas
+            && request.resource.data.visitas <= resource.data.visitas + 1
+            && request.resource.data.clicsWhatsApp >= resource.data.clicsWhatsApp
+            && request.resource.data.clicsWhatsApp <= resource.data.clicsWhatsApp + 1;
+        }
+        allow read: if isAdmin()
+                    || (signedIn()
+                        && get(/databases/$(database)/documents/vendedoresParticulares/$(publicacionId)).data.ownerUid == request.auth.uid);
+        allow create: if validCreateMetric();
+        allow update: if validUpdateMetric();
+        allow delete: if isAdmin();
+      }
     }
 
     match /pedidos/{pedidoId} {
