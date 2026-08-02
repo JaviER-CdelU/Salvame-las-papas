@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0b376f">
-<meta name="app-version" content="V140">
+<meta name="app-version" content="V147">
 <script src="./version-global.js" defer></script>
 <link rel="manifest" href="./manifest.webmanifest">
 <title>Sálvame las Papas — Inicio</title>
@@ -43,6 +43,11 @@ header{background:var(--navy);color:#fff;padding:12px 18px;box-shadow:0 6px 18px
 .action-directory{background:linear-gradient(135deg,#6240a8,#8c67d8)}.action-directory .round{color:#6240a8}
 .action-install{background:linear-gradient(135deg,#087f8d,#20aebb)}.action-install .round{color:#087f8d}
 .action-help{background:linear-gradient(135deg,#384d68,#627995)}.action-help .round{color:#384d68}
+.three-steps{width:min(1180px,calc(100% - 28px));margin:8px auto 22px;background:#fff;border:2px solid #c7d9ed;border-radius:22px;padding:20px;box-shadow:0 10px 24px rgba(6,31,70,.08)}
+.three-steps h2{margin:0 0 15px;text-align:center;color:var(--navy);font-family:Georgia,serif;font-size:clamp(1.35rem,3vw,1.85rem)}
+.step-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.step{display:grid;grid-template-columns:42px 1fr;gap:10px;align-items:start;background:#f4f8fd;border:1px solid #d7e3f0;border-radius:14px;padding:14px}.step-number{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--navy);color:#fff;font-size:1.15rem;font-weight:1000}.step strong{display:block;color:var(--navy);font-size:1.05rem;margin:1px 0 4px}.step p{margin:0;color:#52657c;font-size:.88rem;line-height:1.4;font-weight:700}.steps-more{display:block;width:max-content;max-width:100%;margin:15px auto 0;background:var(--orange);color:#fff;text-decoration:none;font-weight:1000;padding:11px 17px;border-radius:11px}.steps-more:hover,.steps-more:focus-visible{background:#d95700;outline:3px solid #ffd09e}
+.real-content{width:min(1180px,calc(100% - 28px));margin:0 auto 24px}.real-group{margin-top:18px}.real-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:10px}.real-head h2{margin:0;color:var(--navy);font-family:Georgia,serif;font-size:clamp(1.3rem,3vw,1.8rem)}.real-head a{color:var(--blue);font-weight:900;text-decoration:none}.real-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.real-card{display:grid;grid-template-columns:92px 1fr;min-height:118px;background:#fff;border:1px solid #cfdeed;border-radius:16px;overflow:hidden;box-shadow:0 7px 18px rgba(6,31,70,.07)}.real-photo{width:92px;height:100%;min-height:118px;object-fit:cover;background:#eaf1f8}.real-placeholder{width:92px;min-height:118px;display:grid;place-items:center;background:#eaf1f8;font-size:2.2rem}.real-body{padding:12px;min-width:0}.real-body h3{margin:0 0 5px;color:var(--navy);font-size:1rem;line-height:1.2;overflow-wrap:anywhere}.real-meta{color:#65758a;font-size:.8rem;font-weight:700;line-height:1.35}.real-price{color:#137044;font-size:1rem;font-weight:1000;margin-top:5px}.real-view{display:inline-block;margin-top:8px;color:#fff;background:var(--blue);padding:6px 10px;border-radius:8px;text-decoration:none;font-size:.8rem;font-weight:900}.real-message{grid-column:1/-1;background:#fff;border:1px dashed #aebfd1;border-radius:14px;padding:18px;text-align:center;color:#65758a;font-weight:800}
+.real-kind{display:inline-block;color:#fff;padding:3px 7px;border-radius:999px;font-size:.72rem;font-weight:1000}.real-kind.venta{background:#198754}.real-kind.alquiler{background:#7141b6}
 .intro{width:min(950px,calc(100% - 28px));margin:30px auto 22px;text-align:center}.intro h1{margin:0 0 8px;color:var(--navy);font-family:Georgia,serif;font-size:clamp(1.8rem,4vw,2.75rem)}.intro p{margin:0;color:var(--muted);line-height:1.55;font-size:1.02rem}
 .quick{width:min(1180px,calc(100% - 28px));margin:0 auto 32px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 .quick a{text-decoration:none;border-radius:20px;padding:18px;min-height:104px;display:flex;align-items:center;gap:15px;box-shadow:0 10px 24px rgba(6,31,70,.08);font-weight:900;transition:transform .18s ease}
@@ -56,7 +61,7 @@ header{background:var(--navy);color:#fff;padding:12px 18px;box-shadow:0 6px 18px
 .install-app img{width:106px;height:106px;object-fit:contain;border-radius:22px;background:#fff;padding:7px;border:1px solid #c9ddf2}.install-copy h2{font-family:Georgia,serif;color:var(--navy);margin:0 0 7px;font-size:clamp(1.35rem,3vw,2rem)}.install-copy p{margin:0;color:#50647d;line-height:1.5;font-weight:700}.install-actions{display:flex;flex-direction:column;gap:8px;min-width:245px}.install-button{border:0;border-radius:13px;background:var(--orange);color:#fff;padding:14px 18px;font-weight:1000;font-size:1rem;cursor:pointer;box-shadow:0 8px 18px rgba(199,82,0,.22)}.install-button:hover,.install-button:focus-visible{background:#d95700;outline:3px solid #ffd09e}.install-status{min-height:20px;text-align:center;color:#36516f;font-size:.8rem;font-weight:800}.ios-help{grid-column:1/-1;background:#fff;border:1px solid #b8d7f4;border-radius:14px;padding:13px 16px;color:#173b66;line-height:1.55}.ios-help[hidden]{display:none}.ios-help strong{color:#0b376f}
 .local{width:min(1180px,calc(100% - 28px));margin:0 auto 28px;background:linear-gradient(135deg,#0b376f,#125ab5);color:#fff;border-radius:22px;padding:24px;text-align:center}.local h2{margin:0 0 8px;font-family:Georgia,serif}.local p{margin:0;color:#dcecff}
 footer{padding:22px;text-align:center;color:#6c7c90;font-size:.78rem}footer a{color:#6c7c90;text-decoration:none;font-weight:800}footer a:hover{text-decoration:underline}
-@media(max-width:780px){.header-links{display:none}.actions,.quick{grid-template-columns:1fr}.actions{margin-top:14px}.action{min-height:92px}.hero img{width:100%;height:auto;object-fit:contain}.intro{margin-top:24px}.install-app{grid-template-columns:86px 1fr;padding:16px;gap:13px}.install-app img{width:82px;height:82px}.install-actions{grid-column:1/-1;min-width:0}.install-button{width:100%}}
+@media(max-width:780px){.header-links{display:none}.actions,.quick,.step-grid,.real-grid{grid-template-columns:1fr}.actions{margin-top:14px}.action{min-height:92px}.hero img{width:100%;height:auto;object-fit:contain}.intro{margin-top:24px}.install-app{grid-template-columns:86px 1fr;padding:16px;gap:13px}.install-app img{width:82px;height:82px}.install-actions{grid-column:1/-1;min-width:0}.install-button{width:100%}}
 @media(max-width:460px){header{padding:11px 14px}.brand{font-size:1rem}.action{padding:15px}.action .round{width:54px;height:54px;flex-basis:54px}.action strong{font-size:1.05rem}.action small{font-size:.82rem}.quick a{min-height:92px;padding:15px}.quick .circle{width:52px;height:52px;flex-basis:52px}.local{padding:20px 16px}}
 
 .hero-inner{position:relative}
@@ -115,6 +120,27 @@ footer{padding:22px;text-align:center;color:#6c7c90;font-size:.78rem}footer a{co
     <a class="action action-help" href="./como-usar.html"><span class="round">📖</span><span><strong>Ayuda</strong><small>Abrí la guía y aprendé a usar cada sección.</small></span></a>
   </nav>
 
+  <section class="three-steps" aria-labelledby="titulo-tres-pasos">
+    <h2 id="titulo-tres-pasos">Usarla es fácil: tres pasos</h2>
+    <div class="step-grid">
+      <article class="step"><span class="step-number">1</span><div><strong>Buscá</strong><p>Elegí un comercio, producto o publicación particular.</p></div></article>
+      <article class="step"><span class="step-number">2</span><div><strong>Consultá</strong><p>Hablá por WhatsApp y confirmá precio, disponibilidad y entrega.</p></div></article>
+      <article class="step"><span class="step-number">3</span><div><strong>Comprá con seguridad</strong><p>Acordá el pago y verificá el destinatario antes de pagar.</p></div></article>
+    </div>
+    <a class="steps-more" href="./como-usar.html">Ver el manual completo</a>
+  </section>
+
+  <section class="real-content" aria-label="Comercios y publicaciones recientes">
+    <div class="real-group">
+      <div class="real-head"><h2>Comercios para conocer</h2><a href="./comercios.html">Ver todos</a></div>
+      <div class="real-grid" id="inicio-comercios"><div class="real-message">Buscando comercios activos…</div></div>
+    </div>
+    <div class="real-group">
+      <div class="real-head"><h2>Venta y alquiler entre particulares</h2><a href="./comprar.html#vendedores-particulares">Ver todas</a></div>
+      <div class="real-grid" id="inicio-particulares"><div class="real-message">Buscando publicaciones activas…</div></div>
+    </div>
+  </section>
+
   <nav class="quick" aria-label="Accesos de gestión y ayuda">
     <a class="quick-commerce" href="./comercio.html"><span class="circle">🏪</span><span class="label"><strong>Mi Comercio</strong><small>Entrá a tu panel y administrá tu negocio.</small></span></a>
     <a class="quick-publications" href="./mis-publicaciones.html"><span class="circle">🏷️</span><span class="label"><strong>Mis publicaciones</strong><small>Revisá, editá o renová tus avisos particulares.</small></span></a>
@@ -139,7 +165,31 @@ footer{padding:22px;text-align:center;color:#6c7c90;font-size:.78rem}footer a{co
     <p>Una red local para acercar vecinos, comercios, productos, servicios y oportunidades.</p>
   </section>
 </main>
-<footer>Versión <span data-app-version>V140</span> · Sálvame las Papas · <a href="./admin.html">Editor responsable</a></footer>
+<footer>Versión <span data-app-version>V147</span> · Sálvame las Papas · <a href="./condiciones.html">Condiciones y privacidad</a> · <a href="./admin.html">Editor responsable</a></footer>
+<script type="module">
+import {initializeApp,getApps} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getFirestore,collection,getDocs,query,where} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const cfg={apiKey:"AIzaSyAE8kEBAzDbPvCCD1KCyjq67iFl3dvthLM",authDomain:"salvame-las-papas-cdelu.firebaseapp.com",projectId:"salvame-las-papas-cdelu",storageBucket:"salvame-las-papas-cdelu.firebasestorage.app",messagingSenderId:"401048945476",appId:"1:401048945476:web:58695553aa93928b36cd11"};
+const app=getApps().length?getApps()[0]:initializeApp(cfg),db=getFirestore(app);
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fecha=v=>v?.toDate?v.toDate():(v?.seconds?new Date(v.seconds*1000):new Date(v||0));
+const vigente=v=>{const dato=v.vencimiento||v.proximaRenovacion;if(!dato)return true;const f=fecha(dato);return !isNaN(f)&&f>=new Date()};
+const reciente=v=>{const f=fecha(v.actualizadoEn||v.creadoEn);return isNaN(f)?0:f.getTime()};
+const conLimite=(p,ms=6500)=>Promise.race([p,new Promise((_,r)=>setTimeout(()=>r(new Error('tiempo')),ms))]);
+const mensaje=(id,texto)=>{const el=document.getElementById(id);if(el)el.innerHTML=`<div class="real-message">${texto}</div>`};
+function tarjetaComercio(d){const foto=d.logo||d.foto||d.imagen||d.portada||'',nombre=esc(d.nombre||'Comercio'),meta=[d.categoria,d.barrio].filter(Boolean).map(esc).join(' · '),id=encodeURIComponent(d.id);return `<article class="real-card">${foto?`<img class="real-photo" src="${esc(foto)}" alt="${nombre}" loading="lazy">`:'<div class="real-placeholder">🏪</div>'}<div class="real-body"><h3>${nombre}</h3><div class="real-meta">${meta||'Comercio local'}</div><a class="real-view" href="./comprar.html#comercio=${id}">Ver comercio</a></div></article>`}
+function tarjetaParticular(v,a,i){const foto=Array.isArray(a.fotos)?a.fotos[0]:'',titulo=esc(a.titulo||'Publicación particular'),zona=esc(a.zona||v.localidad||'Concepción del Uruguay'),precio=Number(a.precio||0),alquiler=a.tipoOperacion==='alquiler',tipo=alquiler?'🔑 Alquiler':'🏷️ Venta',precioTexto=a.periodoPrecio==='consultar'?'Consultar precio':'$'+precio.toLocaleString('es-AR');return `<article class="real-card">${foto?`<img class="real-photo" src="${esc(foto)}" alt="${titulo}" loading="lazy">`:'<div class="real-placeholder">🏷️</div>'}<div class="real-body"><h3>${titulo}</h3><div class="real-meta"><span class="real-kind ${alquiler?'alquiler':'venta'}">${tipo}</span> · ${zona}</div><div class="real-price">${precioTexto}</div><a class="real-view" href="./comprar.html#particular=${encodeURIComponent(v.id)}&articulo=${i}">Ver publicación</a></div></article>`}
+async function cargarInicioReal(){
+  try{
+    const [cs,ps]=await conLimite(Promise.all([getDocs(query(collection(db,'comercios'),where('estado','==','activo'))),getDocs(query(collection(db,'vendedoresParticulares'),where('estado','==','activo')))]));
+    const comercios=[];cs.forEach(x=>{const d={id:x.id,...x.data()};if(vigente(d))comercios.push(d)});comercios.sort((a,b)=>reciente(b)-reciente(a));
+    document.getElementById('inicio-comercios').innerHTML=comercios.length?comercios.slice(0,3).map(tarjetaComercio).join(''):'<div class="real-message">Todavía no hay comercios activos para mostrar.</div>';
+    const particulares=[];ps.forEach(x=>{const v={id:x.id,...x.data()};if(!vigente(v))return;(Array.isArray(v.articulos)?v.articulos:[]).forEach((a,i)=>{if(a.vendido!==true&&(Number(a.precio||0)>0||a.periodoPrecio==='consultar'))particulares.push({v,a,i,orden:reciente(a)||reciente(v)})})});particulares.sort((a,b)=>b.orden-a.orden);
+    document.getElementById('inicio-particulares').innerHTML=particulares.length?particulares.slice(0,3).map(x=>tarjetaParticular(x.v,x.a,x.i)).join(''):'<div class="real-message">Todavía no hay publicaciones particulares activas.</div>';
+  }catch(_e){mensaje('inicio-comercios','No se pudieron consultar los comercios ahora. Inicio sigue disponible.');mensaje('inicio-particulares','No se pudieron consultar las publicaciones ahora. Podés entrar desde “Ver todas”.')}
+}
+cargarInicioReal();
+</script>
 <script>
 let avisoInstalacion=null;
 const botonInstalar=document.getElementById('boton-instalar');

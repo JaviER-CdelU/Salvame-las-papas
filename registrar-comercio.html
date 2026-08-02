@@ -9,6 +9,8 @@
 <title>Registrar comercio — Sálvame las Papas 🥔 — C. del Uruguay, Entre Ríos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="./estilos-compartidos.css" rel="stylesheet">
+<script src="./particulares-publicos.js" defer></script>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -2768,7 +2770,6 @@ nav .nav-btns,nav .nav-portals{display:none!important}
 .seller-card-body-v41 h3{margin:0 0 5px;color:#073574}
 .seller-price-v41{font-size:1.25rem;font-weight:900;color:#0a6b3f;margin:5px 0}
 .seller-meta-v41{font-size:.75rem;color:#697689;margin-bottom:8px}
-.seller-desc-v41{font-size:.82rem;line-height:1.4;color:#465164;min-height:36px}
 .seller-actions-v41{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
 .seller-actions-v41 a{flex:1;min-width:125px;text-align:center;text-decoration:none;padding:10px;border-radius:10px;font-weight:800;font-size:.8rem}
 .seller-actions-v41 button{flex:1;min-width:125px;text-align:center;padding:10px;border:0;border-radius:10px;font-weight:800;font-size:.8rem;cursor:pointer}
@@ -3384,7 +3385,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
 }
 
 </style>
-<meta name="app-version" content="V140">
+<meta name="app-version" content="V147">
 <script src="./version-global.js" defer></script>
 <style id="registro-layout-v105">
 /* V105 — registro sin cabecera vacía ni botones flotantes duplicados */
@@ -3633,6 +3634,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
     <div><span>🚲 CLASIFICADOS LOCALES</span><h2>Vendedores particulares</h2></div>
     <div class="seller-entry-links-v45"><a href="./vendedor.html">Publicar venta o alquiler</a><a class="seller-login-v45" href="./mis-publicaciones.html">Mis publicaciones</a></div>
   </div>
+  <div style="margin:10px 0 14px;padding:10px 12px;border-radius:12px;background:#fff7e7;border:1px solid #efbd72;color:#6f430e;font-size:.82rem;font-weight:800">🛡️ Antes de pagar, revisá el artículo y verificá a quién enviás el dinero. <a href="./condiciones.html" style="color:#075aa8">Ver reglas de seguridad</a>.</div>
   <div id="seller-public-grid-v41" class="seller-public-grid-v41">
     <div class="seller-empty-v41">Cargando publicaciones particulares…</div>
   </div>
@@ -3961,6 +3963,7 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
           <div>
             <div style="font-size:.82rem;font-weight:600;color:var(--suave);margin-bottom:4px">Precio actual ($) *</div>
             <input class="mini-input" id="prod-precio" type="number" placeholder="Ej: 1850"/>
+            <label style="display:block;margin-top:6px;font-size:.78rem;font-weight:700"><input id="prod-precio-consultar" type="checkbox"> Precio a consultar</label>
           </div>
           <div>
             <div style="font-size:.82rem;font-weight:600;color:var(--suave);margin-bottom:4px">Precio anterior (si tiene oferta)</div>
@@ -4149,12 +4152,13 @@ footer:after{content:"";position:absolute;right:-120px;bottom:-170px;width:360px
         <li><a href="tel:+5493442490585">+54 9 3442 490585</a></li>
         <li><a href="mailto:salvamelaspapascdelu@gmail.com">salvamelaspapascdelu@gmail.com</a></li>
         <li><a href="https://www.facebook.com/profile.php?id=61560676859696" target="_blank" rel="noopener noreferrer">Facebook oficial</a></li>
+        <li><a href="./condiciones.html">Condiciones y privacidad</a></li>
       </ul>
     </div>
   </div>
   <div class="footer-bottom">© 2025 Sálvame las Papas · Concepción del Uruguay, La Histórica · Hecho con ❤️ y mate 🧉 para los vecinos del barrio</div>
 <div class="app-version-badge" title="Versión publicada de Sálvame las Papas">
-  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión <span data-app-version>V140</span></a>
+  <a href="./version.json" target="_blank" rel="noopener noreferrer">Versión <span data-app-version>V147</span></a>
 </div>
 </footer>
 
@@ -4513,6 +4517,7 @@ async function enviarForm(){
           emoji:producto.emoji||'📦',
           nombre:producto.nombre||'Producto',
           precio:Number(producto.precio||0),
+          precioConsultar:producto.precioConsultar===true,
           descripcion:producto.desc||'',
           stock:producto.stock||'',
           precioAntes:Number(producto.precioAntes||0),
@@ -4978,7 +4983,7 @@ async function cargarComercios(){
             comercio.productos=[]
             ps.forEach(pr=>{
               const p=pr.data()
-              if(p.disponible!==false){
+              {
                 comercio.productos.push({
                   id:pr.id,
                   n:p.nombre||'Producto',
@@ -4987,11 +4992,13 @@ async function cargarComercios(){
                   emoji:p.emoji||'',
                   foto:p.foto||p.fotos?.[0]||'',
                   fotos:Array.isArray(p.fotos)?p.fotos:(p.foto?[p.foto]:[]),
-                  p:'$'+Number(p.precio||0).toLocaleString('es-AR'),
+                  p:p.precioConsultar===true?'Consultar precio':'$'+Number(p.precio||0).toLocaleString('es-AR'),
                   precio:Number(p.precio||0),
+                  precioConsultar:p.precioConsultar===true,
                   d:p.descripcion||'',
                   descripcion:p.descripcion||'',
                   stock:p.stock||''
+                  ,estadoStock:p.estadoStock||(p.disponible===false?'sin':'disponible'),disponible:p.disponible!==false
                 })
               }
             })
@@ -5117,13 +5124,14 @@ function abrirComercio(c){
         <div class="prod-nombre">${p.n}</div>
         <div class="prod-precio">${p.p}</div>
         ${p.d ? '<div class="prod-desc">'+p.d+'</div>' : ''}
-        <div class="prod-cant">
+        <div style="font-size:.78rem;font-weight:900;color:${p.estadoStock==='sin'?'#a31522':p.estadoStock==='poco'?'#b25800':'#167144'}">${p.estadoStock==='sin'?'✗ Sin stock':p.estadoStock==='poco'?'⚠ Quedan pocas unidades':'✓ Disponible'}${p.stock?' · Stock: '+p.stock:''}</div>
+        <div class="prod-cant" ${p.estadoStock==='sin'?'hidden':''}>
           <button onclick="cambiarCant(${i},-1)">−</button>
           <span class="prod-cant-num" id="cant-${i}">0</span>
           <button onclick="cambiarCant(${i},1)">+</button>
         </div>
-        <button class="btn-agregar" id="btn-ag-${i}" onclick="agregarAlCarrito(${i})">
-          + Agregar al pedido
+        <button class="btn-agregar" id="btn-ag-${i}" onclick="agregarAlCarrito(${i})" ${p.estadoStock==='sin'?'disabled':''}>
+          ${p.estadoStock==='sin'?'Sin stock':'+ Agregar al pedido'}
         </button>
       </div>
     `).join('')
@@ -5621,6 +5629,7 @@ function agregarProductoForm(){
   const emoji       = document.getElementById('prod-emoji')?.value || '📦'
   const nombre      = document.getElementById('prod-nombre')?.value.trim()
   const precio      = document.getElementById('prod-precio')?.value.trim()
+  const precioConsultar = document.getElementById('prod-precio-consultar')?.checked===true
   const desc        = document.getElementById('prod-desc')?.value.trim()
   const stock       = document.getElementById('prod-stock')?.value.trim()
   const precioAntes = document.getElementById('prod-precio-antes')?.value.trim()
@@ -5628,10 +5637,13 @@ function agregarProductoForm(){
   const pagos       = document.getElementById('prod-pagos')?.value.trim()
 
   if(!nombre){ toast('⚠️ Ponele un nombre al producto'); return }
-  if(!precio){ toast('⚠️ Falta el precio'); return }
-  if(Number(String(precio).replace(',','.'))<=0){ toast('⚠️ El precio debe ser mayor que $0'); return }
+  if(!precioConsultar&&!precio){ toast('⚠️ Falta el precio o marcá “Precio a consultar”'); return }
+  if(!precioConsultar&&Number(String(precio).replace(',','.'))<=0){ toast('⚠️ El precio debe ser mayor que $0'); return }
+  const precioEnTexto=(nombre+' '+desc).match(/\$\s*([\d.]+(?:,\d{1,2})?)/);if(precioEnTexto){const escrito=Number(precioEnTexto[1].replace(/\./g,'').replace(',','.')),cargado=precioConsultar?0:Number(String(precio).replace(',','.'));if(precioConsultar){toast('⚠️ Elegiste “Precio a consultar”, pero escribiste $'+precioEnTexto[1]+' en el texto');return}if(escrito!==cargado){toast('⚠️ El texto dice $'+precioEnTexto[1]+' y el precio cargado es $'+cargado.toLocaleString('es-AR'));return}}
   if(/\[cite\s*:/i.test(nombre+' '+desc)){ toast('⚠️ Quitá el texto [cite:] antes de guardar'); return }
-  if(/\bprueba\b|\(copia\)/i.test(nombre+' '+desc)&&!confirm('El producto contiene “prueba” o “(copia)”. ¿Querés guardarlo igualmente?'))return
+  if(/\bprueba\b|\(copia\)/i.test(nombre+' '+desc)){ toast('⚠️ No se puede guardar texto que contenga “prueba” o “(copia)”'); return }
+  const claveNueva=[nombre,Number(precio),desc].map(v=>String(v).trim().toLocaleLowerCase('es-AR')).join('|')
+  if(productosForm.some(p=>[p.nombre,Number(p.precio),p.desc||''].map(v=>String(v).trim().toLocaleLowerCase('es-AR')).join('|')===claveNueva)){toast('⚠️ Ese producto ya está cargado. Cambiá el gramaje, la presentación, la descripción o el precio');return}
 
   if(tipoActual === 'destacado' && planSel < 2){
     toast('⭐ Los Destacados son del Plan Intermedio o Pro'); return
@@ -5640,7 +5652,7 @@ function agregarProductoForm(){
     toast('🔥 Las Ofertas de la semana son del Plan Pro'); return
   }
 
-  productosForm.push({ emoji, nombre, precio, desc, stock, precioAntes, cuotas, pagos, tipo: tipoActual,
+  productosForm.push({ emoji, nombre, precio:precioConsultar?0:precio, precioConsultar, desc, stock, precioAntes, cuotas, pagos, tipo: tipoActual,
     foto:fotosRegistroV112[0]||'',fotos:[...fotosRegistroV112] })
   renderProductosForm()
 
@@ -6292,7 +6304,7 @@ const dbV41=getFirestore(appV41);
 const escV41=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function ocultarParticularV140(a){
  const titulo=String(a?.titulo||'').trim(),texto=titulo+' '+String(a?.descripcion||'');
- return Number(a?.precio||0)<=0 || /\[cite\s*:/i.test(texto) || /\bprueba\b/i.test(texto) || (titulo.toLocaleLowerCase('es-AR')==='clavo usado'&&Number(a?.precio||0)===1);
+ return (Number(a?.precio||0)<=0&&a?.periodoPrecio!=='consultar') || /\[cite\s*:/i.test(texto) || /\bprueba\b/i.test(texto) || (titulo.toLocaleLowerCase('es-AR')==='clavo usado'&&Number(a?.precio||0)===1);
 }
 async function registrarMetricaParticularV137(id,campo){
   try{
@@ -6308,6 +6320,7 @@ function vigenteV41(v){
   const f=v.vencimiento?.toDate?v.vencimiento.toDate():new Date(v.vencimiento||0);
   return !isNaN(f)&&f>=new Date();
 }
+function tiempoPublicacionV143(v,a){const convertir=x=>x?.toDate?x.toDate():(x?.seconds?new Date(x.seconds*1000):new Date(x||0)),alta=convertir(a?.creadoEn||v.creadoEn),vence=convertir(a?.vencimiento||v.vencimiento);let html='';if(!isNaN(alta))html+=`<span>Publicado: ${alta.toLocaleDateString('es-AR',{day:'numeric',month:'long',year:'numeric'})}</span>`;if(!isNaN(vence)){vence.setHours(23,59,59,999);const dias=Math.max(0,Math.ceil((vence-new Date())/86400000)),clase=dias===0?'tiempo-rojo':dias<=3?'tiempo-naranja':dias<=7?'tiempo-amarillo':'tiempo-verde',texto=dias===0?'Vence hoy':`Quedan ${dias} día${dias===1?'':'s'}`;html+=`<span class="${clase}">${texto}</span>`}return html?`<div class="seller-time-v143">${html}</div>`:''}
 async function cargarVendedoresV41(){
   const grid=document.getElementById('seller-public-grid-v41');
   if(!grid)return;
@@ -6325,28 +6338,32 @@ async function cargarVendedoresV41(){
         const tel=String(v.whatsapp||'').replace(/\D/g,'');
         const titulo=escV41(a.titulo||'Artículo');
         const precio=Number(a.precio||0);
-        const msg=encodeURIComponent(`Hola ${v.nombre||''}. Vi "${a.titulo||'el artículo'}" en Sálvame las Papas y quiero consultarte.`);
-        cards.push(`<article class="seller-card-v41">
+        const consultaPrecio=a.periodoPrecio==='consultar';
+        const msg=encodeURIComponent(`Hola ${v.nombre||''}. Vi "${a.titulo||'el artículo'}" en Sálvame las Papas y quiero ${consultaPrecio?'consultar el precio':'consultarte por la publicación'}.`);
+        cards.push(`<article class="seller-card-v41" id="particular-${v.id}-${i}">
           ${foto?`<img src="${foto}" alt="${titulo}" loading="lazy">`:`<div style="aspect-ratio:4/3;display:grid;place-items:center;font-size:3rem;background:#eef3f8">🚲</div>`}
           <div class="seller-card-body-v41">
             <h3>${titulo}</h3>
-            <div class="seller-price-v41">$${precio.toLocaleString('es-AR')}${a.periodoPrecio&&a.periodoPrecio!=='total'?` <small>/${escV41(a.periodoPrecio)}</small>`:''}</div>
-            <div class="seller-meta-v41">${a.tipoOperacion==='alquiler'?'🔑 Alquiler':'🏷️ Venta'} · ${escV41(a.estadoArticulo||'Usado')} · ${escV41(a.zona||v.localidad||'Concepción del Uruguay')}</div>
+            <div class="seller-price-v41">${consultaPrecio?'Consultar precio':`$${precio.toLocaleString('es-AR')}${a.periodoPrecio&&a.periodoPrecio!=='total'?` <small>/${escV41(a.periodoPrecio)}</small>`:''}`}</div>
+            <div class="seller-meta-v41"><span class="seller-kind-v144 ${a.tipoOperacion==='alquiler'?'alquiler':'venta'}">${a.tipoOperacion==='alquiler'?'🔑 Alquiler':'🏷️ Venta'}</span> · ${escV41(a.estadoArticulo||'Usado')} · ${escV41(a.zona||v.localidad||'Concepción del Uruguay')}</div>
+            ${tiempoPublicacionV143(v,a)}
             <div class="seller-desc-v41">${escV41(a.descripcion||'')}</div>
+            ${String(a.descripcion||'').length>105?'<button type="button" class="seller-desc-toggle-v141" onclick="alternarDescripcionParticularV141(this)">Ver descripción completa</button>':''}
             <div class="seller-actions-v41">
               <a class="seller-wa-v41" target="_blank" rel="noopener" onclick="registrarMetricaParticularV137('${v.id}','clicsWhatsApp')" href="https://wa.me/${tel}?text=${msg}">WhatsApp</a>
-              <button type="button" class="seller-share-v115" onclick="compartirParticularV115('${encodeURIComponent(a.titulo||'Artículo')}','${v.id}')">Compartir</button>
+              <button type="button" class="seller-share-v115" onclick="compartirParticularV115('${encodeURIComponent(a.titulo||'Artículo')}','${v.id}',${i})">Compartir</button>
+              <button type="button" class="seller-report-v145" onclick="denunciarParticularV145('${encodeURIComponent(a.titulo||'Artículo')}','${encodeURIComponent(v.nombre||'Particular')}','${v.id}',${i})">⚠️ Denunciar</button>
             </div>
           </div>
         </article>`);
       });
     });
     grid.innerHTML=cards.length?cards.join(''):'<div class="seller-empty-v41">Todavía no hay artículos particulares publicados.</div>';
+    setTimeout(()=>window.abrirParticularDesdeEnlaceV142?.(),60);
   }catch(e){
     grid.innerHTML='<div class="seller-empty-v41">Las publicaciones particulares todavía no están disponibles.</div>';
   }
 }
-window.compartirParticularV115=async(tituloCod,id)=>{const titulo=decodeURIComponent(tituloCod),url=location.href.split('#')[0]+'#particular='+encodeURIComponent(id),text=`${titulo} · Venta o alquiler particular\nEncontralo en Sálvame las Papas`;try{if(navigator.share)await navigator.share({title:titulo,text,url});else{await navigator.clipboard.writeText(text+'\n'+url);toast('🔗 Publicación copiada')}}catch(e){if(e.name!=='AbortError')toast('No se pudo compartir')}};
 document.addEventListener('DOMContentLoaded',cargarVendedoresV41);
 </script>
 

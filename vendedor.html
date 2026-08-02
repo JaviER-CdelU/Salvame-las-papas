@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#073574">
-<meta name="app-version" content="V140">
+<meta name="app-version" content="V147">
 <script src="./version-global.js" defer></script>
 <title>Publicar venta o alquiler — Sálvame las Papas</title>
 <style>
@@ -30,6 +30,7 @@ textarea{min-height:90px;resize:vertical}.article{border:1px solid #dde5ee;borde
 .login-box{display:flex;gap:10px;align-items:center;justify-content:space-between;background:#edf5ff;border:1px solid #c8dcf2;border-radius:12px;padding:12px;margin-bottom:14px;flex-wrap:wrap}
 .login-box a{color:#073574;font-weight:900;text-decoration:none}
 .mode-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mode-option{display:flex;align-items:center;gap:8px;padding:10px;border:1px solid #d2dce7;border-radius:10px;background:#fff}.mode-option input{width:auto}
+.safety-box{background:#fff7e7;border:2px solid #f0b45c;border-radius:13px;padding:14px;margin-top:16px;line-height:1.5;font-size:.86rem}.safety-box strong{color:#8a4300}.safety-box ul{margin:7px 0 10px;padding-left:20px}.safety-accept{display:flex;align-items:flex-start;gap:9px;color:#27384e;font-size:.86rem}.safety-accept input{width:auto;margin-top:3px}.safety-box a{color:#075aa8;font-weight:900}
 @media(max-width:650px){.grid{grid-template-columns:1fr}.full{grid-column:auto}.photos{grid-template-columns:repeat(2,1fr)}.mode-row{grid-template-columns:1fr}}
 </style>
 </head>
@@ -58,7 +59,7 @@ textarea{min-height:90px;resize:vertical}.article{border:1px solid #dde5ee;borde
 <div class="grid">
 <div class="full"><label>¿Qué querés publicar?</label><div class="mode-row"><label class="mode-option"><input type="radio" name="a1-mode" value="venta" checked> 🏷️ Venta</label><label class="mode-option"><input type="radio" name="a1-mode" value="alquiler"> 🔑 Alquiler</label></div></div>
 <div><label>Título *</label><input id="a1-title" placeholder="Bicicleta rodado 29" required></div>
-<div><label>Precio *</label><input id="a1-price" type="number" min="1" required></div>
+<div><label>Precio</label><input id="a1-price" type="number" min="1" placeholder="Vacío si elegís A consultar"></div>
 <div><label>Precio por</label><select id="a1-period"><option value="total">Precio total</option><option value="día">Por día</option><option value="semana">Por semana</option><option value="mes">Por mes</option><option value="consultar">A consultar</option></select></div>
 <div><label>Estado</label><select id="a1-state"><option>Usado</option><option>Como nuevo</option><option>Nuevo</option><option>No corresponde</option></select></div>
 <div><label>Categoría</label><input id="a1-cat" placeholder="Bicicletas, viviendas, herramientas..."></div>
@@ -94,6 +95,7 @@ textarea{min-height:90px;resize:vertical}.article{border:1px solid #dde5ee;borde
 </section>
 
 <p class="note">Al enviar, el aviso queda pendiente hasta que se confirme el pago. Después podrás ingresar a <strong>Mis publicaciones</strong> y modificar precio, descripción, fotos y disponibilidad. La aprobación, el pago y el vencimiento dependen de Administración.</p>
+<div class="safety-box"><strong>🛡️ Reglas de seguridad</strong><ul><li>Publicá información y fotos verdaderas.</li><li>No compartas contraseñas ni códigos.</li><li>Confirmá el precio, el estado del artículo y la entrega.</li><li>Elegí un lugar seguro para realizar el intercambio.</li></ul><label class="safety-accept"><input type="checkbox" id="acepto-seguridad" required><span>Leí y acepto las <a href="./condiciones.html" target="_blank">reglas para publicaciones particulares</a>.</span></label></div>
 <div class="actions"><a class="back" href="./inicio.html">Cancelar</a><button class="submit" type="submit">Crear cuenta y enviar</button></div>
 <div id="seller-status" class="status"></div>
 </form>
@@ -126,15 +128,16 @@ async function articulo(n,obligatorio){
  const titulo=document.getElementById(`a${n}-title`).value.trim();
  if(!titulo&&!obligatorio)return null;
  if(!titulo)throw new Error(`Falta el título del artículo ${n}.`);
+ const periodoPrecio=document.getElementById(`a${n}-period`).value;
  const precio=Number(document.getElementById(`a${n}-price`).value||0);
  const descripcion=document.getElementById(`a${n}-desc`).value.trim();
- if(precio<=0)throw new Error(`El precio del artículo ${n} debe ser mayor que $0.`);
+ if(periodoPrecio!=='consultar'&&precio<=0)throw new Error(`Escribí un precio mayor que $0 o elegí “A consultar” en Precio por.`);
  if(/\[cite\s*:/i.test(titulo+' '+descripcion))throw new Error(`El artículo ${n} contiene texto [cite:] que debe quitarse.`);
  return {
    tipoOperacion:valorRadio(`a${n}-mode`),
    titulo,
    precio,
-   periodoPrecio:document.getElementById(`a${n}-period`).value,
+   periodoPrecio,
    estadoArticulo:document.getElementById(`a${n}-state`).value,
    categoria:document.getElementById(`a${n}-cat`).value.trim(),
    zona:document.getElementById(`a${n}-zone`).value.trim(),
@@ -152,8 +155,10 @@ document.getElementById('seller-form').addEventListener('submit',async e=>{
  try{
   const a1=await articulo(1,true),a2=await articulo(2,false);
   const articulos=[a1,...(a2?[a2]:[])];
-  const advertencias=articulos.filter(a=>/\bprueba\b|\(copia\)/i.test(a.titulo+' '+a.descripcion));
-  if(advertencias.length&&!confirm('El título o la descripción contiene “prueba” o “(copia)”. ¿Querés publicarlo igualmente?'))throw new Error('La publicación se canceló para que puedas revisar el texto.');
+  for(const a of articulos){const m=(a.titulo+' '+a.descripcion).match(/\$\s*([\d.]+(?:,\d{1,2})?)/);if(m){const escrito=Number(m[1].replace(/\./g,'').replace(',','.'));if(a.periodoPrecio==='consultar')throw new Error(`En “${a.titulo}” elegiste A consultar, pero escribiste $${m[1]} en el texto.`);if(escrito!==Number(a.precio))throw new Error(`En “${a.titulo}” el texto dice $${m[1]} y el precio cargado es $${Number(a.precio).toLocaleString('es-AR')}. Deben coincidir.`)}}
+  if(articulos.some(a=>/\bprueba\b|\(copia\)/i.test(a.titulo+' '+a.descripcion)))throw new Error('No se puede publicar texto que contenga “prueba” o “(copia)”. Corregilo antes de continuar.');
+  const claves=articulos.map(a=>[a.titulo,Number(a.precio),a.descripcion].map(v=>String(v).trim().toLocaleLowerCase('es-AR')).join('|'));
+  if(new Set(claves).size!==claves.length)throw new Error('Hay dos publicaciones idénticas. Cambiá el gramaje, la presentación, la descripción o el precio para diferenciarlas.');
   let cred;
   try{cred=await createUserWithEmailAndPassword(auth,email,pass);await updateProfile(cred.user,{displayName:nombre}).catch(()=>{})}
   catch(err){

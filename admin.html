@@ -159,7 +159,7 @@ function renderVendedoresV41(lista){
  const motivosArticulo=a=>{
   const titulo=String(a?.titulo||'').trim(),texto=(titulo+' '+String(a?.descripcion||''));
   const motivos=[];
-  if(Number(a?.precio||0)<=0)motivos.push('precio en $0');
+  if(Number(a?.precio||0)<=0&&a?.periodoPrecio!=='consultar')motivos.push('precio en $0');
   if(/\[cite\s*:/i.test(texto))motivos.push('texto [cite:]');
   if(/\bprueba\b/i.test(texto))motivos.push('indica prueba');
   if(/\(copia\)/i.test(titulo))motivos.push('título con (copia)');
@@ -172,7 +172,7 @@ function renderVendedoresV41(lista){
    ? `<strong>⚠️ ${totalRevision} publicación${totalRevision===1?'':'es'} para revisar</strong><span>Podés corregir o eliminar cada artículo desde su ficha.</span>`
    : '<strong>✅ Sin publicaciones observadas</strong><span>No se detectaron precios en $0, textos [cite:], pruebas ni copias.</span>';
  el.innerHTML=lista.map(v=>{
-  const arts=(Array.isArray(v.articulos)?v.articulos:[]).map((a,i)=>{const motivos=motivosArticulo(a);return `<div class="vp-art-v41" style="${motivos.length?'border:2px solid #e3a126;background:#fff8e8':''}"><b>${esc(a.titulo||'Artículo')}</b><span>$${Number(a.precio||0).toLocaleString('es-AR')}</span><small>${esc(a.estadoArticulo||'')} · ${esc(a.categoria||'')}</small>${motivos.length?`<small style="display:block;color:#9a5600;font-weight:900">⚠️ Revisar: ${esc(motivos.join(', '))}</small>`:''}<div style="display:flex;gap:6px;margin-top:7px;flex-wrap:wrap"><button class="btn-accion" onclick="editarArticuloParticularV140('${v.id}',${i})">✏️ Corregir</button><button class="btn-accion btn-borrar" onclick="eliminarArticuloParticularV140('${v.id}',${i})">🗑️ Eliminar artículo</button></div></div>`}).join('');
+  const arts=(Array.isArray(v.articulos)?v.articulos:[]).map((a,i)=>{const motivos=motivosArticulo(a),precioTexto=a.periodoPrecio==='consultar'?'Consultar precio':'$'+Number(a.precio||0).toLocaleString('es-AR');return `<div class="vp-art-v41" style="${motivos.length?'border:2px solid #e3a126;background:#fff8e8':''}"><b>${esc(a.titulo||'Artículo')}</b><span>${precioTexto}</span><small>${esc(a.estadoArticulo||'')} · ${esc(a.categoria||'')}</small>${motivos.length?`<small style="display:block;color:#9a5600;font-weight:900">⚠️ Revisar: ${esc(motivos.join(', '))}</small>`:''}<div style="display:flex;gap:6px;margin-top:7px;flex-wrap:wrap"><button class="btn-accion" onclick="editarArticuloParticularV140('${v.id}',${i})">✏️ Corregir</button><button class="btn-accion btn-borrar" onclick="eliminarArticuloParticularV140('${v.id}',${i})">🗑️ Eliminar artículo</button></div></div>`}).join('');
   const badge=v.estado==='activo'?'<span class="badge badge-activo">✅ Activo</span>':v.estado==='rechazado'?'<span class="badge badge-rechazado">❌ Rechazado</span>':'<span class="badge badge-pendiente">⏳ Pendiente</span>';
   let acciones='';
   if(v.estado==='pendiente')acciones=`<button class="btn-accion btn-aprobar" onclick="aprobarVendedorV41('${v.id}')">✅ Aprobar pago</button><button class="btn-accion btn-rechazar" onclick="estadoVendedorV41('${v.id}','rechazado')">❌ Rechazar</button>`;
@@ -444,6 +444,8 @@ window.cargarComerciosAdmin = async () => {
     
     actualizarContadores()
     filtrarAdmin('todos')
+    guardarCopiaDiariaV146()
+    actualizarTareasPendientesV147()
   } catch(e) {
     lista.innerHTML = '<p class="cargando" style="color:#CC0000">Error al cargar los comercios. Revisá la conexión o los permisos.</p>'
   }
@@ -669,6 +671,35 @@ function valorParaRespaldoV141(valor){
   return limpio;
 }
 
+function guardarCopiaDiariaV146(){
+ try{
+  const hoy=new Date().toISOString().slice(0,10),clave='slp_copias_diarias_v146',anteriores=JSON.parse(localStorage.getItem(clave)||'[]');
+  if(!anteriores.some(x=>x.fecha===hoy)){
+   const sinArchivos=v=>{if(v===null||v===undefined||typeof v!=='object')return typeof v==='string'&&v.length>10000?'[archivo omitido]':v;if(Array.isArray(v))return v.map(sinArchivos);const o={};Object.entries(v).forEach(([k,d])=>{if(!/foto|imagen|qr/i.test(k))o[k]=sinArchivos(valorParaRespaldoV141(d))});return o};
+   anteriores.unshift({fecha:hoy,guardadoEn:new Date().toISOString(),comercios:sinArchivos(todosComerciosAdmin),particulares:sinArchivos(vendedoresParticularesAdmin)});
+   localStorage.setItem(clave,JSON.stringify(anteriores.slice(0,7)));
+  }
+  actualizarEstadoCopiasV146();
+ }catch(e){const el=document.getElementById('estado-copias-v146');if(el)el.textContent='No se pudo guardar la copia diaria en este navegador. Usá “Descargar respaldo”.'}
+}
+function actualizarEstadoCopiasV146(){
+ const el=document.getElementById('estado-copias-v146'),aviso=document.getElementById('aviso-copia-semanal-v146');if(!el||!aviso)return;
+ try{const copias=JSON.parse(localStorage.getItem('slp_copias_diarias_v146')||'[]'),ultima=copias[0]?.guardadoEn?new Date(copias[0].guardadoEn):null;el.textContent=ultima?'Última copia diaria en este navegador: '+ultima.toLocaleString('es-AR')+' · Se conservan '+copias.length+' de 7.':'Todavía no hay una copia diaria guardada.';const semanal=localStorage.getItem('slp_ultima_descarga_semanal_v146'),dias=semanal?(Date.now()-new Date(semanal).getTime())/86400000:99;aviso.hidden=dias<7}catch(_e){}
+}
+async function actualizarTareasPendientesV147(){
+ const caja=document.getElementById('tareas-lista-v147');if(!caja)return;
+ const fecha=x=>x?.toDate?x.toDate():(x?.seconds?new Date(x.seconds*1000):new Date(x||0)),dias=x=>{const f=fecha(x);return isNaN(f)?null:Math.ceil((f-new Date())/86400000)};
+ const comerciosPend=todosComerciosAdmin.filter(c=>c.estado==='pendiente').length,partPend=vendedoresParticularesAdmin.filter(v=>v.estado==='pendiente').length;
+ const observadas=vendedoresParticularesAdmin.reduce((n,v)=>n+(v.articulos||[]).filter(a=>Number(a.precio||0)<=0&&a.periodoPrecio!=='consultar'||/\[cite\s*:|\bprueba\b|\(copia\)/i.test((a.titulo||'')+' '+(a.descripcion||''))).length,0);
+ const vencen=[...todosComerciosAdmin,...vendedoresParticularesAdmin].filter(x=>{const d=dias(x.vencimiento||x.proximaRenovacion);return d!==null&&d>=0&&d<=3}).length;
+ const redes=todosComerciosAdmin.filter(c=>c.estado==='activo'&&!c.redesPublicado).length;
+ let pagos=0;try{const ps=await getDocs(collection(db,'pedidos'));ps.forEach(x=>{if(/informado|verificar/i.test(String(x.data().estadoPago||'')))pagos++})}catch(_e){}
+ const semanal=!document.getElementById('aviso-copia-semanal-v146')?.hidden?1:0;
+ const items=[['comercios',comerciosPend,'🏪','Comercios pendientes de aprobar'],['particulares',partPend,'🚲','Particulares pendientes de aprobar'],['observadas',observadas,'⚠️','Publicaciones observadas para revisar'],['vencimientos',vencen,'📅','Planes que vencen hoy o dentro de 3 días'],['redes',redes,'📣','Comercios pendientes de compartir en redes'],['pagos',pagos,'💳','Pagos informados pendientes de verificar'],['copia',semanal,'💾','Copia semanal pendiente']];
+ caja.innerHTML=items.map(([tipo,n,icono,texto])=>`<button type="button" onclick="irTareaV147('${tipo}')" style="display:flex;align-items:center;gap:10px;width:100%;border:1px solid ${n?'#e0b04d':'#d6e1ec'};background:${n?'#fff8df':'#f4f8fb'};border-radius:10px;padding:10px;text-align:left;cursor:pointer"><span style="font-size:1.2rem">${icono}</span><strong style="min-width:28px;color:${n?'#9a4d00':'#28704a'}">${n}</strong><span>${texto}</span></button>`).join('');
+}
+window.irTareaV147=tipo=>{if(tipo==='particulares'||tipo==='observadas'){verPanelV41('vendedores');document.getElementById(tipo==='observadas'?'revision-particulares-v140':'panel-vendedores-v41')?.scrollIntoView({behavior:'smooth',block:'start'})}else if(tipo==='vencimientos'){location.href='./seguimiento-comercios.html'}else if(tipo==='copia'){document.getElementById('aviso-copia-semanal-v146')?.scrollIntoView({behavior:'smooth',block:'center'})}else{verPanelV41('comercios');if(tipo==='comercios')filtrarAdmin('pendiente');document.getElementById('panel-comercios-v41')?.scrollIntoView({behavior:'smooth',block:'start'})}};
+
 window.descargarRespaldoV141=async()=>{
   const usuario=auth.currentUser,boton=document.getElementById('btn-respaldo-v141');
   if(!usuario || (usuario.email||'').toLowerCase()!==ADMIN_EMAIL){toast('⚠️ Iniciá sesión con la cuenta administradora.');return}
@@ -705,6 +736,7 @@ window.descargarRespaldoV141=async()=>{
     enlace.download=`respaldo-salvame-las-papas_${marca}.json`;
     document.body.appendChild(enlace);enlace.click();enlace.remove();
     setTimeout(()=>URL.revokeObjectURL(enlace.href),2000);
+    localStorage.setItem('slp_ultima_descarga_semanal_v146',ahora.toISOString());actualizarEstadoCopiasV146();
     toast(`✅ Respaldo descargado: ${comercios.length} comercios, ${particulares.length} particulares y ${pedidos.length} pedidos.`);
   }catch(error){console.error('Respaldo:',error);toast('❌ No se pudo preparar el respaldo. Revisá la conexión y las reglas de Firebase.')}
   finally{if(boton){boton.disabled=false;boton.textContent='⬇ Descargar respaldo'}}
@@ -759,6 +791,13 @@ window.exportarCSV = () => {
  const esc=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
  const rows=todosComerciosAdmin.map(c=>cols.map(k=>{let v=c[k];if(k==='creadoEn'&&v?.toDate)v=v.toDate().toLocaleString('es-AR');return esc(Array.isArray(v)?v.join(', '):v)}).join(','));
  const csv='\ufeff'+cols.join(',')+'\n'+rows.join('\n'); const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='comercios-salvame-las-papas.csv';a.click();URL.revokeObjectURL(a.href);toast('✅ CSV generado')
+}
+window.exportarParticularesCSV=()=>{
+ if(!vendedoresParticularesAdmin.length){toast('No hay particulares cargados para exportar. Tocá Actualizar y volvé a intentar.');return}
+ const escCsv=v=>'"'+String(v??'').replace(/"/g,'""')+'"',fecha=v=>v?.toDate?v.toDate():(v?.seconds?new Date(v.seconds*1000):new Date(v||0));
+ const cols=['nombre','whatsapp','localidad','estado','fechaAlta','vencimiento','diasRestantes','articulos'];
+ const rows=vendedoresParticularesAdmin.map(v=>{const alta=fecha(v.creadoEn),vence=fecha(v.vencimiento),dias=isNaN(vence)?'':Math.ceil((vence-new Date())/86400000),arts=(Array.isArray(v.articulos)?v.articulos:[]).map(a=>`${a.tipoOperacion==='alquiler'?'Alquiler':'Venta'}: ${a.titulo||'Artículo'} — ${a.periodoPrecio==='consultar'?'A consultar':'$'+Number(a.precio||0).toLocaleString('es-AR')}`).join(' | ');return [v.nombre,v.whatsapp,v.localidad,v.estado,isNaN(alta)?'':alta.toLocaleDateString('es-AR'),isNaN(vence)?'':vence.toLocaleDateString('es-AR'),dias,arts].map(escCsv).join(',')});
+ const csv='\ufeff'+cols.join(',')+'\n'+rows.join('\n'),a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='particulares-salvame-las-papas.csv';a.click();URL.revokeObjectURL(a.href);toast('✅ Particulares descargados para Excel')
 }
 
 </script>
@@ -1168,7 +1207,7 @@ img{max-width:100%;height:auto}
 <meta name="apple-mobile-web-app-title" content="Sálvame">
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
-<meta name="app-version" content="V140">
+<meta name="app-version" content="V147">
 <script src="./version-global.js" defer></script>
 </head>
 <body>
@@ -1234,6 +1273,9 @@ img{max-width:100%;height:auto}
       <div><span class="admin-kicker-v84">PANEL DEL EDITOR RESPONSABLE</span><h1>Control general de Sálvame las Papas</h1><p>Aprobaciones, actividad y seguimiento de la plataforma en un solo lugar.</p></div>
       <div style="display:flex;gap:9px;flex-wrap:wrap"><button id="btn-respaldo-v141" type="button" onclick="descargarRespaldoV141()">⬇ Descargar respaldo</button><button type="button" onclick="cargarResumenV84();cargarComerciosAdmin()">↻ Actualizar panel</button></div>
     </section>
+    <div id="estado-copias-v146" style="margin:0 0 8px;padding:9px 12px;border-radius:10px;background:#eaf3ff;color:#154f85;font-size:.82rem;font-weight:800">Comprobando copias de seguridad…</div>
+    <div id="aviso-copia-semanal-v146" style="margin:0 0 14px;padding:13px;border:2px solid #e3a126;border-radius:12px;background:#fff7da;color:#684900;font-weight:900" hidden>⚠️ Pasó una semana desde la última descarga. Guardá una copia fuera del navegador: <button type="button" onclick="descargarRespaldoV141()">Descargar respaldo ahora</button></div>
+    <section style="margin:0 0 16px;padding:15px;border:2px solid #b9cde2;border-radius:14px;background:#fff"><h2 style="margin:0 0 5px;color:#073574">Tareas pendientes de hoy</h2><p style="margin:0 0 11px;color:#64758a;font-size:.85rem">Tocá un renglón para ir directamente a esa parte.</p><div id="tareas-lista-v147" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:8px"><span>Calculando tareas…</span></div></section>
     <section class="metrics-grid-v84" aria-label="Métricas generales">
       <article><span class="metric-icon-v84 blue">👁️</span><div><strong id="met-visitas-v84">—</strong><small>Visitas totales</small></div></article>
       <article><span class="metric-icon-v84 cyan">🏪</span><div><strong id="met-ver-v84">—</strong><small>Clics en Ver comercio</small></div></article>
@@ -1274,7 +1316,7 @@ img{max-width:100%;height:auto}
         <input class="buscar-input" id="buscar-input"
           placeholder="Buscar por nombre, rubro, barrio..."
           oninput="buscarAdmin()"/>
-        <button class="btn-reload" onclick="exportarCSV()">⬇ CSV</button><button class="btn-reload" onclick="cargarComerciosAdmin()">↺ Actualizar</button>
+        <button class="btn-reload" onclick="exportarCSV()">⬇ Descargar comercios</button><button class="btn-reload" onclick="exportarParticularesCSV()">⬇ Descargar particulares</button><button class="btn-reload" onclick="cargarComerciosAdmin()">↺ Actualizar</button>
       </div>
     </div>
 

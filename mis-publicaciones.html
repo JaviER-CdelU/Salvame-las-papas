@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0b376f">
-<meta name="app-version" content="V140">
+<meta name="app-version" content="V147">
 <script src="./version-global.js" defer></script>
 <title>Mis publicaciones — Sálvame las Papas</title>
 <meta name="description" content="Panel privado para administrar publicaciones particulares en Sálvame las Papas.">
@@ -172,14 +172,18 @@ async function guardar(id){
  try{const articulos=[];for(const sec of card.querySelectorAll('.article')){const files=[...sec.querySelectorAll('input[type=file]')].map(x=>x.files[0]).filter(Boolean).slice(0,4);let nuevas=[];for(const f of files)nuevas.push(await comprimir(f));
  const disponible=sec.querySelector('.disponible').value==='true',titulo=sec.querySelector('.titulo').value.trim(),precio=Number(sec.querySelector('.precio').value||0),descripcion=sec.querySelector('.descripcion').value.trim();
  if(!titulo)throw new Error('Todos los artículos necesitan un título.');
- if(precio<=0)throw new Error('El precio debe ser mayor que $0.');
+ const periodoPrecio=sec.querySelector('.periodo').value;
+ if(periodoPrecio!=='consultar'&&precio<=0)throw new Error('Escribí un precio mayor que $0 o elegí “A consultar”.');
  if(/\[cite\s*:/i.test(titulo+' '+descripcion))throw new Error('Quitá el texto [cite:] antes de guardar.');
  articulos.push({
- tipoOperacion:sec.querySelector('.tipo').value,titulo,precio,periodoPrecio:sec.querySelector('.periodo').value,
+ tipoOperacion:sec.querySelector('.tipo').value,titulo,precio,periodoPrecio,
  estadoArticulo:sec.querySelector('.estadoArticulo').value,categoria:sec.querySelector('.categoria').value.trim(),zona:sec.querySelector('.zona').value.trim(),descripcion,
  fotos:nuevas.length?nuevas:[],disponible,vendido:!disponible&&sec.querySelector('.tipo').value==='venta',alquilado:!disponible&&sec.querySelector('.tipo').value==='alquiler'
  });}
- if(articulos.some(a=>/\bprueba\b|\(copia\)/i.test(a.titulo+' '+a.descripcion))&&!confirm('El título o la descripción contiene “prueba” o “(copia)”. ¿Querés guardarlo igualmente?'))throw new Error('Los cambios se cancelaron para que puedas revisar el texto.');
+ for(const a of articulos){const m=(a.titulo+' '+a.descripcion).match(/\$\s*([\d.]+(?:,\d{1,2})?)/);if(m){const escrito=Number(m[1].replace(/\./g,'').replace(',','.'));if(a.periodoPrecio==='consultar')throw new Error(`En “${a.titulo}” elegiste A consultar, pero escribiste $${m[1]} en el texto.`);if(escrito!==Number(a.precio))throw new Error(`En “${a.titulo}” el texto dice $${m[1]} y el precio cargado es $${Number(a.precio).toLocaleString('es-AR')}. Deben coincidir.`)}}
+ if(articulos.some(a=>/\bprueba\b|\(copia\)/i.test(a.titulo+' '+a.descripcion)))throw new Error('No se puede guardar texto que contenga “prueba” o “(copia)”. Corregilo antes de continuar.');
+ const claves=articulos.map(a=>[a.titulo,Number(a.precio),a.descripcion].map(v=>String(v).trim().toLocaleLowerCase('es-AR')).join('|'));
+ if(new Set(claves).size!==claves.length)throw new Error('Hay dos publicaciones idénticas. Cambiá el gramaje, la presentación, la descripción o el precio para diferenciarlas.');
  // Preserve old photos when no replacements were selected.
  const snap=await getDocs(query(collection(db,'vendedoresParticulares'),where('ownerUid','==',auth.currentUser.uid)));let current=null;snap.forEach(d=>{if(d.id===id)current=d.data()});
  articulos.forEach((a,i)=>{if(!a.fotos.length)a.fotos=current?.articulos?.[i]?.fotos||[]});

@@ -6,7 +6,7 @@
 <meta name="description" content="Panel de comercios de Sálvame las Papas para administrar productos y disponibilidad."/>
 <meta name="theme-color" content="#002A6A"/>
 <meta name="color-scheme" content="light"/>
-<meta name="app-version" content="V140"/>
+<meta name="app-version" content="V147"/>
 <script src="./version-global.js" defer></script>
 <title>Mi Comercio — Sálvame las Papas 🥔</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -305,10 +305,11 @@ function renderProductos(){
       ${foto?`<img class="product-photo-v117" src="${esc(foto)}" alt="${esc(p.nombre||'Producto')}" loading="lazy">`:`<div class="prod-emoji">${p.emoji || '📦'}</div>`}
       <div class="prod-info">
         <div class="prod-nombre">${esc(p.nombre)}</div>
-        <div class="prod-precio">$${Number(p.precio).toLocaleString('es-AR')}</div>
+        <div class="prod-precio">${p.precioConsultar?'Consultar precio':'$'+Number(p.precio).toLocaleString('es-AR')}</div>
         ${p.descripcion ? '<div class="prod-desc">'+p.descripcion+'</div>' : ''}
         <div class="prod-tags">
-          ${p.disponible !== false ? '<span class="tag-disp">✓ Disponible</span>' : '<span class="tag-no">✗ Sin stock</span>'}
+          ${p.estadoStock==='poco'?'<span class="tag-disp" style="background:#fff0d5;color:#a24b00">⚠ Quedan pocas unidades</span>':p.disponible !== false?'<span class="tag-disp">✓ Disponible</span>':'<span class="tag-no">✗ Sin stock</span>'}
+          ${p.stock?'<span class="tag-disp">Stock: '+esc(p.stock)+'</span>':''}
         </div>
       </div>
       <div class="prod-acciones">
@@ -628,9 +629,10 @@ window.abrirModalProducto = (id) => {
   document.getElementById('mp-emoji').value    = p?.emoji || '📦'
   document.getElementById('mp-nombre').value   = p?.nombre || ''
   document.getElementById('mp-precio').value   = p?.precio || ''
+  document.getElementById('mp-precio-consultar').checked = p?.precioConsultar === true
   document.getElementById('mp-desc').value     = p?.descripcion || ''
   document.getElementById('mp-stock').value    = p?.stock || ''
-  document.getElementById('mp-disp').checked  = p?.disponible !== false
+  document.getElementById('mp-estado-stock').value = p?.estadoStock || (p?.disponible===false?'sin':'disponible')
   cargarFotosProducto(p?.fotos || (p?.foto?[p.foto]:[]))
   document.getElementById('modal-prod').classList.add('open')
 }
@@ -661,15 +663,23 @@ window.guardarProducto = async () => {
   const emoji  = document.getElementById('mp-emoji').value.trim()
   const nombre = document.getElementById('mp-nombre').value.trim()
   const precio = document.getElementById('mp-precio').value.trim()
+  const precioConsultar = document.getElementById('mp-precio-consultar').checked
   const desc   = document.getElementById('mp-desc').value.trim()
   const stock  = document.getElementById('mp-stock').value.trim()
-  const disp   = document.getElementById('mp-disp').checked
+  const estadoStock = document.getElementById('mp-estado-stock').value
+  const disp   = estadoStock!=='sin'
 
   if(!nombre){ toast('⚠️ Ponele un nombre al producto'); return }
-  if(!precio){ toast('⚠️ Falta el precio'); return }
-  if(Number(String(precio).replace(',','.'))<=0){ toast('⚠️ El precio debe ser mayor que $0'); return }
+  if(!precioConsultar&&!precio){ toast('⚠️ Falta el precio o marcá “Precio a consultar”'); return }
+  if(!precioConsultar&&Number(String(precio).replace(',','.'))<=0){ toast('⚠️ El precio debe ser mayor que $0'); return }
+  const precioEnTexto=(nombre+' '+desc).match(/\$\s*([\d.]+(?:,\d{1,2})?)/)
+  if(precioEnTexto){const escrito=Number(precioEnTexto[1].replace(/\./g,'').replace(',','.')),cargado=precioConsultar?0:Number(String(precio).replace(',','.'));if(precioConsultar){toast('⚠️ Elegiste “Precio a consultar”, pero escribiste $'+precioEnTexto[1]+' en el texto');return}if(escrito!==cargado){toast('⚠️ El texto dice $'+precioEnTexto[1]+' y el precio cargado es $'+cargado.toLocaleString('es-AR'));return}}
   if(/\[cite\s*:/i.test(nombre+' '+desc)){ toast('⚠️ Quitá el texto [cite:] antes de guardar'); return }
-  if(/\bprueba\b|\(copia\)/i.test(nombre+' '+desc)&&!confirm('El producto contiene “prueba” o “(copia)”. ¿Querés guardarlo igualmente?'))return
+  if(/\bprueba\b|\(copia\)/i.test(nombre+' '+desc)){ toast('⚠️ No se puede guardar texto que contenga “prueba” o “(copia)”'); return }
+  const precioNumero=precioConsultar?0:parseFloat(precio.replace(',','.'))
+  const claveNueva=[nombre,precioNumero,desc].map(v=>String(v).trim().toLocaleLowerCase('es-AR')).join('|')
+  const repetido=misProductos.some(p=>p.id!==id&&[p.nombre,Number(p.precio),p.descripcion||''].map(v=>String(v).trim().toLocaleLowerCase('es-AR')).join('|')===claveNueva)
+  if(repetido){ toast('⚠️ Ese producto ya existe. Cambiá el gramaje, la presentación, la descripción o el precio'); return }
 
   const limite = ({1:10,2:30,3:60})[nivelPlanComercio(miComercio?.plan)]
   if(!id && misProductos.length >= limite){
@@ -678,8 +688,8 @@ window.guardarProducto = async () => {
   }
 
   const datos = { emoji, foto: fotosProductoActuales.filter(Boolean)[0] || '',
-    fotos: fotosProductoActuales.filter(Boolean).slice(0,limiteFotosPlan()), nombre, precio: parseFloat(precio.replace(',','.')),
-    descripcion: desc, stock, disponible: disp, actualizadoEn: serverTimestamp() }
+    fotos: fotosProductoActuales.filter(Boolean).slice(0,limiteFotosPlan()), nombre, precio: precioNumero,
+    descripcion: desc, stock, precioConsultar, estadoStock, disponible: disp, actualizadoEn: serverTimestamp() }
 
   const btn = document.getElementById('btn-guardar-prod')
   btn.textContent = 'Guardando...'
@@ -1435,14 +1445,14 @@ img{max-width:100%;height:auto}
 <meta name="apple-mobile-web-app-title" content="Sálvame">
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
-<meta name="app-version" content="V140">
+<meta name="app-version" content="V147">
 </head>
 <body>
 
 <!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
-    <span class="owner-login-kicker">PANEL DEL COMERCIO · <span data-app-version>V140</span></span>
+    <span class="owner-login-kicker">PANEL DEL COMERCIO · <span data-app-version>V147</span></span>
     <div class="login-logo">Sálvame <em>las Papas 🥔</em></div>
     <h1 class="owner-login-title">Administrá tu comercio</h1>
     <p class="owner-login-help">
@@ -1479,7 +1489,7 @@ img{max-width:100%;height:auto}
 <!-- PANEL -->
 <div id="panel-screen">
   <nav class="panel-nav">
-    <div class="panel-logo">Sálvame <em>las Papas</em> — Panel del comercio <span class="panel-version" data-app-version>V140</span></div>
+    <div class="panel-logo">Sálvame <em>las Papas</em> — Panel del comercio <span class="panel-version" data-app-version>V147</span></div>
     <nav class="site-switcher" aria-label="Navegación del sitio">
       <a href="index.html">🏠 Inicio general</a>
       <a href="comprar.html">🛒 Ver como cliente</a>
@@ -1676,6 +1686,7 @@ img{max-width:100%;height:auto}
         <input class="form-input" id="mp-precio" type="number"
           placeholder="Ej: 1850"/>
         <span class="hint">En pesos argentinos</span>
+        <label class="hint"><input id="mp-precio-consultar" type="checkbox"> Precio a consultar</label>
       </div>
       <div class="form-group">
         <label>Stock / cantidad disponible</label>
@@ -1704,10 +1715,7 @@ img{max-width:100%;height:auto}
     </div>
 
 
-    <div class="check-row">
-      <input type="checkbox" id="mp-disp" checked/>
-      <label for="mp-disp">Producto disponible ahora</label>
-    </div>
+    <div class="form-group"><label for="mp-estado-stock">Estado del stock</label><select class="form-input" id="mp-estado-stock"><option value="disponible">Disponible</option><option value="poco">Quedan pocas unidades</option><option value="sin">Sin stock</option></select></div>
 
     <button class="btn-guardar" id="btn-guardar-prod" onclick="guardarProducto()">
       Guardar producto

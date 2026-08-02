@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
 <meta name="description" content="Seguimiento privado de comercios y particulares de Sálvame las Papas."/>
 <meta name="theme-color" content="#002A6A"/>
-<meta name="app-version" content="V140"/>
+<meta name="app-version" content="V147"/>
 <script src="./version-global.js" defer></script>
 <title>Seguimiento de comercios y particulares — Sálvame las Papas</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -245,6 +245,7 @@ window.recordar = (tel,nombreCod,dias) => {
   const tiempo=dias===null?'se acerca':dias<0?'está vencido':dias===0?'vence hoy':`vence dentro de ${dias} días`;
   const msg=`Hola ${nombre}. Te escribimos desde Sálvame las Papas 🥔. Tu plan ${tiempo}. Tus productos quedan guardados, pero para continuar publicados necesitamos registrar la renovación. ¿Te ayudamos?`;
   window.open('https://wa.me/'+tel+'?text='+encodeURIComponent(msg),'_blank','noopener');
+  toast('Mensaje preparado; falta revisarlo y enviarlo desde WhatsApp.');
 };
 
 window.prepararCorreo = (emailCod,nombreCod,dias) => {
@@ -400,6 +401,7 @@ function enviarWhatsAppAvanzado(comercio, tipo){
   }
   const url = `https://wa.me/${tel}?text=${encodeURIComponent(mensajeWhatsapp(comercio,tipo))}`;
   window.open(url, "_blank");
+  toast('Mensaje preparado; falta revisarlo y enviarlo desde WhatsApp.');
 }
 
 function renderHistorialPagos(historial){
@@ -614,7 +616,7 @@ main{width:min(1720px,100%);margin:auto;padding:20px 16px 50px}.cabecera{display
 .admin-scope-note a{color:#d85e00;font-weight:900}
 
 </style>
-<meta name="app-version" content="V140">
+<meta name="app-version" content="V147">
 </head>
 <body>
 <section id="login" class="login"><div class="login-box"><h1>Sálvame las Papas 🥔</h1><h2>Seguimiento de comercios y particulares</h2><p>Sección privada para Administración.</p><button onclick="entrarGoogle()">Ingresar con Google</button><div id="login-error" class="login-error" hidden></div></div></section>
@@ -629,6 +631,7 @@ main{width:min(1720px,100%);margin:auto;padding:20px 16px 50px}.cabecera{display
 
 <main>
   <div class="cabecera"><div><h1>Seguimiento y renovaciones</h1><p>Comercios y particulares aparecen juntos. Cada ficha muestra alta, vencimiento, días, visitas, WhatsApp y operaciones.</p></div><button class="actualizar" onclick="cargar()">↻ Actualizar</button></div>
+  <div style="margin:0 0 14px;padding:12px 14px;border:2px solid #e3b24f;border-radius:12px;background:#fff7da;color:#624900;font-weight:800;line-height:1.45"><strong>Importante:</strong> los avisos no se envían automáticamente. Al tocar “Preparar WhatsApp”, se abre el mensaje correspondiente. Revisalo y tocá <strong>Enviar</strong> desde WhatsApp.</div>
   <div class="leyenda-planes" aria-label="Colores de planes"><span class="leyenda-basico">Básico</span><span class="leyenda-intermedio">Intermedio</span><span class="leyenda-pro">Pro</span><span class="leyenda-particular">Particular</span></div>
   <section class="resumen">
     <div class="resumen-card"><strong id="r-total">—</strong><span>Total</span></div>

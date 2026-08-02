@@ -1,0 +1,16 @@
+/* Estilos compartidos por Comprar y Registrar comercio.
+   Se trasladan por etapas para reducir riesgos visuales. */
+.seller-desc-v41{font-size:.82rem;line-height:1.4;color:#465164;min-height:36px;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
+.seller-desc-v41.completa-v141{display:block;overflow:visible;-webkit-line-clamp:unset}
+.seller-desc-toggle-v141{border:0;background:transparent;color:#075aa8;padding:4px 0 0;cursor:pointer;font-size:.78rem;font-weight:900;text-decoration:underline}
+.seller-card-v41.enlace-activo-v142{outline:5px solid #ff8a00;box-shadow:0 0 0 9px #ffe1b8,0 15px 34px #17314f33}
+.seller-time-v143{display:flex;gap:6px;flex-wrap:wrap;margin:7px 0;font-size:.74rem;font-weight:900}
+.seller-time-v143 span{padding:4px 7px;border-radius:999px;background:#edf2f7;color:#43536a}
+.seller-time-v143 .tiempo-verde{background:#def4e4;color:#126735}
+.seller-time-v143 .tiempo-amarillo{background:#fff1b8;color:#735600}
+.seller-time-v143 .tiempo-naranja{background:#ffe0c4;color:#9a3d00}
+.seller-time-v143 .tiempo-rojo{background:#ffd8dc;color:#9b1624}
+.seller-kind-v144{display:inline-block;padding:4px 8px;border-radius:999px;color:#fff;font-size:.75rem;font-weight:1000}
+.seller-kind-v144.venta{background:#198754}
+.seller-kind-v144.alquiler{background:#7141b6}
+.seller-report-v145{border:1px solid #d6a0a7!important;background:#fff5f6!important;color:#9b1624!important;border-radius:8px;padding:7px 9px;font-weight:900;cursor:pointer}
