@@ -93,7 +93,201 @@
     .then(datos => aplicarVersion(String(datos.version || '').trim()))
     .catch(error => console.warn('Versión del sitio:', error.message));
 
+  /* V148 — comprobación real antes de abrir Facebook */
+  function crearAvisoFacebook() {
+    let aviso = document.getElementById('slp-facebook-estado-v148');
+    if (aviso) return aviso;
+
+    const estilos = document.createElement('style');
+    estilos.textContent = `
+      #slp-facebook-estado-v148{
+        position:fixed;right:18px;bottom:18px;z-index:100000;
+        width:min(430px,calc(100% - 36px));padding:14px 16px;border-radius:14px;
+        background:#fff8df;color:#654500;border:1px solid #e5bd55;
+        box-shadow:0 18px 45px rgba(15,35,60,.24);font:700 14px/1.45 Arial,sans-serif;
+        opacity:0;transform:translateY(25px);pointer-events:none;transition:.25s ease
+      }
+      #slp-facebook-estado-v148.visible{opacity:1;transform:none}
+      #slp-facebook-estado-v148.ok{background:#e9f8ee;color:#176237;border-color:#9bd0ae}
+      #slp-facebook-estado-v148.error{background:#fff0f0;color:#922932;border-color:#e5aeb3}
+    `;
+    document.head.appendChild(estilos);
+
+    aviso = document.createElement('div');
+    aviso.id = 'slp-facebook-estado-v148';
+    aviso.setAttribute('role', 'status');
+    aviso.setAttribute('aria-live', 'polite');
+    document.body.appendChild(aviso);
+    return aviso;
+  }
+
+  let temporizadorFacebook = null;
+  function estadoFacebook(texto, tipo = '') {
+    const aviso = crearAvisoFacebook();
+    clearTimeout(temporizadorFacebook);
+    aviso.className = `visible ${tipo}`.trim();
+    aviso.textContent = texto;
+    temporizadorFacebook = setTimeout(() => {
+      aviso.className = '';
+    }, tipo === 'error' ? 9000 : 5200);
+  }
+
+  function escribirVentanaPreparando(ventana, titulo, detalle) {
+    try {
+      ventana.document.open();
+      ventana.document.write(`<!doctype html><html lang="es"><head><meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>${titulo}</title>
+        <style>
+          *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;
+          background:#f2f6fb;color:#17314d;font-family:Arial,sans-serif;padding:24px}
+          .caja{max-width:560px;text-align:center;background:#fff;border:1px solid #d7e2ed;
+          border-radius:22px;padding:36px;box-shadow:0 16px 45px #17314d22}
+          .rueda{width:54px;height:54px;margin:0 auto 22px;border:6px solid #dbe8f4;
+          border-top-color:#f27a1a;border-radius:50%;animation:girar .8s linear infinite}
+          h1{color:#063b73;font-size:1.65rem}p{line-height:1.5;color:#65788c}
+          @keyframes girar{to{transform:rotate(360deg)}}
+        </style></head><body><main class="caja"><div class="rueda"></div>
+        <h1>${titulo}</h1><p>${detalle}</p></main></body></html>`);
+      ventana.document.close();
+    } catch (_) {}
+  }
+
+  function escribirVentanaError(ventana, mensaje) {
+    try {
+      ventana.document.open();
+      ventana.document.write(`<!doctype html><html lang="es"><head><meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>No se pudo preparar Facebook</title>
+        <style>
+          *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;
+          background:#fff3f3;color:#5b252a;font-family:Arial,sans-serif;padding:24px}
+          .caja{max-width:600px;background:#fff;border:1px solid #e9b8bd;border-radius:22px;
+          padding:34px;box-shadow:0 16px 45px #5b252a20}
+          h1{color:#a32933}p{line-height:1.55}.cerrar{display:inline-block;margin-top:12px;
+          border:0;border-radius:11px;padding:12px 18px;background:#063b73;color:#fff;font-weight:800;cursor:pointer}
+        </style></head><body><main class="caja"><h1>Facebook no pudo recibir la tarjeta</h1>
+        <p>${mensaje}</p><button class="cerrar" onclick="window.close()">Cerrar esta ventana</button>
+        </main></body></html>`);
+      ventana.document.close();
+    } catch (_) {}
+  }
+
+  function mensajeErrorFacebook(error) {
+    const codigo = String(error?.message || error || '');
+    if (codigo.includes('timeout')) return 'La preparación tardó demasiado. Volvé a probar dentro de un minuto.';
+    if (codigo.includes('404')) return 'El comercio o el producto no está activo, disponible o correctamente guardado.';
+    if (codigo.includes('503')) return 'Vercel o Firebase demoraron en responder. No se publicó nada.';
+    if (codigo.includes('popup')) return 'El navegador bloqueó la ventana de Facebook. Permití ventanas emergentes para este sitio.';
+    return 'No se pudo comprobar la tarjeta del producto. No se publicó nada en Facebook.';
+  }
+
+  function instalarReparacionFacebook() {
+    if (paginaActual() !== 'comercio.html') return;
+
+    let intentos = 0;
+    const esperar = setInterval(() => {
+      intentos += 1;
+      const original = window.compartirProductoRedV117;
+
+      if (typeof original !== 'function') {
+        if (intentos >= 80) clearInterval(esperar);
+        return;
+      }
+      if (original.__slpFacebookV148) {
+        clearInterval(esperar);
+        return;
+      }
+
+      async function compartirReparado(id, red) {
+        if (red !== 'facebook') return original.apply(this, arguments);
+
+        const ventana = window.open('about:blank', 'facebook-share', 'width=760,height=680');
+        if (!ventana) {
+          estadoFacebook('El navegador bloqueó Facebook. Habilitá las ventanas emergentes para Sálvame las Papas.', 'error');
+          return;
+        }
+
+        escribirVentanaPreparando(
+          ventana,
+          'Preparando la publicación…',
+          'Estamos comprobando el producto, el comercio y la imagen antes de abrir Facebook.'
+        );
+        estadoFacebook('Preparando y comprobando la tarjeta de Facebook…');
+
+        let direccionFacebook = '';
+        const abrirReal = window.open;
+        window.open = function(url) {
+          direccionFacebook = String(url || '');
+          return ventana;
+        };
+
+        try {
+          await original.call(this, id, red);
+        } finally {
+          window.open = abrirReal;
+        }
+
+        try {
+          if (!direccionFacebook.includes('facebook.com/sharer')) {
+            throw new Error('popup-url');
+          }
+
+          const urlFacebook = new URL(direccionFacebook);
+          const tarjeta = urlFacebook.searchParams.get('u');
+          if (!tarjeta) throw new Error('404 tarjeta');
+
+          const comprobar = new URL(tarjeta);
+          comprobar.searchParams.set('check', '1');
+          comprobar.searchParams.set('_v', String(Date.now()));
+
+          const controlador = new AbortController();
+          const reloj = setTimeout(() => controlador.abort('timeout'), 9000);
+
+          let respuesta;
+          try {
+            respuesta = await fetch(comprobar.href, {
+              cache: 'no-store',
+              signal: controlador.signal,
+              headers: { 'Accept': 'application/json' }
+            });
+          } catch (error) {
+            if (controlador.signal.aborted) throw new Error('timeout');
+            throw error;
+          } finally {
+            clearTimeout(reloj);
+          }
+
+          const datos = await respuesta.json().catch(() => ({}));
+          if (!respuesta.ok || datos.ok !== true) {
+            throw new Error(String(respuesta.status || 503));
+          }
+
+          estadoFacebook('✓ Tarjeta comprobada. Abriendo Facebook.', 'ok');
+          try { ventana.opener = null; } catch (_) {}
+          ventana.location.replace(direccionFacebook);
+        } catch (error) {
+          const mensaje = mensajeErrorFacebook(error);
+          estadoFacebook(mensaje, 'error');
+          escribirVentanaError(ventana, mensaje);
+          console.error('Facebook V148:', error);
+        }
+      }
+
+      compartirReparado.__slpFacebookV148 = true;
+      window.compartirProductoRedV117 = compartirReparado;
+      clearInterval(esperar);
+    }, 250);
+  }
+
   aplicarLegibilidadMovil();
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', crearBarraDeOrientacion, { once: true });
-  else crearBarraDeOrientacion();
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      crearBarraDeOrientacion();
+      instalarReparacionFacebook();
+    }, { once: true });
+  } else {
+    crearBarraDeOrientacion();
+    instalarReparacionFacebook();
+  }
 })();
