@@ -427,6 +427,11 @@ window.cargarResumenV84=async()=>{
 // ── Cargar comercios ──
 let todosComerciosAdmin = []
 
+function sitioWebTextoV151(c){
+  if(c.sitioWebEstado==='tiene'&&c.sitioWeb)return `<a href="${esc(c.sitioWeb)}" target="_blank" rel="noopener noreferrer">${esc(c.sitioWeb)}</a>`;
+  if(c.sitioWebEstado==='interesado')return '💡 Interesado en que le ayudemos';
+  return 'No tiene';
+}
 function esc(value){
   return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))
 }
@@ -545,6 +550,7 @@ function renderListaAdmin(lista){
           <div class="cc-field"><span class="cc-label">🚚 Envío</span><span>${esc(envio)}</span></div>
           <div class="cc-field"><span class="cc-label">💰 Plan</span><span>${esc(c.plan||'—')}</span></div>
           <div class="cc-field"><span class="cc-label">📷 Instagram</span><span>${esc(c.instagram||'—')}</span></div>
+          <div class="cc-field"><span class="cc-label">🌐 Sitio web</span><span>${sitioWebTextoV151(c)}</span></div>
           <div class="cc-field"><span class="cc-label">📣 Difusión</span><span>${c.redesPublicado?'✅ Compartido':'Pendiente de compartir'}</span></div>
         </div>
         ${c.descripcion ? `<div class="cc-desc">"${esc(c.descripcion)}"</div>` : ''}

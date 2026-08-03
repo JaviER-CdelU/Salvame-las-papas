@@ -822,6 +822,10 @@ window.abrirModalPerfil = () => {
  if(!miComercio)return;
  const vals={nombre:'nombre',desc:'descripcion',direccion:'direccion',telefono:'telefono',horarios:'horarios',instagram:'instagram',facebook:'facebook',alias:'aliasPago'};
  Object.entries(vals).forEach(([id,k])=>{const e=document.getElementById('pf-'+id);if(e)e.value=miComercio[k]||''});
+ const webEstadoActual=miComercio.sitioWebEstado||'no';
+ (document.querySelector(`input[name="pf-web-estado"][value="${webEstadoActual}"]`)||document.getElementById('pf-web-no')).checked=true;
+ document.getElementById('pf-web-url').value=miComercio.sitioWeb||'';
+ toggleWebEstadoPerfilV151();
  qrPagoActual=miComercio.qrPago||'';const qrPrev=document.getElementById('pf-qr-preview');if(qrPrev){qrPrev.src=qrPagoActual;qrPrev.hidden=!qrPagoActual}
  const env=Array.isArray(miComercio.envio)?miComercio.envio:String(miComercio.envio||'').split(/[,;|]/).map(x=>x.trim());
  const pay=Array.isArray(miComercio.pagos)?miComercio.pagos:String(miComercio.pagos||'').split(/[,;|]/).map(x=>x.trim());
@@ -840,6 +844,8 @@ window.abrirModalPerfil = () => {
  document.getElementById('modal-perfil').classList.add('open')
 }
 window.cerrarModalPerfil = e => {if(!e||e.target===document.getElementById('modal-perfil'))document.getElementById('modal-perfil').classList.remove('open')}
+window.toggleWebEstadoPerfilV151 = () => {const v=(document.querySelector('input[name="pf-web-estado"]:checked')||{}).value;document.getElementById('pf-web-url-wrap').style.display=v==='tiene'?'':'none'}
+const normalizarSitioWebV151=(valor)=>{valor=String(valor||'').trim();if(!valor)return '';if(!/^https?:\/\//i.test(valor))valor='https://'+valor;try{const u=new URL(valor);if(!u.hostname.includes('.'))throw new Error();u.protocol='https:';return u.href}catch(e){throw new Error('La dirección del sitio web no es válida.')}};
 window.quitarQrPago=()=>{qrPagoActual='';const p=document.getElementById('pf-qr-preview'),f=document.getElementById('pf-qr-file');if(p){p.hidden=true;p.removeAttribute('src')}if(f)f.value=''};
 document.addEventListener('change',e=>{if(e.target?.id!=='pf-qr-file')return;const file=e.target.files?.[0];if(!file)return;const reader=new FileReader();reader.onerror=()=>toast('No se pudo leer el QR');reader.onload=()=>{const img=new Image();img.onerror=()=>toast('La imagen del QR no es válida');img.onload=()=>{const max=600,s=Math.min(1,max/img.width,max/img.height),c=document.createElement('canvas');c.width=Math.max(1,Math.round(img.width*s));c.height=Math.max(1,Math.round(img.height*s));c.getContext('2d').drawImage(img,0,0,c.width,c.height);qrPagoActual=c.toDataURL('image/png');if(qrPagoActual.length>700000)qrPagoActual=c.toDataURL('image/jpeg',.92);const p=document.getElementById('pf-qr-preview');p.src=qrPagoActual;p.hidden=false};img.src=reader.result};reader.readAsDataURL(file)});
 window.guardarPerfil = async () => {
@@ -858,7 +864,13 @@ window.guardarPerfil = async () => {
  if(document.getElementById('pf-pay-cuotas').checked)pagos.push('Cuotas');
  if(document.getElementById('pf-pay-coordinar').checked)pagos.push('A coordinar');
  let instagram='',facebook='';try{instagram=normalizarRedV129(document.getElementById('pf-instagram').value,'instagram');facebook=normalizarRedV129(document.getElementById('pf-facebook').value,'facebook')}catch(e){toast('⚠️ '+e.message);btn.disabled=false;btn.textContent='Guardar cambios';return}
- const datos={nombre:document.getElementById('pf-nombre').value.trim(),descripcion:document.getElementById('pf-desc').value.trim(),direccion:document.getElementById('pf-direccion').value.trim(),telefono:document.getElementById('pf-telefono').value.trim(),horarios:document.getElementById('pf-horarios').value.trim(),instagram,facebook,aliasPago:document.getElementById('pf-alias').value.trim(),qrPago:qrPagoActual,envio,pagos,actualizadoEn:serverTimestamp()};
+ const sitioWebEstado=(document.querySelector('input[name="pf-web-estado"]:checked')||{}).value||'no';
+ let sitioWeb='';
+ if(sitioWebEstado==='tiene'){
+   try{sitioWeb=normalizarSitioWebV151(document.getElementById('pf-web-url').value)}catch(e){toast('⚠️ '+e.message);btn.disabled=false;btn.textContent='Guardar cambios';return}
+   if(!sitioWeb){toast('⚠️ Ingresá la dirección del sitio web o cambiá la opción elegida');btn.disabled=false;btn.textContent='Guardar cambios';return}
+ }
+ const datos={nombre:document.getElementById('pf-nombre').value.trim(),descripcion:document.getElementById('pf-desc').value.trim(),direccion:document.getElementById('pf-direccion').value.trim(),telefono:document.getElementById('pf-telefono').value.trim(),horarios:document.getElementById('pf-horarios').value.trim(),instagram,facebook,sitioWebEstado,sitioWeb,aliasPago:document.getElementById('pf-alias').value.trim(),qrPago:qrPagoActual,envio,pagos,actualizadoEn:serverTimestamp()};
  try{await updateDoc(doc(db,'comercios',miComercioId),datos);Object.assign(miComercio,datos);document.getElementById('comercio-nombre').textContent=datos.nombre||'Mi comercio';document.getElementById('modal-perfil').classList.remove('open');toast('✅ Perfil actualizado')}
  catch(e){toast('Error: '+e.message)}finally{btn.disabled=false;btn.textContent='Guardar cambios'}
 }
@@ -1748,6 +1760,18 @@ img{max-width:100%;height:auto}
     <div class="form-group"><label>Horarios</label><input class="form-input" id="pf-horarios"></div>
     <div class="form-group"><label>Instagram</label><input class="form-input" id="pf-instagram" type="text" placeholder="@usuario o https://instagram.com/usuario"><small>Podés escribir el usuario, @usuario o pegar el enlace completo.</small></div>
     <div class="form-group"><label>Facebook</label><input class="form-input" id="pf-facebook" type="text" placeholder="usuario o https://facebook.com/miComercio"><small>Podés escribir el usuario o pegar el enlace completo de la página.</small></div>
+    <div class="form-group">
+      <label>🌐 Sitio web</label>
+      <div class="profile-checks-v60" id="pf-chk-sitio-web" style="grid-template-columns:1fr">
+        <label><input type="radio" name="pf-web-estado" id="pf-web-tiene" value="tiene" onchange="toggleWebEstadoPerfilV151()"> ✅ Tiene sitio web</label>
+        <label><input type="radio" name="pf-web-estado" id="pf-web-no" value="no" onchange="toggleWebEstadoPerfilV151()"> ⛔ No tiene sitio web</label>
+        <label><input type="radio" name="pf-web-estado" id="pf-web-interesado" value="interesado" onchange="toggleWebEstadoPerfilV151()"> 💡 Le interesa que le ayudemos a crear uno</label>
+      </div>
+      <div class="form-group" id="pf-web-url-wrap" style="margin-top:.5rem;display:none">
+        <label>Dirección del sitio web</label>
+        <input class="form-input" id="pf-web-url" type="text" placeholder="https://miempresa.com.ar">
+      </div>
+    </div>
     <div class="form-group"><label>Alias para transferencias o billeteras</label><input class="form-input" id="pf-alias" placeholder="Ej: MI.COMERCIO.MP"><small>El cliente podrá copiarlo desde el carrito o pedirte un QR por WhatsApp.</small></div>
     <div class="form-group"><label>QR de cobro propio del comercio</label><input class="form-input" id="pf-qr-file" type="file" accept="image/png,image/jpeg,image/webp"><small>Cargá el QR abierto de Mercado Pago u otra billetera. El cliente escribirá el total desde su teléfono.</small><img id="pf-qr-preview" hidden alt="Vista previa del QR" style="display:block;max-width:220px;max-height:220px;object-fit:contain;margin:10px auto;border:2px solid #cbd8e6;border-radius:14px;background:#fff;padding:8px"><button type="button" class="btn-save-profile" style="background:#6b7890;margin-top:6px" onclick="quitarQrPago()">Quitar QR</button></div>
 
